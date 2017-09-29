@@ -33,9 +33,9 @@ inline void Mesh::LoadObj(const std::string & file_name)
     file_stream.getline(line, READ_BUFFERSIZE);
     switch (line[0]) {
       case VERTEX_CHARACTER:
-        
+        break;
       case INDEX_CHARACTER:
-        
+        break;
 
     }
     
