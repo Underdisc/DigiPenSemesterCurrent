@@ -22,7 +22,7 @@ void TestEnd();
 inline void InitialUpdate()
 {
   Time::Update();
-  ImGui_ImplSdlGL3_NewFrame(SDLContext::SDLWindow());
+  //ImGui_ImplSdlGL3_NewFrame(SDLContext::SDLWindow());
   SDLContext::CheckEvents();
 }
 
@@ -32,10 +32,9 @@ int main(int argc, char * argv[])
   SDLContext::Create("CS 300 - Assignment 1", true, OpenGLContext::AdjustViewport);
   OpenGLContext::Initialize();
 
-  ImGui_ImplSdlGL3_Init(SDLContext::SDLWindow());
-  SDLContext::AddEventProcessor(ImGui_ImplSdlGL3_ProcessEvent);
-
-  Mesh mesh("Resource/Model/horse.obj", Mesh::OBJ);
+  //ImGui_ImplSdlGL3_Init(SDLContext::SDLWindow());
+  //SDLContext::AddEventProcessor(ImGui_ImplSdlGL3_ProcessEvent);
+  
 
 
   TestInit();
@@ -46,23 +45,27 @@ int main(int argc, char * argv[])
   {
     InitialUpdate();
 
-    ImGui::Begin("Editor");
+    /*ImGui::Begin("Editor");
     if (ImGui::CollapsingHeader("Debug")) {
       ImGui::Text("FPS: %f", 1.0f / Time::DT());
     }
     ImGui::End();
+    */
 
-
-    if (diff)
+    if (diff){
       r -= Time::DT();
-    else
+      if(r < 0.0f)
+        diff = !diff;
+    }
+    else {
       r += Time::DT();
-    if(r < 0.0f || r > 1.0f)
-      diff = !diff;
+      if(r > 1.0f)
+        diff = !diff;
+    }
     glClearColor(r, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     TestUpdate();
-    ImGui::Render();
+    //ImGui::Render();
     OpenGLContext::Swap();
   }
 
@@ -88,6 +91,8 @@ float cur_y = 0.0f;
 float cur_z = -2.0f;
 float cur_scale = 1.0f;
 
+unsigned num_elements;
+
 inline void TestInit()
 {
   draw_shader = new Shader("Resource/Shader/default.vert", "Resource/Shader/default.frag");
@@ -95,7 +100,11 @@ inline void TestInit()
   u_model = draw_shader->GetUniformLocation("UModel");
   u_projection = draw_shader->GetUniformLocation("UProjection");
 
-  GLfloat vertices[] = {
+  Mesh mesh("Resource/Model/cube.obj", Mesh::OBJ);
+  num_elements = mesh.IndexDataSize();
+
+  // test cube
+  /*GLfloat vertices[] = {
      0.5f,  0.5f,  0.5f,
      0.5f,  0.5f, -0.5f,
      0.5f, -0.5f, -0.5f,
@@ -119,18 +128,20 @@ inline void TestInit()
     0, 5, 4,
     3, 7, 6,
     3, 6, 2
-  };
+  };*/
+  // test cube
 
   glGenVertexArrays(1, &vao_id);
   glGenBuffers(1, &vbo_id);
   glGenBuffers(1, &ebo_id);
   glBindVertexArray(vao_id);
   glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, mesh.VertexDataSizeBytes(), mesh.VertexData(), GL_STATIC_DRAW);
+  //glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_id);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW);
-
-  glVertexAttribPointer(a_position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.IndexDataSizeBytes(), mesh.IndexData(), GL_STATIC_DRAW);
+  //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW);
+  glVertexAttribPointer(a_position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
   glEnableVertexAttribArray(a_position);
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -166,9 +177,9 @@ inline void TestUpdate()
   if (Input::KeyDown(Q))
     cur_y -= Time::DT();
   if (Input::KeyDown(R))
-    cur_scale += Time::DT();
+    cur_scale += Time::DT() * 10.0f;
   if (Input::KeyDown(F))
-    cur_scale -= Time::DT();
+    cur_scale -= Time::DT() * 10.0f;
 
   Math::Matrix4 translation;
   translation.Translate(cur_x, cur_y, cur_z);
@@ -183,7 +194,7 @@ inline void TestUpdate()
 
   glBindVertexArray(vao_id);
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
+  glDrawElements(GL_TRIANGLES, num_elements, GL_UNSIGNED_INT, nullptr);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 
