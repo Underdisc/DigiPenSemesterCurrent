@@ -359,7 +359,6 @@ namespace Math
 
   void Matrix4::Scale(float x, float y, float z)
   {
-    // TODO: Test for correctness
     m00 = x; m01 = 0; m02 = 0; m03 = 0;
     m10 = 0; m11 = y; m12 = 0; m13 = 0;
     m20 = 0; m21 = 0; m22 = z; m23 = 0;
@@ -371,12 +370,37 @@ namespace Math
     Scale(axis.x, axis.y, axis.z);
   }
 
+  // assumes the vector passed in is normal
   void Matrix4::Rotate(float x, float y, float z, float radians)
   {
-    // set to rotation matrix given axis-angle pair
-    // TODO: arbitrary axis rotation; implement by student if desired
+    float cos_rad = Cos(radians);
+    float sin_rad = Sin(radians);
+
+    Matrix3 term_1;
+    term_1.SetIdentity();
+    term_1 = cos_rad * term_1;
+
+    Matrix3 term_2;
+    term_2.m00 = x * x; term_2.m01 = x * y; term_2.m02 = x * z;
+    term_2.m10 = y * x; term_2.m11 = y * y; term_2.m12 = y * z;
+    term_2.m20 = z * x; term_2.m21 = z * y; term_2.m22 = z * z;
+    term_2 = (1 - cos_rad) * term_2;
+
+    Matrix3 term_3;
+    term_3.m00 = 0.0f; term_3.m01 = -z;   term_3.m02 = y;
+    term_3.m10 = z;    term_3.m11 = 0.0f; term_3.m12 = -x;
+    term_3.m20 = -y;   term_3.m21 = x;    term_3.m22 = 0.0f;
+    term_3 = sin_rad * term_3; 
+
+    Matrix3 final;
+    final = term_1 + term_2 + term_3;
+    m00 = final.m00; m01 = final.m01; m02 = final.m02; m03 = 0.0f;
+    m10 = final.m10; m11 = final.m11; m12 = final.m12; m13 = 0.0f;
+    m20 = final.m20; m21 = final.m21; m22 = final.m22; m23 = 0.0f;
+    m30 = 0.0f;      m31 = 0.0f;      m32 = 0.0f;      m33 = 1.0f;
   }
 
+  // assumes a normal vector
   void Matrix4::Rotate(Vec3Param axis, float radians)
   {
     Rotate(axis.x, axis.y, axis.z, radians);
@@ -384,7 +408,6 @@ namespace Math
 
   void Matrix4::Translate(float x, float y, float z)
   {
-    //TODO: Test for correctness
     m00 = 1; m01 = 0; m02 = 0; m03 = x;
     m10 = 0; m11 = 1; m12 = 0; m13 = y;
     m20 = 0; m21 = 0; m22 = 1; m23 = z;

@@ -76,7 +76,7 @@ _vertexFile(vertex_file), _fragmentFile(fragment_file)
 {
   GLuint attribute_location = glGetAttribLocation(_programID, name.c_str());
   if (attribute_location == -1) {
-    Error error("Shader.cpp", "GetUniformLocation");
+    Error error("Shader.cpp", "GetAttribLocation");
     error.Add("An attribute was not found.");
     error.Add("<Attribute name>");
     error.Add(name.c_str());
