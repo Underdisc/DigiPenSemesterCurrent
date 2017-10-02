@@ -169,6 +169,7 @@
     <ClInclude Include="Source\External\Imgui\stb_textedit.h" />
     <ClInclude Include="Source\External\Imgui\stb_truetype.h" />
     <ClInclude Include="Source\Graphics\Mesh.h" />
+    <ClInclude Include="Source\Graphics\ShaderLibrary.h" />
     <ClInclude Include="Source\Math\EulerAngles.h" />
     <ClInclude Include="Source\Math\EulerOrder.h" />
     <ClInclude Include="Source\Math\Math.h" />

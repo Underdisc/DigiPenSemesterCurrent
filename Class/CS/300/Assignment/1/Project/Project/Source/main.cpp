@@ -13,14 +13,43 @@
 #include "Math\Vector3.h"
 
 #include "Graphics\Mesh.h"
+#include "Graphics\ShaderLibrary.h"
 
 #include <iostream>
 
-void EditorUpdate();
 
-void TestInit();
-void TestUpdate();
-void TestEnd();
+#define PI 3.141592653589f
+// GLOBAL
+PhongShader * phong_shader_p;
+LineShader * line_shader_p;
+Mesh * mesh_p;
+
+GLuint mesh_vbo;
+GLuint mesh_ebo;
+GLuint mesh_vao;
+
+GLuint vert_norm_line_vbo;
+GLuint vert_norm_line_vao;
+
+GLuint face_norm_line_vbo;
+
+Math::Vector3 cur_tran(0.0f, 0.0f, -2.0f);
+float cur_scale = 1.0f;
+float scale_speed = 2.0f;
+Math::Matrix4 rotation;
+bool line_mode = false;
+unsigned num_elements;
+
+bool show_facen = false;
+bool show_vertn = false;
+// GLOBAL
+
+
+void Initialize();
+void Update();
+void EditorUpdate();
+void Render();
+void End();
 
 inline void InitialUpdate()
 {
@@ -40,44 +69,28 @@ int main(int argc, char * argv[])
   ImGui_ImplSdlGL3_Init(SDLContext::SDLWindow());
   SDLContext::AddEventProcessor(ImGui_ImplSdlGL3_ProcessEvent);
 
-  TestInit();
+  Initialize();
 
   float r = 1.0f;
   bool diff = true;
+  glEnable(GL_DEPTH_TEST);
   while (SDLContext::KeepOpen())
   {
     InitialUpdate();
+    Update();
     EditorUpdate();
     glClearColor(clear_color[0], clear_color[1], clear_color[2], 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    TestUpdate();
+    Render();
     ImGui::Render();
     OpenGLContext::Swap();
   }
 
-  TestEnd();
+  End();
 
   OpenGLContext::Purge();
   SDLContext::Purge();
 }
-
-#include "Graphics\Shader.h"
-#define PI 3.141592653589f
-Shader * draw_shader;
-
-GLuint a_position;
-GLuint a_normal;
-GLuint u_projection;
-GLuint u_model;
-GLuint vbo_id;
-GLuint ebo_id;
-GLuint vao_id;
-
-Math::Vector3 cur_tran(0.0f, 0.0f, -2.0f);
-float cur_scale = 1.0f;
-Math::Matrix4 rotation;
-
-unsigned num_elements;
 
 inline void EditorUpdate()
 {
@@ -85,81 +98,64 @@ inline void EditorUpdate()
   ImGui::Begin("Editor");
   if (ImGui::CollapsingHeader("Debug")) {
     ImGui::Text("FPS: %f", 1.0f / Time::DT());
-    ImGui::Separator();
   }
+  ImGui::Separator();
   if (ImGui::CollapsingHeader("Global")) {
     ImGui::ColorEdit3("Clear Color", clear_color);
-    ImGui::Separator();
+    ImGui::DragFloat("Time Scale", &Time::m_TimeScale, 0.01f);
   }
+  ImGui::Separator();
   if (ImGui::CollapsingHeader("Mesh")) {
-    
+    ImGui::Text("Vertex Count: %d", mesh_p->VertexCount());
+    ImGui::Text("Face Count: %d", mesh_p->FaceCount());
+    ImGui::Separator();
+    ImGui::Checkbox("Show Face Normals", &show_facen);
+    ImGui::Checkbox("Show Vertex Normals", &show_vertn);
   }
+  ImGui::Separator();
   ImGui::End();
 }
 
-inline void TestInit()
+inline void Initialize()
 {
+  phong_shader_p = new PhongShader();
+  line_shader_p = new LineShader();
 
-  Math::Matrix4 test;
-  test.Rotate(1,0,0, PI);
-
-  draw_shader = new Shader("Resource/Shader/default.vert", "Resource/Shader/default.frag");
-  a_position = draw_shader->GetAttribLocation("APosition");
-  a_normal = draw_shader->GetAttribLocation("ANormal");
-  u_model = draw_shader->GetUniformLocation("UModel");
-  u_projection = draw_shader->GetUniformLocation("UProjection");
-
-  Mesh mesh("Resource/Model/horse.obj", Mesh::OBJ);
+  mesh_p = new Mesh("Resource/Model/horse.obj", Mesh::OBJ);
+  Mesh & mesh = *mesh_p;
   num_elements = mesh.IndexDataSize();
-
-  GLfloat vertices[]{
-    0.5f, 0.5f, 0.5f,        0.5f, 0.5f, 0.5f,
-    0.5f, 0.5f, -0.5f,       0.5f, 0.5f, -0.5f,
-    0.5f, -0.5f, -0.5f,      0.5f, -0.5f, -0.5f,
-    0.5f, -0.5f, 0.5f,       0.5f, -0.5f, 0.5f,
-    -0.5f, 0.5f, 0.5f,       -0.5f, 0.5f, 0.5f,
-    -0.5f, 0.5f, -0.5f,      -0.5f, 0.5f, -0.5f,
-    -0.5f, -0.5f, -0.5f,     -0.5f, -0.5f, -0.5f,
-    -0.5f, -0.5f, 0.5f,      -0.5f, -0.5f, 0.5f
-  };
-
-  GLuint indicies[]{
-    0, 2, 1,
-    0, 3, 2,
-    1, 2, 6,
-    1, 6, 5,
-    5, 6, 7,
-    5, 7, 4,
-    4, 3, 0,
-    4, 7, 3,
-    0, 1, 5,
-    0, 5, 4,
-    3, 7, 6,
-    3, 6, 4
-  };
-
-  glGenVertexArrays(1, &vao_id);
-  glGenBuffers(1, &vbo_id);
-  glGenBuffers(1, &ebo_id);
-  glBindVertexArray(vao_id);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
+  // uploading mesh data
+  glGenVertexArrays(1, &mesh_vao);
+  glGenBuffers(1, &mesh_vbo);
+  glGenBuffers(1, &mesh_ebo);
+  glBindVertexArray(mesh_vao);
+  glBindBuffer(GL_ARRAY_BUFFER, mesh_vbo);
   glBufferData(GL_ARRAY_BUFFER, mesh.VertexDataSizeBytes(), mesh.VertexData(), GL_STATIC_DRAW);
-  //glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_id);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh_ebo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.IndexDataSizeBytes(), mesh.IndexData(), GL_STATIC_DRAW);
-  //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW);
-  glVertexAttribPointer(a_position, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), nullptr);
-  glEnableVertexAttribArray(a_position);
-  glVertexAttribPointer(a_normal, 3, GL_FLOAT, GL_TRUE, 6 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
-  glEnableVertexAttribArray(a_normal);
+  glVertexAttribPointer(phong_shader_p->APosition, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), nullptr);
+  glEnableVertexAttribArray(phong_shader_p->APosition);
+  glVertexAttribPointer(phong_shader_p->ANormal, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
+  glEnableVertexAttribArray(phong_shader_p->ANormal);
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+  // uploading vertex normal line data
+  glGenVertexArrays(1, &vert_norm_line_vao);
+  glGenBuffers(1, &vert_norm_line_vbo);
+  glBindVertexArray(vert_norm_line_vao);
+  glBindBuffer(GL_ARRAY_BUFFER, vert_norm_line_vbo);
+  glBufferData(GL_ARRAY_BUFFER, mesh.VertexNormalLineSizeBytes(), mesh.VertexNormalLineData(), GL_STATIC_DRAW);
+  glVertexAttribPointer(line_shader_p->APosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
+  glEnableVertexAttribArray(line_shader_p->APosition);
+  glBindVertexArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
   try
   {
     GLenum gl_error = glGetError();
-    OPENGLERRORCHECK("main.cpp", "TestInit()", "During initialization", gl_error)
+    OPENGLERRORCHECK("main.cpp", "Initialize()", "During initialization", gl_error)
   }
   catch (const Error & error)
   {
@@ -172,65 +168,71 @@ inline void TestInit()
 
 inline void ManageInput()
 {
-  if (Input::KeyDown(W))
-    cur_tran.z += Time::DT();
-  if (Input::KeyDown(S))
-    cur_tran.z -= Time::DT();
-  if (Input::KeyDown(D))
-    cur_tran.x += Time::DT();
-  if (Input::KeyDown(A))
-    cur_tran.x -= Time::DT();
-  if (Input::KeyDown(E))
-    cur_tran.y += Time::DT();
-  if (Input::KeyDown(Q))
-    cur_tran.y -= Time::DT();
-  if (Input::KeyDown(R))
-    cur_scale += Time::DT() * 10.0f;
-  if (Input::KeyDown(F))
-    cur_scale -= Time::DT() * 10.0f;
+  int wheel_motion = Input::MouseWheelMotion();
+  cur_scale += scale_speed * Time::DT() * wheel_motion;
   if (Input::MouseButtonDown(LEFT)) {
     std::pair<int, int> mouse_motion = Input::MouseMotion();
-    if (mouse_motion.first != 0 && mouse_motion.second != 0) {
-      Math::Vector3 normal_mouse_motion((float)mouse_motion.first, (float)mouse_motion.second, 0.0f);
-      float mag = normal_mouse_motion.Length();
-      normal_mouse_motion.Normalize();
-      Math::Vector3 normal_inverse_view(0.0f, 0.0f, 1.0f);
-      normal_inverse_view.Normalize();
-      Math::Vector3 normal_rot_axis = Math::Cross(normal_mouse_motion, normal_inverse_view);
+
+    if (mouse_motion.first != 0) {
+      Math::Vector3 rotate_vector(0.0f, 1.0f, 0.0f);
+      float theta = mouse_motion.first / 100.0f;
       Math::Matrix4 new_rotation;
-      new_rotation.Rotate(normal_rot_axis, mag / 100.0f);
+      new_rotation.Rotate(rotate_vector, theta);
+      rotation = new_rotation * rotation;
+    }
+    if (mouse_motion.second != 0) {
+      Math::Vector3 rotate_vector(1.0f, 0.0f, 0.0f);
+      float theta = mouse_motion.second / 100.0f;
+      Math::Matrix4 new_rotation;
+      new_rotation.Rotate(rotate_vector, theta);
       rotation = new_rotation * rotation;
     }
   }
+  if(Input::KeyPressed(SPACE))
+    line_mode = !line_mode;
 }
 
-inline void TestUpdate()
+inline void Update()
 {
   ImGuiIO & imgui_io = ImGui::GetIO();
   if(!imgui_io.WantCaptureMouse)
     ManageInput();
+}
 
+inline void Render()
+{
   Math::Matrix4 translation;
   translation.Translate(cur_tran.x, cur_tran.y, cur_tran.z);
   Math::Matrix4 scale;
   scale.Scale(cur_scale, cur_scale, cur_scale);
-  Math::Matrix4 model = translation * rotation * scale;
-
-  Math::Matrix4 projection = Math::Matrix4::Perspective(PI/2.0f, OpenGLContext::AspectRatio(), 0.1f, 100.0f);
-  draw_shader->Use();
-  glUniformMatrix4fv(u_projection, 1, GL_TRUE, projection.array);
-  glUniformMatrix4fv(u_model, 1, GL_TRUE, model.array);
-
-  glBindVertexArray(vao_id);
-  glPolygonMode(GL_FRONT, GL_FILL);
+  Math::Matrix4 trans_rot_scale_model = translation * rotation * scale;
+  Math::Matrix4 projection = Math::Matrix4::Perspective(PI / 2.0f, OpenGLContext::AspectRatio(), 0.1f, 100.0f);
+  // drawing object
+  phong_shader_p->Use();
+  glUniformMatrix4fv(phong_shader_p->UProjection, 1, GL_TRUE, projection.array);
+  glUniformMatrix4fv(phong_shader_p->UModel, 1, GL_TRUE, trans_rot_scale_model.array);
+  glBindVertexArray(mesh_vao);
+  if (line_mode)
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  else
+    glPolygonMode(GL_FRONT, GL_FILL);
   glDrawElements(GL_TRIANGLES, num_elements, GL_UNSIGNED_INT, nullptr);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  glBindVertexArray(0);
 
-
+  // drawing lines
+  if(show_vertn){
+    line_shader_p->Use();
+    glUniformMatrix4fv(line_shader_p->UProjection, 1, GL_TRUE, projection.array);
+    glUniformMatrix4fv(line_shader_p->UModel, 1, GL_TRUE, trans_rot_scale_model.array);
+    glBindVertexArray(vert_norm_line_vao);
+    glDrawArrays(GL_LINES, 0, mesh_p->Temp());
+    glBindVertexArray(0);
+  }
   try
   {
     GLenum gl_error = glGetError();
-    OPENGLERRORCHECK("main.cpp", "TestUpdate()", "During Update", gl_error)
+    OPENGLERRORCHECK("main.cpp", "Update()", "During Update", gl_error)
   }
   catch (const Error & error)
   {
@@ -238,8 +240,55 @@ inline void TestUpdate()
   }
 }
 
-inline void TestEnd()
+inline void End()
 {
-  draw_shader->Purge();
-  delete draw_shader;
+  phong_shader_p->Purge();
+  // make sure to free up other shit
+  delete phong_shader_p;
 }
+
+// some old input code that I don't want
+/*if (Input::KeyDown(W))
+cur_tran.z += Time::DT();
+if (Input::KeyDown(S))
+cur_tran.z -= Time::DT();
+if (Input::KeyDown(D))
+cur_tran.x += Time::DT();
+if (Input::KeyDown(A))
+cur_tran.x -= Time::DT();
+if (Input::KeyDown(E))
+cur_tran.y += Time::DT();
+if (Input::KeyDown(Q))
+cur_tran.y -= Time::DT();
+if (Input::KeyDown(R))
+cur_scale += Time::DT() * 10.0f;
+if (Input::KeyDown(F))
+cur_scale -= Time::DT() * 10.0f;*/
+
+/* keeping just in case
+GLfloat vertices[]{
+0.5f, 0.5f, 0.5f,        0.5f, 0.5f, 0.5f,
+0.5f, 0.5f, -0.5f,       0.5f, 0.5f, -0.5f,
+0.5f, -0.5f, -0.5f,      0.5f, -0.5f, -0.5f,
+0.5f, -0.5f, 0.5f,       0.5f, -0.5f, 0.5f,
+-0.5f, 0.5f, 0.5f,       -0.5f, 0.5f, 0.5f,
+-0.5f, 0.5f, -0.5f,      -0.5f, 0.5f, -0.5f,
+-0.5f, -0.5f, -0.5f,     -0.5f, -0.5f, -0.5f,
+-0.5f, -0.5f, 0.5f,      -0.5f, -0.5f, 0.5f
+};
+
+GLuint indicies[]{
+0, 2, 1,
+0, 3, 2,
+1, 2, 6,
+1, 6, 5,
+5, 6, 7,
+5, 7, 4,
+4, 3, 0,
+4, 7, 3,
+0, 1, 5,
+0, 5, 4,
+3, 7, 6,
+3, 6, 2
+};
+*/

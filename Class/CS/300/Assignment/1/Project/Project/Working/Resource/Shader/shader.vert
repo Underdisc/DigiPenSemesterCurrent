@@ -39,13 +39,16 @@ vec4 computeLightingTerm(in int lightIdx, in vec4 worldNormal)
 
   // ambient contribution from the light is always constant
   vec4 ambient = light.ambient * Material.ambient;
-  
+
   // initially, diffuse contribution is black
   vec4 diffuse = vec4(0); // same as vec4(0, 0, 0, 0), or black
 
   // compute the Lambertian term
   float diffuseFactor = dot(worldNormal, lightVec);
 
+
+  //// EWWWWWWWWWWWWWWWWWW YOU USED AN IF STATEMENT IN A PHONG
+  // SHADER EEEEEEEEEEEEEEEEEEEEEEWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
   if (diffuseFactor > 0) // is there a diffuse contribution?
   {
     // compute diffuse contribution on the surface
@@ -75,7 +78,7 @@ void main()
   // compute the final result of passing this vertex through the transformation
   // pipeline and yielding a coordinate in NDC space
   gl_Position = ModelViewProjectionMatrix * vec4(vVertex, 1);
-  
+
   // compute the contribution of lights onto this vertex and interpolate that
   // color value across the surface of the polygon
   litFragColor = computeSurfaceColor(worldNorm);
