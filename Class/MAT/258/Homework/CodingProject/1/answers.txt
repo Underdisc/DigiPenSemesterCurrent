@@ -1,0 +1,17 @@
+< Problem 1 >
+
+- a -
+Number of tuples: 6
+Probability of sum: 0.1666666716
+
+- b -
+Number of tuples: 23760
+Probability of sum: 0.0003929469676
+
+- c -
+Number of tuples: 1
+Probability of sum: 1.000000013e-10
+
+- d -
+Number of tuples: 1392456
+Probability of sum: 0.001296825707
