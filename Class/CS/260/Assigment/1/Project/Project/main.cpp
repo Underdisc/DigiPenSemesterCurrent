@@ -16,6 +16,8 @@
 
 #include <iostream>
 
+//#include "vld.h"
+
 // Size of the buffer for receiving data
 #define RECEIVE_BUFFFER_SIZE 500
 
@@ -67,4 +69,5 @@ void main(int argc, char * argv[])
   shutdown(udp_socket, SD_BOTH);
   closesocket(udp_socket);
   WSACleanup();
+  delete wsa_data;
 }

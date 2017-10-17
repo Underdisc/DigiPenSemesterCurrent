@@ -1,6 +1,6 @@
 #version 330 core
 
-in vec3 APostion;
+in vec3 APosition;
 in vec2 ATexCoord;
 
 out vec2 STexCoord;
@@ -22,6 +22,6 @@ uniform mat4 UModel = mat4(1,0,0,0,
 
 void main()
 {
-  gl_Position = UProjection * UView * UModel * vec4(APosition, 1.0);
+  gl_Position = UProjection * UView * UModel * vec4(APosition.xyz, 1.0);
   STexCoord = ATexCoord;
 }

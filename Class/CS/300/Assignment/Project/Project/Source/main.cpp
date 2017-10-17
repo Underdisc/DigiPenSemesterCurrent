@@ -152,12 +152,13 @@ int main(int argc, char * argv[])
   OpenGLContext::Initialize();
 
   // temp
-  //ImGui_ImplSdlGL3_Init(SDLContext::SDLWindow());
-  //SDLContext::AddEventProcessor(ImGui_ImplSdlGL3_ProcessEvent);
-  //Initialize();
+  ImGui_ImplSdlGL3_Init(SDLContext::SDLWindow());
+  SDLContext::AddEventProcessor(ImGui_ImplSdlGL3_ProcessEvent);
+  Initialize();
   // temp
 
-  TextureShader test_shader;
+  /*
+  TextureShader * test_shader = new TextureShader();
 
   Texture texture("Resource/Texture/midair.png");
 
@@ -167,10 +168,10 @@ int main(int argc, char * argv[])
 
   // texture test
   GLfloat vertex[] {
-  -1.0f, -1.0f, -0.5f,     0.0f, 0.0f,
-  -1.0f,  1.0f, -0.5f,     0.0f, 1.0f,
-   1.0f, -1.0f, -0.5f,     1.0f, 0.0f,
-   1.0f,  1.0f, -0.5f,     1.0f, 1.0f
+  -0.5f, -0.5f, -0.5f,     0.0f, 0.0f,
+  -0.5f,  0.5f, -0.5f,     0.0f, 1.0f,
+   0.5f, -0.5f, -0.5f,     1.0f, 0.0f,
+   0.5f,  0.5f, -0.5f,     1.0f, 1.0f
   };
 
   GLuint element[]{
@@ -191,15 +192,15 @@ int main(int argc, char * argv[])
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, test_ebo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(element), element, GL_STATIC_DRAW);
 
-  glVertexAttribPointer(test_shader.APosition, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 0);
-  glEnableVertexAttribArray(test_shader.APosition);
+  glVertexAttribPointer(test_shader->APosition, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 0);
+  glEnableVertexAttribArray(test_shader->APosition);
 
-  glVertexAttribPointer(test_shader.ATexCoord, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
-  glEnableVertexAttribArray(test_shader.ATexCoord);
+  glVertexAttribPointer(test_shader->ATexCoord, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
+  glEnableVertexAttribArray(test_shader->ATexCoord);
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
+  */
 
 
 
@@ -209,16 +210,25 @@ int main(int argc, char * argv[])
   while (SDLContext::KeepOpen())
   {
     InitialUpdate();
-    //Update();
-    //EditorUpdate();
+    Update();
+    EditorUpdate();
     glClearColor(clear_color[0], clear_color[1], clear_color[2], 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //Render();
-    //ImGui::Render();
+
+    /*texture.Bind();
+    test_shader->Use();
+    glBindVertexArray(test_vao);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    Texture::Unbind();
+    glBindVertexArray(0);*/
+    Render();
+    ImGui::Render();
     OpenGLContext::Swap();
   }
 
-  End();
+  //End();
+
+  //delete test_shader;
 
   OpenGLContext::Purge();
   SDLContext::Purge();
@@ -472,6 +482,8 @@ inline void Render()
   if(show_vertn){
     glUniform3f(line_shader_p->ULineColor,
       vertex_normal_color._x, vertex_normal_color._y, vertex_normal_color._z);
+    glUniform1f(line_shader_p->UTime, Time::TotalTimeScaled());
+
     glUniformMatrix4fv(line_shader_p->UProjection, 1, GL_TRUE, projection.array);
     glUniformMatrix4fv(line_shader_p->UModel, 1, GL_TRUE, trans_rot_scale_model.array);
     glBindVertexArray(vert_norm_line_vao);
@@ -481,6 +493,8 @@ inline void Render()
   if (show_facen) {
     glUniform3f(line_shader_p->ULineColor,
       face_normal_color._x, face_normal_color._y, face_normal_color._z);
+    glUniform1f(line_shader_p->UTime, Time::TotalTimeScaled());
+
     glUniformMatrix4fv(line_shader_p->UProjection, 1, GL_TRUE, projection.array);
     glUniformMatrix4fv(line_shader_p->UModel, 1, GL_TRUE, trans_rot_scale_model.array);
     glBindVertexArray(face_norm_line_vao);

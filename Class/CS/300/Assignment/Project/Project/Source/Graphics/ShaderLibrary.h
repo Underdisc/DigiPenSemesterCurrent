@@ -32,6 +32,7 @@ public:
     UView = GetUniformLocation("UView");
     UModel = GetUniformLocation("UModel");
     ULineColor = GetUniformLocation("ULineColor");
+    UTime = GetUniformLocation("UTime");
   }
   // Attributes
   GLuint APosition;
@@ -40,6 +41,7 @@ public:
   GLuint UView;
   GLuint UModel;
   GLuint ULineColor;
+  GLuint UTime;
 };
 
 /*****************************************************************************/

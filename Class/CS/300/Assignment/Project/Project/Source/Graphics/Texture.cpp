@@ -1,13 +1,35 @@
+/* All content(c) 2017 - 2018 DigiPen(USA) Corporation, all rights reserved. */
+/*****************************************************************************/
+/*!
+\file Texture.cpp
+\author Connor Deakin
+\par E-mail: connor.deakin\@digipen.edu
+\par Project: CS 300
+\date 2017/10/11
+\brief
+  Contains the implementation of the Texture class.
+*/
+/*****************************************************************************/
+
+// using stb's image functions
 #define STB_IMAGE_IMPLEMENTATION
 #include <STB\stb_image.h>
-
 #include "../Utility/OpenGLError.h"
-
 #include "Texture.h"
 
+// byte depths
 #define RGB  3
 #define RGBA 4
 
+/*****************************************************************************/
+/*!
+\brief
+  Constructor for a Texture.
+
+\param filename
+  The name of the file being loaded.
+*/
+/*****************************************************************************/
 Texture::Texture(const std::string & filename)
 {
   // loading image
@@ -53,12 +75,18 @@ Texture::Texture(const std::string & filename)
   glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-inline void Texture::Bind()
+/*!
+\brief Binds this Texture to the currently active texture target.
+*/
+void Texture::Bind()
 {
   glBindTexture(GL_TEXTURE_2D, _textureObject);
 }
 
-inline void Texture::Unbind()
+/*!
+\brief Unbinds any Texture from the currently bound texture target.
+*/
+void Texture::Unbind()
 {
   glBindTexture(GL_TEXTURE_2D, 0);
 }

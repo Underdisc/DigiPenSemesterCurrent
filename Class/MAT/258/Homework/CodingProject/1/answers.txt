@@ -1,17 +1,37 @@
 < Problem 1 >
-
-- a -
+-- a --
 Number of tuples: 6
 Probability of sum: 0.1666666716
-
-- b -
+-- b --
 Number of tuples: 23760
 Probability of sum: 0.0003929469676
-
-- c -
+-- c --
 Number of tuples: 1
 Probability of sum: 1.000000013e-10
-
-- d -
+-- d --
 Number of tuples: 1392456
 Probability of sum: 0.001296825707
+
+< Problem 2 >
+-- a --
+Probability of success on switch: 0.6600000262
+-- b --
+Probability of success on switch: 0.1199999973
+-- c --
+Probability of success on switch: 0.9399999976
+-- d --
+Probability of success on switch: 0.1599999964
+
+<Problem 3>
+-- a --
+Trials performed: 100
+Number of successes: 48
+-- b --
+Trials performed: 100
+Number of successes: 0
+-- c --
+Trials performed: 100
+Number of successes: 8
+-- d --
+Trials performed: 100
+Number of successes: 100
