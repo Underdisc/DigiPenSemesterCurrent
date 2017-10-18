@@ -42,6 +42,7 @@ private:
   struct Face
   {
     Face() {}
+    Face(unsigned a, unsigned b, unsigned c) : a(a), b(b), c(c) {}
     union {
       struct {
         unsigned a, b, c;

@@ -127,6 +127,9 @@ inline void split_string(std::vector<char *> * string_start, char * string)
       ++i;
       string_start->push_back(string + i);
     }
+    // ignore vt and vn indicies
+    if (string[i] == '/')
+      string[i] = NULL_TERMINATOR;
     ++i;
   }
 }
@@ -226,6 +229,9 @@ inline void Mesh::LoadObj(const std::string & file_name)
     unsigned data_offset = 1;
     switch (line[0]) {
     case VERTEX_CHARACTER:
+      // temporary
+      if(line[1] != ' ')
+        continue;
       while(line[data_offset] == VALUE_DELIMETER)
         ++data_offset;
       // line contains vertex data
@@ -242,12 +248,18 @@ inline void Mesh::LoadObj(const std::string & file_name)
         ++data_offset;
       // line contains index data
       split_string(&string_values, line + data_offset);
-      // TODO - REMOVE 3
-      num_values = 3;
-      _faces.push_back(Face());
-      for (unsigned i = 0; i < num_values; ++i) {
-        // obj indicies start at 1
-        _faces.back().index[i] = (unsigned)atoi(string_values[i]) - 1;
+      // reading in all indicies
+      std::vector<unsigned> index;
+      for (char * string_value : string_values)
+        index.push_back((unsigned)atoi(string_value) - 1);
+      // adding faces
+      // line contatining (1 2 4 3) results in faces
+      // (1 2 4) && (1 4 3)
+      unsigned tri = 0;
+      unsigned num_triangles = index.size() - 2;
+      for (unsigned i = 0; i < num_triangles; ++i){
+        _faces.push_back(Face(index[0], index[1 + tri], index[2 + tri]));
+        ++tri;
       }
       string_values.clear();
       break;
