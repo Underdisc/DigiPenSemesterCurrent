@@ -64,14 +64,14 @@ public:
     UView = GetUniformLocation("UView");
     UModel = GetUniformLocation("UModel");
     UObjectColor = GetUniformLocation("UObjectColor");
-    ULightPosition = GetUniformLocation("ULightPosition");
-    UAmbientFactor = GetUniformLocation("UAmbientFactor");
-    UDiffuseFactor = GetUniformLocation("UDiffuseFactor");
-    USpecularFactor = GetUniformLocation("USpecularFactor");
-    USpecularExponent = GetUniformLocation("USpecularExponent");
-    UAmbientColor = GetUniformLocation("UAmbientColor");
-    UDiffuseColor = GetUniformLocation("UDiffuseColor");
-    USpecularColor = GetUniformLocation("USpecularColor");
+    ULightPosition = GetUniformLocation("light._position");
+    UAmbientFactor = GetUniformLocation("light._ambientFactor");
+    UDiffuseFactor = GetUniformLocation("light._diffuseFactor");
+    USpecularFactor = GetUniformLocation("light._specularFactor");
+    USpecularExponent = GetUniformLocation("light._specularExponent");
+    UAmbientColor = GetUniformLocation("light._ambientColor");
+    UDiffuseColor = GetUniformLocation("light._diffuseColor");
+    USpecularColor = GetUniformLocation("light._specularColor");
   }
   // Attributes
   GLuint APosition;
