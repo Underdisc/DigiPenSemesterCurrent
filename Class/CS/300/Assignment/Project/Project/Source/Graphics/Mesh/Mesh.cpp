@@ -12,10 +12,10 @@
 /*****************************************************************************/
 
 #include <cstring>
-#include "../Utility/Error.h"
+#include "../../Utility/Error.h"
 
 #include "Mesh.h"
-#include "../Math/Vector3.h"
+#include "../../Math/Vector3.h"
 
 #define VERTS_PER_LINE 2
 #define FACE_NUMELEMENTS 3
@@ -37,6 +37,16 @@ Mesh::Mesh(const std::string & file_name, FileType type)
     error.Add("The Mesh class cannot load this file type");
     throw(error);
   }
+}
+
+Mesh * Mesh::Load(const std::string & file_name, FileType type)
+{
+  return new Mesh(file_name, type);
+}
+
+void Mesh::Purge(Mesh * mesh)
+{
+  delete mesh;
 }
 
 void Mesh::SetNormalLineLengthMeshRelative(float new_length)
@@ -149,7 +159,7 @@ inline void Mesh::CalculateFaceNormals()
     ac.z = _vertices[face.c].z - _vertices[face.a].z;
     Math::Vector3 result = Math::Cross(ab, ac);
     float length = result.Length();
-    _faceNormals.push_back(result / length);
+    _showFaceNormals.push_back(result / length);
   }
 }
 
@@ -166,7 +176,7 @@ inline void Mesh::CalculateVertexNormals(std::vector<std::vector<unsigned> > * a
       if(RemoveParallelFace(vert_adjacencies))
         continue;
       unsigned face_index = vert_adjacencies.back();
-      normal_sum += _faceNormals[face_index];
+      normal_sum += _showFaceNormals[face_index];
       ++num_normals;
       vert_adjacencies.pop_back();
     }
@@ -183,11 +193,11 @@ inline void Mesh::CalculateVertexNormals(std::vector<std::vector<unsigned> > * a
 
 bool Mesh::RemoveParallelFace(std::vector<unsigned> & vert_adjacencies)
 {
-  const Math::Vector3 & search_normal = _faceNormals[vert_adjacencies.back()];
+  const Math::Vector3 & search_normal = _showFaceNormals[vert_adjacencies.back()];
   unsigned num_adjacencies = vert_adjacencies.size();
   for (unsigned i = 0; i < num_adjacencies - 1; ++i) {
     unsigned face_index = vert_adjacencies[i];
-    const Math::Vector3 & compare_normal = _faceNormals[face_index];
+    const Math::Vector3 & compare_normal = _showFaceNormals[face_index];
     if(search_normal == compare_normal){
       vert_adjacencies.pop_back();
       return true;
@@ -331,7 +341,7 @@ inline void Mesh::LoadObj(const std::string & file_name)
   _faceNormalLines.resize(num_faces);
   for (unsigned face = 0; face < num_faces; ++face) {
     const Face & cur_face = _faces[face];
-    const Math::Vector3 & cur_face_normal = _faceNormals[face];
+    const Math::Vector3 & cur_face_normal = _showFaceNormals[face];
     Line & cur_line = _faceNormalLines[face];
     // the vertices that make up the face
     const Vertex & va = _vertices[cur_face.a];

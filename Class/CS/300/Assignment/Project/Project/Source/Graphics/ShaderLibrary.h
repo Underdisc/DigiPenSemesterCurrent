@@ -32,7 +32,6 @@ public:
     UView = GetUniformLocation("UView");
     UModel = GetUniformLocation("UModel");
     ULineColor = GetUniformLocation("ULineColor");
-    UTime = GetUniformLocation("UTime");
   }
   // Attributes
   GLuint APosition;
@@ -41,14 +40,13 @@ public:
   GLuint UView;
   GLuint UModel;
   GLuint ULineColor;
-  GLuint UTime;
 };
 
 /*****************************************************************************/
 /*!
 \class PhongShader
 \brief
-  Used for drawing objects that undergo phong shader. Currently only usable
+  Used for drawing objects that undergo phong shading. Currently only usable
   with one light. Multiple light support will be added in the future.
 */
 /*****************************************************************************/
@@ -81,6 +79,7 @@ public:
   GLuint UView;
   GLuint UModel;
   GLuint UObjectColor;
+  // Lighting terms
   GLuint ULightPosition;
   GLuint UAmbientFactor;
   GLuint UDiffuseFactor;
@@ -91,7 +90,13 @@ public:
   GLuint USpecularColor;
 };
 
-
+/*****************************************************************************/
+/*!
+\class TextureShader
+\brief
+  Used for displaying a single texture on a quad.
+*/
+/*****************************************************************************/
 class TextureShader : public Shader
 {
 public:
@@ -105,8 +110,10 @@ public:
     UModel = GetUniformLocation("UModel");
     UTexture = GetUniformLocation("UTexture");
   }
+  // Attributes
   GLuint APosition;
   GLuint ATexCoord;
+  // Uniforms
   GLuint UProjection;
   GLuint UView;
   GLuint UModel;

@@ -26,7 +26,8 @@
 #include "Math\EulerAngles.h"
 #include "Math\MathFunctions.h"
 
-#include "Graphics\Mesh.h"
+#include "Graphics\Mesh\Mesh.h"
+#include "Graphics\Mesh\MeshRenderer.h"
 #include "Graphics\ShaderLibrary.h"
 
 #include "Core\Input.h"
@@ -37,19 +38,6 @@
 #define PI 3.141592653589f
 #define MODEL_PATH "Resource/Model/"
 #define FILENAME_BUFFERSIZE 50
-
-// defining a color
-struct Color
-{
-  Color(float x, float y, float z) : _x(x), _y(y), _z(z) {}
-  Color(const Color & other) : _x(other._x), _y(other._y), _z(other._z) {}
-  union {
-    float values[3];
-    struct {
-      float _x, _y, _z;
-    };
-  };
-};
 
 // defining a light
 struct Light
@@ -94,9 +82,8 @@ struct Light
 
 float clear_color[]{ 0.4f, 0.4f, 0.4f };
 
-PhongShader * phong_shader_p = nullptr;
-LineShader * line_shader_p = nullptr;
-Mesh * mesh_p = nullptr;
+Mesh * mesh = nullptr;
+unsigned int mesh_id = -1;
 std::string current_mesh("cube.obj");
 char next_mesh[FILENAME_BUFFERSIZE] = "cube.obj";
 Light light(Math::Vector3(0.0f, 0.0f, 0.0f), 0.5f, 0.4f, 0.5f, 20.0f,
@@ -106,16 +93,6 @@ Light light(Math::Vector3(0.0f, 0.0f, 0.0f), 0.5f, 0.4f, 0.5f, 20.0f,
 Color vertex_normal_color(0.0f, 0.0f, 0.0f);
 Color face_normal_color(0.0f, 0.0f, 0.0f);
 
-GLuint mesh_vbo;
-GLuint mesh_ebo;
-GLuint mesh_vao;
-
-GLuint vert_norm_line_vbo;
-GLuint vert_norm_line_vao;
-
-GLuint face_norm_line_vbo;
-GLuint face_norm_line_vao;
-
 
 Math::Vector3 trans(0.0f, 0.0f, -2.0f);
 float cur_scale = 1.0f;
@@ -123,20 +100,14 @@ float scale_speed = 7.0f;
 // initializing to pie so rotations make sense at the start
 Math::EulerAngles rotate(0.0f, PI, 0.0f, Math::EulerOrders::XYZs);
 
-bool wireframe_mode = false;
-unsigned num_elements;
 
-bool show_facen = false;
-bool show_vertn = false;
 // GLOBAL
 
-void Initialize();
 void LoadMesh(const std::string & model);
-void UnloadMesh(Mesh * mesh);
 void Update();
 void EditorUpdate();
 void Render();
-void End();
+
 
 inline void InitialUpdate()
 {
@@ -150,62 +121,11 @@ int main(int argc, char * argv[])
   ErrorLog::Clean();
   SDLContext::Create("CS 300 - Assignment 1", true, OpenGLContext::AdjustViewport);
   OpenGLContext::Initialize();
-
-  // temp
+  MeshRenderer::Initialize();
   ImGui_ImplSdlGL3_Init(SDLContext::SDLWindow());
   SDLContext::AddEventProcessor(ImGui_ImplSdlGL3_ProcessEvent);
-  Initialize();
-  // temp
 
-  /*
-  TextureShader * test_shader = new TextureShader();
-
-  Texture texture("Resource/Texture/midair.png");
-
-  GLuint test_vao;
-  GLuint test_vbo;
-  GLuint test_ebo;
-
-  // texture test
-  GLfloat vertex[] {
-  -0.5f, -0.5f, -0.5f,     0.0f, 0.0f,
-  -0.5f,  0.5f, -0.5f,     0.0f, 1.0f,
-   0.5f, -0.5f, -0.5f,     1.0f, 0.0f,
-   0.5f,  0.5f, -0.5f,     1.0f, 1.0f
-  };
-
-  GLuint element[]{
-    0, 3, 1,
-    0, 2, 3
-  };
-
-  
-  glGenVertexArrays(1, &test_vao);
-  glGenBuffers(1, &test_vbo);
-  glGenBuffers(1, &test_ebo);
-
-  glBindVertexArray(test_vao);
-
-  glBindBuffer(GL_ARRAY_BUFFER, test_vbo);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_STATIC_DRAW);
-
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, test_ebo);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(element), element, GL_STATIC_DRAW);
-
-  glVertexAttribPointer(test_shader->APosition, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 0);
-  glEnableVertexAttribArray(test_shader->APosition);
-
-  glVertexAttribPointer(test_shader->ATexCoord, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
-  glEnableVertexAttribArray(test_shader->ATexCoord);
-  glBindVertexArray(0);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  */
-
-
-
-
-
+  LoadMesh(current_mesh);
   glEnable(GL_DEPTH_TEST);
   while (SDLContext::KeepOpen())
   {
@@ -215,21 +135,12 @@ int main(int argc, char * argv[])
     glClearColor(clear_color[0], clear_color[1], clear_color[2], 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    /*texture.Bind();
-    test_shader->Use();
-    glBindVertexArray(test_vao);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    Texture::Unbind();
-    glBindVertexArray(0);*/
     Render();
     ImGui::Render();
     OpenGLContext::Swap();
   }
 
-  //End();
-
-  //delete test_shader;
-
+  MeshRenderer::Purge();
   OpenGLContext::Purge();
   SDLContext::Purge();
 }
@@ -286,6 +197,8 @@ inline void EditorUpdate()
     ImGui::Separator();
   }
   if (ImGui::CollapsingHeader("Mesh")) {
+
+    MeshRenderer::MeshObject * mesh_object = MeshRenderer::GetMeshObject(mesh_id);
     ImGui::Text("Load Different Mesh");
     ImGui::InputText("", next_mesh, FILENAME_BUFFERSIZE);
     if (ImGui::Button("Load Mesh"))
@@ -293,8 +206,11 @@ inline void EditorUpdate()
     ImGui::Separator();
     ImGui::Text("Mesh Stats");
     ImGui::Text("Current Mesh: %s", current_mesh.c_str());
-    ImGui::Text("Vertex Count: %d", mesh_p->VertexCount());
-    ImGui::Text("Face Count: %d", mesh_p->FaceCount());
+    ImGui::Text("Vertex Count: %d", mesh->VertexCount());
+    ImGui::Text("Face Count: %d", mesh->FaceCount());
+    ImGui::Separator();
+    ImGui::Text("Color");
+    ImGui::ColorEdit3("Mesh Color", mesh_object->_color._values);
     ImGui::Separator();
     ImGui::Text("Translation");
     ImGui::DragFloat("TX", &trans.x, 0.01f);
@@ -310,13 +226,13 @@ inline void EditorUpdate()
     ImGui::DragFloat("s", &cur_scale, 0.01f);
     ImGui::Separator();
     ImGui::Text("Normals");
-    ImGui::ColorEdit3("Vertex Normal Color", vertex_normal_color.values);
-    ImGui::ColorEdit3("Face Normal Color", face_normal_color.values);
-    ImGui::Checkbox("Show Vertex Normals", &show_vertn);
-    ImGui::Checkbox("Show Face Normals", &show_facen);
+    ImGui::ColorEdit3("Vertex Normal Color", mesh_object->_vertexNormalColor._values);
+    ImGui::ColorEdit3("Face Normal Color", mesh_object->_faceNormalColor._values);
+    ImGui::Checkbox("Show Vertex Normals", &mesh_object->_showVertexNormals);
+    ImGui::Checkbox("Show Face Normals", &mesh_object->_showFaceNormals);
     ImGui::Separator();
     ImGui::Text("Other");
-    ImGui::Checkbox("Wireframe", &wireframe_mode);
+    ImGui::Checkbox("Wireframe", &mesh_object->_showWireframe);
     ImGui::Separator();
   }
   if (ImGui::CollapsingHeader("Light")) {
@@ -330,9 +246,9 @@ inline void EditorUpdate()
     ImGui::SliderFloat("Diffuse Factor", &light._diffuseFactor, 0.0f, 1.0f);
     ImGui::SliderFloat("Specular Factor", &light._specularFactor, 0.0f, 1.0f);
     ImGui::SliderFloat("Specular Exponent", &light._specularExponent, 0.0f, 50.0f);
-    ImGui::ColorEdit3("Ambient Color", light._ambientColor.values);
-    ImGui::ColorEdit3("Diffuse Color", light._diffuseColor.values);
-    ImGui::ColorEdit3("Specular Color", light._specularColor.values);
+    ImGui::ColorEdit3("Ambient Color", light._ambientColor._values);
+    ImGui::ColorEdit3("Diffuse Color", light._diffuseColor._values);
+    ImGui::ColorEdit3("Specular Color", light._specularColor._values);
     ImGui::Separator();
   }
   ImGui::End();
@@ -340,62 +256,26 @@ inline void EditorUpdate()
 
 void LoadMesh(const std::string & model)
 {
-  Mesh * old_mesh = mesh_p;
+  // loading new mesh
+  Mesh * new_mesh;
   std::string mesh_path = MODEL_PATH + model;
   try {
-    mesh_p = new Mesh(mesh_path, Mesh::OBJ);
+    new_mesh = Mesh::Load(mesh_path, Mesh::OBJ);
   }
   catch (const Error & error) {
     return;
   }
-  if (old_mesh) 
-    UnloadMesh(old_mesh);
-
-  Mesh & mesh = *mesh_p;
-  num_elements = mesh.IndexDataSize();
-  // uploading mesh data
-  glGenVertexArrays(1, &mesh_vao);
-  glGenBuffers(1, &mesh_vbo);
-  glGenBuffers(1, &mesh_ebo);
-  glBindVertexArray(mesh_vao);
-  glBindBuffer(GL_ARRAY_BUFFER, mesh_vbo);
-  glBufferData(GL_ARRAY_BUFFER, mesh.VertexDataSizeBytes(), mesh.VertexData(), GL_STATIC_DRAW);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh_ebo);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.IndexDataSizeBytes(), mesh.IndexData(), GL_STATIC_DRAW);
-  glVertexAttribPointer(phong_shader_p->APosition, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), nullptr);
-  glEnableVertexAttribArray(phong_shader_p->APosition);
-  glVertexAttribPointer(phong_shader_p->ANormal, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
-  glEnableVertexAttribArray(phong_shader_p->ANormal);
-  glBindVertexArray(0);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-  mesh_p->SetNormalLineLengthMeshRelative(0.1f);
-
-  // uploading vertex normal line data
-  glGenVertexArrays(1, &vert_norm_line_vao);
-  glGenBuffers(1, &vert_norm_line_vbo);
-  glBindVertexArray(vert_norm_line_vao);
-  glBindBuffer(GL_ARRAY_BUFFER, vert_norm_line_vbo);
-  glBufferData(GL_ARRAY_BUFFER, mesh.VertexNormalLineSizeBytes(), mesh.VertexNormalLineData(), GL_STATIC_DRAW);
-  glVertexAttribPointer(line_shader_p->APosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
-  glEnableVertexAttribArray(line_shader_p->APosition);
-  glBindVertexArray(0);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-  // uploading face normal line data
-  glGenVertexArrays(1, &face_norm_line_vao);
-  glGenBuffers(1, &face_norm_line_vbo);
-  glBindVertexArray(face_norm_line_vao);
-  glBindBuffer(GL_ARRAY_BUFFER, face_norm_line_vbo);
-  glBufferData(GL_ARRAY_BUFFER, mesh.FaceNormalLineSizeBytes(), mesh.FaceNormalLineData(), GL_STATIC_DRAW);
-  glVertexAttribPointer(line_shader_p->APosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
-  glEnableVertexAttribArray(line_shader_p->APosition);
-  glBindVertexArray(0);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+  // deleting old mesh
+  if (mesh){
+    MeshRenderer::Purge(mesh_id);
+    Mesh::Purge(mesh);
+  }
+  // uploading mesh data to gpu
+  new_mesh->SetNormalLineLengthMeshRelative(0.1f);
+  mesh_id = MeshRenderer::Upload(new_mesh);
+  // new mesh loaded
+  mesh = new_mesh;
   current_mesh = model;
-
   try
   {
     GLenum gl_error = glGetError();
@@ -407,27 +287,6 @@ void LoadMesh(const std::string & model)
   }
 }
 
-void UnloadMesh(Mesh * mesh)
-{
-  // deleting gpu mesh data
-  glDeleteBuffers(1, &mesh_vbo);
-  glDeleteBuffers(1, &mesh_ebo);
-  glDeleteVertexArrays(1, &mesh_vao);
-  // deleting gpu normal line data
-  glDeleteBuffers(1, &vert_norm_line_vbo);
-  glDeleteVertexArrays(1, &vert_norm_line_vao);
-  glDeleteBuffers(1, &face_norm_line_vbo);
-  glDeleteVertexArrays(1, &face_norm_line_vao);
-  // deallocate mesh
-  delete mesh;
-}
-
-inline void Initialize()
-{
-  phong_shader_p = new PhongShader();
-  line_shader_p = new LineShader();
-  LoadMesh(current_mesh);
-}
 
 inline void ManageInput()
 {
@@ -442,8 +301,8 @@ inline void ManageInput()
       rotate.Angles.x -= mouse_motion.second / 100.0f;
     }
   }
-  if(Input::KeyPressed(SPACE))
-    wireframe_mode = !wireframe_mode;
+  //if(Input::KeyPressed(SPACE))
+    //wireframe_mode = !wireframe_mode;
 }
 
 inline void Update()
@@ -455,52 +314,29 @@ inline void Update()
 
 inline void Render()
 {
+  Math::Matrix4 projection;
+  Math::Matrix4 view;
+  Math::Matrix4 model;
+
   Math::Matrix4 translation;
   translation.Translate(trans.x, trans.y, trans.z);
   Math::Matrix4 scale;
   scale.Scale(cur_scale, cur_scale, cur_scale);
   Math::Matrix4 rotation;
   Math::ToMatrix4(rotate, &rotation);
-  Math::Matrix4 trans_rot_scale_model = translation * rotation * scale;
-  Math::Matrix4 projection = Math::Matrix4::Perspective(PI / 2.0f, OpenGLContext::AspectRatio(), 0.1f, 100.0f);
+
+  projection = Math::Matrix4::Perspective(PI / 2.0f, OpenGLContext::AspectRatio(), 0.1f, 100.0f);
+  view.SetIdentity();
+  model = translation * rotation * scale;
+
   // drawing object
-  phong_shader_p->Use();
-  light.SetUniforms(phong_shader_p);
-  glUniformMatrix4fv(phong_shader_p->UProjection, 1, GL_TRUE, projection.array);
-  glUniformMatrix4fv(phong_shader_p->UModel, 1, GL_TRUE, trans_rot_scale_model.array);
-  glBindVertexArray(mesh_vao);
-  if (wireframe_mode)
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  else
-    glPolygonMode(GL_FRONT, GL_FILL);
-  glDrawElements(GL_TRIANGLES, num_elements, GL_UNSIGNED_INT, nullptr);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-  glBindVertexArray(0);
+  PhongShader * phong_shader = MeshRenderer::GetPhongShader();
+  LineShader * line_shader = MeshRenderer::GetLineShader();
+  phong_shader->Use();
+  light.SetUniforms(phong_shader);
 
-  // drawing lines
-  line_shader_p->Use();
-  if(show_vertn){
-    glUniform3f(line_shader_p->ULineColor,
-      vertex_normal_color._x, vertex_normal_color._y, vertex_normal_color._z);
-    glUniform1f(line_shader_p->UTime, Time::TotalTimeScaled());
-
-    glUniformMatrix4fv(line_shader_p->UProjection, 1, GL_TRUE, projection.array);
-    glUniformMatrix4fv(line_shader_p->UModel, 1, GL_TRUE, trans_rot_scale_model.array);
-    glBindVertexArray(vert_norm_line_vao);
-    glDrawArrays(GL_LINES, 0, mesh_p->VertexNormalLineSizeVertices());
-    glBindVertexArray(0);
-  }
-  if (show_facen) {
-    glUniform3f(line_shader_p->ULineColor,
-      face_normal_color._x, face_normal_color._y, face_normal_color._z);
-    glUniform1f(line_shader_p->UTime, Time::TotalTimeScaled());
-
-    glUniformMatrix4fv(line_shader_p->UProjection, 1, GL_TRUE, projection.array);
-    glUniformMatrix4fv(line_shader_p->UModel, 1, GL_TRUE, trans_rot_scale_model.array);
-    glBindVertexArray(face_norm_line_vao);
-    glDrawArrays(GL_LINES, 0, mesh_p->FaceNormalLineSizeVertices());
-    glBindVertexArray(0);
-  }
+  // rendering mesh
+  MeshRenderer::Render(mesh_id, projection, view, model);
   try
   {
     GLenum gl_error = glGetError();
@@ -510,13 +346,4 @@ inline void Render()
   {
     ErrorLog::Write(error);
   }
-}
-
-inline void End()
-{
-  UnloadMesh(mesh_p);
-  phong_shader_p->Purge();
-  line_shader_p->Purge();
-  delete line_shader_p;
-  delete phong_shader_p;
 }

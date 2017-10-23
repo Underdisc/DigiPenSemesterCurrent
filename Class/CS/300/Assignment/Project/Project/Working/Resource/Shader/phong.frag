@@ -23,7 +23,7 @@ struct Light
   vec3 _specularColor;
 };
 
-uniform Light light = Light(true, vec3(0.0, 0.0, 0.0), 0.5, 0.4, 0.5, 20.0, vec3(1.0, 1.0, 1.0), vec3(1.0, 1.0, 1.0), vec3(0.8, 0.6, 0.0));
+uniform Light light;
 
 void main()
 {

@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 
-#include "../Math/Vector3.h"
+#include "../../Math/Vector3.h"
 
 /*****************************************************************************/
 /*!
@@ -64,6 +64,8 @@ public:
   };
 public:
   Mesh(const std::string & file_name, FileType type);
+  static Mesh * Load(const std::string & file_name, FileType type);
+  static void Purge(Mesh * mesh);
   void SetNormalLineLengthMeshRelative(float new_length);
   unsigned VertexCount();
   unsigned FaceCount();
@@ -87,7 +89,7 @@ private:
   void ScaleLine(Line & line, float scale);
   std::vector<Vertex> _vertices;
   std::vector<Face> _faces;
-  std::vector<Math::Vector3> _faceNormals;
+  std::vector<Math::Vector3> _showFaceNormals;
 
   std::vector<Line> _vertexNormalLines;
   std::vector<Line> _faceNormalLines;
