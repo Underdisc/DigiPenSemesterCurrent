@@ -81,6 +81,17 @@ float Time::TotalTimeScaled()
 }
 
 /*!
+\brief Returns the amount of time that has passed at this exact moment.
+\return The exact amount of total time in seconds.
+*/
+float Time::TotalTimeExact()
+{
+  int total_ticks = SDL_GetTicks();
+  float total_time = (float)total_ticks / (float)1000;
+  return total_time;
+}
+
+/*!
 \brief Stopwatch constructor. Stopwatches start with a timescale of 1.0.
 \param start Determine whether the stopwatch should instantly start.
 */

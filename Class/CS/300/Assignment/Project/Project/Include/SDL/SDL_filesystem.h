@@ -91,7 +91,7 @@ extern DECLSPEC char *SDLCALL SDL_GetBasePath(void);
  * Both the org and app strings may become part of a directory name, so
  *  please follow these rules:
  *
- *    - Try to use the same org string (including case-sensitivity) for
+ *    - Try to use the same org string (including case-mouse_sensitivity) for
  *      all your applications that use this function.
  *    - Always use a unique app string for each one, and make sure it never
  *      changes for an app once you've decided on it.

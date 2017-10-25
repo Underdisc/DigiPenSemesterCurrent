@@ -29,56 +29,93 @@
 #include "Graphics\Mesh\Mesh.h"
 #include "Graphics\Mesh\MeshRenderer.h"
 #include "Graphics\ShaderLibrary.h"
+#include "Graphics\Camera.h"
 
 #include "Core\Input.h"
-
+#include "Core\Framer.h"
 #include "Graphics\Texture.h"
 
 
 #define PI 3.141592653589f
+#define FPS 60
 #define MODEL_PATH "Resource/Model/"
 #define FILENAME_BUFFERSIZE 50
 
-// defining a light
-struct Light
+struct Material
 {
-  Light(const Math::Vector3 & position, float ambient_factor, 
-    float diffuse_factor, float specular_factor, float specular_exponent,
-    const Color & ambient_color, const Color & diffuse_color,
-    const Color & specular_color) :
-    _position(position), _ambientFactor(ambient_factor), 
-    _diffuseFactor(diffuse_factor), _specularFactor(specular_factor), 
-    _specularExponent(specular_exponent), _ambientColor(ambient_color),
-    _diffuseColor(diffuse_color), _specularColor(specular_color)
+  Material() : _color(1.0f, 1.0f, 1.0f), _ambientFactor(0.0f), 
+    _diffuseFactor(0.0f), _specularFactor(0.0f), _specularExponent(0.0f)
   {}
-  Math::Vector3 _position;
+  void SetUniforms(PhongShader * phong_shader)
+  {
+    glUniform3f(phong_shader->UMaterial.UColor, 
+      _color._r, _color._g, _color._b);
+    glUniform1f(phong_shader->UMaterial.UAmbientFactor, _ambientFactor);
+    glUniform1f(phong_shader->UMaterial.UDiffuseFactor, _diffuseFactor);
+    glUniform1f(phong_shader->UMaterial.USpecularFactor, _specularFactor);
+    glUniform1f(phong_shader->UMaterial.USpecularExponent, _specularExponent);
+  }
+  Color _color;
   float _ambientFactor;
   float _diffuseFactor;
   float _specularFactor;
   float _specularExponent;
-  Color _ambientColor;
-  Color _diffuseColor;
-  Color _specularColor;
-  void SetUniforms(PhongShader * phong_shader)
-  {
-    glUniform3f(phong_shader->ULightPosition, 
-      _position.x, _position.y, _position.z);
-    glUniform1f(phong_shader->UAmbientFactor, _ambientFactor);
-    glUniform1f(phong_shader->UDiffuseFactor, _diffuseFactor);
-    glUniform1f(phong_shader->USpecularFactor, _specularFactor);
-    glUniform1f(phong_shader->USpecularExponent, _specularExponent);
-    glUniform3f(phong_shader->UAmbientColor,
-      _ambientColor._x, _ambientColor._y, _ambientColor._z);
-    glUniform3f(phong_shader->UDiffuseColor,
-      _diffuseColor._x, _diffuseColor._y, _diffuseColor._z);
-    glUniform3f(phong_shader->USpecularColor,
-      _specularColor._x, _specularColor._y, _specularColor._z);
-
-  }
 };
 
 
+// defining a light
+struct Light
+{
+  Light(): _type(0), _position(0.0f, 0.0f, 0.0f), _direction(0.0f, 0.0f, -1.0f),
+    _ambientColor(0.0f, 0.0f, 0.0f), _diffuseColor(0.0f, 0.0f, 0.0f),
+    _specularColor(0.0f, 0.0f, 0.0f)
+  {}
+  Light(unsigned int type, const Math::Vector3 & position, 
+    const Math::Vector3 & direction, const Color & ambient_color,
+    const Color & diffuse_color, const Color & specular_color) :
+    _type(type), _position(position), _direction(direction),
+    _ambientColor(ambient_color), _diffuseColor(diffuse_color),
+    _specularColor(specular_color)
+  {}
+  int _type;
+  Math::Vector3 _position;
+  Math::Vector3 _direction;
+  Color _ambientColor;
+  Color _diffuseColor;
+  Color _specularColor;
+
+  static const int _typePoint;
+  static const int _typeDirectional;
+  static const int _typeSpot;
+
+  static int _activeLights;
+  void SetUniforms(unsigned int light_index, PhongShader * phong_shader)
+  {
+    glUniform1i(phong_shader->ULights[light_index].UType, _type);
+    glUniform3f(phong_shader->ULights[light_index].UPosition,
+      _position.x, _position.y, _position.z);
+    glUniform3f(phong_shader->ULights[light_index].UDirection,
+      _direction.x, _direction.y, _direction.z);
+    glUniform3f(phong_shader->ULights[light_index].UAmbientColor,
+      _ambientColor._x, _ambientColor._y, _ambientColor._z);
+    glUniform3f(phong_shader->ULights[light_index].UDiffuseColor,
+      _diffuseColor._x, _diffuseColor._y, _diffuseColor._z);
+    glUniform3f(phong_shader->ULights[light_index].USpecularColor,
+      _specularColor._x, _specularColor._y, _specularColor._z);
+  }
+};
+int Light::_activeLights = 1;
+const int Light::_typePoint = 0;
+const int Light::_typeDirectional = 1;
+const int Light::_typeSpot = 2;
+
+
+
 // GLOBAL
+
+//editor
+bool show_light_editor = false;
+bool show_material_editor = false;
 
 float clear_color[]{ 0.4f, 0.4f, 0.4f };
 
@@ -86,12 +123,10 @@ Mesh * mesh = nullptr;
 unsigned int mesh_id = -1;
 std::string current_mesh("cube.obj");
 char next_mesh[FILENAME_BUFFERSIZE] = "cube.obj";
-Light light(Math::Vector3(0.0f, 0.0f, 0.0f), 0.5f, 0.4f, 0.5f, 20.0f,
-  Color(1.0f, 1.0f, 1.0f), Color(1.0f, 1.0f, 1.0f),
-  Color(0.8f, 0.6f, 0.0f));
-
-Color vertex_normal_color(0.0f, 0.0f, 0.0f);
-Color face_normal_color(0.0f, 0.0f, 0.0f);
+Light lights[MAXLIGHTS];
+Material material;
+unsigned int active_lights = 2;
+MeshRenderer::ShaderType shader_in_use = MeshRenderer::PHONG;
 
 
 Math::Vector3 trans(0.0f, 0.0f, -2.0f);
@@ -100,6 +135,11 @@ float scale_speed = 7.0f;
 // initializing to pie so rotations make sense at the start
 Math::EulerAngles rotate(0.0f, PI, 0.0f, Math::EulerOrders::XYZs);
 
+
+Camera camera(Math::Vector3(0.0f, 1.0f, 0.0f));
+float movespeed = 1.0f;
+float mouse_sensitivity = 0.3f;
+float mouse_wheel_sensitivity = 2.0f;
 
 // GLOBAL
 
@@ -127,22 +167,78 @@ int main(int argc, char * argv[])
 
   LoadMesh(current_mesh);
   glEnable(GL_DEPTH_TEST);
+  Framer::Lock(FPS);
   while (SDLContext::KeepOpen())
   {
+    // frame start
+    Framer::Start();
     InitialUpdate();
     Update();
     EditorUpdate();
     glClearColor(clear_color[0], clear_color[1], clear_color[2], 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     Render();
     ImGui::Render();
     OpenGLContext::Swap();
+    Framer::End();
   }
 
   MeshRenderer::Purge();
   OpenGLContext::Purge();
   SDLContext::Purge();
+}
+
+inline void MaterialEditor()
+{
+  ImGui::Begin("Material");
+  ImGui::ColorEdit3("Color", material._color._values);
+  ImGui::SliderFloat("Ambient Factor", &material._ambientFactor, 0.0f, 1.0f);
+  ImGui::SliderFloat("Diffuse Factor", &material._diffuseFactor, 0.0f, 1.0f);
+  ImGui::SliderFloat("Specular Factor", &material._specularFactor, 0.0f, 1.0f);
+  ImGui::SliderFloat("Specular Exponent", &material._specularExponent, 0.0f, 30.0f);
+  ImGui::End();
+}
+
+inline void LightEditor()
+{
+  ImGui::Begin("Lights");
+  ImGui::InputInt("Active Lights", &Light::_activeLights, 1, 1);
+  if(Light::_activeLights > MAXLIGHTS)
+    Light::_activeLights = MAXLIGHTS;
+  else if(Light::_activeLights < 0)
+    Light::_activeLights = 0;
+
+  for(int i = 0; i < Light::_activeLights; ++i){
+    std::string light_name("Light" + std::to_string(i));
+    if(ImGui::TreeNode(light_name.c_str())){
+      ImGui::Combo("Type", &lights[i]._type, "Point\0Directional\0Spot\0\0");
+      int type = lights[i]._type;
+      if(type == Light::_typePoint || type == Light::_typeSpot){
+        if(ImGui::TreeNode("Position")) {
+          ImGui::DragFloat("X", &lights[i]._position.x, 0.01f);
+          ImGui::DragFloat("Y", &lights[i]._position.y, 0.01f);
+          ImGui::DragFloat("Z", &lights[i]._position.z, 0.01f);
+          ImGui::TreePop();
+        }
+      }
+      if (type == Light::_typeDirectional || type == Light::_typeSpot) {
+        if(ImGui::TreeNode("Direction")){
+          ImGui::DragFloat("X", &lights[i]._direction.x, 0.01f);
+          ImGui::DragFloat("Y", &lights[i]._direction.y, 0.01f);
+          ImGui::DragFloat("Z", &lights[i]._direction.z, 0.01f);
+          ImGui::TreePop();
+        }
+      }
+      ImGui::Text("Light Colors");
+      ImGui::ColorEdit3("Ambient Color", lights[i]._ambientColor._values);
+      ImGui::ColorEdit3("Diffuse Color", lights[i]._diffuseColor._values);
+      ImGui::ColorEdit3("Specular Color", lights[i]._specularColor._values);
+      ImGui::TreePop();
+     }
+    ImGui::Separator();
+  }
+  ImGui::End();
+
 }
 
 inline void EditorUpdate()
@@ -161,9 +257,6 @@ inline void EditorUpdate()
       ImGui::Separator();
       ImGui::TextWrapped("Use the mouse scroll wheel to perform a "
         "uniform scaling on the object.");
-      ImGui::Separator();
-      ImGui::TextWrapped("Use Spacebar to switch between face and "
-        "wireframe mode.");
       ImGui::Separator();
       ImGui::TextWrapped("These will not work when the mouse is hovering over "
         "the ImGui window.");
@@ -188,13 +281,24 @@ inline void EditorUpdate()
     ImGui::Separator();
   }
   if (ImGui::CollapsingHeader("Debug")) {
-    ImGui::Text("FPS: %f", 1.0f / Time::DT());
+    ImGui::Text("Average FPS: %f", Framer::AverageFPS());
     ImGui::Separator();
   }
   if (ImGui::CollapsingHeader("Global")) {
     ImGui::ColorEdit3("Clear Color", clear_color);
     ImGui::DragFloat("Time Scale", &Time::m_TimeScale, 0.01f);
     ImGui::Separator();
+  }
+  if (ImGui::CollapsingHeader("Editor Windows")) {
+    ImGui::Checkbox("Material Editor", &show_material_editor);
+    ImGui::Checkbox("Light Editor", &show_light_editor);
+  }
+  if (ImGui::CollapsingHeader("Shaders")) {
+    int shader_int = MeshRenderer::ShaderTypeToInt(shader_in_use);
+    ImGui::Combo("Shader Type", &shader_int, "Phong\0Gouraud\0Blinn\0Toon\0\0");
+    shader_in_use = MeshRenderer::IntToShaderType(shader_int);
+    if(ImGui::Button("Reload Selected Shader"))
+      MeshRenderer::ReloadShader(shader_in_use);
   }
   if (ImGui::CollapsingHeader("Mesh")) {
 
@@ -235,23 +339,11 @@ inline void EditorUpdate()
     ImGui::Checkbox("Wireframe", &mesh_object->_showWireframe);
     ImGui::Separator();
   }
-  if (ImGui::CollapsingHeader("Light")) {
-    ImGui::Text("Position");
-    ImGui::DragFloat("X", &light._position.x, 0.01f);
-    ImGui::DragFloat("Y", &light._position.y, 0.01f);
-    ImGui::DragFloat("Z", &light._position.z, 0.01f);
-    ImGui::Separator();
-    ImGui::Text("Light Properties");
-    ImGui::SliderFloat("Ambient Factor", &light._ambientFactor, 0.0f, 1.0f);
-    ImGui::SliderFloat("Diffuse Factor", &light._diffuseFactor, 0.0f, 1.0f);
-    ImGui::SliderFloat("Specular Factor", &light._specularFactor, 0.0f, 1.0f);
-    ImGui::SliderFloat("Specular Exponent", &light._specularExponent, 0.0f, 50.0f);
-    ImGui::ColorEdit3("Ambient Color", light._ambientColor._values);
-    ImGui::ColorEdit3("Diffuse Color", light._diffuseColor._values);
-    ImGui::ColorEdit3("Specular Color", light._specularColor._values);
-    ImGui::Separator();
-  }
   ImGui::End();
+  if (show_material_editor)
+    MaterialEditor();
+  if (show_light_editor)
+    LightEditor();
 }
 
 void LoadMesh(const std::string & model)
@@ -290,8 +382,6 @@ void LoadMesh(const std::string & model)
 
 inline void ManageInput()
 {
-  int wheel_motion = Input::MouseWheelMotion();
-  cur_scale += scale_speed * Time::DT() * wheel_motion;
   if (Input::MouseButtonDown(LEFT)) {
     std::pair<int, int> mouse_motion = Input::MouseMotion();
 
@@ -301,8 +391,27 @@ inline void ManageInput()
       rotate.Angles.x -= mouse_motion.second / 100.0f;
     }
   }
-  //if(Input::KeyPressed(SPACE))
-    //wireframe_mode = !wireframe_mode;
+
+
+  movespeed += movespeed * mouse_wheel_sensitivity * Time::DT() * Input::MouseWheelMotion();
+  if (Input::KeyDown(W))
+    camera.MoveBack(-Time::DT() * movespeed);
+  if (Input::KeyDown(S))
+    camera.MoveBack(Time::DT() * movespeed);
+  if (Input::KeyDown(A))
+    camera.MoveRight(-Time::DT() * movespeed);
+  if (Input::KeyDown(D))
+    camera.MoveRight(Time::DT() * movespeed);
+  if (Input::KeyDown(Q))
+    camera.MoveGlobalUp(-Time::DT() * movespeed);
+  if (Input::KeyDown(E))
+    camera.MoveGlobalUp(Time::DT() * movespeed);
+  if (Input::MouseButtonDown(RIGHT)) {
+    std::pair<int, int> mouse_motion = Input::MouseMotion();
+    camera.MoveYaw((float)mouse_motion.first * Time::DT() * mouse_sensitivity);
+    camera.MovePitch(-(float)mouse_motion.second * Time::DT() * mouse_sensitivity);
+  }
+    
 }
 
 inline void Update()
@@ -315,7 +424,6 @@ inline void Update()
 inline void Render()
 {
   Math::Matrix4 projection;
-  Math::Matrix4 view;
   Math::Matrix4 model;
 
   Math::Matrix4 translation;
@@ -326,17 +434,39 @@ inline void Render()
   Math::ToMatrix4(rotate, &rotation);
 
   projection = Math::Matrix4::Perspective(PI / 2.0f, OpenGLContext::AspectRatio(), 0.1f, 100.0f);
-  view.SetIdentity();
   model = translation * rotation * scale;
 
-  // drawing object
+  // prepping uniforms
   PhongShader * phong_shader = MeshRenderer::GetPhongShader();
-  LineShader * line_shader = MeshRenderer::GetLineShader();
-  phong_shader->Use();
-  light.SetUniforms(phong_shader);
-
-  // rendering mesh
-  MeshRenderer::Render(mesh_id, projection, view, model);
+  GouraudShader * gouraud_shader = MeshRenderer::GetGouraudShader();
+  switch (shader_in_use)
+  {
+  //PHONG SHADER
+  case MeshRenderer::ShaderType::PHONG:
+    phong_shader->Use();
+    glUniform1i(phong_shader->UActiveLights, Light::_activeLights);
+    for (int i = 0; i < Light::_activeLights; ++i)
+      lights[i].SetUniforms(i, phong_shader);
+    material.SetUniforms(phong_shader);
+    // rendering mesh
+    MeshRenderer::Render(mesh_id, shader_in_use, projection, camera.ViewMatrix(), model);
+    break;
+  // GOURAUD SHADER
+  case MeshRenderer::ShaderType::GOURAUD:
+    gouraud_shader->Use();
+    glUniform1i(gouraud_shader->UActiveLights, Light::_activeLights);
+    for (int i = 0; i < Light::_activeLights; ++i)
+      //lights[i].SetUniforms(i, gouraud_shader);
+    // rendering mesh
+    MeshRenderer::Render(mesh_id, shader_in_use, projection, camera.ViewMatrix(), model);
+    break;
+  case MeshRenderer::ShaderType::BLINN:
+    break;
+  case MeshRenderer::ShaderType::TOON:
+    break;
+  default:
+    break;
+  }
   try
   {
     GLenum gl_error = glGetError();

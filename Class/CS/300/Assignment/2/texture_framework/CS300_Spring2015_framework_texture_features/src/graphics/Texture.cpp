@@ -20,7 +20,7 @@ static std::string GetFilePath(std::string const &relativePath)
 namespace Graphics
 {
   Texture::Texture(u8 *pixels, u32 width, u32 height)
-    : pixels_(pixels), width_(width), height_(height), 
+    : pixels_(pixels), width_(width), height_(height),
     textureHandle_(UnbuiltTexture), boundSlot_(UnboundTexture)
   {
   }

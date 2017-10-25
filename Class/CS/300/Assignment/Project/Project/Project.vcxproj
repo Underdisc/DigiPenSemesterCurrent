@@ -134,12 +134,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Core\Framer.cpp" />
     <ClCompile Include="Source\External\Imgui\imgui.cpp" />
     <ClCompile Include="Source\External\Imgui\imgui_demo.cpp" />
     <ClCompile Include="Source\External\Imgui\imgui_draw.cpp" />
     <ClCompile Include="Source\External\Imgui\imgui_impl_sdl_gl3.cpp" />
+    <ClCompile Include="Source\Graphics\Camera.cpp" />
     <ClCompile Include="Source\Graphics\Mesh\Mesh.cpp" />
     <ClCompile Include="Source\Graphics\Mesh\MeshRenderer.cpp" />
+    <ClCompile Include="Source\Graphics\ShaderLibrary.cpp" />
     <ClCompile Include="Source\Graphics\Texture.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Math\EulerAngles.cpp" />
@@ -164,6 +167,7 @@
     <ClCompile Include="Source\Graphics\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Core\Framer.h" />
     <ClInclude Include="Source\External\Imgui\imconfig.h" />
     <ClInclude Include="Source\External\Imgui\imgui.h" />
     <ClInclude Include="Source\External\Imgui\imgui_impl_sdl_gl3.h" />
@@ -171,6 +175,7 @@
     <ClInclude Include="Source\External\Imgui\stb_rect_pack.h" />
     <ClInclude Include="Source\External\Imgui\stb_textedit.h" />
     <ClInclude Include="Source\External\Imgui\stb_truetype.h" />
+    <ClInclude Include="Source\Graphics\Camera.h" />
     <ClInclude Include="Source\Graphics\Mesh\Mesh.h" />
     <ClInclude Include="Source\Graphics\Mesh\MeshRenderer.h" />
     <ClInclude Include="Source\Graphics\ShaderLibrary.h" />

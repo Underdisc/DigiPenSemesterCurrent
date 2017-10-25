@@ -37,6 +37,7 @@ public:
   static float DTScaled();
   static float TotalTime();
   static float TotalTimeScaled();
+  static float TotalTimeExact();
   //! The scaler that DT will be scaled by to find the scaled delta time and
   // the scaled total time.
   static float m_TimeScale;

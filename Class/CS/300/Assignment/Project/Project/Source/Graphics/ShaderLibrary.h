@@ -14,6 +14,8 @@
 
 #include "Shader.h"
 
+#define MAXLIGHTS 10
+
 /*****************************************************************************/
 /*!
 \class LineShader
@@ -24,15 +26,7 @@
 class LineShader : public Shader
 {
 public:
-  LineShader() :
-    Shader("Resource/Shader/line.vert", "Resource/Shader/line.frag")
-  {
-    APosition = GetAttribLocation("APosition");
-    UProjection = GetUniformLocation("UProjection");
-    UView = GetUniformLocation("UView");
-    UModel = GetUniformLocation("UModel");
-    ULineColor = GetUniformLocation("ULineColor");
-  }
+  LineShader();
   // Attributes
   GLuint APosition;
   // Uniforms
@@ -46,31 +40,77 @@ public:
 /*!
 \class PhongShader
 \brief
-  Used for drawing objects that undergo phong shading. Currently only usable
-  with one light. Multiple light support will be added in the future.
+  Used for drawing objects that undergo phong shading. Supports lighting
+  with up to 10 lights.
 */
 /*****************************************************************************/
 class PhongShader : public Shader
 {
 public:
-  PhongShader() :
-    Shader("Resource/Shader/phong.vert", "Resource/Shader/phong.frag")
+  struct Material
   {
-    APosition = GetAttribLocation("APosition");
-    ANormal = GetAttribLocation("ANormal");
-    UProjection = GetUniformLocation("UProjection");
-    UView = GetUniformLocation("UView");
-    UModel = GetUniformLocation("UModel");
-    UObjectColor = GetUniformLocation("UObjectColor");
-    ULightPosition = GetUniformLocation("light._position");
-    UAmbientFactor = GetUniformLocation("light._ambientFactor");
-    UDiffuseFactor = GetUniformLocation("light._diffuseFactor");
-    USpecularFactor = GetUniformLocation("light._specularFactor");
-    USpecularExponent = GetUniformLocation("light._specularExponent");
-    UAmbientColor = GetUniformLocation("light._ambientColor");
-    UDiffuseColor = GetUniformLocation("light._diffuseColor");
-    USpecularColor = GetUniformLocation("light._specularColor");
-  }
+    GLuint UColor;
+    GLuint UAmbientFactor;
+    GLuint UDiffuseFactor;
+    GLuint USpecularFactor;
+    GLuint USpecularExponent;
+  };
+  struct Light
+  {
+    GLuint UType;
+    GLuint UPosition;
+    GLuint UDirection;
+    GLuint UAmbientColor;
+    GLuint UDiffuseColor;
+    GLuint USpecularColor;
+  };
+public:
+  PhongShader();
+  void EnableAttributes();
+  void DisableAttributes();
+  // Attributes
+  GLuint APosition;
+  GLuint ANormal;
+  // Uniforms
+  GLuint UProjection;
+  GLuint UView;
+  GLuint UModel;
+  // Material Uniform
+  Material UMaterial;
+  // Light Uniforms
+  GLuint UActiveLights;
+  Light ULights[MAXLIGHTS];
+  // Fog Uniforms
+  GLuint UFogColor;
+  GLuint UNearPlane;
+  GLuint UFarPlane;
+};
+
+/*****************************************************************************/
+/*!
+\class GouraudShader
+\brief
+  Used for drawing objects that undergo gouraud shading. Can be used for
+  shading with up to 10 lights.
+*/
+/*****************************************************************************/
+class GouraudShader : public Shader
+{
+  struct Light
+  {
+    GLuint UPosition;
+    GLuint UAmbientFactor;
+    GLuint UDiffuseFactor;
+    GLuint USpecularFactor;
+    GLuint USpecularExponent;
+    GLuint UAmbientColor;
+    GLuint UDiffuseColor;
+    GLuint USpecularColor;
+  };
+public:
+  GouraudShader();
+  void EnableAttributes();
+  void DisableAttributes();
   // Attributes
   GLuint APosition;
   GLuint ANormal;
@@ -79,15 +119,9 @@ public:
   GLuint UView;
   GLuint UModel;
   GLuint UObjectColor;
-  // Lighting terms
-  GLuint ULightPosition;
-  GLuint UAmbientFactor;
-  GLuint UDiffuseFactor;
-  GLuint USpecularFactor;
-  GLuint USpecularExponent;
-  GLuint UAmbientColor;
-  GLuint UDiffuseColor;
-  GLuint USpecularColor;
+  // Uniform array for lights
+  GLuint UActiveLights;
+  Light ULights[MAXLIGHTS];
 };
 
 /*****************************************************************************/
@@ -100,16 +134,7 @@ public:
 class TextureShader : public Shader
 {
 public:
-  TextureShader() : 
-  Shader("Resource/Shader/texture.vert", "Resource/Shader/texture.frag")
-  {
-    APosition = GetAttribLocation("APosition");
-    ATexCoord = GetAttribLocation("ATexCoord");
-    UProjection = GetUniformLocation("UProjection");
-    UView = GetUniformLocation("UView");
-    UModel = GetUniformLocation("UModel");
-    UTexture = GetUniformLocation("UTexture");
-  }
+  TextureShader();
   // Attributes
   GLuint APosition;
   GLuint ATexCoord;

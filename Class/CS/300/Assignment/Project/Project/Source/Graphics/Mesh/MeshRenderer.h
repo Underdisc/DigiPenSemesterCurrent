@@ -16,6 +16,7 @@ Used for storing rgb color values.
 /*****************************************************************************/
 struct Color
 {
+  Color() : _x(0.0f), _y(0.0f), _z(0.0f) {}
   Color(float x, float y, float z) : _x(x), _y(y), _z(z) {}
   Color(const Color & other) : _x(other._x), _y(other._y), _z(other._z) {}
   // The rgb value of the color
@@ -98,20 +99,42 @@ public:
     Color _faceNormalColor;
   };
 public:
+  enum ShaderType
+  {
+    PHONG,
+    GOURAUD,
+    BLINN,
+    TOON,
+    NUMSHADERTYPES
+  };
+public:
+  static Color _fogColor;
+  static float _nearPlane;
+  static float _farPlane;
+public:
   static void Initialize();
   static void Purge();
   static unsigned int Upload(Mesh * mesh);
   static void Purge(unsigned int mesh_id);
-  static void Render(unsigned int mesh_id, const Math::Matrix4 & projection,
-    const Math::Matrix4 & view, const Math::Matrix4 & model);
+  static void Render(unsigned int mesh_id, ShaderType shader_type,
+    const Math::Matrix4 & projection, const Math::Matrix4 & view, 
+    const Math::Matrix4 & model);
+  static void ReloadShader(ShaderType shader_type);
+  static void ReloadPhong();
+  static void ReloadGouraud();
   static MeshObject * GetMeshObject(unsigned int mesh_id);
   static PhongShader * GetPhongShader();
+  static GouraudShader * GetGouraudShader();
   static LineShader * GetLineShader();
+  static int ShaderTypeToInt(ShaderType shader_type);
+  static ShaderType IntToShaderType(int shader_int);
 private:
   //! The vector of currently loaded Mesh objects
   static std::vector<MeshObject> _meshObjects;
   //! The shader used for Phong
   static PhongShader * _phongShader;
+  //! The shader used for Gouraud
+  static GouraudShader * _gouraudShader;
   //! The shader used for drawing vertex and face normals
   static LineShader * _lineShader;
 };
