@@ -21,7 +21,7 @@ uniform mat4 UModel = mat4(1,0,0,0,
   0,0,1,0,
   0,0,0,1);
 
-const uint MaxLights = 10;
+const int MaxLights = 10;
 
 uniform vec3 UObjectColor = vec3(1.0, 1.0, 1.0);
 

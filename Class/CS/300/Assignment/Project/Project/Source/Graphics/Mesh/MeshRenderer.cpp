@@ -1,11 +1,12 @@
 #include "../../Math/Matrix4.h"
+#include "../../Utility/Error.h"
 
 #include "MeshRenderer.h"
 
 // static initializations
-Color MeshRenderer::_fogColor(1.0f, 0.0f, 0.0f);
+Color MeshRenderer::_fogColor(0.3f, 0.3f, 0.3f);
 float MeshRenderer::_nearPlane = 0.1f;
-float MeshRenderer::_farPlane = 2.0f;
+float MeshRenderer::_farPlane = 10.0f;
 std::vector<MeshRenderer::MeshObject> MeshRenderer::_meshObjects;
 PhongShader * MeshRenderer::_phongShader = nullptr;
 GouraudShader * MeshRenderer::_gouraudShader = nullptr;
@@ -14,7 +15,6 @@ LineShader * MeshRenderer::_lineShader = nullptr;
 
 void MeshRenderer::Initialize()
 { 
-  // allocating shaders
   _phongShader = new PhongShader();
   _gouraudShader = new GouraudShader();
   _lineShader = new LineShader();
@@ -38,8 +38,8 @@ void MeshRenderer::Purge()
     glDeleteVertexArrays(1, &mesh_object._vaoVertexNormal);
     glDeleteBuffers(1, &mesh_object._vboFaceNormal);
     glDeleteVertexArrays(1, &mesh_object._vaoFaceNormal);
-    _meshObjects.clear();
   }
+  _meshObjects.clear();
   // deallocating all shaders
   _phongShader->Purge();
   _gouraudShader->Purge();

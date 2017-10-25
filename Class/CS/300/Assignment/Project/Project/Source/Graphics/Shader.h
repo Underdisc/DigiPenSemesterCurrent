@@ -32,6 +32,7 @@ class Shader
 {
   public:
     Shader(const std::string & vertex_file, const std::string & fragment_file);
+    bool Compiled();
     GLuint GetAttribLocation(const std::string & name);
     GLuint GetUniformLocation(const std::string & name);
     GLuint ID() const;
@@ -40,6 +41,8 @@ class Shader
   protected:
     //! The ID of the program created after linking the shaders.
     GLuint _programID;
+    //! Identifies whether the program successfully compiled or not.
+    bool _compiled;
     //! The name of the vertex shader file.
     std::string _vertexFile;
     //! The name of the fragment shader file.

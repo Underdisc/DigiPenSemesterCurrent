@@ -65,6 +65,11 @@ void Camera::MovePitch(float delta)
   _updatedViewMatrix = false;
 }
 
+const Math::Vector3 & Camera::Position()
+{
+  return _position;
+}
+
 const Math::Matrix4 & Camera::ViewMatrix()
 {
   // update view matrix if needed

@@ -75,6 +75,7 @@ public:
   GLuint UProjection;
   GLuint UView;
   GLuint UModel;
+  GLuint UCameraPosition;
   // Material Uniform
   Material UMaterial;
   // Light Uniforms

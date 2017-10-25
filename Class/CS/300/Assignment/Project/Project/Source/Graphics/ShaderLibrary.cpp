@@ -21,7 +21,7 @@ PhongShader::PhongShader() :
   UProjection = GetUniformLocation("UProjection");
   UView = GetUniformLocation("UView");
   UModel = GetUniformLocation("UModel");
-  UActiveLights = GetUniformLocation("UActiveLights");
+  UCameraPosition = GetUniformLocation("UCameraPosition");
   // finding material uniforms
   UMaterial.UColor = GetUniformLocation("UMaterial.UColor");
   UMaterial.UAmbientFactor = GetUniformLocation("UMaterial.UAmbientFactor");
@@ -44,6 +44,7 @@ PhongShader::PhongShader() :
     ULights[i].USpecularColor = GetUniformLocation(
       "ULights[" + index + "].USpecularColor");
   }
+  UActiveLights = GetUniformLocation("UActiveLights");
   // finding fog uniforms
   UFogColor = GetUniformLocation("UFogColor");
   UNearPlane = GetUniformLocation("UNearPlane");

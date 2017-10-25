@@ -47,14 +47,29 @@ _vertexFile(vertex_file), _fragmentFile(fragment_file)
     GLuint fshader = CompileShader(fragment_file, GL_FRAGMENT_SHADER);
     //link shaders
     CreateProgram(vshader, fshader);
+    _compiled = true;
   }
   catch (Error & error) 
   { 
+    _compiled = false;
     error.Add("<Shader Files Involved>");
     error.Add(vertex_file.c_str());
     error.Add(fragment_file.c_str());
     ErrorLog::Write(error);
   }
+}
+
+/*****************************************************************************/
+/*!
+\brief
+  Used to check whether a shader successfully compiled or not.
+
+\return True if the shader successfully compiled.
+*/
+/*****************************************************************************/
+bool Shader::Compiled()
+{
+  return _compiled;
 }
 
 /*****************************************************************************/
@@ -153,7 +168,8 @@ void Shader::Use() const
 /*****************************************************************************/
 void Shader::Purge() const
 {
-  glDeleteProgram(_programID);
+  if(_compiled)
+    glDeleteProgram(_programID);
   // error check
   GLenum error_code = glGetError();
   if (error_code) {

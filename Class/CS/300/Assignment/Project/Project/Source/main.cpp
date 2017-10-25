@@ -44,7 +44,7 @@
 struct Material
 {
   Material() : _color(1.0f, 1.0f, 1.0f), _ambientFactor(0.0f), 
-    _diffuseFactor(0.0f), _specularFactor(0.0f), _specularExponent(0.0f)
+    _diffuseFactor(0.0f), _specularFactor(0.0f), _specularExponent(1.0f)
   {}
   void SetUniforms(PhongShader * phong_shader)
   {
@@ -117,8 +117,6 @@ const int Light::_typeSpot = 2;
 bool show_light_editor = false;
 bool show_material_editor = false;
 
-float clear_color[]{ 0.4f, 0.4f, 0.4f };
-
 Mesh * mesh = nullptr;
 unsigned int mesh_id = -1;
 std::string current_mesh("cube.obj");
@@ -175,11 +173,14 @@ int main(int argc, char * argv[])
     InitialUpdate();
     Update();
     EditorUpdate();
-    glClearColor(clear_color[0], clear_color[1], clear_color[2], 1.0f);
+    // clearing and rendering new frame
+    Color & fog_color = MeshRenderer::_fogColor;
+    glClearColor(fog_color._r, fog_color._g, fog_color._b, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     Render();
     ImGui::Render();
     OpenGLContext::Swap();
+    // frame end
     Framer::End();
   }
 
@@ -285,7 +286,9 @@ inline void EditorUpdate()
     ImGui::Separator();
   }
   if (ImGui::CollapsingHeader("Global")) {
-    ImGui::ColorEdit3("Clear Color", clear_color);
+    ImGui::ColorEdit3("Fog Color", MeshRenderer::_fogColor._values);
+    ImGui::SliderFloat("Near Plane", &MeshRenderer::_nearPlane, 0.01f, 5.0f);
+    ImGui::SliderFloat("Far Plane", &MeshRenderer::_farPlane, MeshRenderer::_nearPlane, 100.0f);
     ImGui::DragFloat("Time Scale", &Time::m_TimeScale, 0.01f);
     ImGui::Separator();
   }
@@ -433,17 +436,21 @@ inline void Render()
   Math::Matrix4 rotation;
   Math::ToMatrix4(rotate, &rotation);
 
-  projection = Math::Matrix4::Perspective(PI / 2.0f, OpenGLContext::AspectRatio(), 0.1f, 100.0f);
+  projection = Math::Matrix4::Perspective(PI / 2.0f, 
+    OpenGLContext::AspectRatio(), MeshRenderer::_nearPlane, 
+    MeshRenderer::_farPlane);
   model = translation * rotation * scale;
 
   // prepping uniforms
   PhongShader * phong_shader = MeshRenderer::GetPhongShader();
   GouraudShader * gouraud_shader = MeshRenderer::GetGouraudShader();
+  const Math::Vector3 & cpos = camera.Position();
   switch (shader_in_use)
   {
   //PHONG SHADER
   case MeshRenderer::ShaderType::PHONG:
     phong_shader->Use();
+    glUniform3f(phong_shader->UCameraPosition, cpos.x, cpos.y, cpos.z);
     glUniform1i(phong_shader->UActiveLights, Light::_activeLights);
     for (int i = 0; i < Light::_activeLights; ++i)
       lights[i].SetUniforms(i, phong_shader);

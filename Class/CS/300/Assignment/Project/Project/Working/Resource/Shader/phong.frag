@@ -10,6 +10,9 @@ in vec3 SFragPos;
 
 out vec4 OFragColor;
 
+// The cameras world position
+uniform vec3 UCameraPosition;
+
 // Material values
 struct Material
 {
@@ -36,7 +39,7 @@ struct Light
   vec3 USpecularColor;
 };
 
-const uint MaxLights = 10;
+const int MaxLights = 10;
 uniform int UActiveLights = 1;
 uniform Material UMaterial;
 uniform Light ULights[MaxLights];
@@ -73,8 +76,7 @@ void main()
 {
   // precomputations
   vec3 normal = normalize(SNormal);
-  vec3 camera_position = vec3(0.0, 0.0, 0.0);
-  vec3 view_vec = camera_position - SFragPos;
+  vec3 view_vec = UCameraPosition - SFragPos;
   vec3 view_dir = normalize(view_vec);
   // summing all light results
   vec3 final_color = vec3(0.0, 0.0, 0.0);
@@ -85,8 +87,9 @@ void main()
 
   // accounting for fog
   float dist = length(view_vec);
-  float fog_factor = (dist - UNearPlane) / (UNearPlane - UFarPlane);
+  float fog_factor = (dist - UNearPlane) / (UFarPlane - UNearPlane);
+  fog_factor = min(1.0, max(0.0, fog_factor));
   final_color = mix(final_color, UFogColor, fog_factor);
   // final color
-  OFragColor = vec4(UFogColor, 1.0);
+  OFragColor = vec4(final_color, 1.0);
 }

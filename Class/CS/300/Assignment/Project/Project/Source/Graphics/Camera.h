@@ -14,6 +14,7 @@ public:
   void MoveInDirection(const Math::Vector3 & direction, float delta);
   void MoveYaw(float delta);
   void MovePitch(float delta);
+  const Math::Vector3 & Position();
   const Math::Matrix4 & ViewMatrix();
 private:
   void UpdateOrientationVectors();
