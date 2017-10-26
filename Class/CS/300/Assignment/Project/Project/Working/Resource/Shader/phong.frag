@@ -33,10 +33,17 @@ struct Light
   vec3 UPosition;
   // The direction of the light
   vec3 UDirection;
+  // The inner and outer angles for a spotlight
+  float UInnerAngle;
+  float UOuterAngle;
   // The light colors
   vec3 UAmbientColor;
   vec3 UDiffuseColor;
   vec3 USpecularColor;
+  // Attenuation coefficients
+  float UAttenuationC0;
+  float UAttenuationC1;
+  float UAttenuationC2;
 };
 
 const int MaxLights = 10;
@@ -53,11 +60,13 @@ vec3 ComputeLight(int light, vec3 normal, vec3 view_dir)
   // ambient term
   vec3 ambient_color = UMaterial.UAmbientFactor * ULights[light].UAmbientColor;
   // finding light direction
+  vec3 light_vec;
   vec3 light_dir;
   if(ULights[light].UType == DIRECTIONAL)
-    light_dir = -normalize(ULights[light].UDirection);
+    light_vec = -normalize(ULights[light].UDirection);
   else
-    light_dir = normalize(ULights[light].UPosition - SFragPos);
+    light_vec = ULights[light].UPosition - SFragPos;
+  light_dir = normalize(light_vec);
   // diffuse term
   float ndotl = max(dot(normal, light_dir), 0.0);
   vec3 diffuse_color = UMaterial.UDiffuseFactor * ndotl * ULights[light].UDiffuseColor;
@@ -67,8 +76,35 @@ vec3 ComputeLight(int light, vec3 normal, vec3 view_dir)
   float vdotr = max(dot(view_dir, reflect_dir), 0.0);
   float specular_spread = pow(vdotr, UMaterial.USpecularExponent);
   vec3 specular_color = UMaterial.USpecularFactor * ULights[light].USpecularColor * specular_spread;
+  // find spotlight effect
+  float spotlight_factor;
+  if(ULights[light].UType == SPOT){
+    float cos_inner = cos(ULights[light].UInnerAngle);
+    float cos_outer = cos(ULights[light].UOuterAngle);
+    vec3 spot_dir = -normalize(ULights[light].UDirection);
+    float ldots = dot(light_dir, spot_dir);
+    spotlight_factor = (ldots - cos_outer) / (cos_inner - cos_outer);
+    spotlight_factor = max(0.0, spotlight_factor);
+    spotlight_factor = min(1.0, spotlight_factor);
+  }
+  else{
+    spotlight_factor = 1.0f;
+  }
+  // find attenuation
+  float attenuation;
+  if(ULights[light].UType == DIRECTIONAL)
+    attenuation = 1.0;
+  else{
+    float light_dist = length(light_vec);
+    attenuation = ULights[light].UAttenuationC0 +
+      ULights[light].UAttenuationC1 * light_dist +
+      ULights[light].UAttenuationC2 * light_dist * light_dist;
+    attenuation = min(1.0 / attenuation, 1.0);
+  }
   // final color
-  vec3 light_color = (ambient_color + diffuse_color + specular_color);
+  vec3 spot_color = spotlight_factor * (diffuse_color + specular_color);
+  vec3 light_color = (ambient_color + spot_color);
+  light_color = attenuation * light_color;
   return light_color;
 }
 

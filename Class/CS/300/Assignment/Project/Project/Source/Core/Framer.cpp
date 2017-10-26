@@ -23,10 +23,12 @@
 bool Framer::_locked = false;
 float Framer::_targetFrameTime = 0.0f;
 float Framer::_startTime = 0.0f;
-float Framer::_timeSinceLastFPSCalculation = 0.0f;
-float Framer::_waitTimeForFPSCalculation = 1.0f;
+float Framer::_timeSinceLastAverageCalculation = 0.0f;
+float Framer::_waitTimeForAverageCalculation = 1.0f;
 float Framer::_averageFPS = 0.0f;
+float Framer::_averageFrameUsage = 0.0f;
 std::vector<float> Framer::_frameTimes;
+std::vector<float> Framer::_frameUsages;
 
 /*****************************************************************************/
 /*!
@@ -50,6 +52,9 @@ void Framer::End()
 {
   float end_time = Time::TotalTimeExact();
   float time_passed = end_time - _startTime;
+  //saving frame usage
+  _frameUsages.push_back(time_passed / _targetFrameTime);
+  // block thread to hit target fps
   if(_locked && time_passed < _targetFrameTime){
     // time to wait in seconds 
     float s_ttw = _targetFrameTime - time_passed;
@@ -61,10 +66,10 @@ void Framer::End()
   }
   // save time pased
   _frameTimes.push_back(time_passed);
-  _timeSinceLastFPSCalculation += time_passed;
+  _timeSinceLastAverageCalculation += time_passed;
   // calculate average fps if necessary
-  if(_timeSinceLastFPSCalculation >= _waitTimeForFPSCalculation)
-    CalculateAverageFPS();
+  if(_timeSinceLastAverageCalculation >= _waitTimeForAverageCalculation)
+    CalculateAverages();
 }
 
 /*****************************************************************************/
@@ -98,7 +103,7 @@ void Framer::Lock(int fps)
 /*!
 \brief
   Returns the average FPS over the last duration specified by 
-  _waitTimeForFPSCalculation.
+  _waitTimeForAverageCalculation.
 
 \return The average FPS.
 */
@@ -111,19 +116,40 @@ float Framer::AverageFPS()
 /*****************************************************************************/
 /*!
 \brief
+  Returns the average frame usage over the last duration specified by
+  _waitTimeForAverageCalculation. The frame usage is a value in the range
+  [0, 1]. It describes the percentage of the frame time used in relation to
+  the target frame time (frame time used / target frame time).
+
+\return The average frame usage.
+*/
+/*****************************************************************************/
+float Framer::AverageFrameUsage()
+{
+  return _averageFrameUsage;
+}
+
+/*****************************************************************************/
+/*!
+\brief
   Calculates the average fps with the current values stored in _frameTimes.
 */
 /*****************************************************************************/
-void Framer::CalculateAverageFPS()
+void Framer::CalculateAverages()
 {
-  // finding total time
-  float total_time = 0.0f;
+  // finding average fps
+  float total = 0.0f;
   for(const float & frame_time : _frameTimes)
-    total_time += frame_time;
-  // finding averages
-  float average_frame_time = total_time / (float)_frameTimes.size();
+    total += frame_time;
+  float average_frame_time = total / (float)_frameTimes.size();
   _averageFPS = 1.0f / average_frame_time;
+  // finding average frame usage
+  total = 0.0f;
+  for(const float & frame_usage_percentage : _frameUsages)
+    total += frame_usage_percentage;
+  _averageFrameUsage = total / _frameUsages.size();
   // resetting values
   _frameTimes.clear();
-  _timeSinceLastFPSCalculation = 0.0f;
+  _frameUsages.clear();
+  _timeSinceLastAverageCalculation = 0.0f;
 }

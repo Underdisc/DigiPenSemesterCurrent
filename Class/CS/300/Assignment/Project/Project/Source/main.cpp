@@ -37,14 +37,15 @@
 
 
 #define PI 3.141592653589f
+#define PI2 6.28318530718f
 #define FPS 60
 #define MODEL_PATH "Resource/Model/"
 #define FILENAME_BUFFERSIZE 50
 
 struct Material
 {
-  Material() : _color(1.0f, 1.0f, 1.0f), _ambientFactor(0.0f), 
-    _diffuseFactor(0.0f), _specularFactor(0.0f), _specularExponent(1.0f)
+  Material() : _color(1.0f, 1.0f, 1.0f), _ambientFactor(0.1f), 
+    _diffuseFactor(1.0f), _specularFactor(1.0f), _specularExponent(3.0f)
   {}
   void SetUniforms(PhongShader * phong_shader)
   {
@@ -66,9 +67,11 @@ struct Material
 // defining a light
 struct Light
 {
-  Light(): _type(0), _position(0.0f, 0.0f, 0.0f), _direction(0.0f, 0.0f, -1.0f),
-    _ambientColor(0.0f, 0.0f, 0.0f), _diffuseColor(0.0f, 0.0f, 0.0f),
-    _specularColor(0.0f, 0.0f, 0.0f)
+  Light(): _type(0), _position(0.0f, 2.0f, 0.0f), 
+    _direction(0.0f, -1.0f, 0.0f), _innerAngle(PI / 12.0f), 
+    _outerAngle(PI / 6.0f), _ambientColor(0.1f, 0.1f, 0.1f), 
+    _diffuseColor(1.0f, 1.0f, 1.0f), _specularColor(1.0f, 0.7f, 0.0f), 
+    _attenuationC0(1.0f), _attenuationC1(0.0), _attenuationC2(1.0f)
   {}
   Light(unsigned int type, const Math::Vector3 & position, 
     const Math::Vector3 & direction, const Color & ambient_color,
@@ -80,9 +83,14 @@ struct Light
   int _type;
   Math::Vector3 _position;
   Math::Vector3 _direction;
+  float _innerAngle;
+  float _outerAngle;
   Color _ambientColor;
   Color _diffuseColor;
   Color _specularColor;
+  float _attenuationC0;
+  float _attenuationC1;
+  float _attenuationC2;
 
   static const int _typePoint;
   static const int _typeDirectional;
@@ -96,12 +104,22 @@ struct Light
       _position.x, _position.y, _position.z);
     glUniform3f(phong_shader->ULights[light_index].UDirection,
       _direction.x, _direction.y, _direction.z);
+    glUniform1f(phong_shader->ULights[light_index].UInnerAngle,
+      _innerAngle);
+    glUniform1f(phong_shader->ULights[light_index].UOuterAngle,
+      _outerAngle);
     glUniform3f(phong_shader->ULights[light_index].UAmbientColor,
       _ambientColor._x, _ambientColor._y, _ambientColor._z);
     glUniform3f(phong_shader->ULights[light_index].UDiffuseColor,
       _diffuseColor._x, _diffuseColor._y, _diffuseColor._z);
     glUniform3f(phong_shader->ULights[light_index].USpecularColor,
       _specularColor._x, _specularColor._y, _specularColor._z);
+    glUniform1f(phong_shader->ULights[light_index].UAttenuationC0, 
+      _attenuationC0);
+    glUniform1f(phong_shader->ULights[light_index].UAttenuationC1,
+      _attenuationC1);
+    glUniform1f(phong_shader->ULights[light_index].UAttenuationC2,
+      _attenuationC2);
   }
 };
 int Light::_activeLights = 1;
@@ -119,19 +137,22 @@ bool show_material_editor = false;
 
 Mesh * mesh = nullptr;
 unsigned int mesh_id = -1;
-std::string current_mesh("cube.obj");
-char next_mesh[FILENAME_BUFFERSIZE] = "cube.obj";
+unsigned int sphere_mesh_id = -1;
+unsigned int plane_mesh_id = -1;
+std::string current_mesh("bunny.obj");
+char next_mesh[FILENAME_BUFFERSIZE] = "bunny.obj";
 Light lights[MAXLIGHTS];
 Material material;
 unsigned int active_lights = 2;
 MeshRenderer::ShaderType shader_in_use = MeshRenderer::PHONG;
+bool rotating_lights = false;
 
 
-Math::Vector3 trans(0.0f, 0.0f, -2.0f);
+Math::Vector3 trans(0.0f, 0.0f, 0.0f);
 float cur_scale = 1.0f;
 float scale_speed = 7.0f;
 // initializing to pie so rotations make sense at the start
-Math::EulerAngles rotate(0.0f, PI, 0.0f, Math::EulerOrders::XYZs);
+Math::EulerAngles rotation(0.0f, PI, 0.0f, Math::EulerOrders::XYZs);
 
 
 Camera camera(Math::Vector3(0.0f, 1.0f, 0.0f));
@@ -146,6 +167,13 @@ void Update();
 void EditorUpdate();
 void Render();
 
+void LoadOtherMeshes()
+{
+  Mesh sphere_mesh(MODEL_PATH + std::string("sphere.obj"), Mesh::OBJ);
+  sphere_mesh_id = MeshRenderer::Upload(&sphere_mesh);
+  Mesh plane_mesh(MODEL_PATH + std::string("plane.obj"), Mesh::OBJ);
+  plane_mesh_id = MeshRenderer::Upload(&plane_mesh);
+}
 
 inline void InitialUpdate()
 {
@@ -164,6 +192,9 @@ int main(int argc, char * argv[])
   SDLContext::AddEventProcessor(ImGui_ImplSdlGL3_ProcessEvent);
 
   LoadMesh(current_mesh);
+  LoadOtherMeshes();
+  camera.MoveBack(2.0f);
+  // starting main program
   glEnable(GL_DEPTH_TEST);
   Framer::Lock(FPS);
   while (SDLContext::KeepOpen())
@@ -191,7 +222,7 @@ int main(int argc, char * argv[])
 
 inline void MaterialEditor()
 {
-  ImGui::Begin("Material");
+  ImGui::Begin("Material", &show_material_editor);
   ImGui::ColorEdit3("Color", material._color._values);
   ImGui::SliderFloat("Ambient Factor", &material._ambientFactor, 0.0f, 1.0f);
   ImGui::SliderFloat("Diffuse Factor", &material._diffuseFactor, 0.0f, 1.0f);
@@ -202,7 +233,8 @@ inline void MaterialEditor()
 
 inline void LightEditor()
 {
-  ImGui::Begin("Lights");
+  ImGui::Begin("Lights", &show_light_editor);
+  ImGui::Checkbox("Rotate Lights", &rotating_lights);
   ImGui::InputInt("Active Lights", &Light::_activeLights, 1, 1);
   if(Light::_activeLights > MAXLIGHTS)
     Light::_activeLights = MAXLIGHTS;
@@ -215,20 +247,29 @@ inline void LightEditor()
       ImGui::Combo("Type", &lights[i]._type, "Point\0Directional\0Spot\0\0");
       int type = lights[i]._type;
       if(type == Light::_typePoint || type == Light::_typeSpot){
-        if(ImGui::TreeNode("Position")) {
-          ImGui::DragFloat("X", &lights[i]._position.x, 0.01f);
-          ImGui::DragFloat("Y", &lights[i]._position.y, 0.01f);
-          ImGui::DragFloat("Z", &lights[i]._position.z, 0.01f);
-          ImGui::TreePop();
-        }
+        ImGui::Text("Position");
+        ImGui::DragFloat("PX", &lights[i]._position.x, 0.01f);
+        ImGui::DragFloat("PY", &lights[i]._position.y, 0.01f);
+        ImGui::DragFloat("PZ", &lights[i]._position.z, 0.01f);
       }
       if (type == Light::_typeDirectional || type == Light::_typeSpot) {
-        if(ImGui::TreeNode("Direction")){
-          ImGui::DragFloat("X", &lights[i]._direction.x, 0.01f);
-          ImGui::DragFloat("Y", &lights[i]._direction.y, 0.01f);
-          ImGui::DragFloat("Z", &lights[i]._direction.z, 0.01f);
-          ImGui::TreePop();
-        }
+        ImGui::Text("Direction");
+        ImGui::DragFloat("DX", &lights[i]._direction.x, 0.01f);
+        ImGui::DragFloat("DY", &lights[i]._direction.y, 0.01f);
+        ImGui::DragFloat("DZ", &lights[i]._direction.z, 0.01f);
+      }
+      if (type == Light::_typeSpot) {
+        ImGui::Text("Spotlight Angles");
+        float * inner_angle = &lights[i]._innerAngle;
+        float * outer_angle = &lights[i]._outerAngle;
+        ImGui::SliderFloat("Inner", inner_angle, 0.0f, *outer_angle);
+        ImGui::SliderFloat("Outer", outer_angle, *inner_angle, PI / 2.0f);
+      }
+      if (type != Light::_typeDirectional) {
+        ImGui::Text("Attenuation Coefficients");
+        ImGui::SliderFloat("C0", &lights[i]._attenuationC0, 0.0f, 5.0f);
+        ImGui::SliderFloat("C1", &lights[i]._attenuationC1, 0.0f, 5.0f);
+        ImGui::SliderFloat("C2", &lights[i]._attenuationC2, 0.0f, 5.0f);
       }
       ImGui::Text("Light Colors");
       ImGui::ColorEdit3("Ambient Color", lights[i]._ambientColor._values);
@@ -283,6 +324,7 @@ inline void EditorUpdate()
   }
   if (ImGui::CollapsingHeader("Debug")) {
     ImGui::Text("Average FPS: %f", Framer::AverageFPS());
+    ImGui::Text("Average Frame Usage: %f", Framer::AverageFrameUsage() * 100.0f);
     ImGui::Separator();
   }
   if (ImGui::CollapsingHeader("Global")) {
@@ -316,18 +358,15 @@ inline void EditorUpdate()
     ImGui::Text("Vertex Count: %d", mesh->VertexCount());
     ImGui::Text("Face Count: %d", mesh->FaceCount());
     ImGui::Separator();
-    ImGui::Text("Color");
-    ImGui::ColorEdit3("Mesh Color", mesh_object->_color._values);
-    ImGui::Separator();
     ImGui::Text("Translation");
     ImGui::DragFloat("TX", &trans.x, 0.01f);
     ImGui::DragFloat("TY", &trans.y, 0.01f);
     ImGui::DragFloat("TZ", &trans.z, 0.01f);
     ImGui::Separator();
     ImGui::Text("Rotation");
-    ImGui::DragFloat("RX", &rotate.Angles.x, 0.01f);
-    ImGui::DragFloat("RY", &rotate.Angles.y, 0.01f);
-    ImGui::DragFloat("RZ", &rotate.Angles.z, 0.01f);
+    ImGui::DragFloat("RX", &rotation.Angles.x, 0.01f);
+    ImGui::DragFloat("RY", &rotation.Angles.y, 0.01f);
+    ImGui::DragFloat("RZ", &rotation.Angles.z, 0.01f);
     ImGui::Separator();
     ImGui::Text("Scale");
     ImGui::DragFloat("s", &cur_scale, 0.01f);
@@ -389,9 +428,9 @@ inline void ManageInput()
     std::pair<int, int> mouse_motion = Input::MouseMotion();
 
     if (mouse_motion.first != 0)
-      rotate.Angles.y += mouse_motion.first / 100.0f;
+      rotation.Angles.y += mouse_motion.first / 100.0f;
     if (mouse_motion.second != 0) {
-      rotate.Angles.x -= mouse_motion.second / 100.0f;
+      rotation.Angles.x -= mouse_motion.second / 100.0f;
     }
   }
 
@@ -417,33 +456,64 @@ inline void ManageInput()
     
 }
 
+inline void RotateLights()
+{
+  float rotating_light_distance = 1.5f;
+  std::vector<float> light_anlges;
+  for(int i = 0; i < Light::_activeLights; ++i){
+    float percentage = (float)i / (float)Light::_activeLights;
+    light_anlges.push_back(percentage * PI2);
+  }
+
+  for (unsigned i = 0; i < Light::_activeLights; ++i) {
+    float light_angle = light_anlges[i] + Time::TotalTimeScaled();
+    Light & light = lights[i];
+    light._position.x = Math::Cos(light_angle) * rotating_light_distance;
+    light._position.y = 0.0f;
+    light._position.z = Math::Sin(light_angle) * rotating_light_distance;
+  }
+}
+
 inline void Update()
 {
   ImGuiIO & imgui_io = ImGui::GetIO();
   if(!imgui_io.WantCaptureMouse)
     ManageInput();
+  if(rotating_lights)
+    RotateLights();
 }
 
 inline void Render()
 {
-  Math::Matrix4 projection;
-  Math::Matrix4 model;
-
-  Math::Matrix4 translation;
-  translation.Translate(trans.x, trans.y, trans.z);
-  Math::Matrix4 scale;
-  scale.Scale(cur_scale, cur_scale, cur_scale);
-  Math::Matrix4 rotation;
-  Math::ToMatrix4(rotate, &rotation);
-
-  projection = Math::Matrix4::Perspective(PI / 2.0f, 
-    OpenGLContext::AspectRatio(), MeshRenderer::_nearPlane, 
-    MeshRenderer::_farPlane);
-  model = translation * rotation * scale;
-
-  // prepping uniforms
+  SolidShader * solid_shader = MeshRenderer::GetSolidShader();
   PhongShader * phong_shader = MeshRenderer::GetPhongShader();
   GouraudShader * gouraud_shader = MeshRenderer::GetGouraudShader();
+  Math::Matrix4 projection;
+  Math::Matrix4 model;
+  Math::Matrix4 translate;
+  Math::Matrix4 rotate;
+  Math::Matrix4 scale;
+  projection = Math::Matrix4::Perspective(PI / 2.0f,
+    OpenGLContext::AspectRatio(), MeshRenderer::_nearPlane,
+    MeshRenderer::_farPlane);
+
+  // render lights
+  solid_shader->Use();
+
+  for (unsigned int i = 0; i < Light::_activeLights; ++i) {
+    translate.Translate(lights[i]._position.x, lights[i]._position.y, lights[i]._position.z);
+    scale.Scale(0.25f, 0.25f, 0.25f);
+    model = translate * scale;
+    Color & color = lights[i]._diffuseColor;
+    glUniform3f(solid_shader->UColor, color._r, color._g, color._b);
+    MeshRenderer::Render(sphere_mesh_id, MeshRenderer::SOLID, projection, camera.ViewMatrix(), model);
+  }
+
+  translate.Translate(trans.x, trans.y, trans.z);
+  scale.Scale(cur_scale, cur_scale, cur_scale);
+  Math::ToMatrix4(rotation, &rotate);
+  model = translate * rotate * scale;
+
   const Math::Vector3 & cpos = camera.Position();
   switch (shader_in_use)
   {
@@ -455,8 +525,6 @@ inline void Render()
     for (int i = 0; i < Light::_activeLights; ++i)
       lights[i].SetUniforms(i, phong_shader);
     material.SetUniforms(phong_shader);
-    // rendering mesh
-    MeshRenderer::Render(mesh_id, shader_in_use, projection, camera.ViewMatrix(), model);
     break;
   // GOURAUD SHADER
   case MeshRenderer::ShaderType::GOURAUD:
@@ -474,6 +542,12 @@ inline void Render()
   default:
     break;
   }
+  // rendering mesh
+  MeshRenderer::Render(mesh_id, shader_in_use, projection, camera.ViewMatrix(), model);
+  translate.Translate(0.0, -5.0f, 0.0f);
+  scale.Scale(20.0f, 20.0f, 20.0f);
+  model = translate * scale;
+  MeshRenderer::Render(plane_mesh_id, shader_in_use, projection, camera.ViewMatrix(), model);
   try
   {
     GLenum gl_error = glGetError();

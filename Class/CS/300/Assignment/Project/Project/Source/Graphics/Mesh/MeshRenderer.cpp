@@ -7,17 +7,20 @@
 Color MeshRenderer::_fogColor(0.3f, 0.3f, 0.3f);
 float MeshRenderer::_nearPlane = 0.1f;
 float MeshRenderer::_farPlane = 10.0f;
+unsigned int MeshRenderer::_meshObjectsAdded = 0;
 std::vector<MeshRenderer::MeshObject> MeshRenderer::_meshObjects;
+LineShader * MeshRenderer::_lineShader = nullptr;
+SolidShader * MeshRenderer::_solidShader = nullptr;
 PhongShader * MeshRenderer::_phongShader = nullptr;
 GouraudShader * MeshRenderer::_gouraudShader = nullptr;
-LineShader * MeshRenderer::_lineShader = nullptr;
 
 
 void MeshRenderer::Initialize()
 { 
+  _lineShader = new LineShader();
+  _solidShader = new SolidShader();
   _phongShader = new PhongShader();
   _gouraudShader = new GouraudShader();
-  _lineShader = new LineShader();
 }
 
 /*****************************************************************************/
@@ -41,12 +44,14 @@ void MeshRenderer::Purge()
   }
   _meshObjects.clear();
   // deallocating all shaders
+  _lineShader->Purge();
+  _solidShader->Purge();
   _phongShader->Purge();
   _gouraudShader->Purge();
-  _lineShader->Purge();
+  delete _lineShader;
+  delete _solidShader;
   delete _phongShader;
   delete _gouraudShader;
-  delete _lineShader;
 }
 
 /*****************************************************************************/
@@ -73,6 +78,7 @@ unsigned int MeshRenderer::Upload(Mesh * mesh)
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->IndexDataSizeBytes(), mesh->IndexData(), GL_STATIC_DRAW);
   // enable all vertex attributes
+  _solidShader->EnableAttributes();
   _phongShader->EnableAttributes();
   _gouraudShader->EnableAttributes();
   glBindVertexArray(0);
@@ -104,13 +110,14 @@ unsigned int MeshRenderer::Upload(Mesh * mesh)
   _meshObjects.push_back(MeshObject(vbo, ebo, vao, mesh->IndexDataSize(),
     vbo_vn, vao_vn, mesh->VertexNormalLineSizeVertices(),
     vbo_fn, vao_fn, mesh->FaceNormalLineSizeVertices()));
-  return _meshObjects.size() - 1;
+  return _meshObjectsAdded++;
 }
 
 void MeshRenderer::Purge(unsigned int mesh_id)
 {
   // grabbing mesh from mesh pool
-  MeshObject & mesh_object = _meshObjects[mesh_id];
+  unsigned int mesh_index = MeshIDToIndex(mesh_id);
+  MeshObject & mesh_object = _meshObjects[mesh_index];
   // freeing mesh buffers
   glDeleteBuffers(1, &mesh_object._vbo);
   glDeleteBuffers(1, &mesh_object._ebo);
@@ -121,8 +128,9 @@ void MeshRenderer::Purge(unsigned int mesh_id)
   glDeleteBuffers(1, &mesh_object._vboFaceNormal);
   glDeleteVertexArrays(1, &mesh_object._vaoFaceNormal);
   // removing mesh from mesh object vector
+
   std::vector<MeshObject>::iterator it = _meshObjects.begin();
-  it = it + mesh_id;
+  it = it + MeshIDToIndex(mesh_id);
   _meshObjects.erase(it);
 }
 
@@ -131,7 +139,8 @@ void MeshRenderer::Render(unsigned int mesh_id, ShaderType shader_type,
   const Math::Matrix4 & view, const Math::Matrix4 & model)
 {
   // grabbing mesh from mesh pool
-  MeshObject & mesh_object = _meshObjects[mesh_id];
+  unsigned int mesh_index = MeshIDToIndex(mesh_id);
+  MeshObject & mesh_object = _meshObjects[mesh_index];
   // updating shader
   switch (shader_type)
   {
@@ -159,6 +168,12 @@ void MeshRenderer::Render(unsigned int mesh_id, ShaderType shader_type,
     break;
   case ShaderType::BLINN:
     break;
+  case ShaderType::SOLID:
+    _solidShader->Use();
+    glUniformMatrix4fv(_solidShader->UProjection, 1, GL_TRUE, projection.array);
+    glUniformMatrix4fv(_solidShader->UView, 1, GL_TRUE, view.array);
+    glUniformMatrix4fv(_solidShader->UModel, 1, GL_TRUE, model.array);
+    break;
   case ShaderType::TOON:
     break;
   default:
@@ -175,10 +190,12 @@ void MeshRenderer::Render(unsigned int mesh_id, ShaderType shader_type,
   glBindVertexArray(0);
 
   // drawing normal lines
-  _lineShader->Use();
-  glUniformMatrix4fv(_lineShader->UProjection, 1, GL_TRUE, projection.array);
-  glUniformMatrix4fv(_lineShader->UView, 1, GL_TRUE, view.array);
-  glUniformMatrix4fv(_lineShader->UModel, 1, GL_TRUE, model.array);
+  if(mesh_object._showVertexNormals || mesh_object._showFaceNormals){
+    _lineShader->Use();
+    glUniformMatrix4fv(_lineShader->UProjection, 1, GL_TRUE, projection.array);
+    glUniformMatrix4fv(_lineShader->UView, 1, GL_TRUE, view.array);
+    glUniformMatrix4fv(_lineShader->UModel, 1, GL_TRUE, model.array);
+  }
   if (mesh_object._showVertexNormals) {
     // vertex normals
     glUniform3f(_lineShader->ULineColor,
@@ -264,7 +281,12 @@ void MeshRenderer::ReloadGouraud()
 
 MeshRenderer::MeshObject * MeshRenderer::GetMeshObject(unsigned int mesh_id)
 {
-  return &(_meshObjects[mesh_id]);
+  return &(_meshObjects[MeshIDToIndex(mesh_id)]);
+}
+
+SolidShader * MeshRenderer::GetSolidShader()
+{
+  return _solidShader;
 }
 
 PhongShader * MeshRenderer::GetPhongShader()
@@ -314,4 +336,14 @@ MeshRenderer::ShaderType MeshRenderer::IntToShaderType(int shader_int)
   default:
     return ShaderType::NUMSHADERTYPES;
   }
+}
+
+unsigned int MeshRenderer::MeshIDToIndex(unsigned int mesh_id)
+{
+  unsigned int size = _meshObjects.size();
+  for (unsigned int i = 0; i < size; ++i) {
+    if(_meshObjects[i]._ID == mesh_id)
+      return i;
+  }
+  return -1;
 }

@@ -36,6 +36,24 @@ public:
   GLuint ULineColor;
 };
 
+
+
+class SolidShader : public Shader
+{
+public:
+  void EnableAttributes();
+  void DisableAttributes();
+public:
+  SolidShader();
+  // Attributes
+  GLuint APosition;
+  // Uniforms
+  GLuint UProjection;
+  GLuint UView;
+  GLuint UModel;
+  GLuint UColor;
+};
+
 /*****************************************************************************/
 /*!
 \class PhongShader
@@ -60,9 +78,14 @@ public:
     GLuint UType;
     GLuint UPosition;
     GLuint UDirection;
+    GLuint UInnerAngle;
+    GLuint UOuterAngle;
     GLuint UAmbientColor;
     GLuint UDiffuseColor;
     GLuint USpecularColor;
+    GLuint UAttenuationC0;
+    GLuint UAttenuationC1;
+    GLuint UAttenuationC2;
   };
 public:
   PhongShader();

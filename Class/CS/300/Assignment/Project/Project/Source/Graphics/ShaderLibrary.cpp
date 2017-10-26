@@ -11,6 +11,28 @@ LineShader::LineShader() :
   ULineColor = GetUniformLocation("ULineColor");
 }
 
+SolidShader::SolidShader() :
+  Shader("Resource/Shader/solid.vert", "Resource/Shader/solid.frag")
+{
+  APosition = GetAttribLocation("APosition");
+  UProjection = GetUniformLocation("UProjection");
+  UView = GetUniformLocation("UView");
+  UModel = GetUniformLocation("UModel");
+  UColor = GetUniformLocation("UColor");
+}
+
+void SolidShader::EnableAttributes()
+{
+  glVertexAttribPointer(APosition, 3, GL_FLOAT, GL_FALSE,
+    3 * sizeof(GLfloat), nullptr);
+  glEnableVertexAttribArray(APosition);
+}
+
+void SolidShader::DisableAttributes()
+{
+  glDisableVertexAttribArray(APosition);
+}
+
 PhongShader::PhongShader() :
   Shader("Resource/Shader/phong.vert", "Resource/Shader/phong.frag")
 {
@@ -37,12 +59,22 @@ PhongShader::PhongShader() :
       "ULights[" + index + "].UPosition");
     ULights[i].UDirection = GetUniformLocation(
       "ULights[" + index + "].UDirection");
+    ULights[i].UInnerAngle = GetUniformLocation(
+      "ULights[" + index + "].UInnerAngle");
+    ULights[i].UOuterAngle = GetUniformLocation(
+      "ULights[" + index + "].UOuterAngle");
     ULights[i].UAmbientColor = GetUniformLocation(
       "ULights[" + index + "].UAmbientColor");
     ULights[i].UDiffuseColor = GetUniformLocation(
       "ULights[" + index + "].UDiffuseColor");
     ULights[i].USpecularColor = GetUniformLocation(
       "ULights[" + index + "].USpecularColor");
+    ULights[i].UAttenuationC0 = GetUniformLocation(
+      "ULights[" + index + "].UAttenuationC0");
+    ULights[i].UAttenuationC1 = GetUniformLocation(
+      "ULights[" + index + "].UAttenuationC1");
+    ULights[i].UAttenuationC2 = GetUniformLocation(
+      "ULights[" + index + "].UAttenuationC2");
   }
   UActiveLights = GetUniformLocation("UActiveLights");
   // finding fog uniforms
@@ -52,8 +84,8 @@ PhongShader::PhongShader() :
 }
 void PhongShader::EnableAttributes()
 {
-  glVertexAttribPointer(APosition, 3, GL_FLOAT, GL_FALSE,
-    6 * sizeof(GLfloat), nullptr);
+  glVertexAttribPointer(APosition, 3, GL_FLOAT, GL_FALSE,6 * sizeof(GLfloat),
+    nullptr);
   glVertexAttribPointer(ANormal, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
     (void *)(3 * sizeof(GLfloat)));
   glEnableVertexAttribArray(APosition);

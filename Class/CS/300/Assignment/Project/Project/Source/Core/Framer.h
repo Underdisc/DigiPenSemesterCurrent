@@ -29,9 +29,10 @@ public:
   static void Unlock();
   static void Lock(int fps);
   static float AverageFPS();
+  static float AverageFrameUsage();
 private:
   Framer() {}
-  static void CalculateAverageFPS();
+  static void CalculateAverages();
   //! Identifies whether the frame rate is locked or not
   static bool _locked;
   //! The target frame time for a locked frame rate
@@ -39,13 +40,17 @@ private:
   //! The time at the start of a frame
   static float _startTime;
   //! The time since a FPS calculation was made
-  static float _timeSinceLastFPSCalculation;
+  static float _timeSinceLastAverageCalculation;
   //! The amount of time the Framer will wait to make an FPS calculation
-  static float _waitTimeForFPSCalculation;
+  static float _waitTimeForAverageCalculation;
   //! The average FPS over the duration specified by 
-  // _waitTimeForFPSCalculation
+  // _waitTimeForAverageCalculation
   static float _averageFPS;
+  //! The average usage of a frame over the duration specified by
+  // _waitTimeForAverageCalculation
+  static float _averageFrameUsage;
   //! The amount of time passed for each frame over the duration specified
-  // by _waitTimeForFPSCalculation
+  // by _waitTimeForAverageCalculation
   static std::vector<float> _frameTimes;
+  static std::vector<float> _frameUsages;
 };

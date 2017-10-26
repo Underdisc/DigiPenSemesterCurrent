@@ -276,31 +276,9 @@ inline void Mesh::LoadObj(const std::string & file_name)
     }
   }
   file_stream.close();
-
-  
-  // normalizing vertices
-  Math::Vector3 min(_vertices[0].x, _vertices[0].y, _vertices[0].z);
-  Math::Vector3 max(_vertices[0].x, _vertices[0].y, _vertices[0].z);
-  for (const Vertex & vert : _vertices){
-    min.x = Math::Min(min.x, vert.x);
-    min.y = Math::Min(min.y, vert.y);
-    min.z = Math::Min(min.z, vert.z);
-    max.x = Math::Max(max.x, vert.x);
-    max.y = Math::Max(max.y, vert.y);
-    max.z = Math::Max(max.z, vert.z);
-  }
-  Math::Vector3 extent = max - min;
-  float scale = 1.0f / Math::Min(Math::Min(extent.x, extent.y), extent.z);
-  for (Vertex & vert : _vertices) {
-    vert.x *= scale;
-    vert.y *= scale;
-    vert.z *= scale;
-  }
-
   // centering vertices
-  // TODO - center the model
   Math::Vector3 center(0.0f, 0.0f, 0.0f);
-  for (const Vertex & vert: _vertices) {
+  for (const Vertex & vert : _vertices) {
     center.x += vert.x;
     center.y += vert.y;
     center.z += vert.z;
@@ -312,7 +290,23 @@ inline void Mesh::LoadObj(const std::string & file_name)
     vert.y -= center.y;
     vert.z -= center.z;
   }
-
+  // normalizing vertices
+  // finding the vertex furthest away
+  float max_length = 0;
+  for (const Vertex & vert : _vertices) {
+    float length = vert.x * vert.x + vert.y * vert.y + vert.z * vert.z;
+    if(length > max_length)
+      max_length = length;
+  }
+  // scale vertex to a unit vertex and scale all other vertices by the
+  // same scalar
+  max_length = Math::Sqrt(max_length);
+  float scale = 1.0f / max_length;
+  for (Vertex & vert : _vertices) {
+    vert.x *= scale;
+    vert.y *= scale;
+    vert.z *= scale;
+  }
 
   // calculating normals
   std::vector<std::vector<unsigned> > adjacencies;

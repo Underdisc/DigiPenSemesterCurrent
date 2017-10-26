@@ -56,8 +56,9 @@ public:
     MeshObject(GLuint vbo, GLuint ebo, GLuint vao, unsigned int elements,
       GLuint vbo_vn, GLuint vao_vn, unsigned int vertices_vn,
       GLuint vbo_fn, GLuint vao_fn, unsigned int vertices_fn): 
-      _vbo(vbo), _ebo(ebo), _vao(vao), _elements(elements), 
-      _vboVertexNormal(vbo_vn), _vaoVertexNormal(vao_vn), 
+      _ID(MeshRenderer::_meshObjectsAdded), 
+      _vbo(vbo), _ebo(ebo), _vao(vao), _elements(elements),
+      _vboVertexNormal(vbo_vn), _vaoVertexNormal(vao_vn),
       _vertexNormalVertexCount(vertices_vn),
       _vboFaceNormal(vbo_fn), _vaoFaceNormal(vao_fn),
       _faceNormalVertexCount(vertices_fn),
@@ -65,6 +66,8 @@ public:
       _color(1.0f, 1.0f, 1.0f),
       _vertexNormalColor(0.0f, 0.0f, 0.0f), _faceNormalColor(0.0f, 0.0f, 0.0f)
       {}
+    //! The ID for the mesh object
+    unsigned int _ID;
     //! VBO for the mesh
     GLuint _vbo;
     //! EBO for the mesh
@@ -104,6 +107,7 @@ public:
     PHONG,
     GOURAUD,
     BLINN,
+    SOLID,
     TOON,
     NUMSHADERTYPES
   };
@@ -123,18 +127,24 @@ public:
   static void ReloadPhong();
   static void ReloadGouraud();
   static MeshObject * GetMeshObject(unsigned int mesh_id);
+  static SolidShader * GetSolidShader();
   static PhongShader * GetPhongShader();
   static GouraudShader * GetGouraudShader();
   static LineShader * GetLineShader();
   static int ShaderTypeToInt(ShaderType shader_type);
   static ShaderType IntToShaderType(int shader_int);
 private:
+  static unsigned int MeshIDToIndex(unsigned int mesh_id);
   //! The vector of currently loaded Mesh objects
   static std::vector<MeshObject> _meshObjects;
+  //! The number of mesh objects that have been added to the MeshRenderer
+  static unsigned int _meshObjectsAdded;
+  //! The shader used for drawing vertex and face normals
+  static LineShader * _lineShader;
+  //! The shader used for drawing single color meshes
+  static SolidShader * _solidShader;
   //! The shader used for Phong
   static PhongShader * _phongShader;
   //! The shader used for Gouraud
   static GouraudShader * _gouraudShader;
-  //! The shader used for drawing vertex and face normals
-  static LineShader * _lineShader;
 };
