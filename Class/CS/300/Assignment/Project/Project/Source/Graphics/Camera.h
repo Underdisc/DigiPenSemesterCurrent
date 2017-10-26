@@ -7,6 +7,7 @@ class Camera
 {
 public:
   Camera(const Math::Vector3 & global_up);
+  void SetPosition(const Math::Vector3 & position);
   void MoveRight(float delta);
   void MoveUp(float delta);
   void MoveBack(float delta);
@@ -14,18 +15,22 @@ public:
   void MoveInDirection(const Math::Vector3 & direction, float delta);
   void MoveYaw(float delta);
   void MovePitch(float delta);
-  const Math::Vector3 & Position();
+  void LookAt(const Math::Vector3 & position);
+  const Math::Vector3 & GetPosition();
   const Math::Matrix4 & ViewMatrix();
 private:
+  void UpdateFrontVector();
   void UpdateOrientationVectors();
   void UpdateViewMatrix();
   Math::Vector3 _globalUp;
   Math::Vector3 _position;
+  Math::Vector3 _front;
   Math::Vector3 _right;
   Math::Vector3 _up;
   Math::Vector3 _back;
   float _yaw;
   float _pitch;
+  bool _updatedFrontVector;
   bool _updatedOrientationVectors;
   bool _updatedViewMatrix;
   Math::Matrix4 _view;

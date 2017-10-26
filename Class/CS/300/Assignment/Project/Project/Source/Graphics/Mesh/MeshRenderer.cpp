@@ -5,6 +5,7 @@
 
 // static initializations
 Color MeshRenderer::_fogColor(0.3f, 0.3f, 0.3f);
+float MeshRenderer::_fogBegin = 0.5;
 float MeshRenderer::_nearPlane = 0.1f;
 float MeshRenderer::_farPlane = 10.0f;
 unsigned int MeshRenderer::_meshObjectsAdded = 0;
@@ -138,6 +139,7 @@ void MeshRenderer::Render(unsigned int mesh_id, ShaderType shader_type,
   const Math::Matrix4 & projection,
   const Math::Matrix4 & view, const Math::Matrix4 & model)
 {
+  float fog_near_plane = _nearPlane + (_farPlane - _nearPlane) * _fogBegin;
   // grabbing mesh from mesh pool
   unsigned int mesh_index = MeshIDToIndex(mesh_id);
   MeshObject & mesh_object = _meshObjects[mesh_index];
@@ -152,7 +154,7 @@ void MeshRenderer::Render(unsigned int mesh_id, ShaderType shader_type,
     glUniformMatrix4fv(_phongShader->UModel, 1, GL_TRUE, model.array);
     glUniform3f(_phongShader->UFogColor, 
       _fogColor._r, _fogColor._g, _fogColor._b);
-    glUniform1f(_phongShader->UNearPlane, _nearPlane);
+    glUniform1f(_phongShader->UNearPlane, fog_near_plane);
     glUniform1f(_phongShader->UFarPlane, _farPlane);
     break;
   // GOURAUD SHADING

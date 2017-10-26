@@ -113,6 +113,7 @@ public:
   };
 public:
   static Color _fogColor;
+  static float _fogBegin;
   static float _nearPlane;
   static float _farPlane;
 public:

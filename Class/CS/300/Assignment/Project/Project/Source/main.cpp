@@ -146,6 +146,8 @@ Material material;
 unsigned int active_lights = 2;
 MeshRenderer::ShaderType shader_in_use = MeshRenderer::PHONG;
 bool rotating_lights = false;
+bool rotate_camera = false;
+float camera_distance = 2.0f;
 
 
 Math::Vector3 trans(0.0f, 0.0f, 0.0f);
@@ -202,8 +204,8 @@ int main(int argc, char * argv[])
     // frame start
     Framer::Start();
     InitialUpdate();
-    Update();
     EditorUpdate();
+    Update();
     // clearing and rendering new frame
     Color & fog_color = MeshRenderer::_fogColor;
     glClearColor(fog_color._r, fog_color._g, fog_color._b, 1.0f);
@@ -329,21 +331,11 @@ inline void EditorUpdate()
   }
   if (ImGui::CollapsingHeader("Global")) {
     ImGui::ColorEdit3("Fog Color", MeshRenderer::_fogColor._values);
+    ImGui::SliderFloat("Fog Begin", &MeshRenderer::_fogBegin, 0.0, 1.0f);
     ImGui::SliderFloat("Near Plane", &MeshRenderer::_nearPlane, 0.01f, 5.0f);
     ImGui::SliderFloat("Far Plane", &MeshRenderer::_farPlane, MeshRenderer::_nearPlane, 100.0f);
     ImGui::DragFloat("Time Scale", &Time::m_TimeScale, 0.01f);
     ImGui::Separator();
-  }
-  if (ImGui::CollapsingHeader("Editor Windows")) {
-    ImGui::Checkbox("Material Editor", &show_material_editor);
-    ImGui::Checkbox("Light Editor", &show_light_editor);
-  }
-  if (ImGui::CollapsingHeader("Shaders")) {
-    int shader_int = MeshRenderer::ShaderTypeToInt(shader_in_use);
-    ImGui::Combo("Shader Type", &shader_int, "Phong\0Gouraud\0Blinn\0Toon\0\0");
-    shader_in_use = MeshRenderer::IntToShaderType(shader_int);
-    if(ImGui::Button("Reload Selected Shader"))
-      MeshRenderer::ReloadShader(shader_in_use);
   }
   if (ImGui::CollapsingHeader("Mesh")) {
 
@@ -380,6 +372,21 @@ inline void EditorUpdate()
     ImGui::Text("Other");
     ImGui::Checkbox("Wireframe", &mesh_object->_showWireframe);
     ImGui::Separator();
+  }
+  if (ImGui::CollapsingHeader("Shaders")) {
+    int shader_int = MeshRenderer::ShaderTypeToInt(shader_in_use);
+    ImGui::Combo("Shader Type", &shader_int, "Phong\0Gouraud\0Blinn\0Toon\0\0");
+    shader_in_use = MeshRenderer::IntToShaderType(shader_int);
+    if (ImGui::Button("Reload Selected Shader"))
+      MeshRenderer::ReloadShader(shader_in_use);
+  }
+  if (ImGui::CollapsingHeader("Editor Windows")) {
+    ImGui::Checkbox("Material Editor", &show_material_editor);
+    ImGui::Checkbox("Light Editor", &show_light_editor);
+  }
+  if (ImGui::CollapsingHeader("Camera")) {
+    ImGui::Checkbox("Rotating Camera", &rotate_camera);
+    ImGui::DragFloat("Rotating Camera Distance", &camera_distance, 0.01f);
   }
   ImGui::End();
   if (show_material_editor)
@@ -448,7 +455,7 @@ inline void ManageInput()
     camera.MoveGlobalUp(-Time::DT() * movespeed);
   if (Input::KeyDown(E))
     camera.MoveGlobalUp(Time::DT() * movespeed);
-  if (Input::MouseButtonDown(RIGHT)) {
+  if (Input::MouseButtonDown(RIGHT) && !rotate_camera) {
     std::pair<int, int> mouse_motion = Input::MouseMotion();
     camera.MoveYaw((float)mouse_motion.first * Time::DT() * mouse_sensitivity);
     camera.MovePitch(-(float)mouse_motion.second * Time::DT() * mouse_sensitivity);
@@ -456,22 +463,36 @@ inline void ManageInput()
     
 }
 
+inline void RotateCamera()
+{
+  float camera_angle = Time::TotalTimeScaled();
+  Math::Vector3 new_position;
+  new_position.x = Math::Cos(camera_angle) * camera_distance;
+  new_position.y = Math::Sin(Time::TotalTimeScaled());
+  new_position.z = Math::Sin(camera_angle) * camera_distance;
+  camera.SetPosition(new_position);
+  camera.LookAt(Math::Vector3(trans.x, trans.y, trans.z));
+}
+
 inline void RotateLights()
 {
-  float rotating_light_distance = 1.5f;
-  std::vector<float> light_anlges;
-  for(int i = 0; i < Light::_activeLights; ++i){
+  for (int i = 0; i < Light::_activeLights; ++i) {
     float percentage = (float)i / (float)Light::_activeLights;
-    light_anlges.push_back(percentage * PI2);
+    float light_angle = percentage * PI2 + Time::TotalTimeScaled();
+    Light & light = lights[i];
+
+    float cos_angle = Math::Cos(light_angle);
+    float sin_angle = Math::Sin(light_angle);
+    light._position.x = cos_angle * cur_scale + 0.5f * cos_angle + trans.x;
+    light._position.y = trans.y;
+    light._position.z = sin_angle * cur_scale + 0.5f * sin_angle + trans.z;
+
+    light._direction.x = -cos_angle;
+    light._direction.y = 0.0f;
+    light._direction.z = -sin_angle;
   }
 
-  for (unsigned i = 0; i < Light::_activeLights; ++i) {
-    float light_angle = light_anlges[i] + Time::TotalTimeScaled();
-    Light & light = lights[i];
-    light._position.x = Math::Cos(light_angle) * rotating_light_distance;
-    light._position.y = 0.0f;
-    light._position.z = Math::Sin(light_angle) * rotating_light_distance;
-  }
+
 }
 
 inline void Update()
@@ -481,6 +502,8 @@ inline void Update()
     ManageInput();
   if(rotating_lights)
     RotateLights();
+  if(rotate_camera)
+    RotateCamera();
 }
 
 inline void Render()
@@ -500,7 +523,7 @@ inline void Render()
   // render lights
   solid_shader->Use();
 
-  for (unsigned int i = 0; i < Light::_activeLights; ++i) {
+  for (int i = 0; i < Light::_activeLights; ++i) {
     translate.Translate(lights[i]._position.x, lights[i]._position.y, lights[i]._position.z);
     scale.Scale(0.25f, 0.25f, 0.25f);
     model = translate * scale;
@@ -514,7 +537,7 @@ inline void Render()
   Math::ToMatrix4(rotation, &rotate);
   model = translate * rotate * scale;
 
-  const Math::Vector3 & cpos = camera.Position();
+  const Math::Vector3 & cpos = camera.GetPosition();
   switch (shader_in_use)
   {
   //PHONG SHADER

@@ -1,1 +1,11 @@
-CLEAN
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UObjectColor
+<Shader Files Involved>
+Resource/Shader/gouraud.vert
+Resource/Shader/gouraud.frag
+----- Error End -----
