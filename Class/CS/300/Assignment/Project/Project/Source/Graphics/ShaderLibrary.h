@@ -70,6 +70,7 @@ struct ULight
   GLuint UDirection;
   GLuint UInnerAngle;
   GLuint UOuterAngle;
+  GLuint USpotExponent;
   GLuint UAmbientColor;
   GLuint UDiffuseColor;
   GLuint USpecularColor;

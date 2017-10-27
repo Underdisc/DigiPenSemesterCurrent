@@ -1,3 +1,4 @@
+/* All content(c) 2017 DigiPen(USA) Corporation, all rights reserved. */
 #include "../../Math/Matrix4.h"
 #include "../../Utility/Error.h"
 
@@ -5,11 +6,12 @@
 
 // static initializations
 Color MeshRenderer::_emissiveColor(0.0f, 0.0f, 0.0f);
-Color MeshRenderer::_globalAmbientColor(0.0f, 0.0f, 0.0f);
+Color MeshRenderer::_globalAmbientColor(0.2f, 0.2f, 0.2f);
 Color MeshRenderer::_fogColor(0.3f, 0.3f, 0.3f);
-float MeshRenderer::_fogBegin = 0.5;
+float MeshRenderer::_fogNear = 10.0f;
+float MeshRenderer::_fogFar = 20.0f;
 float MeshRenderer::_nearPlane = 0.1f;
-float MeshRenderer::_farPlane = 10.0f;
+float MeshRenderer::_farPlane = 20.0f;
 unsigned int MeshRenderer::_meshObjectsAdded = 0;
 std::vector<MeshRenderer::MeshObject> MeshRenderer::_meshObjects;
 LineShader * MeshRenderer::_lineShader = nullptr;
@@ -146,7 +148,6 @@ void MeshRenderer::Render(unsigned int mesh_id, ShaderType shader_type,
   const Math::Matrix4 & projection,
   const Math::Matrix4 & view, const Math::Matrix4 & model)
 {
-  float fog_near_plane = _nearPlane + (_farPlane - _nearPlane) * _fogBegin;
   // grabbing mesh from mesh pool
   unsigned int mesh_index = MeshIDToIndex(mesh_id);
   MeshObject & mesh_object = _meshObjects[mesh_index];
@@ -165,8 +166,8 @@ void MeshRenderer::Render(unsigned int mesh_id, ShaderType shader_type,
       _globalAmbientColor._r, _globalAmbientColor._g, _globalAmbientColor._b);
     glUniform3f(_phongShader->UFogColor, 
       _fogColor._r, _fogColor._g, _fogColor._b);
-    glUniform1f(_phongShader->UNearPlane, fog_near_plane);
-    glUniform1f(_phongShader->UFarPlane, _farPlane);
+    glUniform1f(_phongShader->UNearPlane, _fogNear);
+    glUniform1f(_phongShader->UFarPlane, _fogFar);
     break;
   // GOURAUD SHADING
   case ShaderType::GOURAUD:
@@ -180,8 +181,8 @@ void MeshRenderer::Render(unsigned int mesh_id, ShaderType shader_type,
       _globalAmbientColor._r, _globalAmbientColor._g, _globalAmbientColor._b);
     glUniform3f(_gouraudShader->UFogColor,
       _fogColor._r, _fogColor._g, _fogColor._b);
-    glUniform1f(_gouraudShader->UNearPlane, fog_near_plane);
-    glUniform1f(_gouraudShader->UFarPlane, _farPlane);
+    glUniform1f(_gouraudShader->UNearPlane, _fogNear);
+    glUniform1f(_gouraudShader->UFarPlane, _fogFar);
     break;
   // BLINN SHADING
   case ShaderType::BLINN:
@@ -195,8 +196,8 @@ void MeshRenderer::Render(unsigned int mesh_id, ShaderType shader_type,
       _globalAmbientColor._r, _globalAmbientColor._g, _globalAmbientColor._b);
     glUniform3f(_blinnShader->UFogColor,
       _fogColor._r, _fogColor._g, _fogColor._b);
-    glUniform1f(_blinnShader->UNearPlane, fog_near_plane);
-    glUniform1f(_blinnShader->UFarPlane, _farPlane);
+    glUniform1f(_blinnShader->UNearPlane, _fogNear);
+    glUniform1f(_blinnShader->UFarPlane, _fogFar);
     break;
   // SOLID SHADING
   case ShaderType::SOLID:

@@ -35,8 +35,6 @@
 #include "Core\Framer.h"
 #include "Graphics\Texture.h"
 
-#include "vld.h"
-
 #define PI 3.141592653589f
 #define PI2 6.28318530718f
 #define FPS 60
@@ -88,9 +86,10 @@ struct Light
 {
   Light(): _type(0), _position(0.0f, 2.0f, 0.0f), 
     _direction(0.0f, -1.0f, 0.0f), _innerAngle(PI / 12.0f), 
-    _outerAngle(PI / 6.0f), _ambientColor(0.1f, 0.1f, 0.1f), 
-    _diffuseColor(1.0f, 1.0f, 1.0f), _specularColor(1.0f, 0.7f, 0.0f), 
-    _attenuationC0(1.0f), _attenuationC1(0.0), _attenuationC2(1.0f)
+    _outerAngle(PI / 6.0f), _spotExponent(1.0f), 
+    _ambientColor(0.0f, 0.0f, 0.0f), _diffuseColor(0.8f, 0.8f, 0.8f),
+    _specularColor(1.0f, 1.0f, 1.0f), _attenuationC0(1.0f),
+    _attenuationC1(0.1f), _attenuationC2(0.0f)
   {}
   Light(unsigned int type, const Math::Vector3 & position, 
     const Math::Vector3 & direction, const Color & ambient_color,
@@ -104,6 +103,7 @@ struct Light
   Math::Vector3 _direction;
   float _innerAngle;
   float _outerAngle;
+  float _spotExponent;
   Color _ambientColor;
   Color _diffuseColor;
   Color _specularColor;
@@ -127,6 +127,8 @@ struct Light
       _innerAngle);
     glUniform1f(phong_shader->ULights[light_index].UOuterAngle,
       _outerAngle);
+    glUniform1f(phong_shader->ULights[light_index].USpotExponent,
+      _spotExponent);
     glUniform3f(phong_shader->ULights[light_index].UAmbientColor,
       _ambientColor._x, _ambientColor._y, _ambientColor._z);
     glUniform3f(phong_shader->ULights[light_index].UDiffuseColor,
@@ -151,6 +153,8 @@ struct Light
       _innerAngle);
     glUniform1f(gouraud_shader->ULights[light_index].UOuterAngle,
       _outerAngle);
+    glUniform1f(gouraud_shader->ULights[light_index].USpotExponent,
+      _spotExponent);
     glUniform3f(gouraud_shader->ULights[light_index].UAmbientColor,
       _ambientColor._x, _ambientColor._y, _ambientColor._z);
     glUniform3f(gouraud_shader->ULights[light_index].UDiffuseColor,
@@ -175,6 +179,8 @@ struct Light
       _innerAngle);
     glUniform1f(blinn_shader->ULights[light_index].UOuterAngle,
       _outerAngle);
+    glUniform1f(blinn_shader->ULights[light_index].USpotExponent,
+      _spotExponent);
     glUniform3f(blinn_shader->ULights[light_index].UAmbientColor,
       _ambientColor._x, _ambientColor._y, _ambientColor._z);
     glUniform3f(blinn_shader->ULights[light_index].UDiffuseColor,
@@ -255,10 +261,17 @@ inline void InitialUpdate()
   SDLContext::CheckEvents();
 }
 
+inline void Clear()
+{
+  Color & fog_color = MeshRenderer::_fogColor;
+  glClearColor(fog_color._r, fog_color._g, fog_color._b, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
 int main(int argc, char * argv[])
 {
   ErrorLog::Clean();
-  SDLContext::Create("CS 300 - Assignment 1", true, OpenGLContext::AdjustViewport);
+  SDLContext::Create("CS 300 - Assignment 2", true, OpenGLContext::AdjustViewport);
   OpenGLContext::Initialize();
   MeshRenderer::Initialize();
   ImGui_ImplSdlGL3_Init(SDLContext::SDLWindow());
@@ -277,10 +290,7 @@ int main(int argc, char * argv[])
     InitialUpdate();
     EditorUpdate();
     Update();
-    // clearing and rendering new frame
-    Color & fog_color = MeshRenderer::_fogColor;
-    glClearColor(fog_color._r, fog_color._g, fog_color._b, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    Clear();
     Render();
     ImGui::Render();
     OpenGLContext::Swap();
@@ -288,9 +298,62 @@ int main(int argc, char * argv[])
     Framer::End();
   }
 
+  Mesh::Purge(mesh);
   MeshRenderer::Purge();
   OpenGLContext::Purge();
   SDLContext::Purge();
+}
+
+inline void SceneSame()
+{
+  Light::_activeLights = 2;
+  
+  lights[0]._position = Math::Vector3(-2.5f, 0.0f, -1.0f);
+  lights[1]._position = Math::Vector3(1.0f, 1.0f, 0.0f);
+
+  for(int i = 0; i < Light::_activeLights; ++i) {
+    lights[i]._type = Light::_typePoint;
+    lights[i]._attenuationC0 = 1.0f;
+    lights[i]._attenuationC1 = 0.1f;
+    lights[i]._attenuationC2 = 0.0f;
+    lights[i]._ambientColor = Color(0.0f, 0.4f, 0.0f);
+    lights[i]._diffuseColor = Color(0.2f, 0.4f, 0.4f);
+    lights[i]._specularColor = Color(1.0f, 1.0f, 1.0f);
+  }
+}
+
+inline void SceneMix()
+{
+  Light::_activeLights = 3;
+  lights[0]._type = Light::_typeDirectional;
+  lights[0]._position = Math::Vector3(-5.0f, 0.0f, 0.0f);
+  lights[0]._direction = Math::Vector3(1.0f, -1.0f, 0.0f);
+  lights[0]._ambientColor = Color(0.0f, 0.0f, 0.4f);
+  lights[0]._diffuseColor = Color(0.23f, 0.2f, 0.23f);
+  lights[0]._specularColor = Color(1.0f, 0.8f, 0.53f);
+
+  lights[1]._type = Light::_typePoint;
+  lights[1]._position = Math::Vector3(0.0f, -2.0f, 0.0f);
+  lights[1]._attenuationC0 = 0.0f;
+  lights[1]._attenuationC1 = 0.4f;
+  lights[1]._attenuationC2 = 0.4f;
+  lights[1]._ambientColor = Color(0.0f, 0.0f, 0.0f);
+  lights[1]._diffuseColor = Color(0.0f, 0.8f, 0.53f);
+  lights[1]._specularColor = Color(1.0f, 1.0f, 1.0f);
+
+  lights[2]._type = Light::_typeSpot;
+  lights[2]._position = Math::Vector3(1.9f, 1.7f, -0.8f);
+  lights[2]._direction = Math::Vector3(-1.0f, -1.0f, 0.5f);
+  lights[2]._innerAngle = 0.027f;
+  lights[2]._outerAngle = 0.126f;
+  lights[2]._attenuationC0 = 0.0f;
+  lights[2]._attenuationC1 = 0.0f;
+  lights[2]._attenuationC2 = 0.5f;
+  lights[2]._ambientColor = Color(0.0f, 0.0f, 0.0f);
+  lights[2]._diffuseColor = Color(0.6f, 0.3f, 0.3f);
+  lights[2]._specularColor = Color(0.6f, 0.4f, 0);
+
+  
 }
 
 inline void MaterialEditor()
@@ -307,8 +370,17 @@ inline void MaterialEditor()
 inline void LightEditor()
 {
   ImGui::Begin("Lights", &show_light_editor);
-  ImGui::Checkbox("Rotate Lights", &rotating_lights);
-  ImGui::DragFloat("Rotation Speed", &rotate_light_speed, 0.01f);
+  if(ImGui::CollapsingHeader("Scenes")){
+    if(ImGui::Button("Same"))
+      SceneSame();
+    ImGui::SameLine();
+    if(ImGui::Button("Mix"))
+      SceneMix();
+    ImGui::Separator();
+    ImGui::Checkbox("Rotate Lights", &rotating_lights);
+    ImGui::DragFloat("Rotation Speed", &rotate_light_speed, 0.01f);
+    ImGui::Separator();
+  }
   ImGui::InputInt("Active Lights", &Light::_activeLights, 1, 1);
   if(Light::_activeLights > MAXLIGHTS)
     Light::_activeLights = MAXLIGHTS;
@@ -333,11 +405,12 @@ inline void LightEditor()
         ImGui::DragFloat("DZ", &lights[i]._direction.z, 0.01f);
       }
       if (type == Light::_typeSpot) {
-        ImGui::Text("Spotlight Angles");
+        ImGui::Text("Spotlight Properties");
         float * inner_angle = &lights[i]._innerAngle;
         float * outer_angle = &lights[i]._outerAngle;
         ImGui::SliderFloat("Inner", inner_angle, 0.0f, *outer_angle);
         ImGui::SliderFloat("Outer", outer_angle, *inner_angle, PI / 2.0f);
+        ImGui::SliderFloat("Exponent", &lights[i]._spotExponent, 0.0f, 30.0f);
       }
       if (type != Light::_typeDirectional) {
         ImGui::Text("Attenuation Coefficients");
@@ -368,32 +441,59 @@ inline void EditorUpdate()
     if (ImGui::TreeNode("QOL Controls"))
     {
       ImGui::Separator();
-      ImGui::TextWrapped("Click and drag anywhere outside the ImGui "
+      ImGui::TextWrapped("Left click and drag anywhere outside the ImGui "
         "window to rotate the object.");
       ImGui::Separator();
-      ImGui::TextWrapped("Use the mouse scroll wheel to perform a "
-        "uniform scaling on the object.");
+      ImGui::TextWrapped("Use WASD to move the camera around world. E will "
+        "raise the camera and Q will lower the camera.");
+      ImGui::Separator();
+      ImGui::TextWrapped("Right click and drag anywhere outside the ImGui "
+        "window to rotate the camera.");
+      ImGui::Separator();
+      ImGui::TextWrapped("Use the mouse scroll wheel to increase and "
+        "decrease the movement speed of the camera.");
       ImGui::Separator();
       ImGui::TextWrapped("These will not work when the mouse is hovering over "
-        "the ImGui window.");
+        "an ImGui window.");
       ImGui::Separator();
       ImGui::TreePop();
     }
     ImGui::Separator();
     if (ImGui::TreeNode("Editor Tabs")) {
       ImGui::Separator();
-      ImGui::TextWrapped("The Debug tab only contains FPS at the moment.");
+      ImGui::TextWrapped("The Debug tab only contains the average FPS and "
+        "average frame usage over a single second.");
       ImGui::Separator();
-      ImGui::TextWrapped("The Global window contains parameters for the "
-        "Clear Color and Time Scale (not currently in use).");
+      ImGui::TextWrapped("The Global tab contains parameters for "
+        "adjusting global colors (Emissive/Global Ambient/Fog), fog near/far " 
+        "planes and time scale");
       ImGui::Separator();
-      ImGui::TextWrapped("The Mesh window allows you to edit mesh properites, "
+      ImGui::TextWrapped("The Camera tab contains parameters for the "
+        "near/far planes of the view frustum. It also contains the rotating "
+        "camera option. When rotating the camera after disabling this "
+        "option, the camera might get flipped around");
+      ImGui::Separator();
+      ImGui::TextWrapped("The Mesh tab allows you to edit mesh properites, "
         "display normal lines, and load new meshes.");
       ImGui::Separator();
-      ImGui::TextWrapped("The Light window contains parameters for the single "
-        "light that is currently being used.");
+      ImGui::TextWrapped("The Shader tab contains an option for swapping out "
+        "the shader that is used for rendering.");
+      ImGui::Separator();
+      ImGui::TextWrapped("The Material and Light Editor checkboxes will open "
+        "new ImGui windows for editing material and light properties when "
+        "selected.");
       ImGui::TreePop();
     }
+    ImGui::Separator();
+    if (ImGui::TreeNode("Light Editor")){
+      ImGui::Separator();
+      ImGui::TextWrapped("You can add, remove and adjust light properties in "
+        "the light editor. The Scene tab at the top contains the two presets "
+        "for lighting the scene and the option to rotate the lights around "
+        "the model.");
+      ImGui::TreePop();
+    }
+
     ImGui::Separator();
   }
   if (ImGui::CollapsingHeader("Debug")) {
@@ -409,11 +509,19 @@ inline void EditorUpdate()
     ImGui::ColorEdit3("Fog Color", MeshRenderer::_fogColor._values);
     ImGui::Separator();
     ImGui::Text("Fog Properties");
-    ImGui::SliderFloat("Fog Begin", &MeshRenderer::_fogBegin, 0.0, 1.0f);
+    ImGui::SliderFloat("Fog Near", &MeshRenderer::_fogNear, 0.0f, MeshRenderer::_fogFar);
+    ImGui::SliderFloat("Fog Far", &MeshRenderer::_fogFar, MeshRenderer::_fogNear, 100.0f);
+    ImGui::Separator();
+    ImGui::DragFloat("Time Scale", &Time::m_TimeScale, 0.01f);
+    ImGui::Separator();
+  }
+  if (ImGui::CollapsingHeader("Camera")) {
     ImGui::SliderFloat("Near Plane", &MeshRenderer::_nearPlane, 0.01f, 5.0f);
     ImGui::SliderFloat("Far Plane", &MeshRenderer::_farPlane, MeshRenderer::_nearPlane, 100.0f);
     ImGui::Separator();
-    ImGui::DragFloat("Time Scale", &Time::m_TimeScale, 0.01f);
+    ImGui::Checkbox("Rotating Camera", &rotate_camera);
+    ImGui::DragFloat("Rotation Distance", &camera_distance, 0.01f);
+    ImGui::DragFloat("Rotation Speed", &camera_rotate_speed, 0.01f);
     ImGui::Separator();
   }
   if (ImGui::CollapsingHeader("Mesh")) {
@@ -452,7 +560,7 @@ inline void EditorUpdate()
     ImGui::Checkbox("Wireframe", &mesh_object->_showWireframe);
     ImGui::Separator();
   }
-  if (ImGui::CollapsingHeader("Shaders")) {
+  if (ImGui::CollapsingHeader("Shader")) {
     int shader_int = MeshRenderer::ShaderTypeToInt(shader_in_use);
     ImGui::Combo("Shader Type", &shader_int, "Phong\0Gouraud\0Blinn\0\0");
     shader_in_use = MeshRenderer::IntToShaderType(shader_int);
@@ -460,20 +568,9 @@ inline void EditorUpdate()
       MeshRenderer::ReloadShader(shader_in_use);
     ImGui::Separator();
   }
-  if (ImGui::CollapsingHeader("Editor Windows")) {
-    ImGui::Checkbox("Material Editor", &show_material_editor);
-    ImGui::Checkbox("Light Editor", &show_light_editor);
-    ImGui::Separator();
-  }
-  if (ImGui::CollapsingHeader("Camera")) {
-    ImGui::Text("Yaw: %f", camera.GetYaw());
-    ImGui::Text("Pitch: %f", camera.GetPitch());
-    ImGui::Separator();
-    ImGui::Checkbox("Rotating Camera", &rotate_camera);
-    ImGui::DragFloat("Rotation Distance", &camera_distance, 0.01f);
-    ImGui::DragFloat("Rotation Speed", &camera_rotate_speed, 0.01f);
-    ImGui::Separator();
-  }
+  ImGui::Checkbox("Show Material Editor", &show_material_editor);
+  ImGui::Checkbox("Show Light Editor", &show_light_editor);
+
   ImGui::End();
   if (show_material_editor)
     MaterialEditor();

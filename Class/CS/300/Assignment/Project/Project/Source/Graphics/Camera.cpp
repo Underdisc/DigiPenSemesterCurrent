@@ -1,3 +1,4 @@
+/* All content(c) 2017 DigiPen(USA) Corporation, all rights reserved. */
 #include "../Math/Reals.h"
 
 #include "Camera.h"

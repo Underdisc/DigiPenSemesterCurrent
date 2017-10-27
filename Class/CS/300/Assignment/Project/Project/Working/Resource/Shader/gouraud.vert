@@ -52,6 +52,7 @@ struct Light
   // The inner and outer angles for a spotlight
   float UInnerAngle;
   float UOuterAngle;
+  float USpotExponent;
   // The light colors
   vec3 UAmbientColor;
   vec3 UDiffuseColor;
@@ -103,6 +104,7 @@ vec3 ComputeLight(int light, vec3 normal, vec3 position, vec3 view_dir)
     vec3 spot_dir = -normalize(ULights[light].UDirection);
     float ldots = dot(light_dir, spot_dir);
     spotlight_factor = (ldots - cos_outer) / (cos_inner - cos_outer);
+    spotlight_factor = pow(spotlight_factor, ULights[light].USpotExponent);
     spotlight_factor = max(0.0, spotlight_factor);
     spotlight_factor = min(1.0, spotlight_factor);
   }

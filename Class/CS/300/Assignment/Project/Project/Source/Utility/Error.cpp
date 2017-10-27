@@ -14,8 +14,8 @@
 // PARAMETERS
 //! The filename that Error exceptions will be written to from the 
 // ErrorLog class.
-#define ERROR_LOG_FILENAME     "assignment1.error"
-#define ROOTERROR_LOG_FILENAME "assignment1.root.error"
+#define ERROR_LOG_FILENAME     "assignment2.error"
+#define ROOTERROR_LOG_FILENAME "assignment2.root.error"
 // !PARAMETERS
 
 #include <iostream>
