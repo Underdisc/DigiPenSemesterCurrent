@@ -4,6 +4,8 @@
 #include "MeshRenderer.h"
 
 // static initializations
+Color MeshRenderer::_emissiveColor(0.0f, 0.0f, 0.0f);
+Color MeshRenderer::_globalAmbientColor(0.0f, 0.0f, 0.0f);
 Color MeshRenderer::_fogColor(0.3f, 0.3f, 0.3f);
 float MeshRenderer::_fogBegin = 0.5;
 float MeshRenderer::_nearPlane = 0.1f;
@@ -14,6 +16,7 @@ LineShader * MeshRenderer::_lineShader = nullptr;
 SolidShader * MeshRenderer::_solidShader = nullptr;
 PhongShader * MeshRenderer::_phongShader = nullptr;
 GouraudShader * MeshRenderer::_gouraudShader = nullptr;
+BlinnShader * MeshRenderer::_blinnShader = nullptr;
 
 
 void MeshRenderer::Initialize()
@@ -22,6 +25,7 @@ void MeshRenderer::Initialize()
   _solidShader = new SolidShader();
   _phongShader = new PhongShader();
   _gouraudShader = new GouraudShader();
+  _blinnShader = new BlinnShader();
 }
 
 /*****************************************************************************/
@@ -49,10 +53,12 @@ void MeshRenderer::Purge()
   _solidShader->Purge();
   _phongShader->Purge();
   _gouraudShader->Purge();
+  _blinnShader->Purge();
   delete _lineShader;
   delete _solidShader;
   delete _phongShader;
   delete _gouraudShader;
+  delete _blinnShader;
 }
 
 /*****************************************************************************/
@@ -82,6 +88,7 @@ unsigned int MeshRenderer::Upload(Mesh * mesh)
   _solidShader->EnableAttributes();
   _phongShader->EnableAttributes();
   _gouraudShader->EnableAttributes();
+  _blinnShader->EnableAttributes();
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -152,6 +159,10 @@ void MeshRenderer::Render(unsigned int mesh_id, ShaderType shader_type,
     glUniformMatrix4fv(_phongShader->UProjection, 1, GL_TRUE, projection.array);
     glUniformMatrix4fv(_phongShader->UView, 1, GL_TRUE, view.array);
     glUniformMatrix4fv(_phongShader->UModel, 1, GL_TRUE, model.array);
+    glUniform3f(_phongShader->UEmissiveColor,
+      _emissiveColor._r, _emissiveColor._g, _emissiveColor._b);
+    glUniform3f(_phongShader->UGlobalAmbientColor,
+      _globalAmbientColor._r, _globalAmbientColor._g, _globalAmbientColor._b);
     glUniform3f(_phongShader->UFogColor, 
       _fogColor._r, _fogColor._g, _fogColor._b);
     glUniform1f(_phongShader->UNearPlane, fog_near_plane);
@@ -163,20 +174,36 @@ void MeshRenderer::Render(unsigned int mesh_id, ShaderType shader_type,
     glUniformMatrix4fv(_gouraudShader->UProjection, 1, GL_TRUE, projection.array);
     glUniformMatrix4fv(_gouraudShader->UView, 1, GL_TRUE, view.array);
     glUniformMatrix4fv(_gouraudShader->UModel, 1, GL_TRUE, model.array);
-    glUniform3f(_gouraudShader->UObjectColor,
-      mesh_object._color._r,
-      mesh_object._color._g,
-      mesh_object._color._b);
+    glUniform3f(_gouraudShader->UEmissiveColor,
+      _emissiveColor._r, _emissiveColor._g, _emissiveColor._b);
+    glUniform3f(_gouraudShader->UGlobalAmbientColor,
+      _globalAmbientColor._r, _globalAmbientColor._g, _globalAmbientColor._b);
+    glUniform3f(_gouraudShader->UFogColor,
+      _fogColor._r, _fogColor._g, _fogColor._b);
+    glUniform1f(_gouraudShader->UNearPlane, fog_near_plane);
+    glUniform1f(_gouraudShader->UFarPlane, _farPlane);
     break;
+  // BLINN SHADING
   case ShaderType::BLINN:
+    _blinnShader->Use();
+    glUniformMatrix4fv(_blinnShader->UProjection, 1, GL_TRUE, projection.array);
+    glUniformMatrix4fv(_blinnShader->UView, 1, GL_TRUE, view.array);
+    glUniformMatrix4fv(_blinnShader->UModel, 1, GL_TRUE, model.array);
+    glUniform3f(_blinnShader->UEmissiveColor,
+      _emissiveColor._r, _emissiveColor._g, _emissiveColor._b);
+    glUniform3f(_blinnShader->UGlobalAmbientColor,
+      _globalAmbientColor._r, _globalAmbientColor._g, _globalAmbientColor._b);
+    glUniform3f(_blinnShader->UFogColor,
+      _fogColor._r, _fogColor._g, _fogColor._b);
+    glUniform1f(_blinnShader->UNearPlane, fog_near_plane);
+    glUniform1f(_blinnShader->UFarPlane, _farPlane);
     break;
+  // SOLID SHADING
   case ShaderType::SOLID:
     _solidShader->Use();
     glUniformMatrix4fv(_solidShader->UProjection, 1, GL_TRUE, projection.array);
     glUniformMatrix4fv(_solidShader->UView, 1, GL_TRUE, view.array);
     glUniformMatrix4fv(_solidShader->UModel, 1, GL_TRUE, model.array);
-    break;
-  case ShaderType::TOON:
     break;
   default:
     break;
@@ -231,8 +258,7 @@ void MeshRenderer::ReloadShader(ShaderType shader_type)
     ReloadGouraud();
     break;
   case BLINN:
-    break;
-  case TOON:
+    ReloadBlinn();
     break;
   default:
     break;
@@ -281,6 +307,27 @@ void MeshRenderer::ReloadGouraud()
   }
 }
 
+void MeshRenderer::ReloadBlinn()
+{
+  // disabling vertex attributes
+  for (MeshObject & mesh_object : _meshObjects) {
+    glBindVertexArray(mesh_object._vao);
+    _blinnShader->DisableAttributes();
+    glBindVertexArray(0);
+  }
+  // creating new shader
+  delete _blinnShader;
+  _blinnShader = new BlinnShader();
+  // enabling vertex attributes
+  for (MeshObject & mesh_object : _meshObjects) {
+    glBindBuffer(GL_ARRAY_BUFFER, mesh_object._vbo);
+    glBindVertexArray(mesh_object._vao);
+    _blinnShader->EnableAttributes();
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+  }
+}
+
 MeshRenderer::MeshObject * MeshRenderer::GetMeshObject(unsigned int mesh_id)
 {
   return &(_meshObjects[MeshIDToIndex(mesh_id)]);
@@ -301,6 +348,11 @@ GouraudShader * MeshRenderer::GetGouraudShader()
   return _gouraudShader;
 }
 
+BlinnShader * MeshRenderer::GetBlinnShader()
+{
+  return _blinnShader;
+}
+
 LineShader * MeshRenderer::GetLineShader()
 {
   return _lineShader;
@@ -316,10 +368,10 @@ int MeshRenderer::ShaderTypeToInt(ShaderType shader_type)
     return 1;
   case ShaderType::BLINN:
     return 2;
-  case ShaderType::TOON:
+  case ShaderType::SOLID:
     return 3;
   default:
-    return ShaderType::NUMSHADERTYPES;
+    return 4;
   }
 }
 
@@ -334,7 +386,7 @@ MeshRenderer::ShaderType MeshRenderer::IntToShaderType(int shader_int)
   case 2:
     return ShaderType::BLINN;
   case 3:
-    return ShaderType::TOON;
+    return ShaderType::SOLID;
   default:
     return ShaderType::NUMSHADERTYPES;
   }

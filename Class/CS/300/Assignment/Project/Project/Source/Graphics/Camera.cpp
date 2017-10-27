@@ -79,14 +79,25 @@ void Camera::LookAt(const Math::Vector3 & position)
   _front = position - _position;
   _front = _front.Normalized();
   _yaw = Math::ArcTan(_front.z / _front.x);
-  float xz_lenght = Math::Sqrt(_front.x * _front.x + _front.z * _front.z);
-  _pitch = Math::ArcTan(_front.y / xz_lenght);
+  float xz_length = Math::Sqrt(_front.x * _front.x + _front.z * _front.z);
+  _pitch = Math::ArcTan(_front.y / xz_length);
   _updatedOrientationVectors = false;
+  _updatedViewMatrix = false;
 }
 
 const Math::Vector3 & Camera::GetPosition()
 {
   return _position;
+}
+
+float Camera::GetYaw()
+{
+  return _yaw;
+}
+
+float Camera::GetPitch()
+{
+  return _pitch;
 }
 
 const Math::Matrix4 & Camera::ViewMatrix()
@@ -103,6 +114,7 @@ void Camera::UpdateFrontVector()
   _front.y = Math::Sin(_pitch);
   _front.z = Math::Cos(_pitch) * Math::Sin(_yaw);
   _front = _front.Normalized();
+  _updatedFrontVector = true;
 }
 
 void Camera::UpdateOrientationVectors()

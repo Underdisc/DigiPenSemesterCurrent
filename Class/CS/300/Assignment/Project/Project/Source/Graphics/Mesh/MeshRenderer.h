@@ -108,10 +108,11 @@ public:
     GOURAUD,
     BLINN,
     SOLID,
-    TOON,
     NUMSHADERTYPES
   };
 public:
+  static Color _emissiveColor;
+  static Color _globalAmbientColor;
   static Color _fogColor;
   static float _fogBegin;
   static float _nearPlane;
@@ -127,10 +128,12 @@ public:
   static void ReloadShader(ShaderType shader_type);
   static void ReloadPhong();
   static void ReloadGouraud();
+  static void ReloadBlinn();
   static MeshObject * GetMeshObject(unsigned int mesh_id);
   static SolidShader * GetSolidShader();
   static PhongShader * GetPhongShader();
   static GouraudShader * GetGouraudShader();
+  static BlinnShader * GetBlinnShader();
   static LineShader * GetLineShader();
   static int ShaderTypeToInt(ShaderType shader_type);
   static ShaderType IntToShaderType(int shader_int);
@@ -148,4 +151,6 @@ private:
   static PhongShader * _phongShader;
   //! The shader used for Gouraud
   static GouraudShader * _gouraudShader;
+  //! The shader used for Blinn
+  static BlinnShader * _blinnShader;
 };

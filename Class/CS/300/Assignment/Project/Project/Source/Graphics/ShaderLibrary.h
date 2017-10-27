@@ -54,6 +54,30 @@ public:
   GLuint UColor;
 };
 
+// uniform structs for materials and lights
+struct UMaterial
+{
+  GLuint UColor;
+  GLuint UAmbientFactor;
+  GLuint UDiffuseFactor;
+  GLuint USpecularFactor;
+  GLuint USpecularExponent;
+};
+struct ULight
+{
+  GLuint UType;
+  GLuint UPosition;
+  GLuint UDirection;
+  GLuint UInnerAngle;
+  GLuint UOuterAngle;
+  GLuint UAmbientColor;
+  GLuint UDiffuseColor;
+  GLuint USpecularColor;
+  GLuint UAttenuationC0;
+  GLuint UAttenuationC1;
+  GLuint UAttenuationC2;
+};
+
 /*****************************************************************************/
 /*!
 \class PhongShader
@@ -64,29 +88,6 @@ public:
 /*****************************************************************************/
 class PhongShader : public Shader
 {
-public:
-  struct Material
-  {
-    GLuint UColor;
-    GLuint UAmbientFactor;
-    GLuint UDiffuseFactor;
-    GLuint USpecularFactor;
-    GLuint USpecularExponent;
-  };
-  struct Light
-  {
-    GLuint UType;
-    GLuint UPosition;
-    GLuint UDirection;
-    GLuint UInnerAngle;
-    GLuint UOuterAngle;
-    GLuint UAmbientColor;
-    GLuint UDiffuseColor;
-    GLuint USpecularColor;
-    GLuint UAttenuationC0;
-    GLuint UAttenuationC1;
-    GLuint UAttenuationC2;
-  };
 public:
   PhongShader();
   void EnableAttributes();
@@ -99,11 +100,13 @@ public:
   GLuint UView;
   GLuint UModel;
   GLuint UCameraPosition;
+  GLuint UEmissiveColor;
+  GLuint UGlobalAmbientColor;
   // Material Uniform
-  Material UMaterial;
+  UMaterial UMaterial;
   // Light Uniforms
   GLuint UActiveLights;
-  Light ULights[MAXLIGHTS];
+  ULight ULights[MAXLIGHTS];
   // Fog Uniforms
   GLuint UFogColor;
   GLuint UNearPlane;
@@ -120,17 +123,6 @@ public:
 /*****************************************************************************/
 class GouraudShader : public Shader
 {
-  struct Light
-  {
-    GLuint UPosition;
-    GLuint UAmbientFactor;
-    GLuint UDiffuseFactor;
-    GLuint USpecularFactor;
-    GLuint USpecularExponent;
-    GLuint UAmbientColor;
-    GLuint UDiffuseColor;
-    GLuint USpecularColor;
-  };
 public:
   GouraudShader();
   void EnableAttributes();
@@ -142,11 +134,55 @@ public:
   GLuint UProjection;
   GLuint UView;
   GLuint UModel;
-  GLuint UObjectColor;
-  // Uniform array for lights
+  GLuint UCameraPosition;
+  GLuint UEmissiveColor;
+  GLuint UGlobalAmbientColor;
+  // Material Uniform
+  UMaterial UMaterial;
+  // Light Uniforms
   GLuint UActiveLights;
-  Light ULights[MAXLIGHTS];
+  ULight ULights[MAXLIGHTS];
+  // Fog Uniforms
+  GLuint UFogColor;
+  GLuint UNearPlane;
+  GLuint UFarPlane;
 };
+
+/*****************************************************************************/
+/*!
+\class PhongShader
+\brief
+Used for drawing objects that undergo phong shading. Supports lighting
+with up to 10 lights.
+*/
+/*****************************************************************************/
+class BlinnShader : public Shader
+{
+public:
+  BlinnShader();
+  void EnableAttributes();
+  void DisableAttributes();
+  // Attributes
+  GLuint APosition;
+  GLuint ANormal;
+  // Uniforms
+  GLuint UProjection;
+  GLuint UView;
+  GLuint UModel;
+  GLuint UCameraPosition;
+  GLuint UEmissiveColor;
+  GLuint UGlobalAmbientColor;
+  // Material Uniform
+  UMaterial UMaterial;
+  // Light Uniforms
+  GLuint UActiveLights;
+  ULight ULights[MAXLIGHTS];
+  // Fog Uniforms
+  GLuint UFogColor;
+  GLuint UNearPlane;
+  GLuint UFarPlane;
+};
+
 
 /*****************************************************************************/
 /*!

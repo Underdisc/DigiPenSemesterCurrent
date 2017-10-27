@@ -5,26 +5,10 @@
 #define DIRECTIONAL 1
 #define SPOT 2
 
-in vec3 APosition;
-in vec3 ANormal;
+in vec3 SNormal;
+in vec3 SFragPos;
 
-out vec4 SFragColor;
-
-uniform mat4 UProjection = mat4(1,0,0,0,
-                                0,1,0,0,
-                                0,0,1,0,
-                                0,0,0,1);
-
-uniform mat4 UView = mat4(1,0,0,0,
-                          0,1,0,0,
-                          0,0,1,0,
-                          0,0,0,1);
-
-uniform mat4 UModel = mat4(1,0,0,0,
-                           0,1,0,0,
-                           0,0,1,0,
-                           0,0,0,1);
-
+out vec4 OFragColor;
 
 // The cameras world position
 uniform vec3 UCameraPosition;
@@ -74,7 +58,7 @@ uniform float UFarPlane;
 uniform vec3 UEmissiveColor;
 uniform vec3 UGlobalAmbientColor;
 
-vec3 ComputeLight(int light, vec3 normal, vec3 position, vec3 view_dir)
+vec3 ComputeLight(int light, vec3 normal, vec3 view_dir)
 {
   // ambient term
   vec3 ambient_color = UMaterial.UAmbientFactor * ULights[light].UAmbientColor;
@@ -84,16 +68,16 @@ vec3 ComputeLight(int light, vec3 normal, vec3 position, vec3 view_dir)
   if(ULights[light].UType == DIRECTIONAL)
     light_vec = -normalize(ULights[light].UDirection);
   else
-    light_vec = ULights[light].UPosition - position;
+    light_vec = ULights[light].UPosition - SFragPos;
   light_dir = normalize(light_vec);
   // diffuse term
   float ndotl = max(dot(normal, light_dir), 0.0);
   vec3 diffuse_color = UMaterial.UDiffuseFactor * ndotl * ULights[light].UDiffuseColor;
   // specular term
-  vec3 reflect_dir = 2.0 * dot(normal, light_dir) * normal - light_dir;
-  reflect_dir = normalize(reflect_dir);
-  float vdotr = max(dot(view_dir, reflect_dir), 0.0);
-  float specular_spread = pow(vdotr, UMaterial.USpecularExponent);
+  vec3 half_dir = light_dir + view_dir;
+  half_dir = normalize(half_dir);
+  float ndoth = max(dot(normal, half_dir), 0.0);
+  float specular_spread = pow(ndoth, UMaterial.USpecularExponent);
   vec3 specular_color = UMaterial.USpecularFactor * ULights[light].USpecularColor * specular_spread;
   // find spotlight effect
   float spotlight_factor;
@@ -129,17 +113,14 @@ vec3 ComputeLight(int light, vec3 normal, vec3 position, vec3 view_dir)
 
 void main()
 {
-  gl_Position = UProjection * UView * UModel * vec4(APosition.xyz, 1.0);
-  vec3 normal = mat3(transpose(inverse(UModel))) * ANormal;
-  vec3 position = vec3(UModel * vec4(APosition, 1.0));
   // precomputations
-  normal = normalize(normal);
-  vec3 view_vec = UCameraPosition - position;
+  vec3 normal = normalize(SNormal);
+  vec3 view_vec = UCameraPosition - SFragPos;
   vec3 view_dir = normalize(view_vec);
   // summing all light results
   vec3 final_color = vec3(0.0, 0.0, 0.0);
   for (int i = 0; i < UActiveLights; ++i)
-    final_color += ComputeLight(i, normal, position, view_dir);
+    final_color += ComputeLight(i, normal, view_dir);
   // accounting for object color
   final_color *= UMaterial.UColor;
   // accounting for emissive and global ambient
@@ -151,5 +132,5 @@ void main()
   fog_factor = min(1.0, max(0.0, fog_factor));
   final_color = mix(final_color, UFogColor, fog_factor);
   // final color
-  SFragColor = vec4(final_color, 1.0);
+  OFragColor = vec4(final_color, 1.0);
 }

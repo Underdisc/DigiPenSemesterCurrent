@@ -55,6 +55,9 @@ uniform vec3 UFogColor;
 uniform float UNearPlane;
 uniform float UFarPlane;
 
+uniform vec3 UEmissiveColor;
+uniform vec3 UGlobalAmbientColor;
+
 vec3 ComputeLight(int light, vec3 normal, vec3 view_dir)
 {
   // ambient term
@@ -120,7 +123,9 @@ void main()
     final_color += ComputeLight(i, normal, view_dir);
   // accounting for object color
   final_color *= UMaterial.UColor;
-
+  // accounting for emissive and global ambient
+  final_color += UMaterial.UAmbientFactor * UGlobalAmbientColor;
+  final_color += UEmissiveColor;
   // accounting for fog
   float dist = length(view_vec);
   float fog_factor = (dist - UNearPlane) / (UFarPlane - UNearPlane);

@@ -17,6 +17,8 @@ public:
   void MovePitch(float delta);
   void LookAt(const Math::Vector3 & position);
   const Math::Vector3 & GetPosition();
+  float GetYaw();
+  float GetPitch();
   const Math::Matrix4 & ViewMatrix();
 private:
   void UpdateFrontVector();

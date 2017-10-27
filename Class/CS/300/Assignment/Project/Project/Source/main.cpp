@@ -35,6 +35,7 @@
 #include "Core\Framer.h"
 #include "Graphics\Texture.h"
 
+#include "vld.h"
 
 #define PI 3.141592653589f
 #define PI2 6.28318530718f
@@ -55,6 +56,24 @@ struct Material
     glUniform1f(phong_shader->UMaterial.UDiffuseFactor, _diffuseFactor);
     glUniform1f(phong_shader->UMaterial.USpecularFactor, _specularFactor);
     glUniform1f(phong_shader->UMaterial.USpecularExponent, _specularExponent);
+  }
+  void SetUniforms(GouraudShader * gouraud_shader)
+  {
+    glUniform3f(gouraud_shader->UMaterial.UColor,
+      _color._r, _color._g, _color._b);
+    glUniform1f(gouraud_shader->UMaterial.UAmbientFactor, _ambientFactor);
+    glUniform1f(gouraud_shader->UMaterial.UDiffuseFactor, _diffuseFactor);
+    glUniform1f(gouraud_shader->UMaterial.USpecularFactor, _specularFactor);
+    glUniform1f(gouraud_shader->UMaterial.USpecularExponent, _specularExponent);
+  }
+  void SetUniforms(BlinnShader * blinn_shader)
+  {
+    glUniform3f(blinn_shader->UMaterial.UColor,
+      _color._r, _color._g, _color._b);
+    glUniform1f(blinn_shader->UMaterial.UAmbientFactor, _ambientFactor);
+    glUniform1f(blinn_shader->UMaterial.UDiffuseFactor, _diffuseFactor);
+    glUniform1f(blinn_shader->UMaterial.USpecularFactor, _specularFactor);
+    glUniform1f(blinn_shader->UMaterial.USpecularExponent, _specularExponent);
   }
   Color _color;
   float _ambientFactor;
@@ -121,6 +140,54 @@ struct Light
     glUniform1f(phong_shader->ULights[light_index].UAttenuationC2,
       _attenuationC2);
   }
+  void SetUniforms(unsigned int light_index, GouraudShader * gouraud_shader)
+  {
+    glUniform1i(gouraud_shader->ULights[light_index].UType, _type);
+    glUniform3f(gouraud_shader->ULights[light_index].UPosition,
+      _position.x, _position.y, _position.z);
+    glUniform3f(gouraud_shader->ULights[light_index].UDirection,
+      _direction.x, _direction.y, _direction.z);
+    glUniform1f(gouraud_shader->ULights[light_index].UInnerAngle,
+      _innerAngle);
+    glUniform1f(gouraud_shader->ULights[light_index].UOuterAngle,
+      _outerAngle);
+    glUniform3f(gouraud_shader->ULights[light_index].UAmbientColor,
+      _ambientColor._x, _ambientColor._y, _ambientColor._z);
+    glUniform3f(gouraud_shader->ULights[light_index].UDiffuseColor,
+      _diffuseColor._x, _diffuseColor._y, _diffuseColor._z);
+    glUniform3f(gouraud_shader->ULights[light_index].USpecularColor,
+      _specularColor._x, _specularColor._y, _specularColor._z);
+    glUniform1f(gouraud_shader->ULights[light_index].UAttenuationC0,
+      _attenuationC0);
+    glUniform1f(gouraud_shader->ULights[light_index].UAttenuationC1,
+      _attenuationC1);
+    glUniform1f(gouraud_shader->ULights[light_index].UAttenuationC2,
+      _attenuationC2);
+  }
+  void SetUniforms(unsigned int light_index, BlinnShader * blinn_shader)
+  {
+    glUniform1i(blinn_shader->ULights[light_index].UType, _type);
+    glUniform3f(blinn_shader->ULights[light_index].UPosition,
+      _position.x, _position.y, _position.z);
+    glUniform3f(blinn_shader->ULights[light_index].UDirection,
+      _direction.x, _direction.y, _direction.z);
+    glUniform1f(blinn_shader->ULights[light_index].UInnerAngle,
+      _innerAngle);
+    glUniform1f(blinn_shader->ULights[light_index].UOuterAngle,
+      _outerAngle);
+    glUniform3f(blinn_shader->ULights[light_index].UAmbientColor,
+      _ambientColor._x, _ambientColor._y, _ambientColor._z);
+    glUniform3f(blinn_shader->ULights[light_index].UDiffuseColor,
+      _diffuseColor._x, _diffuseColor._y, _diffuseColor._z);
+    glUniform3f(blinn_shader->ULights[light_index].USpecularColor,
+      _specularColor._x, _specularColor._y, _specularColor._z);
+    glUniform1f(blinn_shader->ULights[light_index].UAttenuationC0,
+      _attenuationC0);
+    glUniform1f(blinn_shader->ULights[light_index].UAttenuationC1,
+      _attenuationC1);
+    glUniform1f(blinn_shader->ULights[light_index].UAttenuationC2,
+      _attenuationC2);
+  }
 };
 int Light::_activeLights = 1;
 const int Light::_typePoint = 0;
@@ -146,7 +213,11 @@ Material material;
 unsigned int active_lights = 2;
 MeshRenderer::ShaderType shader_in_use = MeshRenderer::PHONG;
 bool rotating_lights = false;
+float rotate_light_speed = 1.5f;
+
+
 bool rotate_camera = false;
+float camera_rotate_speed = 1.0f;
 float camera_distance = 2.0f;
 
 
@@ -237,6 +308,7 @@ inline void LightEditor()
 {
   ImGui::Begin("Lights", &show_light_editor);
   ImGui::Checkbox("Rotate Lights", &rotating_lights);
+  ImGui::DragFloat("Rotation Speed", &rotate_light_speed, 0.01f);
   ImGui::InputInt("Active Lights", &Light::_activeLights, 1, 1);
   if(Light::_activeLights > MAXLIGHTS)
     Light::_activeLights = MAXLIGHTS;
@@ -330,10 +402,17 @@ inline void EditorUpdate()
     ImGui::Separator();
   }
   if (ImGui::CollapsingHeader("Global")) {
+    ImGui::Text("Global Colors");
+    ImGui::ColorEdit3("Emissive", MeshRenderer::_emissiveColor._values);
+    ImGui::ColorEdit3("Global Amibent", 
+      MeshRenderer::_globalAmbientColor._values);
     ImGui::ColorEdit3("Fog Color", MeshRenderer::_fogColor._values);
+    ImGui::Separator();
+    ImGui::Text("Fog Properties");
     ImGui::SliderFloat("Fog Begin", &MeshRenderer::_fogBegin, 0.0, 1.0f);
     ImGui::SliderFloat("Near Plane", &MeshRenderer::_nearPlane, 0.01f, 5.0f);
     ImGui::SliderFloat("Far Plane", &MeshRenderer::_farPlane, MeshRenderer::_nearPlane, 100.0f);
+    ImGui::Separator();
     ImGui::DragFloat("Time Scale", &Time::m_TimeScale, 0.01f);
     ImGui::Separator();
   }
@@ -375,18 +454,25 @@ inline void EditorUpdate()
   }
   if (ImGui::CollapsingHeader("Shaders")) {
     int shader_int = MeshRenderer::ShaderTypeToInt(shader_in_use);
-    ImGui::Combo("Shader Type", &shader_int, "Phong\0Gouraud\0Blinn\0Toon\0\0");
+    ImGui::Combo("Shader Type", &shader_int, "Phong\0Gouraud\0Blinn\0\0");
     shader_in_use = MeshRenderer::IntToShaderType(shader_int);
     if (ImGui::Button("Reload Selected Shader"))
       MeshRenderer::ReloadShader(shader_in_use);
+    ImGui::Separator();
   }
   if (ImGui::CollapsingHeader("Editor Windows")) {
     ImGui::Checkbox("Material Editor", &show_material_editor);
     ImGui::Checkbox("Light Editor", &show_light_editor);
+    ImGui::Separator();
   }
   if (ImGui::CollapsingHeader("Camera")) {
+    ImGui::Text("Yaw: %f", camera.GetYaw());
+    ImGui::Text("Pitch: %f", camera.GetPitch());
+    ImGui::Separator();
     ImGui::Checkbox("Rotating Camera", &rotate_camera);
-    ImGui::DragFloat("Rotating Camera Distance", &camera_distance, 0.01f);
+    ImGui::DragFloat("Rotation Distance", &camera_distance, 0.01f);
+    ImGui::DragFloat("Rotation Speed", &camera_rotate_speed, 0.01f);
+    ImGui::Separator();
   }
   ImGui::End();
   if (show_material_editor)
@@ -465,10 +551,10 @@ inline void ManageInput()
 
 inline void RotateCamera()
 {
-  float camera_angle = Time::TotalTimeScaled();
+  float camera_angle = Time::TotalTimeScaled() * camera_rotate_speed;
   Math::Vector3 new_position;
   new_position.x = Math::Cos(camera_angle) * camera_distance;
-  new_position.y = Math::Sin(Time::TotalTimeScaled());
+  new_position.y = Math::Sin(camera_angle);
   new_position.z = Math::Sin(camera_angle) * camera_distance;
   camera.SetPosition(new_position);
   camera.LookAt(Math::Vector3(trans.x, trans.y, trans.z));
@@ -478,7 +564,7 @@ inline void RotateLights()
 {
   for (int i = 0; i < Light::_activeLights; ++i) {
     float percentage = (float)i / (float)Light::_activeLights;
-    float light_angle = percentage * PI2 + Time::TotalTimeScaled();
+    float light_angle = percentage * PI2 + Time::TotalTimeScaled() * rotate_light_speed;
     Light & light = lights[i];
 
     float cos_angle = Math::Cos(light_angle);
@@ -511,6 +597,7 @@ inline void Render()
   SolidShader * solid_shader = MeshRenderer::GetSolidShader();
   PhongShader * phong_shader = MeshRenderer::GetPhongShader();
   GouraudShader * gouraud_shader = MeshRenderer::GetGouraudShader();
+  BlinnShader * blinn_shader = MeshRenderer::GetBlinnShader();
   Math::Matrix4 projection;
   Math::Matrix4 model;
   Math::Matrix4 translate;
@@ -552,15 +639,20 @@ inline void Render()
   // GOURAUD SHADER
   case MeshRenderer::ShaderType::GOURAUD:
     gouraud_shader->Use();
+    glUniform3f(gouraud_shader->UCameraPosition, cpos.x, cpos.y, cpos.z);
+    glUniform1i(gouraud_shader->UActiveLights, Light::_activeLights);
     glUniform1i(gouraud_shader->UActiveLights, Light::_activeLights);
     for (int i = 0; i < Light::_activeLights; ++i)
-      //lights[i].SetUniforms(i, gouraud_shader);
-    // rendering mesh
-    MeshRenderer::Render(mesh_id, shader_in_use, projection, camera.ViewMatrix(), model);
+      lights[i].SetUniforms(i, gouraud_shader);
+    material.SetUniforms(gouraud_shader);
     break;
   case MeshRenderer::ShaderType::BLINN:
-    break;
-  case MeshRenderer::ShaderType::TOON:
+    blinn_shader->Use();
+    glUniform3f(blinn_shader->UCameraPosition, cpos.x, cpos.y, cpos.z);
+    glUniform1i(blinn_shader->UActiveLights, Light::_activeLights);
+    for (int i = 0; i < Light::_activeLights; ++i)
+      lights[i].SetUniforms(i, blinn_shader);
+    material.SetUniforms(blinn_shader);
     break;
   default:
     break;
