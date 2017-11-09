@@ -1,0 +1,36 @@
+Implement convex hull brute force:
+1) hullBruteForce: for each pair points determine whether all other points are one side of the
+line formed by the pair of points. If it does - add the points (or rather 
+indices to the hull). Since hull is represented by a std::set, you do not have 
+to worry about duplicates.
+
+2) hullBruteForce2: find the first point that is in the hull (smalles or biggest x or y coordinate),
+then find the next vertex of the hull in counter-clockwise order by considering all lines through the
+previous vertex and requiring that there are no points to the right of it.
+
+To submit:
+hull-bruteforce.cpp
+
+Running time on 
+vendor_id   : GenuineIntel
+cpu family  : 6
+model       : 15
+model name  : Intel(R) Core(TM)2 CPU          6600  @ 2.40GHz
+stepping    : 6
+cpu MHz     : 1596.000
+cache size  : 4096 KB
+
+test0  0.002s
+test1  0.002s
+test2  0.002s
+test3  0.002s
+test4  0.002s
+test5  0.002s
+test6  0.012s
+test7  3.319s
+test8  0.003s
+test9  0.002s
+test10 0.002s
+test11 0.002s
+test12 0.003s
+test13 0.017s
