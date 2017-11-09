@@ -1,4 +1,4 @@
-
+/* All content(c) 2017 DigiPen(USA) Corporation, all rights reserved. */
 #include "ShaderLibrary.h"
 
 LineShader::LineShader() : 
@@ -65,6 +65,8 @@ PhongShader::PhongShader() :
       "ULights[" + index + "].UInnerAngle");
     ULights[i].UOuterAngle = GetUniformLocation(
       "ULights[" + index + "].UOuterAngle");
+    ULights[i].USpotExponent = GetUniformLocation(
+      "ULights[" + index + "].USpotExponent");
     ULights[i].UAmbientColor = GetUniformLocation(
       "ULights[" + index + "].UAmbientColor");
     ULights[i].UDiffuseColor = GetUniformLocation(
@@ -131,6 +133,8 @@ GouraudShader::GouraudShader() :
       "ULights[" + index + "].UInnerAngle");
     ULights[i].UOuterAngle = GetUniformLocation(
       "ULights[" + index + "].UOuterAngle");
+    ULights[i].USpotExponent = GetUniformLocation(
+      "ULights[" + index + "].USpotExponent");
     ULights[i].UAmbientColor = GetUniformLocation(
       "ULights[" + index + "].UAmbientColor");
     ULights[i].UDiffuseColor = GetUniformLocation(
@@ -197,6 +201,8 @@ BlinnShader::BlinnShader() :
       "ULights[" + index + "].UInnerAngle");
     ULights[i].UOuterAngle = GetUniformLocation(
       "ULights[" + index + "].UOuterAngle");
+    ULights[i].USpotExponent = GetUniformLocation(
+      "ULights[" + index + "].USpotExponent");
     ULights[i].UAmbientColor = GetUniformLocation(
       "ULights[" + index + "].UAmbientColor");
     ULights[i].UDiffuseColor = GetUniformLocation(

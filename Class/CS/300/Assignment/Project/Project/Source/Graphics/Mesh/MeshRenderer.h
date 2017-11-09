@@ -1,3 +1,4 @@
+/* All content(c) 2017 DigiPen(USA) Corporation, all rights reserved. */
 #pragma once
 
 #include <vector>
@@ -114,7 +115,8 @@ public:
   static Color _emissiveColor;
   static Color _globalAmbientColor;
   static Color _fogColor;
-  static float _fogBegin;
+  static float _fogNear;
+  static float _fogFar;
   static float _nearPlane;
   static float _farPlane;
 public:
