@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <vector>
 #include <utility>
@@ -128,27 +129,27 @@ void problem1()
   // printing all possible shifts
   std::cout << "~ Results ~" << std::endl << "- Possible Shifts -" <<
     std::endl;
-  for(const std::string & shift : shifts)
-    std::cout << shift << std::endl;
+  for(int i = 0; i < 26; ++i)
+    std::cout << std::setw(2) << i << " shift: " << shifts[i] << std::endl;
 }
 
 // PROBLEM 2 CODE /////////////////////////////////////////////////////////////
 
-int max_letter_frequency(const std::string & message)
+int max_letter_frequency(const std::string & message,
+  std::vector<int> * frequencies)
 {
-  std::vector<int> frequencies;
   // filling vector with 0s
-  frequencies.resize(26, 0);
+  frequencies->resize(26, 0);
   // finding letter frequencies
   for(const char & character : message){
     if(character <= 25)
-      frequencies[(int)character] += 1;
+      (*frequencies)[(int)character] += 1;
   }
   // find index of most common letter
   int max_i = 0;
-  int num_frequencies = frequencies.size();
+  int num_frequencies = frequencies->size();
   for(int i = 1; i < num_frequencies; ++i){
-    if(frequencies[i] > frequencies[max_i])
+    if((*frequencies)[i] > (*frequencies)[max_i])
       max_i = i;
   }
   return max_i;
@@ -163,7 +164,8 @@ void problem2()
   std::getline(std::cin, message);
   // find letter frequencies and shifting according to letter frequency
   normalize_0_25(&message);
-  int max_frequency = max_letter_frequency(message);
+  std::vector<int> frequencies;
+  int max_frequency = max_letter_frequency(message, &frequencies);
   int most_frequent_letter = 4;
   int shift_amount = most_frequent_letter - max_frequency;
   if(shift_amount < 0)
@@ -172,7 +174,15 @@ void problem2()
   normalize_A_Z(&decoded_mesage);
   // printing results
   std::cout << "~ Resluts ~" << std::endl;
+  std::cout << "Shift (a): " << shift_amount << std::endl;
   std::cout << "Decoded Message: " << decoded_mesage << std::endl;
+  // printing frequency table
+  std::cout << "- Frequency Table -" << std::endl;
+  char current_letter = 65;
+  for(int i = 0; i < 26; ++i, ++current_letter)
+    std::cout << current_letter << ": " << std::setw(2) << frequencies[i]
+      << std::endl;
+  std::cout << std::endl;
 }
 
 // PROBLEM 3 CODE /////////////////////////////////////////////////////////////
@@ -264,20 +274,29 @@ void problem4()
   std::cout << "- Input Pairs -" << std::endl;
   for(int i = 0; i < k; ++i){
     std::cout << "- " << i << " -" << std::endl;
-    std::cout << "A: ";
-    std::cin >> pairs[i].first;
-    std::cout << "B: ";
+    std::cout << "d: ";
     std::cin >> pairs[i].second;
+    std::cout << "r: ";
+    std::cin >> pairs[i].first;
   }
-  // do the thing
+  int num_pairs = pairs.size();
   // make sure all ms are relatively prime
-  unsigned long long residue = chinese_remainder(pairs);
+  for(int i = 0; i < num_pairs; ++i){
+    for(int j = i + 1; j < num_pairs; ++j){
+      if(gcd(pairs[i].second, pairs[j].second) != 1){
+        std::cout << "~ Results ~" << std::endl;
+        std::cout << "Not all ds are relatively prime" << std::endl;
+        return;
+      }
+    }
+  }
+  // calculate
+  unsigned long long value = chinese_remainder(pairs);
   // results
   std::cout << "~ Results ~" << std::endl;
   std::cout << "Pairs: ";
   for(const std::pair<int, int> & pair : pairs)
-    std::cout << "(" << pair.first << ", " << pair.second << "), ";
-  std::cout << std::endl << "Residue: " << residue << std::endl;
-
+    std::cout << "(" << pair.second << ", " << pair.first << "), ";
+  std::cout << std::endl << "Value: " << value << std::endl;
 
 }
