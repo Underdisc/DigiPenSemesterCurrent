@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <utility>
 
 void problem1();
 void problem2();
@@ -29,9 +30,9 @@ int main()
       problem4();
       break;
     default:
-      std::cout << std::endl << "Not an existing problem";
+      std::cout << std::endl << "Not an existing problem" << std::endl;
     }
-    std::cout << std::endl << "---------------------" << std::endl;
+    std::cout << "---------------------" << std::endl;
     char choice = 0;
     std::cout << "Run another problem [y] [n]: ";
     std::cin >> choice;
@@ -176,15 +177,107 @@ void problem2()
 
 // PROBLEM 3 CODE /////////////////////////////////////////////////////////////
 
+
+int bf_inverse_mod(unsigned long long a, unsigned long long b)
+{
+  // find inverse mod using brute force technique
+  for(unsigned long long int i = 0; i < b; ++i){
+    unsigned long long int product = i * a;
+    if((product % b) == 1){
+      return i;
+    }
+  }
+  // inverse mod does not exist
+  return -1;
+}
+
+int gcd(int a, int b)
+{
+  int r = a % b;
+  if(r == 0)
+    return b;
+  return gcd(b, r);
+}
+
 void problem3()
 {
- std::cout << "Problem 3" << std::endl;
-
+  std::cout << "<Problem 3>" << std::endl;
+  // grab values
+  int a;
+  int b;
+  std::cout << "Input A: ";
+  std::cin >> a;
+  std::cout << "Input B: ";
+  std::cin >> b;
+  // find gcd
+  int gcd_value = gcd(a, b);
+  // print results
+  std::cout << "~ Results ~" << std::endl
+    << "GCD: " << gcd_value << std::endl;
+  if(gcd_value == 1) {
+    // find inverse mod if it exists
+    int inverse_mod = bf_inverse_mod(a, b);
+    std::cout << "Inverse Mod: " << inverse_mod << std::endl;
+  }
+  else{
+    std::cout << "Inverse does not exist" << std::endl;
+  }
 }
 
 // PROBLEM 4 CODE /////////////////////////////////////////////////////////////
 
+unsigned long long chinese_remainder(
+  const std::vector<std::pair<int, int> > & pairs)
+{
+  int num_pairs = pairs.size();
+  // find m
+  unsigned long long int m = 1;
+  for(int i = 0; i < num_pairs; ++i)
+    m *= pairs[i].second;
+  // find m hats
+  std::vector<unsigned long long int> m_hats;
+  for(int i = 0; i < num_pairs; ++i)
+    m_hats.push_back(m / pairs[i].second);
+  // find y hats
+  std::vector<unsigned long long int> y_hats;
+  for(int i = 0; i < num_pairs; ++i){
+    unsigned long long int m_hat_simp = m_hats[i];
+    m_hat_simp = m_hat_simp % pairs[i].second;
+    y_hats.push_back(bf_inverse_mod(m_hat_simp, pairs[i].second));
+  }
+  unsigned long long residue = 0;
+  for(int i = 0; i < num_pairs; ++i)
+    residue += pairs[i].first * m_hats[i] * y_hats[i];
+  residue = residue % m;
+  return residue;
+}
+
 void problem4()
 {
+  std::cout << "<Problem 4>" << std::endl;
+  int k;
+  std::cout << "Input Number of People (k): ";
+  std::cin >> k;
+  // input pairs
+  std::vector<std::pair<int, int> > pairs;
+  pairs.resize(k);
+  std::cout << "- Input Pairs -" << std::endl;
+  for(int i = 0; i < k; ++i){
+    std::cout << "- " << i << " -" << std::endl;
+    std::cout << "A: ";
+    std::cin >> pairs[i].first;
+    std::cout << "B: ";
+    std::cin >> pairs[i].second;
+  }
+  // do the thing
+  // make sure all ms are relatively prime
+  unsigned long long residue = chinese_remainder(pairs);
+  // results
+  std::cout << "~ Results ~" << std::endl;
+  std::cout << "Pairs: ";
+  for(const std::pair<int, int> & pair : pairs)
+    std::cout << "(" << pair.first << ", " << pair.second << "), ";
+  std::cout << std::endl << "Residue: " << residue << std::endl;
+
 
 }
