@@ -15,6 +15,9 @@
 #include "External\Imgui\imgui.h"
 #include "External\Imgui\imgui_impl_sdl_gl3.h"
 
+#include "Graphics\Light.h"
+#include "Graphics\Material.h"
+
 #include "Graphics\SDLContext.h"
 #include <GL\glew.h>
 #include "Utility\OpenGLError.h"
@@ -41,167 +44,6 @@
 #define MODEL_PATH "Resource/Model/"
 #define FILENAME_BUFFERSIZE 50
 
-struct Material
-{
-  Material() : _color(1.0f, 1.0f, 1.0f), _ambientFactor(0.1f), 
-    _diffuseFactor(1.0f), _specularFactor(1.0f), _specularExponent(3.0f)
-  {}
-  void SetUniforms(PhongShader * phong_shader)
-  {
-    glUniform3f(phong_shader->UMaterial.UColor, 
-      _color._r, _color._g, _color._b);
-    glUniform1f(phong_shader->UMaterial.UAmbientFactor, _ambientFactor);
-    glUniform1f(phong_shader->UMaterial.UDiffuseFactor, _diffuseFactor);
-    glUniform1f(phong_shader->UMaterial.USpecularFactor, _specularFactor);
-    glUniform1f(phong_shader->UMaterial.USpecularExponent, _specularExponent);
-  }
-  void SetUniforms(GouraudShader * gouraud_shader)
-  {
-    glUniform3f(gouraud_shader->UMaterial.UColor,
-      _color._r, _color._g, _color._b);
-    glUniform1f(gouraud_shader->UMaterial.UAmbientFactor, _ambientFactor);
-    glUniform1f(gouraud_shader->UMaterial.UDiffuseFactor, _diffuseFactor);
-    glUniform1f(gouraud_shader->UMaterial.USpecularFactor, _specularFactor);
-    glUniform1f(gouraud_shader->UMaterial.USpecularExponent, _specularExponent);
-  }
-  void SetUniforms(BlinnShader * blinn_shader)
-  {
-    glUniform3f(blinn_shader->UMaterial.UColor,
-      _color._r, _color._g, _color._b);
-    glUniform1f(blinn_shader->UMaterial.UAmbientFactor, _ambientFactor);
-    glUniform1f(blinn_shader->UMaterial.UDiffuseFactor, _diffuseFactor);
-    glUniform1f(blinn_shader->UMaterial.USpecularFactor, _specularFactor);
-    glUniform1f(blinn_shader->UMaterial.USpecularExponent, _specularExponent);
-  }
-  Color _color;
-  float _ambientFactor;
-  float _diffuseFactor;
-  float _specularFactor;
-  float _specularExponent;
-};
-
-
-// defining a light
-struct Light
-{
-  Light(): _type(0), _position(0.0f, 2.0f, 0.0f), 
-    _direction(0.0f, -1.0f, 0.0f), _innerAngle(PI / 12.0f), 
-    _outerAngle(PI / 6.0f), _spotExponent(1.0f), 
-    _ambientColor(0.0f, 0.0f, 0.0f), _diffuseColor(0.8f, 0.8f, 0.8f),
-    _specularColor(1.0f, 1.0f, 1.0f), _attenuationC0(1.0f),
-    _attenuationC1(0.1f), _attenuationC2(0.0f)
-  {}
-  Light(unsigned int type, const Math::Vector3 & position, 
-    const Math::Vector3 & direction, const Color & ambient_color,
-    const Color & diffuse_color, const Color & specular_color) :
-    _type(type), _position(position), _direction(direction),
-    _ambientColor(ambient_color), _diffuseColor(diffuse_color),
-    _specularColor(specular_color)
-  {}
-  int _type;
-  Math::Vector3 _position;
-  Math::Vector3 _direction;
-  float _innerAngle;
-  float _outerAngle;
-  float _spotExponent;
-  Color _ambientColor;
-  Color _diffuseColor;
-  Color _specularColor;
-  float _attenuationC0;
-  float _attenuationC1;
-  float _attenuationC2;
-
-  static const int _typePoint;
-  static const int _typeDirectional;
-  static const int _typeSpot;
-
-  static int _activeLights;
-  void SetUniforms(unsigned int light_index, PhongShader * phong_shader)
-  {
-    glUniform1i(phong_shader->ULights[light_index].UType, _type);
-    glUniform3f(phong_shader->ULights[light_index].UPosition,
-      _position.x, _position.y, _position.z);
-    glUniform3f(phong_shader->ULights[light_index].UDirection,
-      _direction.x, _direction.y, _direction.z);
-    glUniform1f(phong_shader->ULights[light_index].UInnerAngle,
-      _innerAngle);
-    glUniform1f(phong_shader->ULights[light_index].UOuterAngle,
-      _outerAngle);
-    glUniform1f(phong_shader->ULights[light_index].USpotExponent,
-      _spotExponent);
-    glUniform3f(phong_shader->ULights[light_index].UAmbientColor,
-      _ambientColor._x, _ambientColor._y, _ambientColor._z);
-    glUniform3f(phong_shader->ULights[light_index].UDiffuseColor,
-      _diffuseColor._x, _diffuseColor._y, _diffuseColor._z);
-    glUniform3f(phong_shader->ULights[light_index].USpecularColor,
-      _specularColor._x, _specularColor._y, _specularColor._z);
-    glUniform1f(phong_shader->ULights[light_index].UAttenuationC0, 
-      _attenuationC0);
-    glUniform1f(phong_shader->ULights[light_index].UAttenuationC1,
-      _attenuationC1);
-    glUniform1f(phong_shader->ULights[light_index].UAttenuationC2,
-      _attenuationC2);
-  }
-  void SetUniforms(unsigned int light_index, GouraudShader * gouraud_shader)
-  {
-    glUniform1i(gouraud_shader->ULights[light_index].UType, _type);
-    glUniform3f(gouraud_shader->ULights[light_index].UPosition,
-      _position.x, _position.y, _position.z);
-    glUniform3f(gouraud_shader->ULights[light_index].UDirection,
-      _direction.x, _direction.y, _direction.z);
-    glUniform1f(gouraud_shader->ULights[light_index].UInnerAngle,
-      _innerAngle);
-    glUniform1f(gouraud_shader->ULights[light_index].UOuterAngle,
-      _outerAngle);
-    glUniform1f(gouraud_shader->ULights[light_index].USpotExponent,
-      _spotExponent);
-    glUniform3f(gouraud_shader->ULights[light_index].UAmbientColor,
-      _ambientColor._x, _ambientColor._y, _ambientColor._z);
-    glUniform3f(gouraud_shader->ULights[light_index].UDiffuseColor,
-      _diffuseColor._x, _diffuseColor._y, _diffuseColor._z);
-    glUniform3f(gouraud_shader->ULights[light_index].USpecularColor,
-      _specularColor._x, _specularColor._y, _specularColor._z);
-    glUniform1f(gouraud_shader->ULights[light_index].UAttenuationC0,
-      _attenuationC0);
-    glUniform1f(gouraud_shader->ULights[light_index].UAttenuationC1,
-      _attenuationC1);
-    glUniform1f(gouraud_shader->ULights[light_index].UAttenuationC2,
-      _attenuationC2);
-  }
-  void SetUniforms(unsigned int light_index, BlinnShader * blinn_shader)
-  {
-    glUniform1i(blinn_shader->ULights[light_index].UType, _type);
-    glUniform3f(blinn_shader->ULights[light_index].UPosition,
-      _position.x, _position.y, _position.z);
-    glUniform3f(blinn_shader->ULights[light_index].UDirection,
-      _direction.x, _direction.y, _direction.z);
-    glUniform1f(blinn_shader->ULights[light_index].UInnerAngle,
-      _innerAngle);
-    glUniform1f(blinn_shader->ULights[light_index].UOuterAngle,
-      _outerAngle);
-    glUniform1f(blinn_shader->ULights[light_index].USpotExponent,
-      _spotExponent);
-    glUniform3f(blinn_shader->ULights[light_index].UAmbientColor,
-      _ambientColor._x, _ambientColor._y, _ambientColor._z);
-    glUniform3f(blinn_shader->ULights[light_index].UDiffuseColor,
-      _diffuseColor._x, _diffuseColor._y, _diffuseColor._z);
-    glUniform3f(blinn_shader->ULights[light_index].USpecularColor,
-      _specularColor._x, _specularColor._y, _specularColor._z);
-    glUniform1f(blinn_shader->ULights[light_index].UAttenuationC0,
-      _attenuationC0);
-    glUniform1f(blinn_shader->ULights[light_index].UAttenuationC1,
-      _attenuationC1);
-    glUniform1f(blinn_shader->ULights[light_index].UAttenuationC2,
-      _attenuationC2);
-  }
-};
-int Light::_activeLights = 1;
-const int Light::_typePoint = 0;
-const int Light::_typeDirectional = 1;
-const int Light::_typeSpot = 2;
-
-
-
 // GLOBAL
 
 //editor
@@ -212,8 +54,8 @@ Mesh * mesh = nullptr;
 MeshRenderer::MeshObject * mesh_id = nullptr;
 MeshRenderer::MeshObject * sphere_mesh_id = nullptr;
 MeshRenderer::MeshObject * plane_mesh_id = nullptr;
-std::string current_mesh("bunny.obj");
-char next_mesh[FILENAME_BUFFERSIZE] = "bunny.obj";
+std::string current_mesh("highpoly_sphere.obj");
+char next_mesh[FILENAME_BUFFERSIZE] = "highpoly_sphere.obj";
 Light lights[MAXLIGHTS];
 Material material;
 unsigned int active_lights = 2;

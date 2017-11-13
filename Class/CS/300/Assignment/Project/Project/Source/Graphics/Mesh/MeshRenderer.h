@@ -6,31 +6,8 @@
  
 #include "../../Math/Matrix4.h"
 #include "../Shader/ShaderLibrary.h"
+#include "../Color.h"
 #include "Mesh.h"
-
-/*****************************************************************************/
-/*!
-\class Color
-\brief
-Used for storing rgb color values.
-*/
-/*****************************************************************************/
-struct Color
-{
-  Color() : _x(0.0f), _y(0.0f), _z(0.0f) {}
-  Color(float x, float y, float z) : _x(x), _y(y), _z(z) {}
-  Color(const Color & other) : _x(other._x), _y(other._y), _z(other._z) {}
-  // The rgb value of the color
-  union {
-    float _values[3];
-    struct {
-      float _x, _y, _z;
-    };
-    struct {
-      float _r, _g, _b;
-    };
-  };
-};
 
 /*****************************************************************************/
 /*!
