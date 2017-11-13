@@ -6,6 +6,7 @@ in vec3 ANormal;
 
 out vec3 SNormal;
 out vec3 SFragPos;
+out vec3 SModelPos;
 
 uniform mat4 UProjection = mat4(1,0,0,0,
                                 0,1,0,0,
@@ -27,4 +28,5 @@ void main()
   gl_Position = UProjection * UView * UModel * vec4(APosition.xyz, 1.0);
   SNormal = mat3(transpose(inverse(UModel))) * ANormal;
   SFragPos = vec3(UModel * vec4(APosition, 1.0));
+  SModelPos = APosition;
 }

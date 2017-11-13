@@ -1,1 +1,3337 @@
-CLEAN
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Initialize()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During initialization
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Initialize()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During initialization
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Initialize()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During initialization
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Initialize()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During initialization
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Initialize()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During initialization
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - CompileShader
+> Log
+SHADER COMPILE ERROR
+Resource/Shader/phong.frag
+0(157) : error C1038: declaration of "pi" conflicts with previous declaration at 0(122)
+0(158) : error C1038: declaration of "model_pos" conflicts with previous declaration at 0(123)
+0(159) : error C1038: declaration of "theta" conflicts with previous declaration at 0(124)
+0(160) : error C1038: declaration of "phi" conflicts with previous declaration at 0(125)
+0(161) : error C1038: declaration of "uv" conflicts with previous declaration at 0(126)
+
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - CompileShader
+> Log
+SHADER COMPILE ERROR
+Resource/Shader/phong.frag
+0(129) : error C1008: undefined variable "final_color"
+
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - CompileShader
+> Log
+SHADER COMPILE ERROR
+Resource/Shader/phong.frag
+0(129) : error C7563: assignment to uniform UMaterial
+
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetAttribLocation
+> Log
+An attribute was not found.
+<Attribute name>
+ANormal
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UCameraPosition
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UEmissiveColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UGlobalAmbientColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UAmbientFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.UDiffuseFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularFactor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UMaterial.USpecularExponent
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFogColor
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UNearPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - Shader.cpp
+Function - GetUniformLocation
+> Log
+An uniform was not found.
+<Uniform name>
+UFarPlane
+<Shader Files Involved>
+Resource/Shader/phong.vert
+Resource/Shader/phong.frag
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----
+---- Error Start ----
+File - main.cpp
+Function - Update()
+> Log
+> OPENGL ERROR CODE
+GL_INVALID_VALUE
+> DESCRIPTION
+During Update
+----- Error End -----

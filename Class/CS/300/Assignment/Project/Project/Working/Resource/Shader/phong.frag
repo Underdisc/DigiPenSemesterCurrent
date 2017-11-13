@@ -7,11 +7,9 @@
 
 in vec3 SNormal;
 in vec3 SFragPos;
+in vec3 SModelPos;
 
 out vec4 OFragColor;
-
-// The cameras world position
-uniform vec3 UCameraPosition;
 
 // Material values
 struct Material
@@ -58,6 +56,10 @@ uniform float UFarPlane;
 
 uniform vec3 UEmissiveColor;
 uniform vec3 UGlobalAmbientColor;
+
+uniform vec3 UCameraPosition;
+
+uniform sampler2D USampler;
 
 vec3 ComputeLight(int light, vec3 normal, vec3 view_dir)
 {
@@ -115,6 +117,8 @@ vec3 ComputeLight(int light, vec3 normal, vec3 view_dir)
 
 void main()
 {
+
+  // lighting
   // precomputations
   vec3 normal = normalize(SNormal);
   vec3 view_vec = UCameraPosition - SFragPos;
@@ -135,4 +139,15 @@ void main()
   final_color = mix(final_color, UFogColor, fog_factor);
   // final color
   OFragColor = vec4(final_color, 1.0);
+
+
+  // texture mappping
+  // sperical mapping
+  float pi = 3.14159265359;
+  vec3 model_pos = SModelPos;
+  float theta = atan(model_pos.z, model_pos.x);
+  float phi = acos(-1.0 * model_pos.y);
+  vec2 uv;
+  uv.x = (theta + pi) / (pi * 2.0);
+  uv.y = phi / pi;
 }

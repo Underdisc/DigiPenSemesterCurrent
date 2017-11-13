@@ -16,6 +16,7 @@
 #include "Graphics\Light.h"
 #include "Graphics\Material.h"
 #include "Graphics\Renderer.h"
+#include "Graphics\Texture.h"
 
 #include <GL\glew.h>
 #include "Utility\OpenGLError.h"
@@ -43,6 +44,8 @@
 #define FILENAME_BUFFERSIZE 50
 
 // GLOBAL
+
+Texture * texture;
 
 static Mesh * mesh;
 static MeshRenderer::MeshObject * mesh_id;
@@ -122,6 +125,7 @@ int main(int argc, char * argv[])
   MeshRenderer::Initialize();
   Editor::Initialize();
 
+  texture = new Texture("Resource/Texture/midair.png");
   LoadMesh(Editor::current_mesh);
   LoadOtherMeshes();
   camera.MoveBack(2.0f);
@@ -294,6 +298,7 @@ inline void Render()
   translate.Translate(0.0, -5.0f, 0.0f);
   scale.Scale(20.0f, 20.0f, 20.0f);
   model = translate * scale;
+  texture->Bind();
   MeshRenderer::Render(plane_mesh_id, Editor::shader_in_use, projection, camera.ViewMatrix(), model);
   try
   {
