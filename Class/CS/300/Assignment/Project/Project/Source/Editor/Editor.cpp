@@ -5,9 +5,11 @@
 #include "Editor.h"
 #include "../External/Imgui/imgui.h"
 #include "../External/Imgui/imgui_impl_sdl_gl3.h"
+#include "../Utility/Error.h"
 
 bool Editor::show_light_editor = false;
 bool Editor::show_material_editor = false;
+bool Editor::show_error_log = false;
 
 std::string Editor::current_mesh("highpoly_sphere.obj");
 char Editor::next_mesh[FILENAME_BUFFERSIZE] = "highpoly_sphere.obj";
@@ -15,9 +17,11 @@ Light Editor::lights[MAXLIGHTS];
 Material Editor::material;
 unsigned int Editor::active_lights = 2;
 MeshRenderer::ShaderType Editor::shader_in_use = MeshRenderer::PHONG;
+std::string Editor::error_log;
+
+// these things probably shouldn't be here
 bool Editor::rotating_lights = false;
 float Editor::rotate_light_speed = 1.5f;
-
 bool Editor::rotate_camera = false;
 float Editor::camera_rotate_speed = 1.0f;
 float Editor::camera_distance = 2.0f;
@@ -31,6 +35,7 @@ void Editor::Initialize()
 {
   ImGui_ImplSdlGL3_Init(SDLContext::SDLWindow());
   SDLContext::AddEventProcessor(ImGui_ImplSdlGL3_ProcessEvent);
+  ErrorLog::AddErrorString(&error_log);
 }
 
 void Editor::Render()
@@ -113,8 +118,11 @@ void Editor::Update(Mesh * mesh, MeshRenderer::MeshObject * mesh_object,
     ImGui::Separator();
   }
   if (ImGui::CollapsingHeader("Debug")) {
+    ImGui::Separator();
     ImGui::Text("Average FPS: %f", Framer::AverageFPS());
     ImGui::Text("Average Frame Usage: %f", Framer::AverageFrameUsage() * 100.0f);
+    ImGui::Separator();
+    ImGui::Checkbox("Show Error Log", &show_error_log);
     ImGui::Separator();
   }
   if (ImGui::CollapsingHeader("Global")) {
@@ -190,6 +198,9 @@ void Editor::Update(Mesh * mesh, MeshRenderer::MeshObject * mesh_object,
     MaterialEditorUpdate();
   if (show_light_editor)
     LightEditorUpdate();
+  if(show_error_log)
+    ErrorLogUpdate();
+    
 }
 
 inline void Editor::MaterialEditorUpdate()
@@ -262,6 +273,16 @@ inline void Editor::LightEditorUpdate()
     }
     ImGui::Separator();
   }
+  ImGui::End();
+}
+
+inline void Editor::ErrorLogUpdate()
+{
+  ImGui::Begin("Errors", &show_error_log);
+  ImGui::Text(error_log.c_str());
+  ImGui::Separator();
+  if(ImGui::Button("Clear"))
+    error_log.clear();
   ImGui::End();
 }
 

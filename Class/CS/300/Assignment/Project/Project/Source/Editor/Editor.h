@@ -27,17 +27,21 @@ public:
     void (*load_mesh)(const std::string &));
   static void MaterialEditorUpdate();
   static void LightEditorUpdate();
+  static void ErrorLogUpdate();
 public:
   static void SceneMix();
   static void SceneSame();
 public:
   static bool show_light_editor;
   static bool show_material_editor;
+  static bool show_error_log;
 
   static std::string current_mesh;
   static char next_mesh[FILENAME_BUFFERSIZE];
   static unsigned int active_lights;
   static MeshRenderer::ShaderType shader_in_use;
+
+  static std::string error_log;
 
   // these things should probably not be here
   static bool rotating_lights;

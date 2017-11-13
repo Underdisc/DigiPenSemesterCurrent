@@ -14,8 +14,8 @@
 // PARAMETERS
 //! The filename that Error exceptions will be written to from the 
 // ErrorLog class.
-#define ERROR_LOG_FILENAME     "assignment2.error"
-#define ROOTERROR_LOG_FILENAME "assignment2.root.error"
+#define ERROR_LOG_FILENAME     "assignment3.error"
+#define ROOTERROR_LOG_FILENAME "assignment3.root.error"
 // !PARAMETERS
 
 #include <iostream>
@@ -72,6 +72,67 @@ void Error::Add(const std::string & info)
   _log.push_back(info);
 }
 
+/*****************************************************************************/
+/*!
+\brief
+Operator << overload for the Error class. When an error is printed, the file
+name, function name, and log will all be printed.
+
+\param os
+The outstream being printed to.
+\param error
+The Error to be printed.
+
+\return The outstream being printed to.
+*/
+/*****************************************************************************/
+std::ostream & operator<<(std::ostream & os, const Error & error)
+{
+  //print header
+  os << "---- Error Start ----" << std::endl
+    << "File - " << error._file << std::endl
+    << "Function - " << error._function << std::endl
+    << "> Log" << std::endl;
+  //print log
+  std::vector<std::string>::const_iterator info;
+  for (info = error._log.begin(); info != error._log.end(); ++info)
+    os << *(info) << std::endl;
+  os << "----- Error End -----" << std::endl;
+  return os;
+}
+
+/*****************************************************************************/
+/*!
+\brief 
+  Appends an error to the end of a string.
+
+\param string
+  The string to be appended to.
+\param error
+  The error being appended to the string.
+*/
+/*****************************************************************************/
+void operator<<(std::string * string, const Error & error)
+{
+  //print header
+  string->append("---- Error Start ----\n");
+  string->append("File - ");
+  string->append(error._file);
+  string->append(1, '\n');
+  string->append("Function - ");
+  string->append(error._function);
+  string->append(1, '\n');
+  //print log
+  string->append("> Log\n");
+  std::vector<std::string>::const_iterator info;
+  for (info = error._log.begin(); info != error._log.end(); ++info) {
+    string->append(*info);
+    string->append(1, '\n');
+  }
+  //done
+  string->append("----- Error End -----\n");
+}
+
 // ROOTERROR //////////////////////////////////////////////////////////////////
 
 /*****************************************************************************/
@@ -93,6 +154,7 @@ RootError::RootError(const char * file, const char * function) :
 // ERRORLOG ///////////////////////////////////////////////////////////////////
 
 // STATIC INITIALIZATIONS
+std::vector<std::string *> ErrorLog::_errorStrings;
 bool ErrorLog::_errorWritten = false;
 bool ErrorLog::_rootErrorWritten = false;
 std::string ErrorLog::_errorFilename = ERROR_LOG_FILENAME;
@@ -144,6 +206,9 @@ void ErrorLog::Write(const Error & error)
     _errorLog << error;
     _errorLog.close();
   }
+  // writing to error strings
+  for(std::string * string : _errorStrings)
+    string << error;
 }
 
 /*****************************************************************************/
@@ -174,28 +239,14 @@ void ErrorLog::Write(const RootError & root_error)
 /*****************************************************************************/
 /*!
 \brief
-  Operator << overload for the Error class. When an error is printed, the file 
-  name, function name, and log will all be printed.
+  After giving a string to this function, it will be written
+  to each time an error is written to the ErrorLog.
 
-\param os
-  The outstream being printed to.
-\param error
-  The Error to be printed.
-
-\return The outstream being printed to.
+\param error_string
+  The string being added to the ErrorLog writing process.
 */
 /*****************************************************************************/
-std::ostream & operator<<(std::ostream & os, const Error & error)
+void ErrorLog::AddErrorString(std::string * error_string)
 {
-  //print header
-  os << "---- Error Start ----" << std::endl
-            << "File - " << error._file << std::endl
-            << "Function - " << error._function << std::endl
-            << "> Log" << std::endl;
-  //print log
-  std::vector<std::string>::const_iterator info;
-  for (info = error._log.begin(); info != error._log.end(); ++info)
-    os << *(info) << std::endl;
-  os << "----- Error End -----" << std::endl;
-  return os;
+  _errorStrings.push_back(error_string);
 }

@@ -300,7 +300,8 @@ inline void Render()
   model = translate * scale;
   texture->Bind();
   MeshRenderer::Render(plane_mesh_id, Editor::shader_in_use, projection, camera.ViewMatrix(), model);
-  try
+  // disable writing to error strings
+  /*try
   {
     GLenum gl_error = glGetError();
     OPENGLERRORCHECK("main.cpp", "Update()", "During Update", gl_error)
@@ -308,5 +309,5 @@ inline void Render()
   catch (const Error & error)
   {
     ErrorLog::Write(error);
-  }
+  }*/
 }

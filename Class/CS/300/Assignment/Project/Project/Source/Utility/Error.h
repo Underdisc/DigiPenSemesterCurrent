@@ -40,6 +40,7 @@ public:
   void Add(const char * info);
   void Add(const std::string & info);
   friend std::ostream & operator<<(std::ostream & os, const Error & error);
+  friend void operator<<(std::string * string, const Error & error);
 private:
   //! The name of the file in which an Error was thrown.
   std::string _file;
@@ -82,8 +83,11 @@ public:
   static void Clean();
   static void Write(const Error & error);
   static void Write(const RootError & root_error);
+  static void AddErrorString(std::string * error_string);
 private:
   ErrorLog() {}
+  //! The strings that will be appended to when an error is written.
+  static std::vector<std::string *> _errorStrings;
   //! Tracks whether an error has been written to file yet or not.
   static bool _errorWritten;
   //! Tracks whether a root error has been written to file yet or not.
