@@ -14,7 +14,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "../Utility/OpenGLError.h"
+#include "../../Utility/OpenGLError.h"
 
 #include "Shader.h"
 
@@ -180,8 +180,24 @@ void Shader::Purge() const
   }
 }
 
-
+/*****************************************************************************/
+/*!
+\brief
+  Should be overloaded by the derived Shader type. Specifies Responsible
+  for specifying the layout of shader attributes when reading vertex arrays.
+*/
+/*****************************************************************************/
 void Shader::EnableAttributes()
+{}
+
+/*****************************************************************************/
+/*!
+\brief
+  Should be overloaded by a derived Shader type. Simply disables any vertex
+  attributes associated with the shader.
+*/
+/*****************************************************************************/
+void Shader::DisableAttributes()
 {}
 
 /*****************************************************************************/

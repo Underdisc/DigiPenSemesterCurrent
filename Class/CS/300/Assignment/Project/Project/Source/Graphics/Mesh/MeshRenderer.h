@@ -5,7 +5,7 @@
 #include <GL\glew.h>
  
 #include "../../Math/Matrix4.h"
-#include "../ShaderLibrary.h"
+#include "../Shader/ShaderLibrary.h"
 #include "Mesh.h"
 
 /*****************************************************************************/
@@ -125,9 +125,6 @@ public:
     const Math::Matrix4 & projection, const Math::Matrix4 & view, 
     const Math::Matrix4 & model);
   static void ReloadShader(ShaderType shader_type);
-  static void ReloadPhong();
-  static void ReloadGouraud();
-  static void ReloadBlinn();
   static SolidShader * GetSolidShader();
   static PhongShader * GetPhongShader();
   static GouraudShader * GetGouraudShader();

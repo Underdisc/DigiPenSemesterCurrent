@@ -26,6 +26,9 @@
 class LineShader : public Shader
 {
 public:
+  virtual void EnableAttributes();
+  virtual void DisableAttributes();
+public:
   LineShader();
   // Attributes
   GLuint APosition;
@@ -41,8 +44,8 @@ public:
 class SolidShader : public Shader
 {
 public:
-  void EnableAttributes();
-  void DisableAttributes();
+  virtual void EnableAttributes();
+  virtual void DisableAttributes();
 public:
   SolidShader();
   // Attributes
@@ -91,8 +94,8 @@ class PhongShader : public Shader
 {
 public:
   PhongShader();
-  void EnableAttributes();
-  void DisableAttributes();
+  virtual void EnableAttributes();
+  virtual void DisableAttributes();
   // Attributes
   GLuint APosition;
   GLuint ANormal;
@@ -126,8 +129,8 @@ class GouraudShader : public Shader
 {
 public:
   GouraudShader();
-  void EnableAttributes();
-  void DisableAttributes();
+  virtual void EnableAttributes();
+  virtual void DisableAttributes();
   // Attributes
   GLuint APosition;
   GLuint ANormal;
@@ -161,8 +164,8 @@ class BlinnShader : public Shader
 {
 public:
   BlinnShader();
-  void EnableAttributes();
-  void DisableAttributes();
+  virtual void EnableAttributes();
+  virtual void DisableAttributes();
   // Attributes
   GLuint APosition;
   GLuint ANormal;

@@ -28,7 +28,7 @@
 
 #include "Graphics\Mesh\Mesh.h"
 #include "Graphics\Mesh\MeshRenderer.h"
-#include "Graphics\ShaderLibrary.h"
+#include "Graphics\Shader\ShaderLibrary.h"
 #include "Graphics\Camera.h"
 
 #include "Core\Input.h"

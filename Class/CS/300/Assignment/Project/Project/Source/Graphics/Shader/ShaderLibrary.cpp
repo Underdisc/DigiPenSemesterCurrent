@@ -11,6 +11,18 @@ LineShader::LineShader() :
   ULineColor = GetUniformLocation("ULineColor");
 }
 
+void LineShader::EnableAttributes()
+{
+  glVertexAttribPointer(APosition, 3, GL_FLOAT, GL_FALSE,
+    3 * sizeof(GLfloat), nullptr);
+  glEnableVertexAttribArray(APosition);
+}
+
+void LineShader::DisableAttributes()
+{
+  glDisableVertexAttribArray(APosition);
+}
+
 SolidShader::SolidShader() :
   Shader("Resource/Shader/solid.vert", "Resource/Shader/solid.frag")
 {

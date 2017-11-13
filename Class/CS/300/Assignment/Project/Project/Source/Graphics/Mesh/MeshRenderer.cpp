@@ -105,9 +105,7 @@ MeshRenderer::MeshObject * MeshRenderer::Upload(Mesh * mesh)
   glBindBuffer(GL_ARRAY_BUFFER, vbo_vn);
   glBufferData(GL_ARRAY_BUFFER, mesh->VertexNormalLineSizeBytes(), 
     mesh->VertexNormalLineData(), GL_STATIC_DRAW);
-  glVertexAttribPointer(_lineShader->APosition, 3, GL_FLOAT, GL_FALSE, 
-    3 * sizeof(GLfloat), nullptr);
-  glEnableVertexAttribArray(_lineShader->APosition);
+  _lineShader->EnableAttributes();
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   // face normal upload 
@@ -118,9 +116,7 @@ MeshRenderer::MeshObject * MeshRenderer::Upload(Mesh * mesh)
   glBindBuffer(GL_ARRAY_BUFFER, vbo_fn);
   glBufferData(GL_ARRAY_BUFFER, mesh->FaceNormalLineSizeBytes(), 
     mesh->FaceNormalLineData(), GL_STATIC_DRAW);
-  glVertexAttribPointer(_lineShader->APosition, 3, GL_FLOAT, GL_FALSE, 
-    3 * sizeof(GLfloat), nullptr);
-  glEnableVertexAttribArray(_lineShader->APosition);
+  _lineShader->EnableAttributes();
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -253,80 +249,54 @@ void MeshRenderer::Render(MeshObject * mesh_object, ShaderType shader_type,
 
 void MeshRenderer::ReloadShader(ShaderType shader_type)
 {
+  // getting base shader type
+  Shader * shader_to_reload;
   switch (shader_type)
   {
   case PHONG:
-    ReloadPhong();
+    shader_to_reload = _phongShader;
     break;
   case GOURAUD:
-    ReloadGouraud();
+    shader_to_reload = _gouraudShader;
     break;
   case BLINN:
-    ReloadBlinn();
+    shader_to_reload = _blinnShader;
     break;
   default:
-    break;
+    Error error("MeshRenderer.cpp", "ReloadShader");
+    error.Add("ShaderType cannot be reloaded.");
+    throw(error);
   }
-}
-
-void MeshRenderer::ReloadPhong()
-{
   // disabling vertex attributes
   for (MeshObject * mesh_object : _meshObjects) {
     glBindVertexArray(mesh_object->_vao);
-    _phongShader->DisableAttributes();
+    shader_to_reload->DisableAttributes();
     glBindVertexArray(0);
   }
   // creating new shader
-  delete _phongShader;
-  _phongShader = new PhongShader();
-  // enabling vertex attributes
+  switch (shader_type)
+  {
+  case PHONG:
+    delete _phongShader;
+    _phongShader = new PhongShader();
+    shader_to_reload = _phongShader;
+    break;
+  case GOURAUD:
+    delete _gouraudShader;
+    _gouraudShader = new GouraudShader();
+    shader_to_reload = _gouraudShader;
+    break;
+  case BLINN:
+    delete _blinnShader;
+    _blinnShader = new BlinnShader();
+    shader_to_reload = _blinnShader;
+    break;
+  }
+  // re-enabling vertex attributes
   for (MeshObject * mesh_object : _meshObjects) {
     glBindBuffer(GL_ARRAY_BUFFER, mesh_object->_vbo);
     glBindVertexArray(mesh_object->_vao);
     _phongShader->EnableAttributes();
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-  }
-}
-
-void MeshRenderer::ReloadGouraud()
-{
-  // disabling vertex attributes
-  for (MeshObject * mesh_object : _meshObjects) {
-    glBindVertexArray(mesh_object->_vao);
-    _gouraudShader->DisableAttributes();
-    glBindVertexArray(0);
-  }
-  // creating new shader
-  delete _gouraudShader;
-  _gouraudShader = new GouraudShader();
-  // enabling vertex attributes
-  for (MeshObject * mesh_object : _meshObjects) {
-    glBindBuffer(GL_ARRAY_BUFFER, mesh_object->_vbo);
-    glBindVertexArray(mesh_object->_vao);
-    _gouraudShader->EnableAttributes();
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-  }
-}
-
-void MeshRenderer::ReloadBlinn()
-{
-  // disabling vertex attributes
-  for (MeshObject * mesh_object : _meshObjects) {
-    glBindVertexArray(mesh_object->_vao);
-    _blinnShader->DisableAttributes();
-    glBindVertexArray(0);
-  }
-  // creating new shader
-  delete _blinnShader;
-  _blinnShader = new BlinnShader();
-  // enabling vertex attributes
-  for (MeshObject * mesh_object : _meshObjects) {
-    glBindBuffer(GL_ARRAY_BUFFER, mesh_object->_vbo);
-    glBindVertexArray(mesh_object->_vao);
-    _blinnShader->EnableAttributes();
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
   }
