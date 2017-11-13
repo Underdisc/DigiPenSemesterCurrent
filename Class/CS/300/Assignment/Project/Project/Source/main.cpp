@@ -12,14 +12,11 @@
 */
 /*****************************************************************************/
 
-#include "External\Imgui\imgui.h"
-#include "External\Imgui\imgui_impl_sdl_gl3.h"
 
 #include "Graphics\Light.h"
 #include "Graphics\Material.h"
 #include "Graphics\Renderer.h"
 
-#include "Graphics\SDLContext.h"
 #include <GL\glew.h>
 #include "Utility\OpenGLError.h"
 
@@ -37,7 +34,6 @@
 
 #include "Core\Input.h"
 #include "Core\Framer.h"
-#include "Graphics\Texture.h"
 #include "Editor\Editor.h"
 
 #define PI 3.141592653589f
@@ -108,7 +104,6 @@ void LoadOtherMeshes()
 inline void InitialUpdate()
 {
   Time::Update();
-  ImGui_ImplSdlGL3_NewFrame(SDLContext::SDLWindow());
   SDLContext::CheckEvents();
 }
 
@@ -125,8 +120,7 @@ int main(int argc, char * argv[])
   SDLContext::Create("CS 300 - Assignment 2", true, OpenGLContext::AdjustViewport);
   OpenGLContext::Initialize();
   MeshRenderer::Initialize();
-  ImGui_ImplSdlGL3_Init(SDLContext::SDLWindow());
-  SDLContext::AddEventProcessor(ImGui_ImplSdlGL3_ProcessEvent);
+  Editor::Initialize();
 
   LoadMesh(Editor::current_mesh);
   LoadOtherMeshes();
@@ -143,7 +137,7 @@ int main(int argc, char * argv[])
     Update();
     Clear();
     Render();
-    ImGui::Render();
+    Editor::Render();
     OpenGLContext::Swap();
     // frame end
     Framer::End();
@@ -222,8 +216,7 @@ inline void RotateLights()
 
 inline void Update()
 {
-  ImGuiIO & imgui_io = ImGui::GetIO();
-  if(!imgui_io.WantCaptureMouse)
+  if(!Editor::MouseHovering())
     ManageInput();
   if(Editor::rotating_lights)
     RotateLights();

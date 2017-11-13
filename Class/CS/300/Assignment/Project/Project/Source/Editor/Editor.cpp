@@ -1,3 +1,4 @@
+#include "../Graphics/SDLContext.h"
 #include "../Core/Framer.h"
 #include "../Core/Time.h"
 #include "../Core/Input.h"
@@ -22,14 +23,31 @@ float Editor::camera_rotate_speed = 1.0f;
 float Editor::camera_distance = 2.0f;
 Math::Vector3 Editor::trans(0.0f, 0.0f, 0.0f);
 float Editor::cur_scale = 1.0f;
-float Editor::scale_speed = 7.0f;
 //initializing to pie so rotations make sense at the start
 Math::EulerAngles Editor::rotation(0.0f, PI, 0.0f, Math::EulerOrders::XYZs);
 
 
+void Editor::Initialize()
+{
+  ImGui_ImplSdlGL3_Init(SDLContext::SDLWindow());
+  SDLContext::AddEventProcessor(ImGui_ImplSdlGL3_ProcessEvent);
+}
+
+void Editor::Render()
+{
+  ImGui::Render();
+}
+
+bool Editor::MouseHovering()
+{
+  const ImGuiIO & imgui_io = ImGui::GetIO();
+  return imgui_io.WantCaptureMouse;
+}
+
 void Editor::Update(Mesh * mesh, MeshRenderer::MeshObject * mesh_object,
   void(*load_mesh)(const std::string &))
 {
+  ImGui_ImplSdlGL3_NewFrame(SDLContext::SDLWindow());
   ImGui::Begin("Editor");
   if (ImGui::CollapsingHeader("Help"))
   {
