@@ -38,6 +38,8 @@ class Shader
     GLuint ID() const;
     virtual void Use() const;
     void Purge() const;
+    virtual void EnableAttributes();
+    virtual void DisableAttributes();
   protected:
     //! The ID of the program created after linking the shaders.
     GLuint _programID;

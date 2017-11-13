@@ -13,7 +13,7 @@ float MeshRenderer::_fogFar = 20.0f;
 float MeshRenderer::_nearPlane = 0.1f;
 float MeshRenderer::_farPlane = 20.0f;
 unsigned int MeshRenderer::_meshObjectsAdded = 0;
-std::vector<MeshRenderer::MeshObject> MeshRenderer::_meshObjects;
+std::unordered_set<MeshRenderer::MeshObject *> MeshRenderer::_meshObjects;
 LineShader * MeshRenderer::_lineShader = nullptr;
 SolidShader * MeshRenderer::_solidShader = nullptr;
 PhongShader * MeshRenderer::_phongShader = nullptr;
@@ -39,15 +39,16 @@ void MeshRenderer::Initialize()
 void MeshRenderer::Purge()
 {
   // deleting all mesh objects
-  for (MeshObject & mesh_object : _meshObjects) {
-    glDeleteBuffers(1, &mesh_object._vbo);
-    glDeleteBuffers(1, &mesh_object._ebo);
-    glDeleteVertexArrays(1, &mesh_object._vao);
+  for (MeshObject * mesh_object : _meshObjects) {
+    glDeleteBuffers(1, &mesh_object->_vbo);
+    glDeleteBuffers(1, &mesh_object->_ebo);
+    glDeleteVertexArrays(1, &mesh_object->_vao);
     // freeing normal line buffers
-    glDeleteBuffers(1, &mesh_object._vboVertexNormal);
-    glDeleteVertexArrays(1, &mesh_object._vaoVertexNormal);
-    glDeleteBuffers(1, &mesh_object._vboFaceNormal);
-    glDeleteVertexArrays(1, &mesh_object._vaoFaceNormal);
+    glDeleteBuffers(1, &mesh_object->_vboVertexNormal);
+    glDeleteVertexArrays(1, &mesh_object->_vaoVertexNormal);
+    glDeleteBuffers(1, &mesh_object->_vboFaceNormal);
+    glDeleteVertexArrays(1, &mesh_object->_vaoFaceNormal);
+    delete mesh_object;
   }
   _meshObjects.clear();
   // deallocating all shaders
@@ -74,7 +75,7 @@ void MeshRenderer::Purge()
 \return The mesh's id within the mesh renderer.
 */
 /*****************************************************************************/
-unsigned int MeshRenderer::Upload(Mesh * mesh)
+MeshRenderer::MeshObject * MeshRenderer::Upload(Mesh * mesh)
 {
   // primary mesh upload
   GLuint vbo, ebo, vao;
@@ -83,9 +84,11 @@ unsigned int MeshRenderer::Upload(Mesh * mesh)
   glGenBuffers(1, &ebo);
   glBindVertexArray(vao);
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glBufferData(GL_ARRAY_BUFFER, mesh->VertexDataSizeBytes(), mesh->VertexData(), GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, mesh->VertexDataSizeBytes(), 
+    mesh->VertexData(), GL_STATIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->IndexDataSizeBytes(), mesh->IndexData(), GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->IndexDataSizeBytes(), 
+    mesh->IndexData(), GL_STATIC_DRAW);
   // enable all vertex attributes
   _solidShader->EnableAttributes();
   _phongShader->EnableAttributes();
@@ -100,8 +103,10 @@ unsigned int MeshRenderer::Upload(Mesh * mesh)
   glGenBuffers(1, &vbo_vn);
   glBindVertexArray(vao_vn);
   glBindBuffer(GL_ARRAY_BUFFER, vbo_vn);
-  glBufferData(GL_ARRAY_BUFFER, mesh->VertexNormalLineSizeBytes(), mesh->VertexNormalLineData(), GL_STATIC_DRAW);
-  glVertexAttribPointer(_lineShader->APosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
+  glBufferData(GL_ARRAY_BUFFER, mesh->VertexNormalLineSizeBytes(), 
+    mesh->VertexNormalLineData(), GL_STATIC_DRAW);
+  glVertexAttribPointer(_lineShader->APosition, 3, GL_FLOAT, GL_FALSE, 
+    3 * sizeof(GLfloat), nullptr);
   glEnableVertexAttribArray(_lineShader->APosition);
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -111,46 +116,44 @@ unsigned int MeshRenderer::Upload(Mesh * mesh)
   glGenBuffers(1, &vbo_fn);
   glBindVertexArray(vao_fn);
   glBindBuffer(GL_ARRAY_BUFFER, vbo_fn);
-  glBufferData(GL_ARRAY_BUFFER, mesh->FaceNormalLineSizeBytes(), mesh->FaceNormalLineData(), GL_STATIC_DRAW);
-  glVertexAttribPointer(_lineShader->APosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
+  glBufferData(GL_ARRAY_BUFFER, mesh->FaceNormalLineSizeBytes(), 
+    mesh->FaceNormalLineData(), GL_STATIC_DRAW);
+  glVertexAttribPointer(_lineShader->APosition, 3, GL_FLOAT, GL_FALSE, 
+    3 * sizeof(GLfloat), nullptr);
   glEnableVertexAttribArray(_lineShader->APosition);
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  // adding new mesh object
-  _meshObjects.push_back(MeshObject(vbo, ebo, vao, mesh->IndexDataSize(),
+
+  // creating and adding new mesh object
+  MeshObject * new_mesh_object = new MeshObject(vbo, ebo, vao, 
+    mesh->IndexDataSize(),
     vbo_vn, vao_vn, mesh->VertexNormalLineSizeVertices(),
-    vbo_fn, vao_fn, mesh->FaceNormalLineSizeVertices()));
-  return _meshObjectsAdded++;
+    vbo_fn, vao_fn, mesh->FaceNormalLineSizeVertices());
+  _meshObjects.insert(new_mesh_object);
+  _meshObjectsAdded++;
+  return new_mesh_object;
 }
 
-void MeshRenderer::Purge(unsigned int mesh_id)
+void MeshRenderer::Unload(MeshObject * mesh_object)
 {
-  // grabbing mesh from mesh pool
-  unsigned int mesh_index = MeshIDToIndex(mesh_id);
-  MeshObject & mesh_object = _meshObjects[mesh_index];
   // freeing mesh buffers
-  glDeleteBuffers(1, &mesh_object._vbo);
-  glDeleteBuffers(1, &mesh_object._ebo);
-  glDeleteVertexArrays(1, &mesh_object._vao);
+  glDeleteBuffers(1, &mesh_object->_vbo);
+  glDeleteBuffers(1, &mesh_object->_ebo);
+  glDeleteVertexArrays(1, &mesh_object->_vao);
   // freeing normal line buffers
-  glDeleteBuffers(1, &mesh_object._vboVertexNormal);
-  glDeleteVertexArrays(1, &mesh_object._vaoVertexNormal);
-  glDeleteBuffers(1, &mesh_object._vboFaceNormal);
-  glDeleteVertexArrays(1, &mesh_object._vaoFaceNormal);
-  // removing mesh from mesh object vector
-
-  std::vector<MeshObject>::iterator it = _meshObjects.begin();
-  it = it + MeshIDToIndex(mesh_id);
-  _meshObjects.erase(it);
+  glDeleteBuffers(1, &mesh_object->_vboVertexNormal);
+  glDeleteVertexArrays(1, &mesh_object->_vaoVertexNormal);
+  glDeleteBuffers(1, &mesh_object->_vboFaceNormal);
+  glDeleteVertexArrays(1, &mesh_object->_vaoFaceNormal);
+  // removing mesh from mesh object set and de-allocating
+  _meshObjects.erase(mesh_object);
+  delete mesh_object;
 }
 
-void MeshRenderer::Render(unsigned int mesh_id, ShaderType shader_type,
+void MeshRenderer::Render(MeshObject * mesh_object, ShaderType shader_type,
   const Math::Matrix4 & projection,
   const Math::Matrix4 & view, const Math::Matrix4 & model)
 {
-  // grabbing mesh from mesh pool
-  unsigned int mesh_index = MeshIDToIndex(mesh_id);
-  MeshObject & mesh_object = _meshObjects[mesh_index];
   // updating shader
   switch (shader_type)
   {
@@ -210,40 +213,40 @@ void MeshRenderer::Render(unsigned int mesh_id, ShaderType shader_type,
     break;
   }
   // drawing mesh
-  glBindVertexArray(mesh_object._vao);
-  if (mesh_object._showWireframe)
+  glBindVertexArray(mesh_object->_vao);
+  if (mesh_object->_showWireframe)
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   else
     glPolygonMode(GL_FRONT, GL_FILL);
-  glDrawElements(GL_TRIANGLES, mesh_object._elements, GL_UNSIGNED_INT, nullptr);
+  glDrawElements(GL_TRIANGLES, mesh_object->_elements, GL_UNSIGNED_INT, nullptr);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glBindVertexArray(0);
 
   // drawing normal lines
-  if(mesh_object._showVertexNormals || mesh_object._showFaceNormals){
+  if(mesh_object->_showVertexNormals || mesh_object->_showFaceNormals){
     _lineShader->Use();
     glUniformMatrix4fv(_lineShader->UProjection, 1, GL_TRUE, projection.array);
     glUniformMatrix4fv(_lineShader->UView, 1, GL_TRUE, view.array);
     glUniformMatrix4fv(_lineShader->UModel, 1, GL_TRUE, model.array);
   }
-  if (mesh_object._showVertexNormals) {
+  if (mesh_object->_showVertexNormals) {
     // vertex normals
     glUniform3f(_lineShader->ULineColor,
-      mesh_object._vertexNormalColor._r, 
-      mesh_object._vertexNormalColor._g,
-      mesh_object._vertexNormalColor._b);
-    glBindVertexArray(mesh_object._vaoVertexNormal);
-    glDrawArrays(GL_LINES, 0, mesh_object._vertexNormalVertexCount);
+      mesh_object->_vertexNormalColor._r, 
+      mesh_object->_vertexNormalColor._g,
+      mesh_object->_vertexNormalColor._b);
+    glBindVertexArray(mesh_object->_vaoVertexNormal);
+    glDrawArrays(GL_LINES, 0, mesh_object->_vertexNormalVertexCount);
     glBindVertexArray(0);
   }
-  if (mesh_object._showFaceNormals) {
+  if (mesh_object->_showFaceNormals) {
     // face normals
     glUniform3f(_lineShader->ULineColor,
-      mesh_object._faceNormalColor._r,
-      mesh_object._faceNormalColor._g,
-      mesh_object._faceNormalColor._b);
-    glBindVertexArray(mesh_object._vaoFaceNormal);
-    glDrawArrays(GL_LINES, 0, mesh_object._faceNormalVertexCount);
+      mesh_object->_faceNormalColor._r,
+      mesh_object->_faceNormalColor._g,
+      mesh_object->_faceNormalColor._b);
+    glBindVertexArray(mesh_object->_vaoFaceNormal);
+    glDrawArrays(GL_LINES, 0, mesh_object->_faceNormalVertexCount);
     glBindVertexArray(0);
   }
 }
@@ -269,8 +272,8 @@ void MeshRenderer::ReloadShader(ShaderType shader_type)
 void MeshRenderer::ReloadPhong()
 {
   // disabling vertex attributes
-  for (MeshObject & mesh_object : _meshObjects) {
-    glBindVertexArray(mesh_object._vao);
+  for (MeshObject * mesh_object : _meshObjects) {
+    glBindVertexArray(mesh_object->_vao);
     _phongShader->DisableAttributes();
     glBindVertexArray(0);
   }
@@ -278,9 +281,9 @@ void MeshRenderer::ReloadPhong()
   delete _phongShader;
   _phongShader = new PhongShader();
   // enabling vertex attributes
-  for (MeshObject & mesh_object : _meshObjects) {
-    glBindBuffer(GL_ARRAY_BUFFER, mesh_object._vbo);
-    glBindVertexArray(mesh_object._vao);
+  for (MeshObject * mesh_object : _meshObjects) {
+    glBindBuffer(GL_ARRAY_BUFFER, mesh_object->_vbo);
+    glBindVertexArray(mesh_object->_vao);
     _phongShader->EnableAttributes();
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -290,8 +293,8 @@ void MeshRenderer::ReloadPhong()
 void MeshRenderer::ReloadGouraud()
 {
   // disabling vertex attributes
-  for (MeshObject & mesh_object : _meshObjects) {
-    glBindVertexArray(mesh_object._vao);
+  for (MeshObject * mesh_object : _meshObjects) {
+    glBindVertexArray(mesh_object->_vao);
     _gouraudShader->DisableAttributes();
     glBindVertexArray(0);
   }
@@ -299,9 +302,9 @@ void MeshRenderer::ReloadGouraud()
   delete _gouraudShader;
   _gouraudShader = new GouraudShader();
   // enabling vertex attributes
-  for (MeshObject & mesh_object : _meshObjects) {
-    glBindBuffer(GL_ARRAY_BUFFER, mesh_object._vbo);
-    glBindVertexArray(mesh_object._vao);
+  for (MeshObject * mesh_object : _meshObjects) {
+    glBindBuffer(GL_ARRAY_BUFFER, mesh_object->_vbo);
+    glBindVertexArray(mesh_object->_vao);
     _gouraudShader->EnableAttributes();
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -311,8 +314,8 @@ void MeshRenderer::ReloadGouraud()
 void MeshRenderer::ReloadBlinn()
 {
   // disabling vertex attributes
-  for (MeshObject & mesh_object : _meshObjects) {
-    glBindVertexArray(mesh_object._vao);
+  for (MeshObject * mesh_object : _meshObjects) {
+    glBindVertexArray(mesh_object->_vao);
     _blinnShader->DisableAttributes();
     glBindVertexArray(0);
   }
@@ -320,18 +323,13 @@ void MeshRenderer::ReloadBlinn()
   delete _blinnShader;
   _blinnShader = new BlinnShader();
   // enabling vertex attributes
-  for (MeshObject & mesh_object : _meshObjects) {
-    glBindBuffer(GL_ARRAY_BUFFER, mesh_object._vbo);
-    glBindVertexArray(mesh_object._vao);
+  for (MeshObject * mesh_object : _meshObjects) {
+    glBindBuffer(GL_ARRAY_BUFFER, mesh_object->_vbo);
+    glBindVertexArray(mesh_object->_vao);
     _blinnShader->EnableAttributes();
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
   }
-}
-
-MeshRenderer::MeshObject * MeshRenderer::GetMeshObject(unsigned int mesh_id)
-{
-  return &(_meshObjects[MeshIDToIndex(mesh_id)]);
 }
 
 SolidShader * MeshRenderer::GetSolidShader()
@@ -391,14 +389,4 @@ MeshRenderer::ShaderType MeshRenderer::IntToShaderType(int shader_int)
   default:
     return ShaderType::NUMSHADERTYPES;
   }
-}
-
-unsigned int MeshRenderer::MeshIDToIndex(unsigned int mesh_id)
-{
-  unsigned int size = _meshObjects.size();
-  for (unsigned int i = 0; i < size; ++i) {
-    if(_meshObjects[i]._ID == mesh_id)
-      return i;
-  }
-  return -1;
 }

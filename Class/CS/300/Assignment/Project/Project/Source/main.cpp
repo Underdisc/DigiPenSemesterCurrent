@@ -209,9 +209,9 @@ bool show_light_editor = false;
 bool show_material_editor = false;
 
 Mesh * mesh = nullptr;
-unsigned int mesh_id = -1;
-unsigned int sphere_mesh_id = -1;
-unsigned int plane_mesh_id = -1;
+MeshRenderer::MeshObject * mesh_id = nullptr;
+MeshRenderer::MeshObject * sphere_mesh_id = nullptr;
+MeshRenderer::MeshObject * plane_mesh_id = nullptr;
 std::string current_mesh("bunny.obj");
 char next_mesh[FILENAME_BUFFERSIZE] = "bunny.obj";
 Light lights[MAXLIGHTS];
@@ -525,8 +525,6 @@ inline void EditorUpdate()
     ImGui::Separator();
   }
   if (ImGui::CollapsingHeader("Mesh")) {
-
-    MeshRenderer::MeshObject * mesh_object = MeshRenderer::GetMeshObject(mesh_id);
     ImGui::Text("Load Different Mesh");
     ImGui::InputText("", next_mesh, FILENAME_BUFFERSIZE);
     if (ImGui::Button("Load Mesh"))
@@ -551,13 +549,13 @@ inline void EditorUpdate()
     ImGui::DragFloat("s", &cur_scale, 0.01f);
     ImGui::Separator();
     ImGui::Text("Normals");
-    ImGui::ColorEdit3("Vertex Normal Color", mesh_object->_vertexNormalColor._values);
-    ImGui::ColorEdit3("Face Normal Color", mesh_object->_faceNormalColor._values);
-    ImGui::Checkbox("Show Vertex Normals", &mesh_object->_showVertexNormals);
-    ImGui::Checkbox("Show Face Normals", &mesh_object->_showFaceNormals);
+    ImGui::ColorEdit3("Vertex Normal Color", mesh_id->_vertexNormalColor._values);
+    ImGui::ColorEdit3("Face Normal Color", mesh_id->_faceNormalColor._values);
+    ImGui::Checkbox("Show Vertex Normals", &mesh_id->_showVertexNormals);
+    ImGui::Checkbox("Show Face Normals", &mesh_id->_showFaceNormals);
     ImGui::Separator();
     ImGui::Text("Other");
-    ImGui::Checkbox("Wireframe", &mesh_object->_showWireframe);
+    ImGui::Checkbox("Wireframe", &mesh_id->_showWireframe);
     ImGui::Separator();
   }
   if (ImGui::CollapsingHeader("Shader")) {
@@ -591,7 +589,7 @@ void LoadMesh(const std::string & model)
   }
   // deleting old mesh
   if (mesh){
-    MeshRenderer::Purge(mesh_id);
+    MeshRenderer::Unload(mesh_id);
     Mesh::Purge(mesh);
   }
   // uploading mesh data to gpu

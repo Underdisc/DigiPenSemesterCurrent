@@ -142,7 +142,7 @@
     <ClCompile Include="Source\Graphics\Camera.cpp" />
     <ClCompile Include="Source\Graphics\Mesh\Mesh.cpp" />
     <ClCompile Include="Source\Graphics\Mesh\MeshRenderer.cpp" />
-    <ClCompile Include="Source\Graphics\ShaderLibrary.cpp" />
+    <ClCompile Include="Source\Graphics\Shader\ShaderLibrary.cpp" />
     <ClCompile Include="Source\Graphics\Texture.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Math\EulerAngles.cpp" />
@@ -164,7 +164,7 @@
     <ClCompile Include="Source\Core\Time.cpp" />
     <ClCompile Include="Source\Graphics\OpenGLContext.cpp" />
     <ClCompile Include="Source\Graphics\SDLContext.cpp" />
-    <ClCompile Include="Source\Graphics\Shader.cpp" />
+    <ClCompile Include="Source\Graphics\Shader\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Core\Framer.h" />
@@ -178,7 +178,7 @@
     <ClInclude Include="Source\Graphics\Camera.h" />
     <ClInclude Include="Source\Graphics\Mesh\Mesh.h" />
     <ClInclude Include="Source\Graphics\Mesh\MeshRenderer.h" />
-    <ClInclude Include="Source\Graphics\ShaderLibrary.h" />
+    <ClInclude Include="Source\Graphics\Shader\ShaderLibrary.h" />
     <ClInclude Include="Source\Graphics\Texture.h" />
     <ClInclude Include="Source\Math\EulerAngles.h" />
     <ClInclude Include="Source\Math\EulerOrder.h" />
@@ -202,7 +202,7 @@
     <ClInclude Include="Source\Core\Time.h" />
     <ClInclude Include="Source\Graphics\OpenGLContext.h" />
     <ClInclude Include="Source\Graphics\SDLContext.h" />
-    <ClInclude Include="Source\Graphics\Shader.h" />
+    <ClInclude Include="Source\Graphics\Shader\Shader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

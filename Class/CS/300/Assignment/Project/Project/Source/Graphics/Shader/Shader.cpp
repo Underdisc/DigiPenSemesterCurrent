@@ -180,6 +180,10 @@ void Shader::Purge() const
   }
 }
 
+
+void Shader::EnableAttributes()
+{}
+
 /*****************************************************************************/
 /*!
 \brief
