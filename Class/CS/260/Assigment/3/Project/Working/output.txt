@@ -1,0 +1,12 @@
+- Sending GET Request
+-- Get Request --
+GET /test HTTP/1.1
+Host: echo.cs260.net:80
+
+- Receiving Data
+- Closing Connection
+- Parsing Received Data
+-- Content --
+Cannot GET /test
+
+- Done

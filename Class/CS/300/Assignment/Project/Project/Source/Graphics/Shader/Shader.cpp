@@ -14,6 +14,7 @@
 #include <iostream>
 #include <fstream>
 
+#include "../../Utility/Error.h"
 #include "../../Utility/OpenGLError.h"
 
 #include "Shader.h"

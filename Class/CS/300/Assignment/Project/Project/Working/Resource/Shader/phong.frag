@@ -59,9 +59,11 @@ uniform vec3 UGlobalAmbientColor;
 
 uniform vec3 UCameraPosition;
 
-uniform sampler2D USampler;
+uniform bool UTextureMapping
+uniform sampler2D UDiffuseMap;
+uniform sampler2D USpecularMap;
 
-vec3 ComputeLight(int light, vec3 normal, vec3 view_dir)
+vec3 ComputeLight(int light, vec3 normal, vec3 view_dir, vec2 uv)
 {
   // ambient term
   vec3 ambient_color = UMaterial.UAmbientFactor * ULights[light].UAmbientColor;
@@ -75,7 +77,15 @@ vec3 ComputeLight(int light, vec3 normal, vec3 view_dir)
   light_dir = normalize(light_vec);
   // diffuse term
   float ndotl = max(dot(normal, light_dir), 0.0);
-  vec3 diffuse_color = UMaterial.UDiffuseFactor * ndotl * ULights[light].UDiffuseColor;
+  vec3 diffuse_color;
+  if(UTextureMapping){
+    diffuse_color = ndotl * texture(UDiffuseMap, uv) *
+      ULights[light].UDiffuseColor;
+  }
+  else {
+    diffuse_color = ndotl * UMaterial.UDiffuseFactor *
+      ULights[light].UDiffuseColor;
+  }
   // specular term
   vec3 reflect_dir = 2.0 * dot(normal, light_dir) * normal - light_dir;
   reflect_dir = normalize(reflect_dir);
@@ -117,6 +127,17 @@ vec3 ComputeLight(int light, vec3 normal, vec3 view_dir)
 
 void main()
 {
+  vec2 uv;
+  //texture mappping
+  if(UTextureMapping){
+    // sperical mapping
+    float pi = 3.14159265359;
+    vec3 model_pos = SModelPos;
+    float theta = atan(model_pos.x, model_pos.z);
+    float phi = acos(-1.0 * model_pos.y);
+    uv.x = (theta + pi) / (pi * 2.0);
+    uv.y = phi / pi;
+  }
 
   // lighting
   // precomputations
@@ -126,7 +147,7 @@ void main()
   // summing all light results
   vec3 final_color = vec3(0.0, 0.0, 0.0);
   for (int i = 0; i < UActiveLights; ++i)
-    final_color += ComputeLight(i, normal, view_dir);
+    final_color += ComputeLight(i, normal, view_dir, uv);
   // accounting for object color
   final_color *= UMaterial.UColor;
   // accounting for emissive and global ambient
@@ -143,11 +164,21 @@ void main()
 
   // texture mappping
   // sperical mapping
-  float pi = 3.14159265359;
+  /*float pi = 3.14159265359;
   vec3 model_pos = SModelPos;
-  float theta = atan(model_pos.z, model_pos.x);
+  float theta = atan(model_pos.x, model_pos.z);
   float phi = acos(-1.0 * model_pos.y);
   vec2 uv;
   uv.x = (theta + pi) / (pi * 2.0);
   uv.y = phi / pi;
+
+  final_color = texture(USampler, uv).xyz;*/
+
+  // cylindrical mapping
+  //vec3 model_pos = SModelPos;
+
+
+
+  // final color
+  OFragColor = vec4(final_color, 1.0);
 }
