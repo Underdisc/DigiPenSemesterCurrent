@@ -76,20 +76,23 @@ uniform vec3 UCameraPosition;
 vec2 ComputeUVs()
 {
   vec2 uv;
+  float pi = 3.14159265359;
+  float theta;
+  float phi;
   switch(UMaterial.UMappingType)
   {
     // spherical mapping method
     case MAP_SPHERICAL:
-      float pi = 3.14159265359;
-      vec3 model_pos = SModelPos;
-      float theta = atan(model_pos.x, model_pos.z);
-      float phi = acos(-1.0 * model_pos.y);
+      theta = atan(SModelPos.x, SModelPos.z);
+      phi = acos(-1.0 * SModelPos.y);
       uv.x = (theta + pi) / (pi * 2.0);
       uv.y = phi / pi;
       break;
+    // cylindrical mapping method
     case MAP_CYLINDRICAL:
-      uv.x = 0;
-      uv.y = 0;
+      theta = atan(SModelPos.x, SModelPos.z);
+      uv.x = (theta + pi) / (pi * 2.0);
+      uv.y = (SModelPos.y + 1.0) / 2.0;
       break;
     case MAP_PLANAR:
       uv.x = 0;
