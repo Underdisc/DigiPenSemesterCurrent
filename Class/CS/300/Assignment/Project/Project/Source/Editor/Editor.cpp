@@ -12,7 +12,8 @@ bool Editor::show_light_editor = false;
 bool Editor::show_material_editor = false;
 bool Editor::show_error_log = false;
 
-bool Editor::_textureMapping = false;
+bool Editor::_textureMappingEnabled = false;
+int Editor::_mappingType = MAPSPHERICAL;
 std::string Editor::_currentTextureDiffuse(DIFFUSEPRESET);
 std::string Editor::_currentTextureSpecular(SPECULARPRESET);
 char Editor::_nextTextureDiffuse[FILENAME_BUFFERSIZE] = DIFFUSEPRESET;
@@ -216,18 +217,21 @@ inline void Editor::MaterialEditorUpdate()
 {
   ImGui::Begin("Material", &show_material_editor);
   // window body start
-  ImGui::Checkbox("Texture Mapping", &_textureMapping);
+  ImGui::Checkbox("Texture Mapping", &_textureMappingEnabled);
   ImGui::Separator();
   ImGui::ColorEdit3("Color", material._color._values);
   ImGui::SliderFloat("Ambient Factor", &material._ambientFactor, 0.0f, 1.0f);
-  if(!_textureMapping)
+  if(!_textureMappingEnabled)
     ImGui::SliderFloat("Diffuse Factor", &material._diffuseFactor, 0.0f, 1.0f);
   ImGui::SliderFloat("Specular Factor", &material._specularFactor, 0.0f, 1.0f);
-  if(!_textureMapping){
+  if(!_textureMappingEnabled){
     ImGui::SliderFloat("Specular Exponent", &material._specularExponent, 
       0.0f, 30.0f);
   }
-  if(_textureMapping){
+  ImGui::Separator();
+  if(_textureMappingEnabled){
+    ImGui::Combo("Mapping Type", &_mappingType, 
+      "Spherical\0Cylindrical\0Planar\0\0");
     ImGui::Separator();
     ImGui::Text("Current Diffusue Texture: %s", 
       _currentTextureDiffuse.c_str());
@@ -243,9 +247,10 @@ inline void Editor::MaterialEditorUpdate()
       FILENAME_BUFFERSIZE);
     if (ImGui::Button("Replace Specular")) {
       // call code to replace specular
-    }
-  }
 
+    }
+    ImGui::Separator();
+  }
   ImGui::End();
 }
 

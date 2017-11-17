@@ -16,6 +16,10 @@
 #define MODEL_PATH "Resource/Model/"
 #define FILENAME_BUFFERSIZE 50
 
+#define MAPSPHERICAL 0
+#define MAPCYLINDRICAL 1
+#define MAPPLANAR 2
+
 class Editor
 {
 // editor windows
@@ -36,7 +40,8 @@ public:
   static bool show_material_editor;
   static bool show_error_log;
 
-  static bool _textureMapping;
+  static bool _textureMappingEnabled;
+  static int _mappingType;
   static std::string _currentTextureDiffuse;
   static std::string _currentTextureSpecular;
   static char _nextTextureDiffuse[FILENAME_BUFFERSIZE];

@@ -3,7 +3,6 @@
 #include "../../Utility/Error.h"
 #include "TexturePool.h"
 
-
 // byte depths
 #define RGB  3
 #define RGBA 4
