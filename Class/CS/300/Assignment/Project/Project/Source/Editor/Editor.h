@@ -16,10 +16,6 @@
 #define MODEL_PATH "Resource/Model/"
 #define FILENAME_BUFFERSIZE 50
 
-#define MAPSPHERICAL 0
-#define MAPCYLINDRICAL 1
-#define MAPPLANAR 2
-
 class Editor
 {
 // editor windows

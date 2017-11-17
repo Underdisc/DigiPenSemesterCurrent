@@ -1,7 +1,8 @@
 #include "Material.h"
 
 Material::Material() : _color(1.0f, 1.0f, 1.0f), _ambientFactor(0.1f),
-_diffuseFactor(1.0f), _specularFactor(1.0f), _specularExponent(3.0f)
+_diffuseFactor(1.0f), _specularFactor(1.0f), _specularExponent(3.0f),
+_textureMapping(false), _mappingType(MAPSPHERICAL)
 {}
 void Material::SetUniforms(PhongShader * phong_shader)
 {
@@ -11,6 +12,8 @@ void Material::SetUniforms(PhongShader * phong_shader)
   glUniform1f(phong_shader->UMaterial.UDiffuseFactor, _diffuseFactor);
   glUniform1f(phong_shader->UMaterial.USpecularFactor, _specularFactor);
   glUniform1f(phong_shader->UMaterial.USpecularExponent, _specularExponent);
+  glUniform1i(phong_shader->UMaterial.UTextureMapping, _textureMapping);
+  glUniform1i(phong_shader->UMaterial.UMappingType, _mappingType);
 }
 void Material::SetUniforms(GouraudShader * gouraud_shader)
 {
