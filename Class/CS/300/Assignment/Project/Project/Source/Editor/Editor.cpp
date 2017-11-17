@@ -12,8 +12,7 @@ bool Editor::show_light_editor = false;
 bool Editor::show_material_editor = false;
 bool Editor::show_error_log = false;
 
-bool Editor::_textureMappingEnabled = false;
-int Editor::_mappingType = MAPSPHERICAL;
+Material Editor::material;
 std::string Editor::_currentTextureDiffuse(DIFFUSEPRESET);
 std::string Editor::_currentTextureSpecular(SPECULARPRESET);
 char Editor::_nextTextureDiffuse[FILENAME_BUFFERSIZE] = DIFFUSEPRESET;
@@ -22,7 +21,6 @@ char Editor::_nextTextureSpecular[FILENAME_BUFFERSIZE] = SPECULARPRESET;
 std::string Editor::current_mesh(MESHPRESET);
 char Editor::next_mesh[FILENAME_BUFFERSIZE] = MESHPRESET;
 Light Editor::lights[MAXLIGHTS];
-Material Editor::material;
 unsigned int Editor::active_lights = 2;
 MeshRenderer::ShaderType Editor::shader_in_use = MeshRenderer::PHONG;
 std::string Editor::error_log;
@@ -217,22 +215,22 @@ inline void Editor::MaterialEditorUpdate()
 {
   ImGui::Begin("Material", &show_material_editor);
   // window body start
-  ImGui::Checkbox("Texture Mapping", &_textureMappingEnabled);
+  ImGui::Checkbox("Texture Mapping", &material._textureMapping);
   ImGui::Separator();
   ImGui::ColorEdit3("Color", material._color._values);
   ImGui::SliderFloat("Ambient Factor", &material._ambientFactor, 0.0f, 1.0f);
-  if(!_textureMappingEnabled)
+  if(!material._textureMapping)
     ImGui::SliderFloat("Diffuse Factor", &material._diffuseFactor, 0.0f, 1.0f);
   ImGui::SliderFloat("Specular Factor", &material._specularFactor, 0.0f, 1.0f);
-  if(!_textureMappingEnabled){
+  if(!material._textureMapping){
     ImGui::SliderFloat("Specular Exponent", &material._specularExponent, 
       0.0f, 30.0f);
   }
   ImGui::Separator();
   // Texture mapping section
-  if(_textureMappingEnabled){
+  if(material._textureMapping){
     // mapping type
-    ImGui::Combo("Mapping Type", &_mappingType, 
+    ImGui::Combo("Mapping Type", &material._mappingType,
       "Spherical\0Cylindrical\0Planar\0\0");
     ImGui::Separator();
     // select texture maps

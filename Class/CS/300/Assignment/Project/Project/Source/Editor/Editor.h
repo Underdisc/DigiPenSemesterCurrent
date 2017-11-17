@@ -36,8 +36,7 @@ public:
   static bool show_material_editor;
   static bool show_error_log;
 
-  static bool _textureMappingEnabled;
-  static int _mappingType;
+  static Material material;
   static std::string _currentTextureDiffuse;
   static std::string _currentTextureSpecular;
   static char _nextTextureDiffuse[FILENAME_BUFFERSIZE];
@@ -54,7 +53,6 @@ public:
   static bool rotating_lights;
   static float rotate_light_speed;
   static Light lights[MAXLIGHTS];
-  static Material material;
   static bool rotate_camera;
   static float camera_rotate_speed;
   static float camera_distance;

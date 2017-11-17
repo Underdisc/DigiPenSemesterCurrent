@@ -64,6 +64,8 @@ PhongShader::PhongShader() :
   UMaterial.UDiffuseFactor = GetUniformLocation("UMaterial.UDiffuseFactor");
   UMaterial.USpecularFactor = GetUniformLocation("UMaterial.USpecularFactor");
   UMaterial.USpecularExponent = GetUniformLocation("UMaterial.USpecularExponent");
+  UMaterial.UTextureMapping = GetUniformLocation("UMaterial.UTextureMapping");
+  UMaterial.UMappingType = GetUniformLocation("UMaterial.UMappingType");
   // finding light uniforms
   for (unsigned int i = 0; i < MAXLIGHTS; ++i) {
     std::string index(std::to_string(i));
