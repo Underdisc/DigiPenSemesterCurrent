@@ -52,6 +52,7 @@ TextureObject * TexturePool::Upload(const Texture & texture)
   }
   glGenerateMipmap(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, 0); // need to make sure you rebind the texture that was bound here
+  return new_texture_object;
 }
 
 void TexturePool::Unload(TextureObject * texture_object)

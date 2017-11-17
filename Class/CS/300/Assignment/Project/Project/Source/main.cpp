@@ -130,6 +130,13 @@ int main(int argc, char * argv[])
   LoadMesh(Editor::current_mesh);
   LoadOtherMeshes();
   camera.MoveBack(2.0f);
+
+
+  // testing texture stuff
+
+  diffuse_texture_object = TexturePool::Upload("Resource/Texture/diffuse.tga");
+  TexturePool::Bind(diffuse_texture_object, 0);
+
   // starting main program
   glEnable(GL_DEPTH_TEST);
   Framer::Lock(FPS);
