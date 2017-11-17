@@ -60,12 +60,18 @@ public:
 // uniform structs for materials and lights
 struct UMaterial
 {
+  // Material Factors
   GLuint UColor;
   GLuint UAmbientFactor;
   GLuint UDiffuseFactor;
   GLuint USpecularFactor;
   GLuint USpecularExponent;
+  // Texture Mapping Properties
+  GLuint UTextureMapping;
+  GLuint UMappingType;
 };
+
+
 struct ULight
 {
   GLuint UType;

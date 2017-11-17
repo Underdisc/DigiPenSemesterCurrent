@@ -229,10 +229,13 @@ inline void Editor::MaterialEditorUpdate()
       0.0f, 30.0f);
   }
   ImGui::Separator();
+  // Texture mapping section
   if(_textureMappingEnabled){
+    // mapping type
     ImGui::Combo("Mapping Type", &_mappingType, 
       "Spherical\0Cylindrical\0Planar\0\0");
     ImGui::Separator();
+    // select texture maps
     ImGui::Text("Current Diffusue Texture: %s", 
       _currentTextureDiffuse.c_str());
     ImGui::InputText("New Diffuse Texture", _nextTextureDiffuse, 
