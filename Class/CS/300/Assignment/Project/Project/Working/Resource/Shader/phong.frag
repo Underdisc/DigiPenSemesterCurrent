@@ -59,7 +59,7 @@ uniform vec3 UGlobalAmbientColor;
 
 uniform vec3 UCameraPosition;
 
-uniform bool UTextureMapping
+uniform bool UTextureMapping = false;
 uniform sampler2D UDiffuseMap;
 uniform sampler2D USpecularMap;
 
@@ -79,7 +79,7 @@ vec3 ComputeLight(int light, vec3 normal, vec3 view_dir, vec2 uv)
   float ndotl = max(dot(normal, light_dir), 0.0);
   vec3 diffuse_color;
   if(UTextureMapping){
-    diffuse_color = ndotl * texture(UDiffuseMap, uv) *
+    diffuse_color = ndotl * texture(UDiffuseMap, uv).xyz *
       ULights[light].UDiffuseColor;
   }
   else {

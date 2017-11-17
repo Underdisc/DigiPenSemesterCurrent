@@ -1,18 +1,25 @@
+#include "../External/Imgui/imgui.h"
+#include "../External/Imgui/imgui_impl_sdl_gl3.h"
 #include "../Graphics/SDLContext.h"
 #include "../Core/Framer.h"
 #include "../Core/Time.h"
 #include "../Core/Input.h"
-#include "Editor.h"
-#include "../External/Imgui/imgui.h"
-#include "../External/Imgui/imgui_impl_sdl_gl3.h"
+#include "../Presets.h"
 #include "../Utility/Error.h"
+#include "Editor.h"
 
 bool Editor::show_light_editor = false;
 bool Editor::show_material_editor = false;
 bool Editor::show_error_log = false;
 
-std::string Editor::current_mesh("highpoly_sphere.obj");
-char Editor::next_mesh[FILENAME_BUFFERSIZE] = "highpoly_sphere.obj";
+bool Editor::_textureMapping = false;
+std::string Editor::_currentTextureDiffuse(DIFFUSEPRESET);
+std::string Editor::_currentTextureSpecular(SPECULARPRESET);
+char Editor::_nextTextureDiffuse[FILENAME_BUFFERSIZE] = DIFFUSEPRESET;
+char Editor::_nextTextureSpecular[FILENAME_BUFFERSIZE] = SPECULARPRESET;
+
+std::string Editor::current_mesh(MESHPRESET);
+char Editor::next_mesh[FILENAME_BUFFERSIZE] = MESHPRESET;
 Light Editor::lights[MAXLIGHTS];
 Material Editor::material;
 unsigned int Editor::active_lights = 2;
@@ -173,8 +180,10 @@ void Editor::Update(Mesh * mesh, MeshRenderer::MeshObject * mesh_object,
     ImGui::DragFloat("s", &cur_scale, 0.01f);
     ImGui::Separator();
     ImGui::Text("Normals");
-    ImGui::ColorEdit3("Vertex Normal Color", mesh_object->_vertexNormalColor._values);
-    ImGui::ColorEdit3("Face Normal Color", mesh_object->_faceNormalColor._values);
+    ImGui::ColorEdit3("Vertex Normal Color", 
+      mesh_object->_vertexNormalColor._values);
+    ImGui::ColorEdit3("Face Normal Color", 
+      mesh_object->_faceNormalColor._values);
     ImGui::Checkbox("Show Vertex Normals", &mesh_object->_showVertexNormals);
     ImGui::Checkbox("Show Face Normals", &mesh_object->_showFaceNormals);
     ImGui::Separator();
@@ -206,11 +215,37 @@ void Editor::Update(Mesh * mesh, MeshRenderer::MeshObject * mesh_object,
 inline void Editor::MaterialEditorUpdate()
 {
   ImGui::Begin("Material", &show_material_editor);
+  // window body start
+  ImGui::Checkbox("Texture Mapping", &_textureMapping);
+  ImGui::Separator();
   ImGui::ColorEdit3("Color", material._color._values);
   ImGui::SliderFloat("Ambient Factor", &material._ambientFactor, 0.0f, 1.0f);
-  ImGui::SliderFloat("Diffuse Factor", &material._diffuseFactor, 0.0f, 1.0f);
+  if(!_textureMapping)
+    ImGui::SliderFloat("Diffuse Factor", &material._diffuseFactor, 0.0f, 1.0f);
   ImGui::SliderFloat("Specular Factor", &material._specularFactor, 0.0f, 1.0f);
-  ImGui::SliderFloat("Specular Exponent", &material._specularExponent, 0.0f, 30.0f);
+  if(!_textureMapping){
+    ImGui::SliderFloat("Specular Exponent", &material._specularExponent, 
+      0.0f, 30.0f);
+  }
+  if(_textureMapping){
+    ImGui::Separator();
+    ImGui::Text("Current Diffusue Texture: %s", 
+      _currentTextureDiffuse.c_str());
+    ImGui::InputText("New Diffuse Texture", _nextTextureDiffuse, 
+      FILENAME_BUFFERSIZE);
+    if (ImGui::Button("Replace Diffuse")) {
+      // call code to replace diffuse
+    }
+    ImGui::Separator();
+    ImGui::Text("Current Specular Texture: %s", 
+      _currentTextureSpecular.c_str());
+    ImGui::InputText("New Specular Texture", _nextTextureSpecular, 
+      FILENAME_BUFFERSIZE);
+    if (ImGui::Button("Replace Specular")) {
+      // call code to replace specular
+    }
+  }
+
   ImGui::End();
 }
 

@@ -149,7 +149,7 @@
     <ClCompile Include="Source\Graphics\Renderer.cpp" />
     <ClCompile Include="Source\Graphics\Shader\ShaderLibrary.cpp" />
     <ClCompile Include="Source\Graphics\Texture\Texture.cpp" />
-    <ClCompile Include="Source\Graphics\Texture\TextureManager.cpp" />
+    <ClCompile Include="Source\Graphics\Texture\TexturePool.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Math\EulerAngles.cpp" />
     <ClCompile Include="Source\Math\EulerOrder.cpp" />
@@ -191,7 +191,7 @@
     <ClInclude Include="Source\Graphics\Renderer.h" />
     <ClInclude Include="Source\Graphics\Shader\ShaderLibrary.h" />
     <ClInclude Include="Source\Graphics\Texture\Texture.h" />
-    <ClInclude Include="Source\Graphics\Texture\TextureManager.h" />
+    <ClInclude Include="Source\Graphics\Texture\TexturePool.h" />
     <ClInclude Include="Source\Math\EulerAngles.h" />
     <ClInclude Include="Source\Math\EulerOrder.h" />
     <ClInclude Include="Source\Math\Math.h" />
@@ -207,6 +207,7 @@
     <ClInclude Include="Source\Math\Vector4.h" />
     <ClInclude Include="Source\Other\Debug.h" />
     <ClInclude Include="Source\Other\Precompiled.h" />
+    <ClInclude Include="Source\Presets.h" />
     <ClInclude Include="Source\Utility\Error.h" />
     <ClInclude Include="Source\Core\Input.h" />
     <ClInclude Include="Source\Utility\Math\Matrix4.h" />

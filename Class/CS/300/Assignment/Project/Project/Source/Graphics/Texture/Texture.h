@@ -16,6 +16,9 @@
 
 #include <string>
 
+// pre-declarations
+class TexturePool;
+
 /*****************************************************************************/
 /*!
 \class Texture
@@ -38,6 +41,10 @@ private:
   int _width;
   //! The height of the texture.
   int _height;
+  //! The name of the file that the image was loaded from.
+  std::string _imageFile;
+  // friends
+  friend TexturePool;
 };
 
 #endif // !TEXTURE_H

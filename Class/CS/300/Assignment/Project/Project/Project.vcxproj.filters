@@ -123,7 +123,7 @@
     <ClCompile Include="Source\Graphics\Texture\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\Texture\TextureManager.cpp">
+    <ClCompile Include="Source\Graphics\Texture\TexturePool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -248,10 +248,13 @@
     <ClInclude Include="Source\Graphics\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\Texture\TextureManager.h">
+    <ClInclude Include="Source\Graphics\Texture\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\Texture\Texture.h">
+    <ClInclude Include="Source\Graphics\Texture\TexturePool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Presets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -16,7 +16,7 @@
 #include "Graphics\Light.h"
 #include "Graphics\Material.h"
 #include "Graphics\Renderer.h"
-#include "Graphics\Texture.h"
+#include "Graphics\Texture\TexturePool.h"
 
 #include <GL\glew.h>
 #include "Utility\OpenGLError.h"
@@ -45,12 +45,15 @@
 
 // GLOBAL
 
-Texture * texture;
 
-static Mesh * mesh;
-static MeshRenderer::MeshObject * mesh_id;
-MeshRenderer::MeshObject * sphere_mesh_id;
-MeshRenderer::MeshObject * plane_mesh_id;
+Mesh * mesh;
+MeshRenderer::MeshObject * mesh_object;
+MeshRenderer::MeshObject * sphere_mesh_object;
+MeshRenderer::MeshObject * plane_mesh_object;
+
+TextureObject * diffuse_texture_object;
+TextureObject * specular_texture_object;
+
 
 Camera camera(Math::Vector3(0.0f, 1.0f, 0.0f));
 float movespeed = 1.0f;
@@ -74,7 +77,6 @@ inline void ManageInput()
     }
   }
 
-
   movespeed += movespeed * mouse_wheel_sensitivity * Time::DT() * Input::MouseWheelMotion();
   if (Input::KeyDown(W))
     camera.MoveBack(-Time::DT() * movespeed);
@@ -93,15 +95,14 @@ inline void ManageInput()
     camera.MoveYaw((float)mouse_motion.first * Time::DT() * mouse_sensitivity);
     camera.MovePitch(-(float)mouse_motion.second * Time::DT() * mouse_sensitivity);
   }
-
 }
 
 void LoadOtherMeshes()
 {
   Mesh sphere_mesh(MODEL_PATH + std::string("sphere.obj"), Mesh::OBJ);
-  sphere_mesh_id = MeshRenderer::Upload(&sphere_mesh);
+  sphere_mesh_object = MeshRenderer::Upload(&sphere_mesh);
   Mesh plane_mesh(MODEL_PATH + std::string("plane.obj"), Mesh::OBJ);
-  plane_mesh_id = MeshRenderer::Upload(&plane_mesh);
+  plane_mesh_object = MeshRenderer::Upload(&plane_mesh);
 }
 
 inline void InitialUpdate()
@@ -125,7 +126,7 @@ int main(int argc, char * argv[])
   MeshRenderer::Initialize();
   Editor::Initialize();
 
-  texture = new Texture("Resource/Texture/midair.png");
+
   LoadMesh(Editor::current_mesh);
   LoadOtherMeshes();
   camera.MoveBack(2.0f);
@@ -137,7 +138,7 @@ int main(int argc, char * argv[])
     // frame start
     Framer::Start();
     InitialUpdate();
-    Editor::Update(mesh, mesh_id, LoadMesh);
+    Editor::Update(mesh, mesh_object, LoadMesh);
     Update();
     Clear();
     Render();
@@ -166,12 +167,12 @@ void LoadMesh(const std::string & model)
   }
   // deleting old mesh
   if (mesh){
-    MeshRenderer::Unload(mesh_id);
+    MeshRenderer::Unload(mesh_object);
     Mesh::Purge(mesh);
   }
   // uploading mesh data to gpu
   new_mesh->SetNormalLineLengthMeshRelative(0.1f);
-  mesh_id = MeshRenderer::Upload(new_mesh);
+  mesh_object = MeshRenderer::Upload(new_mesh);
   // new mesh loaded
   mesh = new_mesh;
   Editor::current_mesh = model;
@@ -252,7 +253,7 @@ inline void Render()
     model = translate * scale;
     Color & color = Editor::lights[i]._diffuseColor;
     glUniform3f(solid_shader->UColor, color._r, color._g, color._b);
-    MeshRenderer::Render(sphere_mesh_id, MeshRenderer::SOLID, projection, camera.ViewMatrix(), model);
+    MeshRenderer::Render(sphere_mesh_object, MeshRenderer::SOLID, projection, camera.ViewMatrix(), model);
   }
 
   translate.Translate(Editor::trans.x, Editor::trans.y, Editor::trans.z);
@@ -294,12 +295,11 @@ inline void Render()
     break;
   }
   // rendering mesh
-  MeshRenderer::Render(mesh_id, Editor::shader_in_use, projection, camera.ViewMatrix(), model);
+  MeshRenderer::Render(mesh_object, Editor::shader_in_use, projection, camera.ViewMatrix(), model);
   translate.Translate(0.0, -5.0f, 0.0f);
   scale.Scale(20.0f, 20.0f, 20.0f);
   model = translate * scale;
-  texture->Bind();
-  MeshRenderer::Render(plane_mesh_id, Editor::shader_in_use, projection, camera.ViewMatrix(), model);
+  MeshRenderer::Render(plane_mesh_object, Editor::shader_in_use, projection, camera.ViewMatrix(), model);
   // disable writing to error strings
   /*try
   {

@@ -97,7 +97,7 @@ public:
   static void Initialize();
   static void Purge();
   static MeshObject * Upload(Mesh * mesh);
-  static void Unload(MeshObject * mesh_id);
+  static void Unload(MeshObject * mesh_object);
   static void Render(MeshObject * mesh_object, ShaderType shader_type,
     const Math::Matrix4 & projection, const Math::Matrix4 & view, 
     const Math::Matrix4 & model);
