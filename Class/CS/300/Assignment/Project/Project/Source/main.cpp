@@ -135,7 +135,9 @@ int main(int argc, char * argv[])
   // testing texture stuff
 
   diffuse_texture_object = TexturePool::Upload("Resource/Texture/diffuse.tga");
+  specular_texture_object = TexturePool::Upload("Resource/Texture/specular.tga");
   TexturePool::Bind(diffuse_texture_object, 0);
+  TexturePool::Bind(specular_texture_object, 1);
 
   // starting main program
   glEnable(GL_DEPTH_TEST);

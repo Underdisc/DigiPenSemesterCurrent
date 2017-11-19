@@ -136,7 +136,11 @@ vec3 ComputeLight(int light, vec3 normal, vec3 view_dir, vec2 uv)
   vec3 reflect_dir = 2.0 * dot(normal, light_dir) * normal - light_dir;
   reflect_dir = normalize(reflect_dir);
   float vdotr = max(dot(view_dir, reflect_dir), 0.0);
-  float specular_spread = pow(vdotr, UMaterial.USpecularExponent);
+  float specular_spread;
+  if(UMaterial.UTextureMapping)
+    specular_spread = pow(vdotr, texture(UMaterial.USpecularMap, uv).x);
+  else
+    specular_spread = pow(vdotr, UMaterial.USpecularExponent);
   vec3 specular_color = UMaterial.USpecularFactor * ULights[light].USpecularColor * specular_spread;
   // find spotlight effect
   float spotlight_factor;
@@ -203,4 +207,6 @@ void main()
   final_color = mix(final_color, UFogColor, fog_factor);
   // final color
   OFragColor = vec4(final_color, 1.0);
+  //
+  OFragColor = vec4(texture(UMaterial.USpecularMap, uv).xyz, 1.0);
 }
