@@ -37,6 +37,10 @@
 #include "Core\Framer.h"
 #include "Editor\Editor.h"
 
+
+// make sure to do this
+//#include "vld.h"
+
 #define PI 3.141592653589f
 #define PI2 6.28318530718f
 #define FPS 60
@@ -131,9 +135,12 @@ int main(int argc, char * argv[])
   LoadOtherMeshes();
   camera.MoveBack(2.0f);
 
+  // loading normal map from specular bump map
+  Texture bump_map("Resource/Texture/specular.tga");
+  bump_map.CreateNormalMap("Resource/Texture/normal_map.png", 2.0 / 255.0f);
+  return 0;
 
-  // testing texture stuff
-
+  // texture stuff
   diffuse_texture_object = TexturePool::Upload("Resource/Texture/diffuse.tga");
   specular_texture_object = TexturePool::Upload("Resource/Texture/specular.tga");
   TexturePool::Bind(diffuse_texture_object, 0);

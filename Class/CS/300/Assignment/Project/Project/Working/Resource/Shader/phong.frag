@@ -11,6 +11,7 @@
 
 in vec3 SNormal;
 in vec3 SFragPos;
+in vec3 SModelNormal;
 in vec3 SModelPos;
 
 out vec4 OFragColor;
@@ -27,8 +28,8 @@ struct Material
   // texture mapping
   bool UTextureMapping;
   int UMappingType;
-  sampler2D UDiffuseMap;
-  sampler2D USpecularMap;
+  sampler2D UDiffuseMap; // location 0
+  sampler2D USpecularMap; // location 1
 };
 
 // Light values
@@ -94,9 +95,25 @@ vec2 ComputeUVs()
       uv.x = (theta + pi) / (pi * 2.0);
       uv.y = (SModelPos.y + 1.0) / 2.0;
       break;
+    // planar mapping method
+    // this is wrong
     case MAP_PLANAR:
-      uv.x = 0;
-      uv.y = 0;
+      vec3 mna = abs(SModelNormal);
+      // X mapping
+      if(mna.x > mna.y && mna.x > mna.z){
+        uv.x = (SModelNormal.z + 0.5);
+        uv.y = (SModelNormal.y + 0.5);
+      }
+      // Y mapping
+      else if(mna.y > mna.x && mna.y > mna.z){
+        uv.x = (SModelNormal.x + 0.5);
+        uv.y = (SModelNormal.z + 0.5);
+      }
+      // Z mapping
+      else if(mna.z > mna.x && mna.z > mna.y){
+        uv.x = (SModelNormal.x + 0.5);
+        uv.y = (SModelNormal.y + 0.5);
+      }
       break;
     default:
       break;
@@ -121,6 +138,7 @@ vec3 ComputeLight(int light, vec3 normal, vec3 view_dir, vec2 uv)
   else
     light_vec = ULights[light].UPosition - SFragPos;
   light_dir = normalize(light_vec);
+
   // diffuse term
   float ndotl = max(dot(normal, light_dir), 0.0);
   vec3 diffuse_color;
@@ -132,16 +150,22 @@ vec3 ComputeLight(int light, vec3 normal, vec3 view_dir, vec2 uv)
     diffuse_color = ndotl * UMaterial.UDiffuseFactor *
       ULights[light].UDiffuseColor;
   }
+
   // specular term
   vec3 reflect_dir = 2.0 * dot(normal, light_dir) * normal - light_dir;
   reflect_dir = normalize(reflect_dir);
   float vdotr = max(dot(view_dir, reflect_dir), 0.0);
-  float specular_spread;
-  if(UMaterial.UTextureMapping)
-    specular_spread = pow(vdotr, texture(UMaterial.USpecularMap, uv).x);
-  else
-    specular_spread = pow(vdotr, UMaterial.USpecularExponent);
-  vec3 specular_color = UMaterial.USpecularFactor * ULights[light].USpecularColor * specular_spread;
+  float specular_spread = pow(vdotr, UMaterial.USpecularExponent);
+  vec3 specular_color;
+  if(UMaterial.UTextureMapping){
+    specular_color = texture(UMaterial.USpecularMap,uv).xyz *
+      ULights[light].USpecularColor * specular_spread;
+  }
+  else{
+    vec3 specular_color = UMaterial.USpecularFactor *
+      ULights[light].USpecularColor * specular_spread;
+  }
+
   // find spotlight effect
   float spotlight_factor;
   if(ULights[light].UType == LIGHT_SPOT){
@@ -157,6 +181,7 @@ vec3 ComputeLight(int light, vec3 normal, vec3 view_dir, vec2 uv)
   else{
     spotlight_factor = 1.0f;
   }
+  
   // find attenuation
   float attenuation;
   if(ULights[light].UType == LIGHT_DIRECTIONAL)
@@ -207,6 +232,4 @@ void main()
   final_color = mix(final_color, UFogColor, fog_factor);
   // final color
   OFragColor = vec4(final_color, 1.0);
-  //
-  OFragColor = vec4(texture(UMaterial.USpecularMap, uv).xyz, 1.0);
 }

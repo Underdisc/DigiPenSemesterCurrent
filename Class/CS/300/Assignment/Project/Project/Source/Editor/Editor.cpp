@@ -221,11 +221,11 @@ inline void Editor::MaterialEditorUpdate()
   ImGui::SliderFloat("Ambient Factor", &material._ambientFactor, 0.0f, 1.0f);
   if(!material._textureMapping)
     ImGui::SliderFloat("Diffuse Factor", &material._diffuseFactor, 0.0f, 1.0f);
-  ImGui::SliderFloat("Specular Factor", &material._specularFactor, 0.0f, 1.0f);
-  if(!material._textureMapping){
-    ImGui::SliderFloat("Specular Exponent", &material._specularExponent, 
-      0.0f, 30.0f);
-  }
+  if(!material._textureMapping)
+    ImGui::SliderFloat("Specular Factor", &material._specularFactor, 
+      0.0f, 1.0f);
+  ImGui::SliderFloat("Specular Exponent", &material._specularExponent, 
+    0.0f, 30.0f);
   ImGui::Separator();
   // Texture mapping section
   if(material._textureMapping){
