@@ -13,6 +13,7 @@ in vec3 SNormal;
 in vec3 SFragPos;
 in vec3 SModelNormal;
 in vec3 SModelPos;
+in vec2 SUV;
 
 out vec4 OFragColor;
 
@@ -181,7 +182,7 @@ vec3 ComputeLight(int light, vec3 normal, vec3 view_dir, vec2 uv)
   else{
     spotlight_factor = 1.0f;
   }
-  
+
   // find attenuation
   float attenuation;
   if(ULights[light].UType == LIGHT_DIRECTIONAL)
@@ -232,4 +233,6 @@ void main()
   final_color = mix(final_color, UFogColor, fog_factor);
   // final color
   OFragColor = vec4(final_color, 1.0);
+
+  OFragColor = texture(UMaterial.UDiffuseMap, SUV);
 }

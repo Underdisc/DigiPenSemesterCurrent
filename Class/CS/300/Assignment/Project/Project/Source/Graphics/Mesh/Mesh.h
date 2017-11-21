@@ -72,7 +72,8 @@ public:
 public:
   Mesh(const std::string & file_name, FileType type, 
     int mapping_type = MESH_MAPPING_NONE);
-  static Mesh * Load(const std::string & file_name, FileType type);
+  static Mesh * Load(const std::string & file_name, FileType type,
+    int mapping_type = MESH_MAPPING_NONE);
   static void Purge(Mesh * mesh);
   void SetNormalLineLengthMeshRelative(float new_length);
   unsigned VertexCount();

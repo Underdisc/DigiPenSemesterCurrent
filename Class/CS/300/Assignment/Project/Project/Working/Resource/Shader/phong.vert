@@ -11,6 +11,7 @@ out vec3 SNormal;
 out vec3 SFragPos;
 out vec3 SModelNormal;
 out vec3 SModelPos;
+out vec2 SUV;
 
 uniform mat4 UProjection = mat4(1,0,0,0,
                                 0,1,0,0,
@@ -34,8 +35,8 @@ void main()
   SFragPos = vec3(UModel * vec4(APosition, 1.0));
   SModelPos = APosition;
   SModelNormal = ANormal;
+  SUV = AUV;
 
   SModelNormal += ATangent;
   SModelNormal += ABitangent;
-  SModelNormal += vec3(AUV.x, AUV.x, AUV.x);
 }

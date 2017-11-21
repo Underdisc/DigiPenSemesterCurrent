@@ -40,7 +40,6 @@ Mesh::Mesh(const std::string & file_name, FileType type, int mapping_type)
     error.Add("The Mesh class cannot load this file type");
     throw(error);
   }
-  // FLEEB
   // perform mapping if necessary
   switch (mapping_type)
   {
@@ -66,15 +65,13 @@ Mesh::Mesh(const std::string & file_name, FileType type, int mapping_type)
     vert.bx = 0.0f;
     vert.by = 0.0f;
     vert.bz = 0.0f;
-
-    vert.u = 0.0f;
-    vert.v = 0.0f;
   }
 }
 
-Mesh * Mesh::Load(const std::string & file_name, FileType type)
+Mesh * Mesh::Load(const std::string & file_name, FileType type, 
+  int mapping_type)
 {
-  return new Mesh(file_name, type);
+  return new Mesh(file_name, type, mapping_type);
 }
 
 void Mesh::Purge(Mesh * mesh)
@@ -189,7 +186,11 @@ inline void Mesh::PerformSphericalMapping()
 
 inline void Mesh::PerformCylindricalMapping()
 {
-
+  for (Vertex & vert : _vertices) {
+    float theta = Math::ArcTan2(vert.px, vert.pz);
+    vert.u = (theta + PI) / PI2;
+    vert.v = (vert.py + 1.0f) / 2.0f;
+  }
 }
 
 inline void Mesh::PerformPlanarMapping()
