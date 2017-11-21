@@ -107,6 +107,9 @@ public:
   // Attributes
   GLuint APosition;
   GLuint ANormal;
+  GLuint ATangent;
+  GLuint ABitangent;
+  GLuint AUV;
   // Uniforms
   GLuint UProjection;
   GLuint UView;

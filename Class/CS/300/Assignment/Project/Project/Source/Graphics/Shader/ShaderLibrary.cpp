@@ -1,6 +1,10 @@
 /* All content(c) 2017 DigiPen(USA) Corporation, all rights reserved. */
 #include "ShaderLibrary.h"
 
+// consider making shaders have a buffer type
+// could be a cool way to segment out attributes
+// all shaders with the same buffer type share attribute types etc.
+
 LineShader::LineShader() : 
   Shader("Resource/Shader/line.vert", "Resource/Shader/line.frag")
 {
@@ -51,6 +55,9 @@ PhongShader::PhongShader() :
   // finding attributes
   APosition = GetAttribLocation("APosition");
   ANormal = GetAttribLocation("ANormal");
+  ATangent = GetAttribLocation("ATangent");
+  ABitangent = GetAttribLocation("ABitangent");
+  AUV = GetAttribLocation("AUV");
   // finding uniforms
   UProjection = GetUniformLocation("UProjection");
   UView = GetUniformLocation("UView");
@@ -104,17 +111,27 @@ PhongShader::PhongShader() :
 }
 void PhongShader::EnableAttributes()
 {
-  glVertexAttribPointer(APosition, 3, GL_FLOAT, GL_FALSE,6 * sizeof(GLfloat),
+  glVertexAttribPointer(APosition, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(GLfloat),
     nullptr);
-  glVertexAttribPointer(ANormal, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
+  glVertexAttribPointer(ANormal, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(GLfloat),
     (void *)(3 * sizeof(GLfloat)));
+  glVertexAttribPointer(ATangent, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(GLfloat),
+    (void *)(6 * sizeof(GLfloat)));
+  glVertexAttribPointer(ABitangent, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(GLfloat),
+    (void *)(9 * sizeof(GLfloat)));
+  glVertexAttribPointer(AUV, 2, GL_FLOAT, GL_FALSE, 14 * sizeof(GLfloat),
+    (void *)(12 * sizeof(GLfloat)));
   glEnableVertexAttribArray(APosition);
   glEnableVertexAttribArray(ANormal);
+  glEnableVertexAttribArray(ATangent);
+  glEnableVertexAttribArray(ABitangent);
+  glEnableVertexAttribArray(AUV);
 }
 void PhongShader::DisableAttributes()
 {
   glDisableVertexAttribArray(APosition);
   glDisableVertexAttribArray(ANormal);
+  glDisableVertexAttribArray(ATangent);
 }
 
 GouraudShader::GouraudShader() :

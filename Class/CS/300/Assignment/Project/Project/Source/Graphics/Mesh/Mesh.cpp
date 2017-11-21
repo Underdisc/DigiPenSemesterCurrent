@@ -37,6 +37,21 @@ Mesh::Mesh(const std::string & file_name, FileType type)
     error.Add("The Mesh class cannot load this file type");
     throw(error);
   }
+
+
+  // quick test
+  for (Vertex & vert : _vertices) {
+    vert.tx = 0.0f;
+    vert.ty = 0.0f;
+    vert.tz = 0.0f;
+
+    vert.bx = 0.0f;
+    vert.by = 0.0f;
+    vert.bz = 0.0f;
+
+    vert.u = 0.0f;
+    vert.v = 0.0f;
+  }
 }
 
 Mesh * Mesh::Load(const std::string & file_name, FileType type)
@@ -150,13 +165,13 @@ inline void Mesh::CalculateFaceNormals()
   for (unsigned i = 0; i < num_faces; ++i) {
     Face & face = _faces[i];
     Math::Vector3 ab;
-    ab.x = _vertices[face.b].x - _vertices[face.a].x;
-    ab.y = _vertices[face.b].y - _vertices[face.a].y;
-    ab.z = _vertices[face.b].z - _vertices[face.a].z;
+    ab.x = _vertices[face.b].px - _vertices[face.a].px;
+    ab.y = _vertices[face.b].py - _vertices[face.a].py;
+    ab.z = _vertices[face.b].pz - _vertices[face.a].pz;
     Math::Vector3 ac;
-    ac.x = _vertices[face.c].x - _vertices[face.a].x;
-    ac.y = _vertices[face.c].y - _vertices[face.a].y;
-    ac.z = _vertices[face.c].z - _vertices[face.a].z;
+    ac.x = _vertices[face.c].px - _vertices[face.a].px;
+    ac.y = _vertices[face.c].py - _vertices[face.a].py;
+    ac.z = _vertices[face.c].pz - _vertices[face.a].pz;
     Math::Vector3 result = Math::Cross(ab, ac);
     float length = result.Length();
     _showFaceNormals.push_back(result / length);
@@ -279,22 +294,22 @@ inline void Mesh::LoadObj(const std::string & file_name)
   // centering vertices
   Math::Vector3 center(0.0f, 0.0f, 0.0f);
   for (const Vertex & vert : _vertices) {
-    center.x += vert.x;
-    center.y += vert.y;
-    center.z += vert.z;
+    center.x += vert.px;
+    center.y += vert.py;
+    center.z += vert.pz;
   }
   float inverse_denominator = 1.0f / static_cast<float>(_vertices.size());
   center *= inverse_denominator;
   for (Vertex & vert : _vertices) {
-    vert.x -= center.x;
-    vert.y -= center.y;
-    vert.z -= center.z;
+    vert.px -= center.x;
+    vert.py -= center.y;
+    vert.pz -= center.z;
   }
   // normalizing vertices
   // finding the vertex furthest away
   float max_length = 0;
   for (const Vertex & vert : _vertices) {
-    float length = vert.x * vert.x + vert.y * vert.y + vert.z * vert.z;
+    float length = vert.px * vert.px + vert.py * vert.py + vert.pz * vert.pz;
     if(length > max_length)
       max_length = length;
   }
@@ -303,9 +318,9 @@ inline void Mesh::LoadObj(const std::string & file_name)
   max_length = Math::Sqrt(max_length);
   float scale = 1.0f / max_length;
   for (Vertex & vert : _vertices) {
-    vert.x *= scale;
-    vert.y *= scale;
-    vert.z *= scale;
+    vert.px *= scale;
+    vert.py *= scale;
+    vert.pz *= scale;
   }
 
   // calculating normals
@@ -321,13 +336,13 @@ inline void Mesh::LoadObj(const std::string & file_name)
     const Vertex & cur_vertex = _vertices[vert];
     Line & cur_vnormal = _vertexNormalLines[vert];
     // starting point of the vertex normal line
-    cur_vnormal.sx = cur_vertex.x;
-    cur_vnormal.sy = cur_vertex.y;
-    cur_vnormal.sz = cur_vertex.z;
+    cur_vnormal.sx = cur_vertex.px;
+    cur_vnormal.sy = cur_vertex.py;
+    cur_vnormal.sz = cur_vertex.pz;
     // ending point of the vertex normal line
-    cur_vnormal.ex = cur_vertex.x + cur_vertex.nx;
-    cur_vnormal.ey = cur_vertex.y + cur_vertex.ny;
-    cur_vnormal.ez = cur_vertex.z + cur_vertex.nz;
+    cur_vnormal.ex = cur_vertex.px + cur_vertex.nx;
+    cur_vnormal.ey = cur_vertex.py + cur_vertex.ny;
+    cur_vnormal.ez = cur_vertex.pz + cur_vertex.nz;
   }
 
   // create face normal lines
@@ -342,9 +357,9 @@ inline void Mesh::LoadObj(const std::string & file_name)
     const Vertex & vb = _vertices[cur_face.b];
     const Vertex & vc = _vertices[cur_face.c];
     // finding starting point of face normals
-    cur_line.sx = (va.x + vb.x + vc.x) / 3.0f;
-    cur_line.sy = (va.y + vb.y + vc.y) / 3.0f;
-    cur_line.sz = (va.z + vb.z + vc.z) / 3.0f;
+    cur_line.sx = (va.px + vb.px + vc.px) / 3.0f;
+    cur_line.sy = (va.py + vb.py + vc.py) / 3.0f;
+    cur_line.sz = (va.pz + vb.pz + vc.pz) / 3.0f;
     // find the ending points of the face normals
     cur_line.ex = cur_line.sx + cur_face_normal.x;
     cur_line.ey = cur_line.sy + cur_face_normal.y;

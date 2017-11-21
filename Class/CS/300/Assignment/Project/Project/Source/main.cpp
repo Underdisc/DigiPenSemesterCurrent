@@ -137,8 +137,7 @@ int main(int argc, char * argv[])
 
   // loading normal map from specular bump map
   Texture bump_map("Resource/Texture/specular.tga");
-  bump_map.CreateNormalMap("Resource/Texture/normal_map.png", 2.0 / 255.0f);
-  return 0;
+  bump_map.CreateNormalMap("Resource/Texture/normal_map.png", 2.0f / 255.0f);
 
   // texture stuff
   diffuse_texture_object = TexturePool::Upload("Resource/Texture/diffuse.tga");

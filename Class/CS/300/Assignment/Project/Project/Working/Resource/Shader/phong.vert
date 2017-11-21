@@ -3,6 +3,9 @@
 
 in vec3 APosition;
 in vec3 ANormal;
+in vec3 ATangent;
+in vec3 ABitangent;
+in vec2 AUV;
 
 out vec3 SNormal;
 out vec3 SFragPos;
@@ -31,4 +34,8 @@ void main()
   SFragPos = vec3(UModel * vec4(APosition, 1.0));
   SModelPos = APosition;
   SModelNormal = ANormal;
+
+  SModelNormal += ATangent;
+  SModelNormal += ABitangent;
+  SModelNormal += vec3(AUV.x, AUV.x, AUV.x);
 }

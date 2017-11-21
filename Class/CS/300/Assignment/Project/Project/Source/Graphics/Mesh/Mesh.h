@@ -26,17 +26,19 @@
 /*****************************************************************************/
 class Mesh
 {
-private:
-  
+public:
   struct Vertex
   {
     Vertex() {}
     union {
       struct {
-        float x, y, z;
+        float px, py, pz;
         float nx, ny, nz;
+        float tx, ty, tz;
+        float bx, by, bz;
+        float u, v;
       };
-      float value[6];
+      float value[14];
     };
   };
   struct Face

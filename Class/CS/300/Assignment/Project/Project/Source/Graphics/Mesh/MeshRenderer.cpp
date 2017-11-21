@@ -90,10 +90,19 @@ MeshRenderer::MeshObject * MeshRenderer::Upload(Mesh * mesh)
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->IndexDataSizeBytes(), 
     mesh->IndexData(), GL_STATIC_DRAW);
   // enable all vertex attributes
-  _solidShader->EnableAttributes();
+  //_solidShader->EnableAttributes();
+  //_gouraudShader->EnableAttributes();
+  //_blinnShader->EnableAttributes();
+  // These can't all happen at the same time. The reason it was working
+  // earlier is due to the fact that the last EnableAttributes set up the
+  // attributes in such a way that they were correct for each shader.
+  // AKA, they overwrote the EnableAttribute calls made prior.
+  // If shaders are meant to use the same vertex buffer of data and process 
+  // it to do whatever, those shaders NEED to use the same attribute layouts
+  // within the buffer or they won't work. Might be wise to have a set of 
+  // attributes that ALL shaders will have regardless of their type. All
+  // shaders that share a common buffer type that is.
   _phongShader->EnableAttributes();
-  _gouraudShader->EnableAttributes();
-  _blinnShader->EnableAttributes();
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
