@@ -17,6 +17,11 @@
 
 #include "../../Math/Vector3.h"
 
+#define MESH_MAPPING_SPHERICAL 0
+#define MESH_MAPPING_CYLINDRICAL 1
+#define MESH_MAPPING_PLANAR 2
+#define MESH_MAPPING_NONE -1
+
 /*****************************************************************************/
 /*!
 \class Mesh
@@ -65,7 +70,8 @@ public:
     NUM_FILETYPE
   };
 public:
-  Mesh(const std::string & file_name, FileType type);
+  Mesh(const std::string & file_name, FileType type, 
+    int mapping_type = MESH_MAPPING_NONE);
   static Mesh * Load(const std::string & file_name, FileType type);
   static void Purge(Mesh * mesh);
   void SetNormalLineLengthMeshRelative(float new_length);
@@ -83,6 +89,9 @@ public:
   unsigned FaceNormalLineSizeBytes();
   unsigned FaceNormalLineSizeVertices();
 private:
+  void PerformSphericalMapping();
+  void PerformCylindricalMapping();
+  void PerformPlanarMapping();
   void CalculateFaceNormals();
   void CalculateVertexNormals(std::vector<std::vector<unsigned> > * adjacencies);
   bool RemoveParallelFace(std::vector<unsigned> & vert_adjacencies);

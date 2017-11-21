@@ -17,6 +17,9 @@
 #include "Mesh.h"
 #include "../../Math/Vector3.h"
 
+#define PI  3.14159265359f
+#define PI2 6.28318530718f
+
 #define VERTS_PER_LINE 2
 #define FACE_NUMELEMENTS 3
 #define READ_BUFFERSIZE 100
@@ -26,7 +29,7 @@
 #define INDEX_CHARACTER 'f'
 #define VALUE_DELIMETER ' '
 
-Mesh::Mesh(const std::string & file_name, FileType type)
+Mesh::Mesh(const std::string & file_name, FileType type, int mapping_type)
 {
   switch (type){
   case OBJ:
@@ -37,9 +40,24 @@ Mesh::Mesh(const std::string & file_name, FileType type)
     error.Add("The Mesh class cannot load this file type");
     throw(error);
   }
+  // FLEEB
+  // perform mapping if necessary
+  switch (mapping_type)
+  {
+  case MESH_MAPPING_SPHERICAL:
+    PerformSphericalMapping();
+    break;
+  case MESH_MAPPING_CYLINDRICAL:
+    PerformCylindricalMapping();
+    break;
+  case MESH_MAPPING_PLANAR:
+    PerformPlanarMapping();
+    break;
+  default:
+    break;
+  }
 
-
-  // quick test
+  // Zero this shit out for now
   for (Vertex & vert : _vertices) {
     vert.tx = 0.0f;
     vert.ty = 0.0f;
@@ -157,6 +175,26 @@ inline void split_string(std::vector<char *> * string_start, char * string)
       string[i] = NULL_TERMINATOR;
     ++i;
   }
+}
+
+inline void Mesh::PerformSphericalMapping()
+{
+  for (Vertex & vert : _vertices) {
+    float theta = Math::ArcTan2(vert.px, vert.pz);
+    float phi = Math::ArcCos(vert.py);
+    vert.u = (theta + PI) / PI2;
+    vert.v = phi / PI;
+  }
+}
+
+inline void Mesh::PerformCylindricalMapping()
+{
+
+}
+
+inline void Mesh::PerformPlanarMapping()
+{
+
 }
 
 inline void Mesh::CalculateFaceNormals()
