@@ -55,6 +55,63 @@ Mesh::Mesh(const std::string & file_name, FileType type, int mapping_type)
   default:
     break;
   }
+
+  // calculating normals
+  CalculateFaceNormals();
+  CreateVertexAdjacencies();
+  CalculateVertexNormals();
+  // calculating tangents and bitangents
+  CalculateFaceTangentsBitangents();
+  CalculateVertexTangentsBitangents();
+
+  // create vertex normal, tangent, and bitangent lines
+  unsigned num_verts = _vertices.size();
+  // allocate enough space for all lines
+  _vertexNormalLines.resize(num_verts);
+  _vertexTangentLines.resize(num_verts);
+  _vertexBitangentLines.resize(num_verts);
+  // fill in line data
+  for (unsigned i = 0; i < num_verts; ++i) {
+    const Vertex & vert = _vertices[i];
+    Line & vnormal = _vertexNormalLines[i];
+    Line & vtangent = _vertexTangentLines[i];
+    Line & vbitangent = _vertexBitangentLines[i];
+    // starting and end points of normals
+    vnormal.sx = vert.px; vnormal.ex = vert.px + vert.nx;
+    vnormal.sy = vert.py; vnormal.ey = vert.py + vert.ny;
+    vnormal.sz = vert.pz; vnormal.ez = vert.pz + vert.nz;
+    // start and end points of tangents
+    vtangent.sx = vert.px; vtangent.ex = vert.px + vert.tx;
+    vtangent.sy = vert.py; vtangent.ey = vert.py + vert.ty;
+    vtangent.sz = vert.pz; vtangent.ez = vert.pz + vert.tz;
+    // state and end points of bitangents
+    vbitangent.sx = vert.px; vbitangent.ex = vert.px + vert.bx;
+    vbitangent.sy = vert.py; vbitangent.ey = vert.py + vert.by;
+    vbitangent.sz = vert.pz; vbitangent.ez = vert.pz + vert.bz;
+  }
+
+  // create face normal lines
+  unsigned num_faces = _faces.size();
+  _faceNormalLines.resize(num_faces);
+  for (unsigned face = 0; face < num_faces; ++face) {
+    const Face & cur_face = _faces[face];
+    const Math::Vector3 & cur_face_normal = _faceNormals[face];
+    Line & cur_line = _faceNormalLines[face];
+    // the vertices that make up the face
+    const Vertex & va = _vertices[cur_face.a];
+    const Vertex & vb = _vertices[cur_face.b];
+    const Vertex & vc = _vertices[cur_face.c];
+    // finding starting point of face normals
+    cur_line.sx = (va.px + vb.px + vc.px) / 3.0f;
+    cur_line.sy = (va.py + vb.py + vc.py) / 3.0f;
+    cur_line.sz = (va.pz + vb.pz + vc.pz) / 3.0f;
+    // find the ending points of the face normals
+    cur_line.ex = cur_line.sx + cur_face_normal.x;
+    cur_line.ey = cur_line.sy + cur_face_normal.y;
+    cur_line.ez = cur_line.sz + cur_face_normal.z;
+  }
+  _normalLineMagnitude = 1.0f;
+
   // calculate tangents and bitangents
   // Zero this shit out for now
   for (Vertex & vert : _vertices) {
@@ -448,66 +505,6 @@ inline void Mesh::LoadObj(const std::string & file_name)
     vert.py *= scale;
     vert.pz *= scale;
   }
-
-  // calculating normals
-  CalculateFaceNormals();
-  CreateVertexAdjacencies();
-  CalculateVertexNormals();
-  // calculating tangents and bitangents
-  CalculateFaceTangentsBitangents();
-  CalculateVertexTangentsBitangents();
-  
-  // create vertex normal, tangent, and bitangent lines
-  unsigned num_verts = _vertices.size();
-  // allocate enough space for all lines
-  _vertexNormalLines.resize(num_verts);
-  _vertexTangentLines.resize(num_verts);
-  _vertexBitangentLines.resize(num_verts);
-  // fill in line data
-  for (unsigned i = 0; i < num_verts; ++i) {
-    const Vertex & vert = _vertices[i];
-    Line & vnormal = _vertexNormalLines[i];
-    Line & vtangent = _vertexTangentLines[i];
-    Line & vbitangent = _vertexBitangentLines[i];
-    // starting and end points of normals
-    vnormal.sx = vert.px; vnormal.ex = vert.px + vert.nx;
-    vnormal.sy = vert.py; vnormal.ey = vert.py + vert.ny;
-    vnormal.sz = vert.pz; vnormal.ez = vert.pz + vert.nz;
-    // start and end points of tangents
-    vtangent.sx = vert.px; vtangent.ex = vert.px + vert.tx;
-    vtangent.sy = vert.py; vtangent.ey = vert.py + vert.ty;
-    vtangent.sz = vert.pz; vtangent.ez = vert.pz + vert.tz;
-    // state and end points of bitangents
-    vbitangent.sx = vert.px; vbitangent.ex = vert.px + vert.bx;
-    vbitangent.sy = vert.py; vbitangent.ey = vert.py + vert.by;
-    vbitangent.sz = vert.pz; vbitangent.ez = vert.pz + vert.bz;
-  }
-
-  // create face normal lines
-  unsigned num_faces =  _faces.size();
-  _faceNormalLines.resize(num_faces);
-  for (unsigned face = 0; face < num_faces; ++face) {
-    const Face & cur_face = _faces[face];
-    const Math::Vector3 & cur_face_normal = _faceNormals[face];
-    Line & cur_line = _faceNormalLines[face];
-    // the vertices that make up the face
-    const Vertex & va = _vertices[cur_face.a];
-    const Vertex & vb = _vertices[cur_face.b];
-    const Vertex & vc = _vertices[cur_face.c];
-    // finding starting point of face normals
-    cur_line.sx = (va.px + vb.px + vc.px) / 3.0f;
-    cur_line.sy = (va.py + vb.py + vc.py) / 3.0f;
-    cur_line.sz = (va.pz + vb.pz + vc.pz) / 3.0f;
-    // find the ending points of the face normals
-    cur_line.ex = cur_line.sx + cur_face_normal.x;
-    cur_line.ey = cur_line.sy + cur_face_normal.y;
-    cur_line.ez = cur_line.sz + cur_face_normal.z;
-  }
-  _normalLineMagnitude = 1.0f;
-
-
-
-
 }
 
 inline void Mesh::ScaleLine(Line & line, float scale)
