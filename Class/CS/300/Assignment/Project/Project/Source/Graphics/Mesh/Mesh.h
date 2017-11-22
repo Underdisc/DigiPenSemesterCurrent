@@ -20,7 +20,6 @@
 #define MESH_MAPPING_SPHERICAL 0
 #define MESH_MAPPING_CYLINDRICAL 1
 #define MESH_MAPPING_PLANAR 2
-#define MESH_MAPPING_NONE -1
 
 /*****************************************************************************/
 /*!
@@ -71,9 +70,9 @@ public:
   };
 public:
   Mesh(const std::string & file_name, FileType type, 
-    int mapping_type = MESH_MAPPING_NONE);
+    int mapping_type = MESH_MAPPING_SPHERICAL);
   static Mesh * Load(const std::string & file_name, FileType type,
-    int mapping_type = MESH_MAPPING_NONE);
+    int mapping_type = MESH_MAPPING_SPHERICAL);
   static void Purge(Mesh * mesh);
   void PerformSphericalMapping();
   void PerformCylindricalMapping();
@@ -94,14 +93,19 @@ public:
   unsigned FaceNormalLineSizeVertices();
 private:
   void CalculateFaceNormals();
-  void CalculateVertexNormals(std::vector<std::vector<unsigned> > * adjacencies);
-  bool RemoveParallelFace(std::vector<unsigned> & vert_adjacencies);
-  void CreateAdjacencyList(std::vector<std::vector<unsigned> > * adjacencies);
+  void CalculateVertexNormals();
+  void RemoveParallelAdjacencies(std::vector<unsigned> * adjacencies);
+  void CreateVertexAdjacencies();
   void LoadObj(const std::string & file_name);
   void ScaleLine(Line & line, float scale);
+  //! The vertices of the mesh.
   std::vector<Vertex> _vertices;
+  //! The faces of the mesh.
   std::vector<Face> _faces;
-  std::vector<Math::Vector3> _showFaceNormals;
+  //! Records the indicies of which faces are adjacent to each vertex.
+  std::vector<std::vector<unsigned> > _vertexAdjacencies;
+  //! The normals of all faces on the mesh.
+  std::vector<Math::Vector3> _faceNormals;
 
   std::vector<Line> _vertexNormalLines;
   std::vector<Line> _faceNormalLines;

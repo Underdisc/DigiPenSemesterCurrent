@@ -55,7 +55,7 @@ Mesh::Mesh(const std::string & file_name, FileType type, int mapping_type)
   default:
     break;
   }
-
+  // calculate tangents and bitangents
   // Zero this shit out for now
   for (Vertex & vert : _vertices) {
     vert.tx = 0.0f;
@@ -199,7 +199,7 @@ inline void Mesh::PerformPlanarMapping()
     // model position
     Math::Vector3 mp(vert.px, vert.py, vert.pz);
     Math::Vector3 mpa(Math::Abs(mp.x), Math::Abs(mp.y), Math::Abs(mp.z));
-
+    // X mapping
     if (mpa.x > mpa.y && mpa.x > mpa.z) {
       vert.u = (mp.z / mp.x + 1.0) / 2.0;
       vert.v = (mp.y / mp.x + 1.0) / 2.0;
@@ -232,64 +232,68 @@ inline void Mesh::CalculateFaceNormals()
     ac.z = _vertices[face.c].pz - _vertices[face.a].pz;
     Math::Vector3 result = Math::Cross(ab, ac);
     float length = result.Length();
-    _showFaceNormals.push_back(result / length);
+    _faceNormals.push_back(result / length);
   }
 }
 
-inline void Mesh::CalculateVertexNormals(std::vector<std::vector<unsigned> > * adjacencies)
+inline void Mesh::CalculateVertexNormals()
 {
-  unsigned num_vertices = adjacencies->size();
-  for (unsigned vert = 0; vert < num_vertices; ++vert) {
-    std::vector<unsigned> & vert_adjacencies = (*adjacencies)[vert];
-    unsigned num_adjacencies = (*adjacencies)[vert].size();
-    
+  unsigned num_vertices = _vertices.size();
+  for (unsigned i = 0; i < num_vertices; ++i) {
+    std::vector<unsigned> & vert_adjacencies = _vertexAdjacencies[i];
     Math::Vector3 normal_sum(0.0f, 0.0f, 0.0f);
-    unsigned num_normals = 0;
-    while(vert_adjacencies.size() > 0) {
-      if(RemoveParallelFace(vert_adjacencies))
-        continue;
-      unsigned face_index = vert_adjacencies.back();
-      normal_sum += _showFaceNormals[face_index];
-      ++num_normals;
-      vert_adjacencies.pop_back();
-    }
-    normal_sum *= (1.0f / (float)num_normals);
+    for (unsigned face_index : vert_adjacencies)
+      normal_sum += _faceNormals[face_index];
+    normal_sum *= (1.0f / (float)vert_adjacencies.size());
     float x2 = normal_sum.x * normal_sum.x;
     float y2 = normal_sum.y * normal_sum.y;
     float z2 = normal_sum.z * normal_sum.z;
     float normal_length = sqrt(x2 + y2 + z2);
-    _vertices[vert].nx = normal_sum.x / normal_length;
-    _vertices[vert].ny = normal_sum.y / normal_length;
-    _vertices[vert].nz = normal_sum.z / normal_length;
+    _vertices[i].nx = normal_sum.x / normal_length;
+    _vertices[i].ny = normal_sum.y / normal_length;
+    _vertices[i].nz = normal_sum.z / normal_length;
   }
 }
 
-bool Mesh::RemoveParallelFace(std::vector<unsigned> & vert_adjacencies)
-{
-  const Math::Vector3 & search_normal = _showFaceNormals[vert_adjacencies.back()];
-  unsigned num_adjacencies = vert_adjacencies.size();
-  for (unsigned i = 0; i < num_adjacencies - 1; ++i) {
-    unsigned face_index = vert_adjacencies[i];
-    const Math::Vector3 & compare_normal = _showFaceNormals[face_index];
-    if(search_normal == compare_normal){
-      vert_adjacencies.pop_back();
-      return true;
-    }
-  }
-  return false;
-}
 
-inline void Mesh::CreateAdjacencyList(std::vector<std::vector<unsigned> > * adjacencies)
+// Calculate face normals must be called before this function
+inline void Mesh::CreateVertexAdjacencies()
 {
-  adjacencies->resize(_vertices.size());
+  // add all adjancencies to vertex adjacencies
+  _vertexAdjacencies.resize(_vertices.size());
   unsigned num_faces = _faces.size();
   for (unsigned i = 0; i < num_faces; ++i) {
     Face & face = _faces[i];
-    (*adjacencies)[face.a].push_back(i);
-    (*adjacencies)[face.b].push_back(i);
-    (*adjacencies)[face.c].push_back(i);
+    (_vertexAdjacencies)[face.a].push_back(i);
+    (_vertexAdjacencies)[face.b].push_back(i);
+    (_vertexAdjacencies)[face.c].push_back(i);
   }
+  // remove parallel faces from the adjacency list
+  for (std::vector<unsigned> & adjacencies : _vertexAdjacencies)
+    RemoveParallelAdjacencies(&adjacencies);
+}
 
+inline void Mesh::RemoveParallelAdjacencies(std::vector<unsigned> * adjacencies)
+{
+  // stores the indicies of all adjacencies that need to be removed
+  std::vector<unsigned> removable_adjacencies;
+  // finding all adjacencies that need to be removed
+  unsigned num_adjacencies = adjacencies->size();
+  for (int i = 0; i < num_adjacencies; ++i) {
+    const Math::Vector3 & search_normal = _faceNormals[(*adjacencies)[i]];
+    for (int j = i + 1; j < num_adjacencies; ++j) {
+      const Math::Vector3 & compare_normal = _faceNormals[(*adjacencies)[j]];
+      if (search_normal == compare_normal) {
+        removable_adjacencies.push_back(i);
+        break;
+      }
+    }
+  }
+  // removing all parallel adjecencies
+  for (int i = removable_adjacencies.size() - 1; i >= 0; --i) {
+    std::vector<unsigned>::iterator r_it = adjacencies->begin();
+    adjacencies->erase(r_it + removable_adjacencies[i]);
+  }
 }
 
 inline void Mesh::LoadObj(const std::string & file_name)
@@ -382,10 +386,9 @@ inline void Mesh::LoadObj(const std::string & file_name)
   }
 
   // calculating normals
-  std::vector<std::vector<unsigned> > adjacencies;
-  CreateAdjacencyList(&adjacencies);
   CalculateFaceNormals();
-  CalculateVertexNormals(&adjacencies);
+  CreateVertexAdjacencies();
+  CalculateVertexNormals();
   
   // create vertex normal lines
   unsigned num_verts = _vertices.size();
@@ -408,7 +411,7 @@ inline void Mesh::LoadObj(const std::string & file_name)
   _faceNormalLines.resize(num_faces);
   for (unsigned face = 0; face < num_faces; ++face) {
     const Face & cur_face = _faces[face];
-    const Math::Vector3 & cur_face_normal = _showFaceNormals[face];
+    const Math::Vector3 & cur_face_normal = _faceNormals[face];
     Line & cur_line = _faceNormalLines[face];
     // the vertices that make up the face
     const Vertex & va = _vertices[cur_face.a];
