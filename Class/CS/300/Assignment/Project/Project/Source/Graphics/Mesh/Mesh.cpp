@@ -255,6 +255,34 @@ inline void Mesh::CalculateVertexNormals()
   }
 }
 
+inline void Mesh::CalculateFaceTangentsBitangents()
+{
+  unsigned num_faces = _faces.size();
+  for (int i = 0; i < num_faces; ++i) {
+    const Face & face = _faces[i];
+    // getting the verts on the face
+    const Vertex & a = _vertices[face.a];
+    const Vertex & b = _vertices[face.b];
+    const Vertex & c = _vertices[face.c];
+    // vector from a to b
+    Math::Vector3 P(b.px - a.px, b.py - a.py, b.pz - a.pz);
+    // vector from a to c
+    Math::Vector3 Q(c.px - a.px, c.py - a.py, c.pz - a.pz);
+    // change in uv from a to b
+    Math::Vector2 duvP(b.u - a.u, b.v - a.u);
+    // change in uv from a to c
+    Math::Vector2 duvQ(c.u - a.u, c.v - a.u);
+    // inverse determinant
+    float id = 1.0f / (duvP.x * duvQ.y - duvQ.x - duvP.y);
+
+  }
+}
+
+inline void Mesh::CalculateVertexTangentsBitangents()
+{
+
+}
+
 
 // Calculate face normals must be called before this function
 inline void Mesh::CreateVertexAdjacencies()

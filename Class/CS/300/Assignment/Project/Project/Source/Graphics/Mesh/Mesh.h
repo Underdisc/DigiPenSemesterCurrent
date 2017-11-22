@@ -94,18 +94,24 @@ public:
 private:
   void CalculateFaceNormals();
   void CalculateVertexNormals();
-  void RemoveParallelAdjacencies(std::vector<unsigned> * adjacencies);
+  void CalculateFaceTangentsBitangents();
+  void CalculateVertexTangentsBitangents();
   void CreateVertexAdjacencies();
+  void RemoveParallelAdjacencies(std::vector<unsigned> * adjacencies);
   void LoadObj(const std::string & file_name);
   void ScaleLine(Line & line, float scale);
   //! The vertices of the mesh.
   std::vector<Vertex> _vertices;
   //! The faces of the mesh.
   std::vector<Face> _faces;
-  //! Records the indicies of which faces are adjacent to each vertex.
-  std::vector<std::vector<unsigned> > _vertexAdjacencies;
   //! The normals of all faces on the mesh.
   std::vector<Math::Vector3> _faceNormals;
+  //! The tangents for all faces on the mesh.
+  std::vector<Math::Vector3> _faceTangents;
+  //! The bitangents for all faces on the mesh.
+  std::vector<Math::Vector3> _faceBitangents;
+  //! Records the indicies of which faces are adjacent to each vertex.
+  std::vector<std::vector<unsigned> > _vertexAdjacencies;
 
   std::vector<Line> _vertexNormalLines;
   std::vector<Line> _faceNormalLines;
