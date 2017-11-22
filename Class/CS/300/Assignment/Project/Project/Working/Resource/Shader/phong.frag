@@ -97,23 +97,22 @@ vec2 ComputeUVs()
       uv.y = (SModelPos.y + 1.0) / 2.0;
       break;
     // planar mapping method
-    // this is wrong
     case MAP_PLANAR:
-      vec3 mna = abs(SModelNormal);
+      vec3 mpa = abs(SModelPos);
       // X mapping
-      if(mna.x > mna.y && mna.x > mna.z){
-        uv.x = (SModelNormal.z + 0.5);
-        uv.y = (SModelNormal.y + 0.5);
+      if(mpa.x > mpa.y && mpa.x > mpa.z){
+        uv.x = (SModelPos.z / SModelPos.x + 1.0) / 2.0;
+        uv.y = (SModelPos.y / SModelPos.x + 1.0) / 2.0;
       }
       // Y mapping
-      else if(mna.y > mna.x && mna.y > mna.z){
-        uv.x = (SModelNormal.x + 0.5);
-        uv.y = (SModelNormal.z + 0.5);
+      else if(mpa.y > mpa.x && mpa.y > mpa.z){
+        uv.x = (SModelPos.x / SModelPos.y + 1.0) / 2.0;
+        uv.y = (SModelPos.z / SModelPos.y + 1.0) / 2.0;
       }
       // Z mapping
-      else if(mna.z > mna.x && mna.z > mna.y){
-        uv.x = (SModelNormal.x + 0.5);
-        uv.y = (SModelNormal.y + 0.5);
+      else if(mpa.z > mpa.x && mpa.z > mpa.y){
+        uv.x = (SModelPos.x / SModelPos.z + 1.0) / 2.0;
+        uv.y = (SModelPos.y / SModelPos.z + 1.0) / 2.0;
       }
       break;
     default:

@@ -195,7 +195,26 @@ inline void Mesh::PerformCylindricalMapping()
 
 inline void Mesh::PerformPlanarMapping()
 {
+  for (Vertex & vert : _vertices) {
+    // model position
+    Math::Vector3 mp(vert.px, vert.py, vert.pz);
+    Math::Vector3 mpa(Math::Abs(mp.x), Math::Abs(mp.y), Math::Abs(mp.z));
 
+    if (mpa.x > mpa.y && mpa.x > mpa.z) {
+      vert.u = (mp.z / mp.x + 1.0) / 2.0;
+      vert.v = (mp.y / mp.x + 1.0) / 2.0;
+    }
+    // Y mapping
+    else if (mpa.y > mpa.x && mpa.y > mpa.z) {
+      vert.u = (mp.x / mp.y + 1.0) / 2.0;
+      vert.v = (mp.z / mp.y + 1.0) / 2.0;
+    }
+    // Z mapping
+    else if (mpa.z > mpa.x && mpa.z > mpa.y) {
+      vert.u = (mp.x / mp.z + 1.0) / 2.0;
+      vert.v = (mp.y / mp.z + 1.0) / 2.0;
+    }
+  }
 }
 
 inline void Mesh::CalculateFaceNormals()

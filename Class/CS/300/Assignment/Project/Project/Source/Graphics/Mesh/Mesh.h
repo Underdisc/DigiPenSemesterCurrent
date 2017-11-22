@@ -75,6 +75,9 @@ public:
   static Mesh * Load(const std::string & file_name, FileType type,
     int mapping_type = MESH_MAPPING_NONE);
   static void Purge(Mesh * mesh);
+  void PerformSphericalMapping();
+  void PerformCylindricalMapping();
+  void PerformPlanarMapping();
   void SetNormalLineLengthMeshRelative(float new_length);
   unsigned VertexCount();
   unsigned FaceCount();
@@ -90,9 +93,6 @@ public:
   unsigned FaceNormalLineSizeBytes();
   unsigned FaceNormalLineSizeVertices();
 private:
-  void PerformSphericalMapping();
-  void PerformCylindricalMapping();
-  void PerformPlanarMapping();
   void CalculateFaceNormals();
   void CalculateVertexNormals(std::vector<std::vector<unsigned> > * adjacencies);
   bool RemoveParallelFace(std::vector<unsigned> & vert_adjacencies);

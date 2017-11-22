@@ -175,7 +175,7 @@ void LoadMesh(const std::string & model)
   Mesh * new_mesh;
   std::string mesh_path = MODEL_PATH + model;
   try {
-    new_mesh = Mesh::Load(mesh_path, Mesh::OBJ, MESH_MAPPING_CYLINDRICAL);
+    new_mesh = Mesh::Load(mesh_path, Mesh::OBJ, MESH_MAPPING_PLANAR);
   }
   catch (const Error & error) {
     return;
