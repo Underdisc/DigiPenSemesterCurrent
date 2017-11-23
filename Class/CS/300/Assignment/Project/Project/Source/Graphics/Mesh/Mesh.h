@@ -112,9 +112,14 @@ private:
   std::vector<Math::Vector3> _faceBitangents;
   //! Records the indicies of which faces are adjacent to each vertex.
   std::vector<std::vector<unsigned> > _vertexAdjacencies;
-
-  std::vector<Line> _vertexNormalLines;
+  //! The vertex normal line data used for rendering. 
+  std::vector<Line> _vertexNormalLines;  
+  std::vector<Line> _vertexTangentLines;
+  std::vector<Line> _vertexBitangentLines;
+  //! The face normal line ddata used for rendering.
   std::vector<Line> _faceNormalLines;
+
+
   float _normalLineMagnitude;
 
 };
