@@ -91,6 +91,14 @@ public:
   void * FaceNormalLineData();
   unsigned FaceNormalLineSizeBytes();
   unsigned FaceNormalLineSizeVertices();
+
+  void * TangentLineData();
+  unsigned TangentLineSizeBytes();
+  unsigned TangentLineSizeVertices();
+
+  void * BitangentLineData();
+  unsigned BitangentLineSizeBytes();
+  unsigned BitangentLineSizeVertices();
 private:
   void CalculateFaceNormals();
   void CalculateVertexNormals();

@@ -128,6 +128,7 @@ MeshRenderer::MeshObject * MeshRenderer::Upload(Mesh * mesh)
   _lineShader->EnableAttributes();
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
+  //FLEEB
 
   // creating and adding new mesh object
   MeshObject * new_mesh_object = new MeshObject(vbo, ebo, vao, 

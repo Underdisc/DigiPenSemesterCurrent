@@ -168,51 +168,43 @@ void * Mesh::IndexData()
 }
 
 unsigned Mesh::IndexDataSize()
-{
-  return _faces.size() * FACE_NUMELEMENTS;
-}
-
+{ return _faces.size() * FACE_NUMELEMENTS; }
 unsigned Mesh::VertexDataSizeBytes()
-{
-  return _vertices.size() * sizeof(Vertex);
-}
-
+{ return _vertices.size() * sizeof(Vertex); }
 unsigned Mesh::IndexDataSizeBytes()
-{
-  return _faces.size() * sizeof(Face);
-}
+{ return _faces.size() * sizeof(Face); }
 
+// Vertex normal line buffer data
 void * Mesh::VertexNormalLineData()
-{
-  return (void *)_vertexNormalLines.data();
-}
-
+{ return (void *)_vertexNormalLines.data(); }
 unsigned Mesh::VertexNormalLineSizeBytes()
-{
-  return _vertexNormalLines.size() * sizeof(Line);
-}
-
+{ return _vertexNormalLines.size() * sizeof(Line); }
 unsigned Mesh::VertexNormalLineSizeVertices()
-{
-  return _vertexNormalLines.size() * VERTS_PER_LINE;
-}
+{ return _vertexNormalLines.size() * VERTS_PER_LINE; }
 
+// Face normal line buffer data
 void * Mesh::FaceNormalLineData()
-{
-  return (void *)_faceNormalLines.data();
-}
-
+{ return (void *)_faceNormalLines.data(); }
 unsigned Mesh::FaceNormalLineSizeBytes()
-{
-  return _faceNormalLines.size() * sizeof(Line);
-}
-
+{ return _faceNormalLines.size() * sizeof(Line); }
 unsigned Mesh::FaceNormalLineSizeVertices()
-{
-  return _faceNormalLines.size() * VERTS_PER_LINE;
-}
+{ return _faceNormalLines.size() * VERTS_PER_LINE; }
 
+// Tangent buffer line information
+void * Mesh::TangentLineData()
+{ return (void *)_vertexTangentLines.data(); }
+unsigned Mesh::TangentLineSizeBytes()
+{ return _vertexTangentLines.size() * sizeof(Line); }
+unsigned Mesh::TangentLineSizeVertices()
+{ return _vertexTangentLines.size() * VERTS_PER_LINE; }
 
+// Bitangent buffer line information
+void * Mesh::BitangentLineData()
+{ return (void *)_vertexBitangentLines.data(); }
+unsigned Mesh::BitangentLineSizeBytes()
+{ return _vertexBitangentLines.size() * sizeof(Line); }
+unsigned Mesh::BitangentLineSizeVertices()
+{ return _vertexBitangentLines.size() * VERTS_PER_LINE; }
 
 inline void split_string(std::vector<char *> * string_start, char * string)
 {
