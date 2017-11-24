@@ -108,33 +108,30 @@ MeshRenderer::MeshObject * MeshRenderer::Upload(Mesh * mesh)
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   // vertex Normal upload
   GLuint vbo_vn, vao_vn;
-  glGenVertexArrays(1, &vao_vn);
-  glGenBuffers(1, &vbo_vn);
-  glBindVertexArray(vao_vn);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_vn);
-  glBufferData(GL_ARRAY_BUFFER, mesh->VertexNormalLineSizeBytes(), 
-    mesh->VertexNormalLineData(), GL_STATIC_DRAW);
-  _lineShader->EnableAttributes();
-  glBindVertexArray(0);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  UploadLineBuffer(&vbo_vn, &vao_vn, mesh->VertexNormalLineData(),
+    mesh->VertexNormalLineSizeBytes());
   // face normal upload 
   GLuint vbo_fn, vao_fn;
-  glGenVertexArrays(1, &vao_fn);
-  glGenBuffers(1, &vbo_fn);
-  glBindVertexArray(vao_fn);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_fn);
-  glBufferData(GL_ARRAY_BUFFER, mesh->FaceNormalLineSizeBytes(), 
-    mesh->FaceNormalLineData(), GL_STATIC_DRAW);
-  _lineShader->EnableAttributes();
-  glBindVertexArray(0);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  //FLEEB
+  UploadLineBuffer(&vbo_fn, &vao_fn, mesh->FaceNormalLineData(),
+    mesh->FaceNormalLineSizeBytes());
+  // tangent upload
+  GLuint vbo_vt, vao_vt;
+  UploadLineBuffer(&vbo_vt, &vao_vt, mesh->TangentLineData(),
+    mesh->TangentLineSizeBytes());
+  // bitangent upload
+  GLuint vbo_vb, vao_vb;
+  UploadLineBuffer(&vbo_vb, &vao_vb, mesh->BitangentLineData(),
+    mesh->BitangentLineSizeBytes());
+
 
   // creating and adding new mesh object
   MeshObject * new_mesh_object = new MeshObject(vbo, ebo, vao, 
     mesh->IndexDataSize(),
     vbo_vn, vao_vn, mesh->VertexNormalLineSizeVertices(),
-    vbo_fn, vao_fn, mesh->FaceNormalLineSizeVertices());
+    vbo_fn, vao_fn, mesh->FaceNormalLineSizeVertices(),
+    vbo_vt, vao_vt, mesh->TangentLineSizeVertices(),
+    vbo_vb, vao_vb, mesh->BitangentLineSizeVertices());
+
   _meshObjects.insert(new_mesh_object);
   _meshObjectsAdded++;
   return new_mesh_object;
@@ -229,7 +226,8 @@ void MeshRenderer::Render(MeshObject * mesh_object, ShaderType shader_type,
   glBindVertexArray(0);
 
   // drawing normal lines
-  if(mesh_object->_showVertexNormals || mesh_object->_showFaceNormals){
+  if(mesh_object->_showVertexNormals || mesh_object->_showFaceNormals || 
+    mesh_object->_showTangents || mesh_object->_showBitangents){
     _lineShader->Use();
     glUniformMatrix4fv(_lineShader->UProjection, 1, GL_TRUE, projection.array);
     glUniformMatrix4fv(_lineShader->UView, 1, GL_TRUE, view.array);
@@ -237,23 +235,33 @@ void MeshRenderer::Render(MeshObject * mesh_object, ShaderType shader_type,
   }
   if (mesh_object->_showVertexNormals) {
     // vertex normals
-    glUniform3f(_lineShader->ULineColor,
-      mesh_object->_vertexNormalColor._r, 
-      mesh_object->_vertexNormalColor._g,
-      mesh_object->_vertexNormalColor._b);
-    glBindVertexArray(mesh_object->_vaoVertexNormal);
-    glDrawArrays(GL_LINES, 0, mesh_object->_vertexNormalVertexCount);
-    glBindVertexArray(0);
+    DisplayLineBuffer(mesh_object->_vertexNormalColor, 
+      mesh_object->_vaoVertexNormal, mesh_object->_vertexNormalVertexCount);
   }
   if (mesh_object->_showFaceNormals) {
     // face normals
-    glUniform3f(_lineShader->ULineColor,
-      mesh_object->_faceNormalColor._r,
-      mesh_object->_faceNormalColor._g,
-      mesh_object->_faceNormalColor._b);
-    glBindVertexArray(mesh_object->_vaoFaceNormal);
-    glDrawArrays(GL_LINES, 0, mesh_object->_faceNormalVertexCount);
-    glBindVertexArray(0);
+    DisplayLineBuffer(mesh_object->_faceNormalColor,
+      mesh_object->_vaoFaceNormal, mesh_object->_faceNormalVertexCount);
+  }
+  if (mesh_object->_showVertexNormals) {
+    // vertex normals
+    DisplayLineBuffer(mesh_object->_vertexNormalColor,
+      mesh_object->_vaoVertexNormal, mesh_object->_vertexNormalVertexCount);
+  }
+  if (mesh_object->_showFaceNormals) {
+    // face normals
+    DisplayLineBuffer(mesh_object->_faceNormalColor,
+      mesh_object->_vaoFaceNormal, mesh_object->_faceNormalVertexCount);
+  }
+  if (mesh_object->_showTangents) {
+    // tangents
+    DisplayLineBuffer(mesh_object->_tangentColor,
+      mesh_object->_vaoTangent, mesh_object->_tangentVertexCount);
+  }
+  if (mesh_object->_showBitangents) {
+    // bitangents
+    DisplayLineBuffer(mesh_object->_bitangentColor,
+      mesh_object->_vaoBitangent, mesh_object->_bitangentVertexCount);
   }
 }
 
@@ -369,4 +377,26 @@ MeshRenderer::ShaderType MeshRenderer::IntToShaderType(int shader_int)
   default:
     return ShaderType::NUMSHADERTYPES;
   }
+}
+
+inline void MeshRenderer::UploadLineBuffer(GLuint * vbo, GLuint * vao, 
+  void * data, unsigned int data_size)
+{
+  glGenVertexArrays(1, vao);
+  glGenBuffers(1, vbo);
+  glBindVertexArray(*vao);
+  glBindBuffer(GL_ARRAY_BUFFER, *vbo);
+  glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_STATIC_DRAW);
+  _lineShader->EnableAttributes();
+  glBindVertexArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+inline void MeshRenderer::DisplayLineBuffer(const Color & color, GLuint vao,
+  unsigned int num_vertices)
+{
+  glUniform3f(_lineShader->ULineColor, color._r, color._g, color._b);
+  glBindVertexArray(vao);
+  glDrawArrays(GL_LINES, 0, num_vertices);
+  glBindVertexArray(0);
 }

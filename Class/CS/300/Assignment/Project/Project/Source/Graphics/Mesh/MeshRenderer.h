@@ -34,23 +34,23 @@ public:
     MeshObject(GLuint vbo, GLuint ebo, GLuint vao, unsigned int elements,
       GLuint vbo_vn, GLuint vao_vn, unsigned int vertices_vn,
       GLuint vbo_fn, GLuint vao_fn, unsigned int vertices_fn,
-      GLuint vbo_t,  GLuint vao_t,  unsigned int vertices_t,
-      GLuint vbo_bt, GLuint vao_bt, unsigned int vertices_bt): 
+      GLuint vbo_vt, GLuint vao_vt, unsigned int vertices_vt,
+      GLuint vbo_vb, GLuint vao_vb, unsigned int vertices_vb): 
       _vbo(vbo), _ebo(ebo), _vao(vao), _elements(elements),
       _vboVertexNormal(vbo_vn), _vaoVertexNormal(vao_vn),
       _vertexNormalVertexCount(vertices_vn),
       _vboFaceNormal(vbo_fn), _vaoFaceNormal(vao_fn),
       _faceNormalVertexCount(vertices_fn),
-      _vboTangent(vbo_t), _vaoTangent(vao_t),
-      _tangentVertexCount(vertices_t),
-      _vboBitangent(vbo_bt), _vaoBitangent(vao_bt),
-      _bitangentVertexCount(vertices_bt),
+      _vboTangent(vbo_vt), _vaoTangent(vao_vt),
+      _tangentVertexCount(vertices_vt),
+      _vboBitangent(vbo_vb), _vaoBitangent(vao_vb),
+      _bitangentVertexCount(vertices_vb),
       _showVertexNormals(false), _showFaceNormals(false), 
       _showTangents(false), _showBitangents(false),
       _showWireframe(false),
       _color(1.0f, 1.0f, 1.0f),
-      _vertexNormalColor(0.0f, 0.0f, 0.0f), _faceNormalColor(0.0f, 0.0f, 0.0f),
-      _tangentColor(0.0f, 0.0f, 0.0f), _bitangentColor(0.0f, 0.0f, 0.0f)
+      _vertexNormalColor(0.0f, 0.0f, 1.0f), _faceNormalColor(0.0f, 0.0f, 0.0f),
+      _tangentColor(1.0f, 0.0f, 0.0f), _bitangentColor(0.0f, 1.0f, 0.0f)
       {}
     //! VBO for the mesh
     GLuint _vbo;
@@ -136,6 +136,10 @@ public:
   static int ShaderTypeToInt(ShaderType shader_type);
   static ShaderType IntToShaderType(int shader_int);
 private:
+  static void UploadLineBuffer(GLuint * vbo, GLuint * vao, void * data, 
+    unsigned int data_size);
+  static void DisplayLineBuffer(const Color & color, GLuint vao, 
+    unsigned int num_vertices);
   //! The vector of currently loaded Mesh objects
   static std::unordered_set<MeshObject *> _meshObjects;
   //! The number of mesh objects that have been added to the MeshRenderer

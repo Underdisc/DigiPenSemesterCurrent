@@ -183,8 +183,14 @@ void Editor::Update(Mesh * mesh, MeshRenderer::MeshObject * mesh_object,
       mesh_object->_vertexNormalColor._values);
     ImGui::ColorEdit3("Face Normal Color", 
       mesh_object->_faceNormalColor._values);
+    ImGui::ColorEdit3("Vertex Tangent Color",
+      mesh_object->_tangentColor._values);
+    ImGui::ColorEdit3("Vertex Bitangent Color",
+      mesh_object->_bitangentColor._values);
     ImGui::Checkbox("Show Vertex Normals", &mesh_object->_showVertexNormals);
     ImGui::Checkbox("Show Face Normals", &mesh_object->_showFaceNormals);
+    ImGui::Checkbox("Show Vertex Tangents", &mesh_object->_showTangents);
+    ImGui::Checkbox("Show Vertex Bitangents", &mesh_object->_showBitangents);
     ImGui::Separator();
     ImGui::Text("Other");
     ImGui::Checkbox("Wireframe", &mesh_object->_showWireframe);
