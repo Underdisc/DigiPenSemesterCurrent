@@ -144,6 +144,10 @@ void Mesh::SetNormalLineLengthMeshRelative(float new_length)
     ScaleLine(line, scale_factor);
   for(Line & line : _faceNormalLines)
     ScaleLine(line, scale_factor);
+  for (Line & line : _vertexTangentLines)
+    ScaleLine(line, scale_factor);
+  for (Line & line : _vertexBitangentLines)
+    ScaleLine(line, scale_factor);
   _normalLineMagnitude = new_length;
 }
 
