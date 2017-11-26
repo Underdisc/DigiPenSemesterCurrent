@@ -110,18 +110,24 @@ MeshRenderer::MeshObject * MeshRenderer::Upload(Mesh * mesh)
   GLuint vbo_vn, vao_vn;
   UploadLineBuffer(&vbo_vn, &vao_vn, mesh->VertexNormalLineData(),
     mesh->VertexNormalLineSizeBytes());
+  // vertex tangent upload
+  GLuint vbo_vt, vao_vt;
+  UploadLineBuffer(&vbo_vt, &vao_vt, mesh->VertexTangentLineData(),
+    mesh->VertexTangentLineSizeBytes());
+  // vertex bitangent upload
+  GLuint vbo_vb, vao_vb;
+  UploadLineBuffer(&vbo_vb, &vao_vb, mesh->VertexBitangentLineData(),
+    mesh->VertexBitangentLineSizeBytes());
   // face normal upload 
   GLuint vbo_fn, vao_fn;
   UploadLineBuffer(&vbo_fn, &vao_fn, mesh->FaceNormalLineData(),
     mesh->FaceNormalLineSizeBytes());
-  // tangent upload
-  GLuint vbo_vt, vao_vt;
-  UploadLineBuffer(&vbo_vt, &vao_vt, mesh->VertexTangentLineData(),
-    mesh->VertexTangentLineSizeBytes());
-  // bitangent upload
-  GLuint vbo_vb, vao_vb;
-  UploadLineBuffer(&vbo_vb, &vao_vb, mesh->VertexBitangentLineData(),
-    mesh->VertexBitangentLineSizeBytes());
+  GLuint vbo_ft, vao_ft;
+  UploadLineBuffer(&vbo_ft, &vao_ft, mesh->FaceTangentLineData(),
+    mesh->FaceTangentLineSizeBytes());
+  GLuint vbo_fb, vao_fb;
+  UploadLineBuffer(&vbo_fb, &vao_fb, mesh->FaceBitangentLineData(),
+    mesh->FaceBitangentLineSizeBytes());
 
 
   // creating and adding new mesh object
@@ -130,7 +136,9 @@ MeshRenderer::MeshObject * MeshRenderer::Upload(Mesh * mesh)
     vbo_vn, vao_vn, mesh->VertexNormalLineSizeVertices(),
     vbo_vt, vao_vt, mesh->VertexTangentLineSizeVertices(),
     vbo_vb, vao_vb, mesh->VertexBitangentLineSizeVertices(),
-    vbo_fn, vao_fn, mesh->FaceNormalLineSizeVertices());
+    vbo_fn, vao_fn, mesh->FaceNormalLineSizeVertices(),
+    vbo_ft, vao_ft, mesh->FaceTangentLineSizeVertices(),
+    vbo_fb, vao_fb, mesh->FaceBitangentLineSizeVertices());
 
   _meshObjects.insert(new_mesh_object);
   _meshObjectsAdded++;
@@ -227,7 +235,7 @@ void MeshRenderer::Render(MeshObject * mesh_object, ShaderType shader_type,
 
   // drawing normal lines
   if(mesh_object->_showVertexNormals || mesh_object->_showFaceNormals || 
-    mesh_object->_showTangents || mesh_object->_showBitangents){
+    mesh_object->_showVertexTangents || mesh_object->_showVertexBitangents){
     _lineShader->Use();
     glUniformMatrix4fv(_lineShader->UProjection, 1, GL_TRUE, projection.array);
     glUniformMatrix4fv(_lineShader->UView, 1, GL_TRUE, view.array);
@@ -253,14 +261,14 @@ void MeshRenderer::Render(MeshObject * mesh_object, ShaderType shader_type,
     DisplayLineBuffer(mesh_object->_faceNormalColor,
       mesh_object->_vaoFaceNormal, mesh_object->_faceNormalVertexCount);
   }
-  if (mesh_object->_showTangents) {
+  if (mesh_object->_showVertexTangents) {
     // tangents
-    DisplayLineBuffer(mesh_object->_tangentColor,
+    DisplayLineBuffer(mesh_object->_vertexTangentColor,
       mesh_object->_vaoVertexTangent, mesh_object->_vertexTangentVertexCount);
   }
-  if (mesh_object->_showBitangents) {
+  if (mesh_object->_showVertexBitangents) {
     // bitangents
-    DisplayLineBuffer(mesh_object->_bitangentColor,
+    DisplayLineBuffer(mesh_object->_vertexBitangentColor,
       mesh_object->_vaoVertexBitangent, mesh_object->_vertexBitangentVertexCount);
   }
 }

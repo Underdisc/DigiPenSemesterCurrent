@@ -35,7 +35,9 @@ public:
       GLuint vbo_vn, GLuint vao_vn, unsigned int vertices_vn,
       GLuint vbo_vt, GLuint vao_vt, unsigned int vertices_vt,
       GLuint vbo_vb, GLuint vao_vb, unsigned int vertices_vb,
-      GLuint vbo_fn, GLuint vao_fn, unsigned int vertices_fn):
+      GLuint vbo_fn, GLuint vao_fn, unsigned int vertices_fn,
+      GLuint vbo_ft, GLuint vao_ft, unsigned int vertices_ft,
+      GLuint vbo_fb, GLuint vao_fb, unsigned int vertices_fb):
       _vbo(vbo), _ebo(ebo), _vao(vao), _elements(elements),
       _vboVertexNormal(vbo_vn), _vaoVertexNormal(vao_vn),
       _vertexNormalVertexCount(vertices_vn),
@@ -45,12 +47,22 @@ public:
       _vertexBitangentVertexCount(vertices_vb),
       _vboFaceNormal(vbo_fn), _vaoFaceNormal(vao_fn),
       _faceNormalVertexCount(vertices_fn),
-      _showVertexNormals(false), _showFaceNormals(false), 
-      _showTangents(false), _showBitangents(false),
+      _vboFaceTangent(vbo_ft), _vaoFaceTangent(vao_ft),
+      _faceTangentVertexCount(vertices_ft),
+      _vboFaceBitangent(vbo_fb), _vaoFaceBitangent(vao_fb),
+      _faceBitangentVertexCount(vertices_fb),
+      _showVertexNormals(false), _showVertexTangents(false), 
+      _showVertexBitangents(false),
+      _showFaceNormals(false), _showFaceTangents(false),
+      _showFaceBitangents(false),
       _showWireframe(false),
       _color(1.0f, 1.0f, 1.0f),
-      _vertexNormalColor(0.0f, 0.0f, 1.0f), _faceNormalColor(0.0f, 0.0f, 0.0f),
-      _tangentColor(1.0f, 0.0f, 0.0f), _bitangentColor(0.0f, 1.0f, 0.0f)
+      _vertexNormalColor(0.0f, 0.0f, 1.0f),
+      _vertexTangentColor(1.0f, 0.0f, 0.0f), 
+      _vertexBitangentColor(0.0f, 1.0f, 0.0f),
+      _faceNormalColor(0.0f, 0.0f, 1.0f),
+      _faceTangentColor(1.0f, 0.0f, 0.0f),
+      _faceBitangentColor(0.0f, 1.0f, 0.0f)
       {}
     //! VBO for the mesh
     GLuint _vbo;
@@ -73,29 +85,41 @@ public:
     GLuint _vaoVertexBitangent;
     unsigned int _vertexBitangentVertexCount;
 
-    //! Face normal line buffer info
+    // Face Normal line buffer info
     GLuint _vboFaceNormal;
     GLuint _vaoFaceNormal;
     unsigned int _faceNormalVertexCount;
+    // Face Tangent line buffer info
+    GLuint _vboFaceTangent;
+    GLuint _vaoFaceTangent;
+    unsigned int _faceTangentVertexCount;
+    // Face Bitangent line buffer info
+    GLuint _vboFaceBitangent;
+    GLuint _vaoFaceBitangent;
+    unsigned int _faceBitangentVertexCount;
 
     //! Determines whether the vertex normals should be displayed
     bool _showVertexNormals;
+    bool _showVertexTangents;
+    bool _showVertexBitangents;
     //! Determines whether the face normals should be displayed
     bool _showFaceNormals;
+    bool _showFaceTangents;
+    bool _showFaceBitangents;
 
-    bool _showTangents;
-    bool _showBitangents;
     //! Determines whether the model is displayed in wireframe mode or not
     bool _showWireframe;
     //! The color the main mesh will be rendered with
     Color _color;
     //! The color of the vertex normals
     Color _vertexNormalColor;
+    Color _vertexTangentColor;
+    Color _vertexBitangentColor;
     //! The color of the face normals
     Color _faceNormalColor;
+    Color _faceTangentColor;
+    Color _faceBitangentColor;
 
-    Color _tangentColor;
-    Color _bitangentColor;
   };
 public:
   enum ShaderType
