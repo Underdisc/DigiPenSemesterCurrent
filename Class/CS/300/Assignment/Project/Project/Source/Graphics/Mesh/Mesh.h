@@ -70,9 +70,9 @@ public:
   };
 public:
   Mesh(const std::string & file_name, FileType type, 
-    int mapping_type = MESH_MAPPING_SPHERICAL);
+    int mapping_type = MESH_MAPPING_PLANAR);
   static Mesh * Load(const std::string & file_name, FileType type,
-    int mapping_type = MESH_MAPPING_SPHERICAL);
+    int mapping_type = MESH_MAPPING_PLANAR);
   static void Purge(Mesh * mesh);
   void PerformSphericalMapping();
   void PerformCylindricalMapping();
@@ -85,20 +85,30 @@ public:
   unsigned IndexDataSize();
   unsigned VertexDataSizeBytes();
   unsigned IndexDataSizeBytes();
+  // vertex normal line buffer getters
   void * VertexNormalLineData();
   unsigned VertexNormalLineSizeBytes();
   unsigned VertexNormalLineSizeVertices();
+  // vertex tangent line buffer getters
+  void * VertexTangentLineData();
+  unsigned VertexTangentLineSizeBytes();
+  unsigned VertexTangentLineSizeVertices();
+  // vertex bitangent line buffer getters
+  void * VertexBitangentLineData();
+  unsigned VertexBitangentLineSizeBytes();
+  unsigned VertexBitangentLineSizeVertices();
+  // face normal line buffer getters
   void * FaceNormalLineData();
   unsigned FaceNormalLineSizeBytes();
   unsigned FaceNormalLineSizeVertices();
-
-  void * TangentLineData();
-  unsigned TangentLineSizeBytes();
-  unsigned TangentLineSizeVertices();
-
-  void * BitangentLineData();
-  unsigned BitangentLineSizeBytes();
-  unsigned BitangentLineSizeVertices();
+  // face tangent line buffer getters
+  void * FaceTangentLineData();
+  unsigned FaceTangentLineSizeBytes();
+  unsigned FaceTangentLineSizeVertices();
+  // face bitangent line buffer getters
+  void * FaceBitangentLineData();
+  unsigned FaceBitangentLineSizeBytes();
+  unsigned FaceBitangentLineSizeVertices();
 private:
   void CalculateFaceNormals();
   void CalculateVertexNormals();
@@ -126,6 +136,9 @@ private:
   std::vector<Line> _vertexBitangentLines;
   //! The face normal line ddata used for rendering.
   std::vector<Line> _faceNormalLines;
+  std::vector<Line> _faceTangentLines;
+  std::vector<Line> _faceBitangentLines;
+  
 
 
   float _normalLineMagnitude;

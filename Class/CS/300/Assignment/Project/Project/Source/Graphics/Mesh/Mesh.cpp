@@ -19,6 +19,7 @@
 
 #define PI  3.14159265359f
 #define PI2 6.28318530718f
+#define EPSILON 0.000001f
 
 #define VERTS_PER_LINE 2
 #define FACE_NUMELEMENTS 3
@@ -70,7 +71,7 @@ Mesh::Mesh(const std::string & file_name, FileType type, int mapping_type)
   _vertexNormalLines.resize(num_verts);
   _vertexTangentLines.resize(num_verts);
   _vertexBitangentLines.resize(num_verts);
-  // fill in line data
+  // fill in vertex line data
   for (unsigned i = 0; i < num_verts; ++i) {
     const Vertex & vert = _vertices[i];
     Line & vnormal = _vertexNormalLines[i];
@@ -90,25 +91,40 @@ Mesh::Mesh(const std::string & file_name, FileType type, int mapping_type)
     vbitangent.sz = vert.pz; vbitangent.ez = vert.pz + vert.bz;
   }
 
-  // create face normal lines
+  // create face line data
   unsigned num_faces = _faces.size();
   _faceNormalLines.resize(num_faces);
+  _faceTangentLines.resize(num_faces);
+  _faceBitangentLines.resize(num_faces);
   for (unsigned face = 0; face < num_faces; ++face) {
     const Face & cur_face = _faces[face];
-    const Math::Vector3 & cur_face_normal = _faceNormals[face];
-    Line & cur_line = _faceNormalLines[face];
+    const Math::Vector3 & fn = _faceNormals[face];
+    const Math::Vector3 & ft = _faceTangents[face];
+    const Math::Vector3 & fb = _faceBitangents[face];
+    Line & fn_line = _faceNormalLines[face];
+    Line & ft_line = _faceTangentLines[face];
+    Line & fb_line = _faceBitangentLines[face];
     // the vertices that make up the face
     const Vertex & va = _vertices[cur_face.a];
     const Vertex & vb = _vertices[cur_face.b];
     const Vertex & vc = _vertices[cur_face.c];
-    // finding starting point of face normals
-    cur_line.sx = (va.px + vb.px + vc.px) / 3.0f;
-    cur_line.sy = (va.py + vb.py + vc.py) / 3.0f;
-    cur_line.sz = (va.pz + vb.pz + vc.pz) / 3.0f;
-    // find the ending points of the face normals
-    cur_line.ex = cur_line.sx + cur_face_normal.x;
-    cur_line.ey = cur_line.sy + cur_face_normal.y;
-    cur_line.ez = cur_line.sz + cur_face_normal.z;
+    // the start of all lines
+    float start_x = (va.px + vb.px + vc.px) / 3.0f;
+    float start_y = (va.py + vb.py + vc.py) / 3.0f;
+    float start_z = (va.pz + vb.pz + vc.pz) / 3.0f;
+    // start and endpoints of face normals
+    fn_line.sx = start_x; fn_line.ex = start_x + fn.x;
+    fn_line.sy = start_y; fn_line.ey = start_y + fn.y;
+    fn_line.sz = start_z; fn_line.ez = start_z + fn.z;
+    // start and endpoints of face tangents
+    ft_line.sx = start_x; ft_line.ex = start_x + ft.x;
+    ft_line.sy = start_y; ft_line.ey = start_y + ft.y;
+    ft_line.sz = start_z; ft_line.ez = start_z + ft.z;
+    // start and endpoints of face bitangents
+    fb_line.sx = start_x; fb_line.ex = start_x + fb.x;
+    fb_line.sy = start_y; fb_line.ey = start_y + fb.y;
+    fb_line.sz = start_z; fb_line.ez = start_z + fb.z;
+
   }
   _normalLineMagnitude = 1.0f;
 
@@ -186,6 +202,22 @@ unsigned Mesh::VertexNormalLineSizeBytes()
 unsigned Mesh::VertexNormalLineSizeVertices()
 { return _vertexNormalLines.size() * VERTS_PER_LINE; }
 
+// Vertex Tangent buffer line information
+void * Mesh::VertexTangentLineData()
+{ return (void *)_vertexTangentLines.data(); }
+unsigned Mesh::VertexTangentLineSizeBytes()
+{ return _vertexTangentLines.size() * sizeof(Line); }
+unsigned Mesh::VertexTangentLineSizeVertices()
+{ return _vertexTangentLines.size() * VERTS_PER_LINE; }
+
+// Vertex Bitangent buffer line information
+void * Mesh::VertexBitangentLineData()
+{ return (void *)_vertexBitangentLines.data(); }
+unsigned Mesh::VertexBitangentLineSizeBytes()
+{ return _vertexBitangentLines.size() * sizeof(Line); }
+unsigned Mesh::VertexBitangentLineSizeVertices()
+{ return _vertexBitangentLines.size() * VERTS_PER_LINE; }
+
 // Face normal line buffer data
 void * Mesh::FaceNormalLineData()
 { return (void *)_faceNormalLines.data(); }
@@ -194,21 +226,23 @@ unsigned Mesh::FaceNormalLineSizeBytes()
 unsigned Mesh::FaceNormalLineSizeVertices()
 { return _faceNormalLines.size() * VERTS_PER_LINE; }
 
-// Tangent buffer line information
-void * Mesh::TangentLineData()
-{ return (void *)_vertexTangentLines.data(); }
-unsigned Mesh::TangentLineSizeBytes()
-{ return _vertexTangentLines.size() * sizeof(Line); }
-unsigned Mesh::TangentLineSizeVertices()
-{ return _vertexTangentLines.size() * VERTS_PER_LINE; }
+// Face Tangent line buffer data
+void * Mesh::FaceTangentLineData()
+{ return (void *)_faceTangentLines.data(); }
+unsigned Mesh::FaceTangentLineSizeBytes()
+{ return _faceTangentLines.size() * sizeof(Line); }
+unsigned Mesh::FaceTangentLineSizeVertices()
+{ return _faceTangentLines.size() * VERTS_PER_LINE; }
 
-// Bitangent buffer line information
-void * Mesh::BitangentLineData()
-{ return (void *)_vertexBitangentLines.data(); }
-unsigned Mesh::BitangentLineSizeBytes()
-{ return _vertexBitangentLines.size() * sizeof(Line); }
-unsigned Mesh::BitangentLineSizeVertices()
-{ return _vertexBitangentLines.size() * VERTS_PER_LINE; }
+// Face Bitangent line buffer data
+void * Mesh::FaceBitangentLineData()
+{ return (void *)_faceBitangentLines.data(); }
+unsigned Mesh::FaceBitangentLineSizeBytes()
+{ return _faceBitangentLines.size() * sizeof(Line); }
+unsigned Mesh::FaceBitangentLineSizeVertices()
+{ return _faceBitangentLines.size() * VERTS_PER_LINE; }
+
+
 
 inline void split_string(std::vector<char *> * string_start, char * string)
 {
@@ -263,7 +297,7 @@ inline void Mesh::PerformPlanarMapping()
       vert.v = (mp.z / mp.y + 1.0f) / 2.0f;
     }
     // Z mapping
-    else if (mpa.z > mpa.x && mpa.z > mpa.y) {
+    else {
       vert.u = (mp.x / mp.z + 1.0f) / 2.0f;
       vert.v = (mp.y / mp.z + 1.0f) / 2.0f;
     }
@@ -318,7 +352,9 @@ inline void Mesh::CalculateFaceTangentsBitangents()
     const Vertex & b = _vertices[face.b];
     const Vertex & c = _vertices[face.c];
     // vector from a to b
-    Math::Vector3 P(b.px - a.px, b.py - a.py, b.pz - a.pz);
+
+    // my implementation
+    /*Math::Vector3 P(b.px - a.px, b.py - a.py, b.pz - a.pz);
     // vector from a to c
     Math::Vector3 Q(c.px - a.px, c.py - a.py, c.pz - a.pz);
     // change in uv from a to b
@@ -336,7 +372,38 @@ inline void Mesh::CalculateFaceTangentsBitangents()
     Math::Vector3 bitangent;
     bitangent.x = id * (-duvQ.x * P.x + duvP.x * Q.x);
     bitangent.y = id * (-duvQ.x * P.y + duvP.x * Q.y);
-    bitangent.z = id * (-duvQ.x * P.z + duvP.x * Q.z);
+    bitangent.z = id * (-duvQ.x * P.z + duvP.x * Q.z);*/
+
+    //try 2
+    Math::Vector3 edge1(b.px - a.px, b.py - a.py, b.pz - a.pz);
+    Math::Vector3 edge2(c.px - a.px, c.py - a.py, c.pz - a.pz);
+    Math::Vector2 duv1(b.u - a.u, b.v - a.v);
+    Math::Vector2 duv2(c.u - a.u, c.v - a.v);
+
+    float det = duv1.x * duv2.y - duv2.x * duv1.y;
+    float f;
+    if(det < EPSILON && det > -EPSILON)
+      f = 0;
+    else
+      f = 1.0f / det;
+
+    const Math::Vector3 & face_normal = _faceNormals[i];
+    Math::Vector3 tangent;
+    Math::Vector3 bitangent;
+
+    tangent.x = f * (duv2.y * edge1.x - duv1.y * edge2.x);
+    tangent.y = f * (duv2.y * edge1.y - duv1.y * edge2.y);
+    tangent.z = f * (duv2.y * edge1.z - duv1.y * edge2.z);
+    tangent = tangent - face_normal * Math::Dot(face_normal, tangent);
+
+
+    bitangent.x = f * (-duv2.x * edge1.x + duv1.x * edge2.x);
+    bitangent.y = f * (-duv2.x * edge1.y + duv1.x * edge2.y);
+    bitangent.z = f * (-duv2.x * edge1.z + duv1.x * edge2.z);
+    
+    
+    tangent.Normalize();
+    bitangent.Normalize();
     // adding tangent and bitangent vectors
     _faceTangents.push_back(tangent);
     _faceBitangents.push_back(bitangent);

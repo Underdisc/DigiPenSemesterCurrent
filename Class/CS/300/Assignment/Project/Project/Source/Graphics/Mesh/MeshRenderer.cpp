@@ -116,12 +116,12 @@ MeshRenderer::MeshObject * MeshRenderer::Upload(Mesh * mesh)
     mesh->FaceNormalLineSizeBytes());
   // tangent upload
   GLuint vbo_vt, vao_vt;
-  UploadLineBuffer(&vbo_vt, &vao_vt, mesh->TangentLineData(),
-    mesh->TangentLineSizeBytes());
+  UploadLineBuffer(&vbo_vt, &vao_vt, mesh->VertexTangentLineData(),
+    mesh->VertexTangentLineSizeBytes());
   // bitangent upload
   GLuint vbo_vb, vao_vb;
-  UploadLineBuffer(&vbo_vb, &vao_vb, mesh->BitangentLineData(),
-    mesh->BitangentLineSizeBytes());
+  UploadLineBuffer(&vbo_vb, &vao_vb, mesh->VertexBitangentLineData(),
+    mesh->VertexBitangentLineSizeBytes());
 
 
   // creating and adding new mesh object
@@ -129,8 +129,8 @@ MeshRenderer::MeshObject * MeshRenderer::Upload(Mesh * mesh)
     mesh->IndexDataSize(),
     vbo_vn, vao_vn, mesh->VertexNormalLineSizeVertices(),
     vbo_fn, vao_fn, mesh->FaceNormalLineSizeVertices(),
-    vbo_vt, vao_vt, mesh->TangentLineSizeVertices(),
-    vbo_vb, vao_vb, mesh->BitangentLineSizeVertices());
+    vbo_vt, vao_vt, mesh->VertexTangentLineSizeVertices(),
+    vbo_vb, vao_vb, mesh->VertexBitangentLineSizeVertices());
 
   _meshObjects.insert(new_mesh_object);
   _meshObjectsAdded++;
