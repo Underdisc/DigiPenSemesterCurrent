@@ -405,6 +405,7 @@ inline void Mesh::CalculateFaceTangentsBitangents()
     bitangent.x = f * (-duv2.x * edge1.x + duv1.x * edge2.x);
     bitangent.y = f * (-duv2.x * edge1.y + duv1.x * edge2.y);
     bitangent.z = f * (-duv2.x * edge1.z + duv1.x * edge2.z);
+    bitangent = Math::Cross(face_normal, tangent);
     
     
     tangent.Normalize();
