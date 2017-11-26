@@ -178,19 +178,25 @@ void Editor::Update(Mesh * mesh, MeshRenderer::MeshObject * mesh_object,
     ImGui::Text("Scale");
     ImGui::DragFloat("s", &cur_scale, 0.01f);
     ImGui::Separator();
-    ImGui::Text("Normals");
+    ImGui::Text("TNB Lines");
     ImGui::ColorEdit3("Vertex Normal Color", 
       mesh_object->_vertexNormalColor._values);
-    ImGui::ColorEdit3("Face Normal Color", 
-      mesh_object->_faceNormalColor._values);
     ImGui::ColorEdit3("Vertex Tangent Color",
       mesh_object->_vertexTangentColor._values);
     ImGui::ColorEdit3("Vertex Bitangent Color",
       mesh_object->_vertexBitangentColor._values);
+    ImGui::ColorEdit3("Face Normal Color",
+      mesh_object->_faceNormalColor._values);
+    ImGui::ColorEdit3("Face Tangent Color",
+      mesh_object->_faceTangentColor._values);
+    ImGui::ColorEdit3("Face Bitangent Color",
+      mesh_object->_faceBitangentColor._values);
     ImGui::Checkbox("Show Vertex Normals", &mesh_object->_showVertexNormals);
-    ImGui::Checkbox("Show Face Normals", &mesh_object->_showFaceNormals);
     ImGui::Checkbox("Show Vertex Tangents", &mesh_object->_showVertexTangents);
     ImGui::Checkbox("Show Vertex Bitangents", &mesh_object->_showVertexBitangents);
+    ImGui::Checkbox("Show Face Normals", &mesh_object->_showFaceNormals);
+    ImGui::Checkbox("Show Face Tangents", &mesh_object->_showFaceTangents);
+    ImGui::Checkbox("Show Face Bitangents", &mesh_object->_showFaceBitangents);
     ImGui::Separator();
     ImGui::Text("Other");
     ImGui::Checkbox("Wireframe", &mesh_object->_showWireframe);

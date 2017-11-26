@@ -234,8 +234,9 @@ void MeshRenderer::Render(MeshObject * mesh_object, ShaderType shader_type,
   glBindVertexArray(0);
 
   // drawing normal lines
-  if(mesh_object->_showVertexNormals || mesh_object->_showFaceNormals || 
-    mesh_object->_showVertexTangents || mesh_object->_showVertexBitangents){
+  if(mesh_object->_showVertexNormals || mesh_object->_showVertexTangents || 
+    mesh_object->_showVertexBitangents || mesh_object->_showFaceNormals ||
+    mesh_object->_showFaceTangents || mesh_object->_showFaceBitangents){
     _lineShader->Use();
     glUniformMatrix4fv(_lineShader->UProjection, 1, GL_TRUE, projection.array);
     glUniformMatrix4fv(_lineShader->UView, 1, GL_TRUE, view.array);
@@ -243,23 +244,8 @@ void MeshRenderer::Render(MeshObject * mesh_object, ShaderType shader_type,
   }
   if (mesh_object->_showVertexNormals) {
     // vertex normals
-    DisplayLineBuffer(mesh_object->_vertexNormalColor, 
-      mesh_object->_vaoVertexNormal, mesh_object->_vertexNormalVertexCount);
-  }
-  if (mesh_object->_showFaceNormals) {
-    // face normals
-    DisplayLineBuffer(mesh_object->_faceNormalColor,
-      mesh_object->_vaoFaceNormal, mesh_object->_faceNormalVertexCount);
-  }
-  if (mesh_object->_showVertexNormals) {
-    // vertex normals
     DisplayLineBuffer(mesh_object->_vertexNormalColor,
       mesh_object->_vaoVertexNormal, mesh_object->_vertexNormalVertexCount);
-  }
-  if (mesh_object->_showFaceNormals) {
-    // face normals
-    DisplayLineBuffer(mesh_object->_faceNormalColor,
-      mesh_object->_vaoFaceNormal, mesh_object->_faceNormalVertexCount);
   }
   if (mesh_object->_showVertexTangents) {
     // tangents
@@ -271,6 +257,22 @@ void MeshRenderer::Render(MeshObject * mesh_object, ShaderType shader_type,
     DisplayLineBuffer(mesh_object->_vertexBitangentColor,
       mesh_object->_vaoVertexBitangent, mesh_object->_vertexBitangentVertexCount);
   }
+  if (mesh_object->_showFaceNormals) {
+    // face normals
+    DisplayLineBuffer(mesh_object->_faceNormalColor,
+      mesh_object->_vaoFaceNormal, mesh_object->_faceNormalVertexCount);
+  }
+  if (mesh_object->_showFaceTangents) {
+    // face normals
+    DisplayLineBuffer(mesh_object->_faceTangentColor,
+      mesh_object->_vaoFaceTangent, mesh_object->_faceTangentVertexCount);
+  }
+  if (mesh_object->_showFaceBitangents) {
+    // face normals
+    DisplayLineBuffer(mesh_object->_faceBitangentColor,
+      mesh_object->_vaoFaceBitangent, mesh_object->_faceBitangentVertexCount);
+  }
+
 }
 
 void MeshRenderer::ReloadShader(ShaderType shader_type)
