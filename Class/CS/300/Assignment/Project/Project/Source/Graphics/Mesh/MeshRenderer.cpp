@@ -128,9 +128,9 @@ MeshRenderer::MeshObject * MeshRenderer::Upload(Mesh * mesh)
   MeshObject * new_mesh_object = new MeshObject(vbo, ebo, vao, 
     mesh->IndexDataSize(),
     vbo_vn, vao_vn, mesh->VertexNormalLineSizeVertices(),
-    vbo_fn, vao_fn, mesh->FaceNormalLineSizeVertices(),
     vbo_vt, vao_vt, mesh->VertexTangentLineSizeVertices(),
-    vbo_vb, vao_vb, mesh->VertexBitangentLineSizeVertices());
+    vbo_vb, vao_vb, mesh->VertexBitangentLineSizeVertices(),
+    vbo_fn, vao_fn, mesh->FaceNormalLineSizeVertices());
 
   _meshObjects.insert(new_mesh_object);
   _meshObjectsAdded++;
@@ -256,12 +256,12 @@ void MeshRenderer::Render(MeshObject * mesh_object, ShaderType shader_type,
   if (mesh_object->_showTangents) {
     // tangents
     DisplayLineBuffer(mesh_object->_tangentColor,
-      mesh_object->_vaoTangent, mesh_object->_tangentVertexCount);
+      mesh_object->_vaoVertexTangent, mesh_object->_vertexTangentVertexCount);
   }
   if (mesh_object->_showBitangents) {
     // bitangents
     DisplayLineBuffer(mesh_object->_bitangentColor,
-      mesh_object->_vaoBitangent, mesh_object->_bitangentVertexCount);
+      mesh_object->_vaoVertexBitangent, mesh_object->_vertexBitangentVertexCount);
   }
 }
 

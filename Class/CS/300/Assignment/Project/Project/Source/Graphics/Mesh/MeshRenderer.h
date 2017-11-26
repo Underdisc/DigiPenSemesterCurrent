@@ -33,18 +33,18 @@ public:
   {
     MeshObject(GLuint vbo, GLuint ebo, GLuint vao, unsigned int elements,
       GLuint vbo_vn, GLuint vao_vn, unsigned int vertices_vn,
-      GLuint vbo_fn, GLuint vao_fn, unsigned int vertices_fn,
       GLuint vbo_vt, GLuint vao_vt, unsigned int vertices_vt,
-      GLuint vbo_vb, GLuint vao_vb, unsigned int vertices_vb): 
+      GLuint vbo_vb, GLuint vao_vb, unsigned int vertices_vb,
+      GLuint vbo_fn, GLuint vao_fn, unsigned int vertices_fn):
       _vbo(vbo), _ebo(ebo), _vao(vao), _elements(elements),
       _vboVertexNormal(vbo_vn), _vaoVertexNormal(vao_vn),
       _vertexNormalVertexCount(vertices_vn),
+      _vboVertexTangent(vbo_vt), _vaoVertexTangent(vao_vt),
+      _vertexTangentVertexCount(vertices_vt),
+      _vboVertexBitangent(vbo_vb), _vaoVertexBitangent(vao_vb),
+      _vertexBitangentVertexCount(vertices_vb),
       _vboFaceNormal(vbo_fn), _vaoFaceNormal(vao_fn),
       _faceNormalVertexCount(vertices_fn),
-      _vboTangent(vbo_vt), _vaoTangent(vao_vt),
-      _tangentVertexCount(vertices_vt),
-      _vboBitangent(vbo_vb), _vaoBitangent(vao_vb),
-      _bitangentVertexCount(vertices_vb),
       _showVertexNormals(false), _showFaceNormals(false), 
       _showTangents(false), _showBitangents(false),
       _showWireframe(false),
@@ -60,28 +60,23 @@ public:
     GLuint _vao;
     //! The number of elements in the EBO
     unsigned int _elements;
-    //! The VBO for the vertex normal lines
+    //! Vertex Normal line buffer info
     GLuint _vboVertexNormal;
-    //! The VAO for the vertex normal lines
     GLuint _vaoVertexNormal;
-    //! The number of vertices in the VertexNormal VBO
     unsigned int _vertexNormalVertexCount;
-    //! The VBO for the face normal lines
+    // Vertex Tangent line buffer info
+    GLuint _vboVertexTangent;
+    GLuint _vaoVertexTangent;
+    unsigned int _vertexTangentVertexCount;
+    // Vertex Bitangent line buffer info
+    GLuint _vboVertexBitangent;
+    GLuint _vaoVertexBitangent;
+    unsigned int _vertexBitangentVertexCount;
+
+    //! Face normal line buffer info
     GLuint _vboFaceNormal;
-    //! The VAO for the face normal lines
     GLuint _vaoFaceNormal;
-    //! The number of vertices in the FaceNormal VBO
     unsigned int _faceNormalVertexCount;
-
-    // Tangent line buffer info
-    GLuint _vboTangent;
-    GLuint _vaoTangent;
-    unsigned int _tangentVertexCount;
-
-    // Bitangent line buffer info
-    GLuint _vboBitangent;
-    GLuint _vaoBitangent;
-    unsigned int _bitangentVertexCount;
 
     //! Determines whether the vertex normals should be displayed
     bool _showVertexNormals;
