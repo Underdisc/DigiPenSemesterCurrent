@@ -4,6 +4,19 @@
 #include <vector>
 #include <utility>
 
+// use 2d array for adjaceny matrix
+
+class Graph
+{
+  class Edge
+  {
+  public:
+    int v1, v2;
+  };
+  Graph(const std::vector<std::vector<int> > & adjacency_matrix);
+  unsigned int _vertices;
+};
+
 void problem1();
 void problem2();
 void problem3();
