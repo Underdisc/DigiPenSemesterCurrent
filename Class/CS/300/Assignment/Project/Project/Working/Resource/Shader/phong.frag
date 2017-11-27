@@ -232,4 +232,5 @@ void main()
   final_color = mix(final_color, UFogColor, fog_factor);
   // final color
   OFragColor = vec4(final_color, 1.0);
+  //OFragColor = vec4(SUV.x, SUV.y, 0.0, 1.0);
 }

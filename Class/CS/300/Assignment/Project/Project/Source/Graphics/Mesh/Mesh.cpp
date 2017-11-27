@@ -358,27 +358,6 @@ inline void Mesh::CalculateFaceTangentsBitangents()
     const Vertex & c = _vertices[face.c];
     // vector from a to b
 
-    // my implementation
-    /*Math::Vector3 P(b.px - a.px, b.py - a.py, b.pz - a.pz);
-    // vector from a to c
-    Math::Vector3 Q(c.px - a.px, c.py - a.py, c.pz - a.pz);
-    // change in uv from a to b
-    Math::Vector2 duvP(b.u - a.u, b.v - a.u);
-    // change in uv from a to c
-    Math::Vector2 duvQ(c.u - a.u, c.v - a.u);
-    // inverse determinant
-    float id = 1.0f / (duvP.x * duvQ.y - duvQ.x - duvP.y);
-    // calculating tangent
-    Math::Vector3 tangent;
-    tangent.x = id * (duvQ.y * P.x - duvP.y * Q.x);
-    tangent.y = id * (duvQ.y * P.y - duvP.y * Q.y);
-    tangent.z = id * (duvQ.y * P.z - duvP.y * Q.z);
-    // calculating bitangent
-    Math::Vector3 bitangent;
-    bitangent.x = id * (-duvQ.x * P.x + duvP.x * Q.x);
-    bitangent.y = id * (-duvQ.x * P.y + duvP.x * Q.y);
-    bitangent.z = id * (-duvQ.x * P.z + duvP.x * Q.z);*/
-
     //try 2
     Math::Vector3 edge1(b.px - a.px, b.py - a.py, b.pz - a.pz);
     Math::Vector3 edge2(c.px - a.px, c.py - a.py, c.pz - a.pz);
@@ -399,13 +378,11 @@ inline void Mesh::CalculateFaceTangentsBitangents()
     tangent.x = f * (duv2.y * edge1.x - duv1.y * edge2.x);
     tangent.y = f * (duv2.y * edge1.y - duv1.y * edge2.y);
     tangent.z = f * (duv2.y * edge1.z - duv1.y * edge2.z);
-    //tangent = tangent - face_normal * Math::Dot(face_normal, tangent);
-
 
     bitangent.x = f * (-duv2.x * edge1.x + duv1.x * edge2.x);
     bitangent.y = f * (-duv2.x * edge1.y + duv1.x * edge2.y);
     bitangent.z = f * (-duv2.x * edge1.z + duv1.x * edge2.z);
-    bitangent = Math::Cross(tangent, face_normal);
+    
     
     // adding tangent and bitangent vectors
     _faceTangents.push_back(tangent);
@@ -426,8 +403,11 @@ inline void Mesh::CalculateVertexTangentsBitangents()
       tangent += _faceTangents[face_index];
       bitangent += _faceBitangents[face_index];
     }
+    const Vertex & vertex = _vertices[i];
+    Math::Vector3 normal(vertex.nx, vertex.ny, vertex.nz);
     tangent *= (1.0f / adjacencies.size());
-    bitangent *= (1.0f / adjacencies.size());
+    tangent = tangent - normal * Math::Dot(tangent, normal);
+    bitangent = Math::Cross(tangent, normal);
     // normalizing results
     tangent.Normalize();
     bitangent.Normalize();
@@ -437,8 +417,8 @@ inline void Mesh::CalculateVertexTangentsBitangents()
     _vertices[i].tz = tangent.z;
     // setting vertex bitangent
     _vertices[i].bx = bitangent.x;
-    _vertices[i].by = bitangent.x;
-    _vertices[i].bz = bitangent.x;
+    _vertices[i].by = bitangent.y;
+    _vertices[i].bz = bitangent.z;
   }
 }
 

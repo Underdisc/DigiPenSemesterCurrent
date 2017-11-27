@@ -32,17 +32,6 @@ Resource/Shader/phong.vert
 Resource/Shader/phong.frag
 ----- Error End -----
 ---- Error Start ----
-File - Shader.cpp
-Function - GetUniformLocation
-> Log
-An uniform was not found.
-<Uniform name>
-UMaterial.USpecularFactor
-<Shader Files Involved>
-Resource/Shader/phong.vert
-Resource/Shader/phong.frag
------ Error End -----
----- Error Start ----
 File - main.cpp
 Function - Initialize()
 > Log
@@ -59,15 +48,6 @@ Function - Update()
 GL_INVALID_VALUE
 > DESCRIPTION
 During Update
------ Error End -----
----- Error Start ----
-File - main.cpp
-Function - Initialize()
-> Log
-> OPENGL ERROR CODE
-GL_INVALID_VALUE
-> DESCRIPTION
-During initialization
 ----- Error End -----
 ---- Error Start ----
 File - main.cpp
