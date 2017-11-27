@@ -399,17 +399,14 @@ inline void Mesh::CalculateFaceTangentsBitangents()
     tangent.x = f * (duv2.y * edge1.x - duv1.y * edge2.x);
     tangent.y = f * (duv2.y * edge1.y - duv1.y * edge2.y);
     tangent.z = f * (duv2.y * edge1.z - duv1.y * edge2.z);
-    tangent = tangent - face_normal * Math::Dot(face_normal, tangent);
+    //tangent = tangent - face_normal * Math::Dot(face_normal, tangent);
 
 
     bitangent.x = f * (-duv2.x * edge1.x + duv1.x * edge2.x);
     bitangent.y = f * (-duv2.x * edge1.y + duv1.x * edge2.y);
     bitangent.z = f * (-duv2.x * edge1.z + duv1.x * edge2.z);
-    bitangent = Math::Cross(face_normal, tangent);
+    bitangent = Math::Cross(tangent, face_normal);
     
-    
-    tangent.Normalize();
-    bitangent.Normalize();
     // adding tangent and bitangent vectors
     _faceTangents.push_back(tangent);
     _faceBitangents.push_back(bitangent);
