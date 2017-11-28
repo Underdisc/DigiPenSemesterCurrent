@@ -1,6 +1,7 @@
 /* All content(c) 2017 DigiPen(USA) Corporation, all rights reserved. */
 #pragma once
-
+//FLEEB
+//mesh objects should have the material
 #include <unordered_set>
 #include <GL\glew.h>
  
