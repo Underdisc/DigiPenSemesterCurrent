@@ -49,12 +49,3 @@ GL_INVALID_VALUE
 > DESCRIPTION
 During Update
 ----- Error End -----
----- Error Start ----
-File - main.cpp
-Function - Initialize()
-> Log
-> OPENGL ERROR CODE
-GL_INVALID_VALUE
-> DESCRIPTION
-During initialization
------ Error End -----

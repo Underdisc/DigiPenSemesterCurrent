@@ -162,7 +162,7 @@ vec3 ComputeLight(int light, vec3 normal, vec3 view_dir, vec2 uv)
       ULights[light].USpecularColor * specular_spread;
   }
   else{
-    vec3 specular_color = UMaterial.USpecularFactor *
+    specular_color = UMaterial.USpecularFactor *
       ULights[light].USpecularColor * specular_spread;
   }
 
