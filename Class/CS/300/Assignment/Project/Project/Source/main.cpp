@@ -289,7 +289,6 @@ inline void Render()
     glUniform1i(phong_shader->UActiveLights, Light::_activeLights);
     for (int i = 0; i < Light::_activeLights; ++i)
       Editor::lights[i].SetUniforms(i, phong_shader);
-    Editor::material.SetUniforms(phong_shader);
     break;
   // GOURAUD SHADER
   case MeshRenderer::ShaderType::GOURAUD:
@@ -299,7 +298,6 @@ inline void Render()
     glUniform1i(gouraud_shader->UActiveLights, Light::_activeLights);
     for (int i = 0; i < Light::_activeLights; ++i)
       Editor::lights[i].SetUniforms(i, gouraud_shader);
-    Editor::material.SetUniforms(gouraud_shader);
     break;
   case MeshRenderer::ShaderType::BLINN:
     blinn_shader->Use();
@@ -307,7 +305,6 @@ inline void Render()
     glUniform1i(blinn_shader->UActiveLights, Light::_activeLights);
     for (int i = 0; i < Light::_activeLights; ++i)
       Editor::lights[i].SetUniforms(i, blinn_shader);
-    Editor::material.SetUniforms(blinn_shader);
     break;
   default:
     break;

@@ -12,7 +12,6 @@ bool Editor::show_light_editor = false;
 bool Editor::show_material_editor = false;
 bool Editor::show_error_log = false;
 
-Material Editor::material;
 std::string Editor::_currentTextureDiffuse(DIFFUSEPRESET);
 std::string Editor::_currentTextureSpecular(SPECULARPRESET);
 std::string Editor::_currentTextureNormal(NORMALPRESET);
@@ -214,7 +213,7 @@ void Editor::Update(Mesh * mesh, MeshRenderer::MeshObject * mesh_object,
 
   ImGui::End();
   if (show_material_editor)
-    MaterialEditorUpdate();
+    MaterialEditorUpdate(mesh_object->_material);
   if (show_light_editor)
     LightEditorUpdate();
   if(show_error_log)
@@ -222,7 +221,7 @@ void Editor::Update(Mesh * mesh, MeshRenderer::MeshObject * mesh_object,
     
 }
 
-inline void Editor::MaterialEditorUpdate()
+inline void Editor::MaterialEditorUpdate(Material & material)
 {
   ImGui::Begin("Material", &show_material_editor);
   // window body start

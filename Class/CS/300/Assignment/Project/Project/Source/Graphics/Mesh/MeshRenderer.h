@@ -8,6 +8,7 @@
 #include "../../Math/Matrix4.h"
 #include "../Shader/ShaderLibrary.h"
 #include "../Color.h"
+#include "../Material.h"
 #include "Mesh.h"
 
 /*****************************************************************************/
@@ -57,7 +58,6 @@ public:
       _showFaceNormals(false), _showFaceTangents(false),
       _showFaceBitangents(false),
       _showWireframe(false),
-      _color(1.0f, 1.0f, 1.0f),
       _vertexNormalColor(0.0f, 0.0f, 1.0f),
       _vertexTangentColor(1.0f, 0.0f, 0.0f), 
       _vertexBitangentColor(0.0f, 1.0f, 0.0f),
@@ -110,8 +110,9 @@ public:
 
     //! Determines whether the model is displayed in wireframe mode or not
     bool _showWireframe;
-    //! The color the main mesh will be rendered with
-    Color _color;
+
+    Material _material;
+
     //! The color of the vertex normals
     Color _vertexNormalColor;
     Color _vertexTangentColor;

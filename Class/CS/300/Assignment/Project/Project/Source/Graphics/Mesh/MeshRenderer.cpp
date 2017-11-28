@@ -171,6 +171,7 @@ void MeshRenderer::Render(MeshObject * mesh_object, ShaderType shader_type,
   // PHONG SHADING 
   case ShaderType::PHONG:
     _phongShader->Use();
+    mesh_object->_material.SetUniforms(_phongShader);
     glUniformMatrix4fv(_phongShader->UProjection, 1, GL_TRUE, projection.array);
     glUniformMatrix4fv(_phongShader->UView, 1, GL_TRUE, view.array);
     glUniformMatrix4fv(_phongShader->UModel, 1, GL_TRUE, model.array);

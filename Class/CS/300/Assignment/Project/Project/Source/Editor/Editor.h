@@ -25,7 +25,7 @@ public:
   static bool MouseHovering();
   static void Update(Mesh * mesh, MeshRenderer::MeshObject * mesh_object,
     void (*load_mesh)(const std::string &));
-  static void MaterialEditorUpdate();
+  static void MaterialEditorUpdate(Material & material);
   static void LightEditorUpdate();
   static void ErrorLogUpdate();
 public:
@@ -36,7 +36,6 @@ public:
   static bool show_material_editor;
   static bool show_error_log;
 
-  static Material material;
   static std::string _currentTextureDiffuse;
   static std::string _currentTextureSpecular;
   static std::string _currentTextureNormal;
