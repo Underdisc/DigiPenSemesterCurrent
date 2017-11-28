@@ -39,8 +39,7 @@ public:
   static Material material;
   static std::string _currentTextureDiffuse;
   static std::string _currentTextureSpecular;
-  static char _nextTextureDiffuse[FILENAME_BUFFERSIZE];
-  static char _nextTextureSpecular[FILENAME_BUFFERSIZE];
+  static std::string _currentTextureNormal;
 
   static std::string current_mesh;
   static char next_mesh[FILENAME_BUFFERSIZE];

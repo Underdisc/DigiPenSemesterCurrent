@@ -15,8 +15,7 @@ bool Editor::show_error_log = false;
 Material Editor::material;
 std::string Editor::_currentTextureDiffuse(DIFFUSEPRESET);
 std::string Editor::_currentTextureSpecular(SPECULARPRESET);
-char Editor::_nextTextureDiffuse[FILENAME_BUFFERSIZE] = DIFFUSEPRESET;
-char Editor::_nextTextureSpecular[FILENAME_BUFFERSIZE] = SPECULARPRESET;
+std::string Editor::_currentTextureNormal(NORMALPRESET);
 
 std::string Editor::current_mesh(MESHPRESET);
 char Editor::next_mesh[FILENAME_BUFFERSIZE] = MESHPRESET;
@@ -250,9 +249,10 @@ inline void Editor::MaterialEditorUpdate()
     // texture maps
     ImGui::Text("Current Diffusue Texture: %s", 
       _currentTextureDiffuse.c_str());
-    ImGui::Separator();
     ImGui::Text("Current Specular Texture: %s", 
       _currentTextureSpecular.c_str());
+    ImGui::Text("Current Normal Texture: %s",
+      _currentTextureNormal.c_str());
     ImGui::Separator();
   }
   ImGui::End();

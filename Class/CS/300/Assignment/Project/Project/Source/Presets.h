@@ -4,6 +4,7 @@
 #define MESHPRESET "highpoly_sphere.obj"
 #define DIFFUSEPRESET "diffuse.tga"
 #define SPECULARPRESET "specular.tga"
+#define NORMALPRESET "normal.png"
 
 #endif // !PRESETS_H
 
