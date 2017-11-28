@@ -4,28 +4,6 @@ Function - GetAttribLocation
 > Log
 An attribute was not found.
 <Attribute name>
-ATangent
-<Shader Files Involved>
-Resource/Shader/phong.vert
-Resource/Shader/phong.frag
------ Error End -----
----- Error Start ----
-File - Shader.cpp
-Function - GetAttribLocation
-> Log
-An attribute was not found.
-<Attribute name>
-ABitangent
-<Shader Files Involved>
-Resource/Shader/phong.vert
-Resource/Shader/phong.frag
------ Error End -----
----- Error Start ----
-File - Shader.cpp
-Function - GetAttribLocation
-> Log
-An attribute was not found.
-<Attribute name>
 AUV
 <Shader Files Involved>
 Resource/Shader/phong.vert

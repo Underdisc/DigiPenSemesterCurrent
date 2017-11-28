@@ -127,18 +127,6 @@ Mesh::Mesh(const std::string & file_name, FileType type, int mapping_type)
 
   }
   _normalLineMagnitude = 1.0f;
-
-  // calculate tangents and bitangents
-  // Zero this shit out for now
-  for (Vertex & vert : _vertices) {
-    vert.tx = 0.0f;
-    vert.ty = 0.0f;
-    vert.tz = 0.0f;
-
-    vert.bx = 0.0f;
-    vert.by = 0.0f;
-    vert.bz = 0.0f;
-  }
 }
 
 Mesh * Mesh::Load(const std::string & file_name, FileType type, 

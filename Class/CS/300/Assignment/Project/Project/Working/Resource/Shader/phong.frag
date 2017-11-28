@@ -10,6 +10,8 @@
 #define MAP_PLANAR 2
 
 in vec3 SNormal;
+in vec3 STangent;
+in vec3 SBitangent;
 in vec3 SFragPos;
 in vec3 SModelNormal;
 in vec3 SModelPos;
@@ -28,9 +30,13 @@ struct Material
   float USpecularExponent;
   // texture mapping
   bool UTextureMapping;
+  bool USpecularMapping;
+  bool UNormalMapping;
   int UMappingType;
-  sampler2D UDiffuseMap; // location 0
+  sampler2D UDiffuseMap;  // location 0
   sampler2D USpecularMap; // location 1
+  sampler2D UNormalMap;   // location 2
+
 };
 
 // Light values
@@ -157,7 +163,7 @@ vec3 ComputeLight(int light, vec3 normal, vec3 view_dir, vec2 uv)
   float vdotr = max(dot(view_dir, reflect_dir), 0.0);
   float specular_spread = pow(vdotr, UMaterial.USpecularExponent);
   vec3 specular_color;
-  if(UMaterial.UTextureMapping){
+  if(UMaterial.USpecularMapping){
     specular_color = texture(UMaterial.USpecularMap,uv).xyz *
       ULights[light].USpecularColor * specular_spread;
   }
@@ -213,7 +219,16 @@ void main()
     uv = ComputeUVs();
   // lighting
   // precomputations
-  vec3 normal = normalize(SNormal);
+  vec3 normal;
+  if(UMaterial.UNormalMapping){
+    mat3 tbn = mat3(STangent, SBitangent, SNormal);
+    normal = texture(UMaterial.UNormalMap, uv).xyz;
+    normal = normalize(normal * 2.0 - 1.0);
+    normal = normalize(tbn * normal);
+  }
+  else{
+    normal = normalize(SNormal);
+  }
   vec3 view_vec = UCameraPosition - SFragPos;
   vec3 view_dir = normalize(view_vec);
   // summing all light results
@@ -232,5 +247,6 @@ void main()
   final_color = mix(final_color, UFogColor, fog_factor);
   // final color
   OFragColor = vec4(final_color, 1.0);
-  //OFragColor = vec4(SUV.x, SUV.y, 0.0, 1.0);
+  //OFragColor = texture(UMaterial.UNormalMap, uv);
+  //OFragColor = vec4(STangent, 1.0);
 }

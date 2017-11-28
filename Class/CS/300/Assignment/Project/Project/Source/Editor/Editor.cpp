@@ -228,12 +228,14 @@ inline void Editor::MaterialEditorUpdate()
   ImGui::Begin("Material", &show_material_editor);
   // window body start
   ImGui::Checkbox("Texture Mapping", &material._textureMapping);
+  ImGui::Checkbox("Specular Mapping", &material._specularMapping);
+  ImGui::Checkbox("Normal Mapping", &material._normalMapping);
   ImGui::Separator();
   ImGui::ColorEdit3("Color", material._color._values);
   ImGui::SliderFloat("Ambient Factor", &material._ambientFactor, 0.0f, 1.0f);
   if(!material._textureMapping)
     ImGui::SliderFloat("Diffuse Factor", &material._diffuseFactor, 0.0f, 1.0f);
-  if(!material._textureMapping)
+  if(!material._specularMapping)
     ImGui::SliderFloat("Specular Factor", &material._specularFactor, 
       0.0f, 1.0f);
   ImGui::SliderFloat("Specular Exponent", &material._specularExponent, 
@@ -245,23 +247,12 @@ inline void Editor::MaterialEditorUpdate()
     ImGui::Combo("Mapping Type", &material._mappingType,
       "Spherical\0Cylindrical\0Planar\0\0");
     ImGui::Separator();
-    // select texture maps
+    // texture maps
     ImGui::Text("Current Diffusue Texture: %s", 
       _currentTextureDiffuse.c_str());
-    ImGui::InputText("New Diffuse Texture", _nextTextureDiffuse, 
-      FILENAME_BUFFERSIZE);
-    if (ImGui::Button("Replace Diffuse")) {
-      // call code to replace diffuse
-    }
     ImGui::Separator();
     ImGui::Text("Current Specular Texture: %s", 
       _currentTextureSpecular.c_str());
-    ImGui::InputText("New Specular Texture", _nextTextureSpecular, 
-      FILENAME_BUFFERSIZE);
-    if (ImGui::Button("Replace Specular")) {
-      // call code to replace specular
-
-    }
     ImGui::Separator();
   }
   ImGui::End();

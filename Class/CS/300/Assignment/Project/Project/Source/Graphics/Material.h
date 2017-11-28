@@ -19,7 +19,10 @@ struct Material
   float _specularFactor;
   float _specularExponent;
   bool _textureMapping;
+  bool _specularMapping;
+  bool _normalMapping;
   int _mappingType;
   int _diffuseMap;
   int _specularMap;
+  int _normalMap;
 };

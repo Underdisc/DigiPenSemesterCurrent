@@ -57,6 +57,7 @@ MeshRenderer::MeshObject * plane_mesh_object;
 
 TextureObject * diffuse_texture_object;
 TextureObject * specular_texture_object;
+TextureObject * normal_texture_object;
 
 
 Camera camera(Math::Vector3(0.0f, 1.0f, 0.0f));
@@ -142,8 +143,10 @@ int main(int argc, char * argv[])
   // texture stuff
   diffuse_texture_object = TexturePool::Upload("Resource/Texture/diffuse.tga");
   specular_texture_object = TexturePool::Upload("Resource/Texture/specular.tga");
+  normal_texture_object = TexturePool::Upload("Resource/Texture/normal.png");
   TexturePool::Bind(diffuse_texture_object, 0);
   TexturePool::Bind(specular_texture_object, 1);
+  TexturePool::Bind(normal_texture_object, 2);
 
   // starting main program
   glEnable(GL_DEPTH_TEST);

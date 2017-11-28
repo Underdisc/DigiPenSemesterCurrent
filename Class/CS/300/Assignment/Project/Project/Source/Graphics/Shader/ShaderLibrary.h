@@ -68,9 +68,12 @@ struct UMaterial
   GLuint USpecularExponent;
   // Texture Mapping Properties
   GLuint UTextureMapping;
+  GLuint USpecularMapping;
+  GLuint UNormalMapping;
   GLuint UMappingType;
   GLuint UDiffuseMap;
   GLuint USpecularMap;
+  GLuint UNormalMap;
 };
 
 
