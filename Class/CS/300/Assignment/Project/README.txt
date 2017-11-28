@@ -2,7 +2,7 @@ Author: Connor Deakin
 Professor: Dr. Pushpak Karnick
 Class: CS 300
 Project: Assignment 2
-Date: 27/10/2017
+Date: 28/11/2017
 
 I am listing the sections as listed they listed on the CS 300 syllabus.
 
@@ -14,49 +14,34 @@ a. Running the application
   The window is entirely resizable as well. If you can't see this section, maximize
   the entire Windows window and adjust the ImGui window.
 
-b. Everything should work. I expanded to OBJ loader to support loading other OBJ
-  files, but there are still some bugs with it. However, it can load everything
-  that is required. All loadable models can be found in Project/Working/Resource/Model.
+b. Everything should work except the Gouraud and Blinn shaders. They are still
+  there, but since they were not necessary for this assignment, I didn't worry
+  bother worrying about them.
 
 c. Completed
 - Code compiles and links cleanly
 - Information provided in correct format
 - Scene setup implemented as described
-- Gouraud VS compiles without errors
-- Gouraud FS compiles without errors
-- Gouraud VS links without errors
-- Gouraud FS links without errors
-- Gouraud Program Object executed without errors
-- Phong VS compiles without errors
-- Phong FS compiles without errors
-- Phong VS links without errors
-- Phong FS links without errors
-- Phong Program Object executed without errors
-- Blinn VS compiles without errors
-- Blinn FS compiles without errors
-- Blinn VS links without errors
-- Blinn FS links without errors
-- Blinn Program Object executed without errors
-- Ambient term used correctly in all three shaders
-- Diffuse term used correctly in all three shaders
-- Specular term used correctly in all three shaders
-- Distance Attenuation term used correctly in all three shaders
-- Fog term used correctly in all three shaders
-- Spotlight term used correctly in all three shaders
-- Directional Light term used correctly in all three shaders
-- Multiple Lights used correctly in all three shaders
-- No errors while loading textures from files
-- Emissive term used correctly in calculations
+- Appropriately coloured vector components
+- Tangent debug drawing
+- Bitangent debug drawing
+- Normal map calculation
+- Normal map edge case
+- Normal map storage
+- Normal map texture usage
+- Tangent vector computed correctly
+- Bitangent vector computed correctly
+- Divide by zero handled correctly
+- Tangent and Bitagent for vertices computed correctly
+- T&B passed to GPU successfully
+- TBN matrix implemented correctly
+- Samplers implemented without errors
+- Image to vector conversion
+- Normal map transformation to view space
+- Normal from texture used in lighting calculations
+
 
 d. Not Completed
-- Samplers and texture mapping: I just didn't have the time to do it. This assignment
-  took an extremely long time and I need to work on other things at this point.
-  I intend on implementing it soon along with cleaning up a lot of my code. I did implement
-  a texture loader using STB, but it is not currently in use.
-- Console output for shader errors: I have my own custom error file logger that
-  I use when checking the status of a shader compilation. These errors are
-  written to Project/Working/assignment2.error. If other errors occur and the file
-  doesn't get cleared, it can become cluttered.
 
 e. File locations
 - Source Code: Project/Source/
