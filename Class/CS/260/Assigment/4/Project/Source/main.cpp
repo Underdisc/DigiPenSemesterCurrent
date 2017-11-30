@@ -24,6 +24,8 @@
 #include <fstream>
 #include <regex>
 
+#include <vld.h>
+
 
 #include "Socket.h"
 

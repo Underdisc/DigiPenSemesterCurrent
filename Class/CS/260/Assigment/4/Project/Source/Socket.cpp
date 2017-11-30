@@ -43,6 +43,7 @@ _addressSize(sizeof(sockaddr_in)), _block(true)
   _address.sin_family = AF_INET;
   _address.sin_port = htons(port);// host to network short
   // free the addrinfo
+  delete hints;
   freeaddrinfo(address_info);
 }
 
