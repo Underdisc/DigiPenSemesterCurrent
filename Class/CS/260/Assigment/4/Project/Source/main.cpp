@@ -155,6 +155,14 @@ int main(int argc, char * argv[])
   int content_start = -1;
   bool chunked = false;
   bool data_received = false;
+
+
+  // should I constantly be looking for the chunks as I recieve data, or should
+  // I wait to see "\r\n0\r\n\r\n".
+
+  // Then Is it better to parse that data once we recieve it or while we are
+  // recieving it.
+
   while(!data_received)
   {
     // receive from the socket
