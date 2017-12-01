@@ -22,6 +22,7 @@
 
 #include "Socket.h"
 #include <cstring>
+
 #include <iostream>
 
 
@@ -42,41 +43,32 @@ SocketTCP::SocketTCP(const SOCKET & socket) :
 
 void SocketTCP::Connect(int port, const char * address)
 {
-  // getting address info using DNS
-  addrinfo * address_info = nullptr;
-  addrinfo * hints = new addrinfo();
-  memset((void *)hints, 0, sizeof(addrinfo));
-  getaddrinfo(address, "", hints, &address_info);
-  sockaddr * sockaddr_address = address_info->ai_addr;
-  // preparing address the socket will connect to
-  sockaddr_in c_address = *reinterpret_cast<sockaddr_in *>(sockaddr_address);
+  // fill address we are connecting to
+  sockaddr_in c_address;
   c_address.sin_family = AF_INET;
   c_address.sin_port = htons(port);
-  int c_address_size = sizeof(sockaddr_in);
-  // free the addrinfo
-  delete hints;
-  freeaddrinfo(address_info);
+  #ifdef _WIN32
+  InetPton(AF_INET, address, &c_address.sin_addr);
+  #else
+  inet_pton(AF_INET, address, &c_address.sin_addr);
+  #endif
+  int c_address_size = sizeof(sockaddr);
   // connect to address
   int result = connect(_socket, (sockaddr *)&c_address, c_address_size);
-  if(result == SOCKET_ERROR)
-    std::cout << "Connect Error: " << address << std::endl;
+  ErrorCheck(result);
 }
 
 void SocketTCP::Bind(int port)
 {
+  int result;
   // creating the address that messages should be sent to
   sockaddr_in back_address;
   // sin_addr is a union. S_addr fills that entire union
   back_address.sin_addr.S_un.S_addr = INADDR_ANY;
   back_address.sin_family = AF_INET;
   back_address.sin_port = htons(port);
-  // bindin socket
-  int result;
   result = bind(_socket, (sockaddr *)&back_address, sizeof(sockaddr));
-  if (result == SOCKET_ERROR) {
-    std::cout << "Bind Error" << std::endl << "WSA: ";
-    std::cout << WSAGetLastError() << std::endl;
-  }
+  ErrorCheck(result);
 }
 
 int SocketTCP::Send(const char * data, int bytes)
@@ -124,7 +116,7 @@ void SocketTCP::Listen(int backlog)
 SocketTCP * SocketTCP::Accept()
 {
   sockaddr from_address;
-  int from_address_size = sizeof(sockaddr_in);
+  int from_address_size;
   SOCKET accepted_socket;
   accepted_socket = accept(_socket, &from_address, &from_address_size);
   if(accepted_socket == INVALID_SOCKET)

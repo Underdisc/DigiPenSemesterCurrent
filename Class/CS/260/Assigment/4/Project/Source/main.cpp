@@ -20,11 +20,12 @@
 
 #include <string.h>
 #include <string>
+#include <list>
 #include <iostream>
 #include <fstream>
 #include <regex>
 
-#include <vld.h>
+//#include <vld.h>
 
 
 #include "Socket.h"
@@ -120,8 +121,157 @@ inline void ParseAddress(const std::string & address, std::string * domain_name,
   }
 }
 
+//------------------// HTTPProxy //------------------//
+class HTTPProxy
+{
+public:
+  HTTPProxy(SocketTCP * client_socket);
+  bool Update();
+  void Close();
+private:
+  enum Stage
+  {
+    CLIENT_RECIEVE,
+    WEB_SEND,
+    WEB_RECIEVE,
+    CLIENT_SEND,
+  };
+private:
+  SocketTCP * _clientSocket;
+  SocketTCP _webSocket;
+  Stage _stage;
+  std::string _data;
+private:
+  void ClientRecieve();
+  bool WebSend();
+  void WebReceive();
+  bool ClientSend();
+};
+
+HTTPProxy::HTTPProxy(SocketTCP * client_socket) :
+  _clientSocket(client_socket), _webSocket(), _stage(CLIENT_RECIEVE), _data()
+{
+  _clientSocket->Block(false);
+}
+
+bool HTTPProxy::Update()
+{
+  bool done = false;
+  switch (_stage)
+  {
+  case CLIENT_RECIEVE:
+    ClientRecieve();
+    break;
+  case WEB_SEND:
+    done = WebSend();
+    break;
+  case WEB_RECIEVE:
+    WebReceive();
+    break;
+  case CLIENT_SEND:
+    done = ClientSend();
+    break;
+  }
+  return done;
+}
+
+void HTTPProxy::Close()
+{
+
+}
+
+void HTTPProxy::ClientRecieve()
+{
+  char recv_buff[MTU_SIZE];
+  int recv_len = _clientSocket->Recieve(recv_buff, MTU_SIZE);
+  _data.append(recv_buff, recv_len);
+  if (_data.size() >= 2) {
+    std::string end(_data.substr(_data.size() - 2));
+    if(end == "\n\n"){
+      _stage = WEB_SEND;
+    }
+  }
+}
+
+bool HTTPProxy::WebSend()
+{
+  // extract the domain name
+  int domain_start = _data.find("Host: ");
+  if (domain_start == std::string::npos) {
+    // not a valid GET request
+    return true;
+  }
+  domain_start += 6;
+  int domain_end = _data.find("\n", domain_start);
+  std::string domain_name(_data.substr(domain_start, 
+    domain_end - domain_start));
+  // connect the web socket and send request
+  _webSocket.Connect(80, domain_name.c_str());
+  _webSocket.Send(_data.c_str(), _data.size());
+  _webSocket.Block(false);
+  _stage = WEB_RECIEVE;
+  return false;
+}
+
+void HTTPProxy::WebReceive()
+{
+  std::cout << "Recieving Web data" << std::endl;
+}
+
+bool HTTPProxy::ClientSend()
+{
+  return false;
+}
+
+
+//------------------// HTTPProxyServer //------------------//
+class HTTPProxyServer
+{
+public:
+  HTTPProxyServer(int port);
+  void Update();
+private:
+  SocketTCP _serverSocket;
+  std::list<HTTPProxy> _clientProxies;
+};
+
+
+HTTPProxyServer::HTTPProxyServer(int port) : 
+  _serverSocket(), _clientProxies()
+{
+  _serverSocket.Bind(port);
+  _serverSocket.Listen(10);
+  _serverSocket.Block(false);
+  std::cout << "- Server Live -" << std::endl;
+}
+
+void HTTPProxyServer::Update()
+{
+  SocketTCP * new_client;
+  new_client = _serverSocket.Accept();
+  if (new_client) {
+    _clientProxies.push_back(HTTPProxy(new_client));
+    std::cout << "Proxy Client Connected" << std::endl;
+  }
+
+  std::list<HTTPProxy>::iterator it = _clientProxies.begin();
+  std::list<HTTPProxy>::iterator it_e = _clientProxies.end();
+  while(it != it_e){
+    bool done = it->Update();
+    if(done){
+      it->Close();
+      it = _clientProxies.erase(it);
+    }
+    else{
+      ++it;
+    }
+  }
+}
+
+//------------------// Main //------------------//
 int main(int argc, char * argv[])
 { 
+  bool running = true;
   std::ofstream outfile;
   outfile.open("output.txt");
 
@@ -131,32 +281,45 @@ int main(int argc, char * argv[])
   #endif // !_WIN32
   // make sure we have an address
   if (argc < 2) {
-    std::cout << "Request address not included" << std::endl;
+    std::cout << "Port number not included" << std::endl;
     return 0;
   }
-  std::string address(argv[1]);
-  std::string domain_name;
-  std::string file_path;
-  ParseAddress(address, &domain_name, &file_path);
+  int port = atoi(argv[1]);
   // create the socket for http connection
-  SocketTCP socket(80, domain_name.c_str());
-  socket.Connect();
+  HTTPProxyServer proxy_server(port);
+  while (running) {
+    proxy_server.Update();
+  }
+  
+  /*SocketTCP socket;
+  socket.Bind(port);
+  socket.Listen(20);
   socket.Block(false);
-  // construct http get request and send
-  std::string get_request;
-  get_request.append("GET ");
-  get_request.append(file_path);
-  get_request.append(" HTTP/1.1\n");
-  get_request.append("Host: ");
-  get_request.append(domain_name);
-  get_request.append(":80\n\n");
-  socket.Send(get_request.c_str(), get_request.size());
+  std::vector<SocketTCP *> accepted_sockets;
+  while (running) {
+    SocketTCP * new_accpeted_socket;
+    new_accpeted_socket = socket.Accept();
+    if(new_accpeted_socket){
+      accepted_sockets.push_back(new_accpeted_socket);
+      std::cout << "Made Connection" << std::endl;
+    }
+
+    for (SocketTCP * client_socket : accepted_sockets) {
+      client_socke
+    }
+
+
+  }*/
+  
+  
+  
+  // this will be needed when you recieve request data as the proxy
   // recieve data
-  std::string data;
+  /*std::string data;
   int content_length = -1;
   int content_start = -1;
   bool chunked = false;
-  bool data_received = false;
+  bool data_received = false;*/
 
 
   // should I constantly be looking for the chunks as I recieve data, or should
@@ -165,7 +328,7 @@ int main(int argc, char * argv[])
   // Then Is it better to parse that data once we recieve it or while we are
   // recieving it.
 
-  while(!data_received)
+  /*while(!data_received)
   {
     // receive from the socket
     char recv_buff[MTU_SIZE];
@@ -196,15 +359,17 @@ int main(int argc, char * argv[])
           data_received = true;
       }
     }
-  }
+  }*/
   // shutdown socket
-  socket.CloseSend();
-  socket.CloseRecieve();
+  
+  
+  //socket.CloseSend();
+  //socket.CloseRecieve();
   #ifdef _WIN32
   WinSockLoader::Purge();
   #endif
   // print out html content
-  outfile << data << std::endl;
+  //outfile << data << std::endl;
 
   return 0;
 }
