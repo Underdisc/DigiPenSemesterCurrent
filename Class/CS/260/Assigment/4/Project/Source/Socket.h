@@ -51,6 +51,7 @@ public:
   void Listen(int backlog);
   SocketTCP * Accept();
   void Block(bool block);
+  void CloseConnection();
   void CloseRecieve();
   void CloseSend();
 private:

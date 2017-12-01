@@ -150,6 +150,16 @@ void SocketTCP::Block(bool block)
   _block = block;
 }
 
+void SocketTCP::CloseConnection()
+{
+  #ifdef _WIN32
+  int result = shutdown(_socket, SD_BOTH);
+  #else
+  int result = shutdown(_socket, SHUT_RDWR);
+  #endif
+  ErrorCheck(result);
+}
+
 void SocketTCP::CloseRecieve()
 {
   #ifdef _WIN32

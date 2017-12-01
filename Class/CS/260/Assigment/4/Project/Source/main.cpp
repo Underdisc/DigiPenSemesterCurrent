@@ -22,14 +22,12 @@
 #include <string>
 #include <list>
 #include <iostream>
-#include <fstream>
 #include <regex>
-
-//#include <vld.h>
-
 
 #include "Socket.h"
 
+
+#include "vld.h"
 
 #define DEBUG
 
@@ -63,6 +61,7 @@ void WinSockLoader::Purge()
 }
 #endif // _WIN32
 
+//--------------------// Data Parsing Helpers //--------------------//
 int FindContentLength(const std::string & current_data)
 {
   std::smatch matches;
@@ -122,6 +121,8 @@ inline void ParseAddress(const std::string & address, std::string * domain_name,
 }
 
 //------------------// HTTPProxy //------------------//
+class HTTPProxyServer;
+
 class HTTPProxy
 {
 public:
@@ -133,23 +134,30 @@ private:
   {
     CLIENT_RECIEVE,
     WEB_SEND,
-    WEB_RECIEVE,
-    CLIENT_SEND,
+    WEB_TO_CLIENT,
   };
 private:
   SocketTCP * _clientSocket;
   SocketTCP _webSocket;
   Stage _stage;
+
   std::string _data;
+  // data parsing values
+  int _contentLength;
+  int _contentStart;
+  int _chunked;
+
 private:
   void ClientRecieve();
   bool WebSend();
-  void WebReceive();
-  bool ClientSend();
+  bool WebToClient();
+
+  friend HTTPProxyServer;
 };
 
 HTTPProxy::HTTPProxy(SocketTCP * client_socket) :
-  _clientSocket(client_socket), _webSocket(), _stage(CLIENT_RECIEVE), _data()
+  _clientSocket(client_socket), _webSocket(), _stage(CLIENT_RECIEVE), _data(),
+  _contentLength(-1), _contentStart(-1), _chunked(false)
 {
   _clientSocket->Block(false);
 }
@@ -165,11 +173,8 @@ bool HTTPProxy::Update()
   case WEB_SEND:
     done = WebSend();
     break;
-  case WEB_RECIEVE:
-    WebReceive();
-    break;
-  case CLIENT_SEND:
-    done = ClientSend();
+  case WEB_TO_CLIENT:
+    done = WebToClient();
     break;
   }
   return done;
@@ -177,7 +182,8 @@ bool HTTPProxy::Update()
 
 void HTTPProxy::Close()
 {
-
+  _clientSocket->CloseSend();
+  _webSocket.CloseConnection();
 }
 
 void HTTPProxy::ClientRecieve()
@@ -209,20 +215,44 @@ bool HTTPProxy::WebSend()
   _webSocket.Connect(80, domain_name.c_str());
   _webSocket.Send(_data.c_str(), _data.size());
   _webSocket.Block(false);
-  _stage = WEB_RECIEVE;
+  _stage = WEB_TO_CLIENT;
+  _data.clear();
   return false;
 }
 
-void HTTPProxy::WebReceive()
+bool HTTPProxy::WebToClient()
 {
-  std::cout << "Recieving Web data" << std::endl;
-}
+  char recv_buff[MTU_SIZE];
+  int recv_bytes = RECIEVE_NO_DATA;
+  recv_bytes = _webSocket.Recieve(recv_buff, MTU_SIZE);
+  // if we received data
+  if (recv_bytes > 0)
+  {
+    _data.append(recv_buff, recv_bytes);
+    _clientSocket->Send(recv_buff, recv_bytes);
+    if (_contentLength == -1 && !_chunked) {
+      _contentLength = FindContentLength(_data);
+      if (_contentLength == -1)
+        _chunked = FindIsChunked(_data);
+    }
 
-bool HTTPProxy::ClientSend()
-{
+    if (_contentStart == -1)
+      _contentStart = FindContentStart(_data);
+
+    if (_contentLength > 0 && _contentStart > 0) {
+      if (_contentLength == _data.length() - _contentStart){
+        return true;
+      }
+    }
+
+    if (_chunked) {
+      int end_start = _data.size() - 7;
+      if (_data.substr(end_start) == "\r\n0\r\n\r\n")
+        return true;
+    }
+  }
   return false;
 }
-
 
 //------------------// HTTPProxyServer //------------------//
 class HTTPProxyServer
@@ -230,6 +260,8 @@ class HTTPProxyServer
 public:
   HTTPProxyServer(int port);
   void Update();
+  void Close();
+  int _clientsServed;
 private:
   SocketTCP _serverSocket;
   std::list<HTTPProxy> _clientProxies;
@@ -237,7 +269,7 @@ private:
 
 
 HTTPProxyServer::HTTPProxyServer(int port) : 
-  _serverSocket(), _clientProxies()
+  _serverSocket(), _clientProxies(), _clientsServed(0)
 {
   _serverSocket.Bind(port);
   _serverSocket.Listen(10);
@@ -249,10 +281,10 @@ void HTTPProxyServer::Update()
 {
   SocketTCP * new_client;
   new_client = _serverSocket.Accept();
-  if (new_client) {
+  if (new_client){
     _clientProxies.push_back(HTTPProxy(new_client));
     std::cout << "Proxy Client Connected" << std::endl;
-  }
+  } 
 
   std::list<HTTPProxy>::iterator it = _clientProxies.begin();
   std::list<HTTPProxy>::iterator it_e = _clientProxies.end();
@@ -260,7 +292,10 @@ void HTTPProxyServer::Update()
     bool done = it->Update();
     if(done){
       it->Close();
+      delete it->_clientSocket;
       it = _clientProxies.erase(it);
+      std::cout << "Proxy Client Served" << std::endl;
+      ++_clientsServed;
     }
     else{
       ++it;
@@ -268,18 +303,23 @@ void HTTPProxyServer::Update()
   }
 }
 
+void HTTPProxyServer::Close()
+{
+  for (HTTPProxy & proxy : _clientProxies) {
+    proxy.Close();
+    delete proxy._clientSocket;
+  }
+}
+
 //------------------// Main //------------------//
 int main(int argc, char * argv[])
 { 
   bool running = true;
-  std::ofstream outfile;
-  outfile.open("output.txt");
-
 
   #ifdef _WIN32
   WinSockLoader::Initialize();
   #endif // !_WIN32
-  // make sure we have an address
+  // make sure we have a port
   if (argc < 2) {
     std::cout << "Port number not included" << std::endl;
     return 0;
@@ -290,86 +330,11 @@ int main(int argc, char * argv[])
   while (running) {
     proxy_server.Update();
   }
+  proxy_server.Close();
   
-  /*SocketTCP socket;
-  socket.Bind(port);
-  socket.Listen(20);
-  socket.Block(false);
-  std::vector<SocketTCP *> accepted_sockets;
-  while (running) {
-    SocketTCP * new_accpeted_socket;
-    new_accpeted_socket = socket.Accept();
-    if(new_accpeted_socket){
-      accepted_sockets.push_back(new_accpeted_socket);
-      std::cout << "Made Connection" << std::endl;
-    }
-
-    for (SocketTCP * client_socket : accepted_sockets) {
-      client_socke
-    }
-
-
-  }*/
-  
-  
-  
-  // this will be needed when you recieve request data as the proxy
-  // recieve data
-  /*std::string data;
-  int content_length = -1;
-  int content_start = -1;
-  bool chunked = false;
-  bool data_received = false;*/
-
-
-  // should I constantly be looking for the chunks as I recieve data, or should
-  // I wait to see "\r\n0\r\n\r\n".
-
-  // Then Is it better to parse that data once we recieve it or while we are
-  // recieving it.
-
-  /*while(!data_received)
-  {
-    // receive from the socket
-    char recv_buff[MTU_SIZE];
-    int recv_bytes = RECIEVE_NO_DATA;
-    recv_bytes = socket.Recieve(recv_buff, MTU_SIZE);
-    // if we received data
-    if (recv_bytes > 0)
-    {
-      data.append(recv_buff, recv_bytes);
-      //std::cout << data;
-      if (content_length == -1 && !chunked) {
-        content_length = FindContentLength(data);
-        if (content_length == -1)
-          chunked = FindIsChunked(data);
-      }
-
-      if(content_start == -1)
-        content_start = FindContentStart(data);
-
-      if (content_length > 0 && content_start > 0) {
-        if(content_length == data.length() - content_start)
-          data_received = true;
-      }
-
-      if (chunked) {
-        int end_start = data.size() - 7;
-        if(data.substr(end_start) == "\r\n0\r\n\r\n")
-          data_received = true;
-      }
-    }
-  }*/
-  // shutdown socket
-  
-  
-  //socket.CloseSend();
-  //socket.CloseRecieve();
   #ifdef _WIN32
   WinSockLoader::Purge();
   #endif
-  // print out html content
-  //outfile << data << std::endl;
-
+ 
   return 0;
 }
