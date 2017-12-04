@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <queue>
 #include <stack>
 #include <set>
 
@@ -30,6 +31,7 @@ public:
   void Print();
   bool IsConnected(std::vector<std::vector<int> > * disjoint_sets);
   bool Dijkstra(int a, int z, std::vector<int> * reverse_path);
+  bool Prim(Graph * g);
   static bool ReadGraphFile(std::vector<std::vector<int> > * am,
     const std::string & filename);
   static void PrintAdjacencyMatrix(const std::vector<std::vector<int> > & am);
@@ -92,26 +94,86 @@ bool Graph::IsConnected(std::vector<std::vector<int> > * disjoint_sets)
   return true;
 }
 
+
+struct DVInfo
+{
+  DVInfo(int id, int distance) :
+    id(id), distance(distance), previous(-1)
+  {}
+  int id;
+  int distance;
+  int previous;
+};
+struct DVInfoCompare
+{
+  bool operator()(const DVInfo * a, const DVInfo * b)
+  {
+    if(a->distance > b->distance)
+      return true;
+    return false;
+  }
+};
+
 bool Graph::Dijkstra(int a, int z, std::vector<int> * reverse_path)
 {
-  // The distance the every vertex
-  std::vector<int> distances;
-  // The previous vert visited before a vertex
-  std::vector<int> previous;
-  int num_verts = _vertices.size();
-  distances.resize(num_verts, INT_MAX);
-  previous.resize(num_verts, -1);
-
-  // put all unvisted verts in a set
-  std::set<int> unvisited_vertices;
-  for(const Vertex & vertex : _vertices)
-    unvisited_vertices.insert(vertex.id);
-
-  std::vector<int> verticies_to_visit;
-  verticies_to_visit.push_back(a);
-  while(verticies_to_visit.size() < 0){
-
+  std::vector<DVInfo> vertex_infos;
+  for(const Vertex & vertex : _vertices){
+    if(vertex.id == a)
+      vertex_infos.push_back(DVInfo(a, 0));
+    else
+      vertex_infos.push_back(DVInfo(vertex.id, INT_MAX));
   }
+  // put all unvisted verts in a set
+  std::priority_queue<DVInfo *, std::vector<DVInfo *>, DVInfoCompare>
+    unvisited_vertices;
+  for(DVInfo & v_info : vertex_infos){
+    unvisited_vertices.push(&v_info);
+  }
+
+  while(!unvisited_vertices.empty()){
+    const DVInfo & vinfo = *unvisited_vertices.top();
+    // The shortest path is to z
+    if(vinfo.id == z)
+      break;
+    const Vertex & vertex = _vertices[vinfo.id];
+    for(const Connection & connection : vertex.connections){
+      int new_distance = vinfo.distance + connection.weight;
+      DVInfo & connected_vert_vinfo = vertex_infos[connection.vertex];
+      if(new_distance < connected_vert_vinfo.distance){
+        connected_vert_vinfo.distance = new_distance;
+        connected_vert_vinfo.previous = vinfo.id;
+      }
+    }
+    unvisited_vertices.pop();
+  }
+
+  DVInfo & current_vinfo = vertex_infos[z];
+  if(current_vinfo.previous == -1)
+    return false;
+  while(current_vinfo.previous != -1){
+    reverse_path->push_back(current_vinfo.id);
+    current_vinfo = vertex_infos[current_vinfo.previous];
+  }
+  return true;
+
+}
+
+bool Prim(Graph * g)
+{
+  /*
+  - add verts to a set
+  - traverse all edges
+  - find the minimum edge
+  - add endoints and connection
+  - Remove endpoints from vert set
+  - go through accessible edges
+    - if endpoint is in not in vert set
+      - ignore
+    -
+
+  - if
+
+  */
 }
 
 bool Graph::ReadGraphFile(std::vector<std::vector<int> > * am,
@@ -176,8 +238,6 @@ void Graph::FillDisjointSet(int vertex_id, std::set<int> * unvisited_vertices,
     }
   }
 }
-
-void
 
 // ASSIGNMENT CODE ////////////////////////////////////////////////////////////
 
@@ -271,6 +331,35 @@ void problem2()
     return;
   // testing for connections
   Graph graph(adjacency_matrix);
+  std::cout << "- Adjacency Matrix -" << std::endl;
+  graph.PrintAdjacencyMatrix(adjacency_matrix);
+
+  int a;
+  int z;
+  std::cout << "Input Starting Vertex (a): ";
+  std::cin >> a; --a;
+  std::cout << "Input Ending Vertex (z): ";
+  std::cin >> z; --z;
+  std::vector<int> reverse_path;
+  bool path_found = graph.Dijkstra(a, z, &reverse_path);
+  std::cout << "- Path Found -" << std::endl;
+  if(path_found){
+    std::cout << "Yes" << std::endl;
+    std::cout << "- Path -" << std::endl;
+    std::vector<int>::reverse_iterator rit = reverse_path.rbegin();
+    std::cout << a + 1;
+    while(rit != reverse_path.rend()){
+      std::cout << " -> ";
+      std::cout << *rit + 1;
+      ++rit;
+    }
+    std::cout << std::endl;
+  }
+  else{
+    std::cout << "No" << std::endl;
+
+  }
+
 }
 
 // PROBLEM 3 CODE /////////////////////////////////////////////////////////////
@@ -278,6 +367,14 @@ void problem2()
 void problem3()
 {
   std::cout << "<Problem 3>" << std::endl;
+  std::vector<std::vector<int> > adjacency_matrix;
+  bool success = Graph::ReadGraphFile(&adjacency_matrix, "problem3.graph");
+  if(!success)
+    return;
+  // testing for connections
+  Graph graph(adjacency_matrix);
+  std::cout << "- Adjacency Matrix -" << std::endl;
+  graph.PrintAdjacencyMatrix(adjacency_matrix);
 }
 
 // PROBLEM 4 CODE /////////////////////////////////////////////////////////////
