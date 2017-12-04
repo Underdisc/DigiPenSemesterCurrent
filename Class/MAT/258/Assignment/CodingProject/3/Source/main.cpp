@@ -11,12 +11,13 @@
 
 class Graph
 {
-private:
+public:
   class Connection
   {
   public:
-    Connection(int v, int w) : vertex(v), weight(w) {}
-    int vertex;
+    Connection(int a, int b, int w) : a(a), b(b), weight(w) {}
+    int a;
+    int b;
     int weight;
   };
   class Vertex
@@ -27,11 +28,14 @@ private:
     std::vector<Connection> connections;
   };
 public:
+  Graph();
   Graph(const std::vector<std::vector<int> > & am);
+  void AddVert(int id);
   void Print();
   bool IsConnected(std::vector<std::vector<int> > * disjoint_sets);
-  bool Dijkstra(int a, int z, std::vector<int> * reverse_path);
-  bool Prim(Graph * g);
+  int Dijkstra(int a, int z, std::vector<int> * reverse_path);
+  int Prim(std::vector<std::vector<int> > * am);
+  int Kruskal(std::vector<std::vector<int> > * am);
   static bool ReadGraphFile(std::vector<std::vector<int> > * am,
     const std::string & filename);
   static void PrintAdjacencyMatrix(const std::vector<std::vector<int> > & am);
@@ -42,6 +46,9 @@ private:
     const std::vector<int> & available_vertices);
   std::vector<Vertex> _vertices;
 };
+
+Graph::Graph() : _vertices()
+{}
 
 Graph::Graph(const std::vector<std::vector<int> > & am)
 {
@@ -55,7 +62,7 @@ Graph::Graph(const std::vector<std::vector<int> > & am)
     for(int v = 0; v < num_verts; ++v){
       int weight = va[v];
       if(weight != 0)
-        vertex.connections.push_back(Connection(v, va[v]));
+        vertex.connections.push_back(Connection(i, v, va[v]));
     }
   }
 }
@@ -65,7 +72,7 @@ void Graph::Print()
   for(const Vertex & vertex : _vertices){
     std::cout << vertex.id << " | ";
     for(const Connection & c : vertex.connections){
-      std::cout << "{" << c.vertex << ":" << c.weight << "} ";
+      std::cout << "{" << c.b << ":" << c.weight << "} ";
     }
     std::cout << std::endl;
   }
@@ -94,6 +101,7 @@ bool Graph::IsConnected(std::vector<std::vector<int> > * disjoint_sets)
   return true;
 }
 
+// Dijstra's Algorithm Implementation //====================================//
 
 struct DVInfo
 {
@@ -114,7 +122,7 @@ struct DVInfoCompare
   }
 };
 
-bool Graph::Dijkstra(int a, int z, std::vector<int> * reverse_path)
+int Graph::Dijkstra(int a, int z, std::vector<int> * reverse_path)
 {
   std::vector<DVInfo> vertex_infos;
   for(const Vertex & vertex : _vertices){
@@ -123,7 +131,7 @@ bool Graph::Dijkstra(int a, int z, std::vector<int> * reverse_path)
     else
       vertex_infos.push_back(DVInfo(vertex.id, INT_MAX));
   }
-  // put all unvisted verts in a set
+  // put all unvisted verts in a priority queue
   std::priority_queue<DVInfo *, std::vector<DVInfo *>, DVInfoCompare>
     unvisited_vertices;
   for(DVInfo & v_info : vertex_infos){
@@ -138,7 +146,7 @@ bool Graph::Dijkstra(int a, int z, std::vector<int> * reverse_path)
     const Vertex & vertex = _vertices[vinfo.id];
     for(const Connection & connection : vertex.connections){
       int new_distance = vinfo.distance + connection.weight;
-      DVInfo & connected_vert_vinfo = vertex_infos[connection.vertex];
+      DVInfo & connected_vert_vinfo = vertex_infos[connection.b];
       if(new_distance < connected_vert_vinfo.distance){
         connected_vert_vinfo.distance = new_distance;
         connected_vert_vinfo.previous = vinfo.id;
@@ -149,32 +157,161 @@ bool Graph::Dijkstra(int a, int z, std::vector<int> * reverse_path)
 
   DVInfo & current_vinfo = vertex_infos[z];
   if(current_vinfo.previous == -1)
-    return false;
+    return -1;
+  int total_distance = current_vinfo.distance;
   while(current_vinfo.previous != -1){
     reverse_path->push_back(current_vinfo.id);
     current_vinfo = vertex_infos[current_vinfo.previous];
   }
-  return true;
+  return total_distance;
 
 }
 
-bool Prim(Graph * g)
+// Prim's Algorithm Implementation //=======================================//
+
+struct ConnectionCompare
 {
-  /*
-  - add verts to a set
-  - traverse all edges
-  - find the minimum edge
-  - add endoints and connection
-  - Remove endpoints from vert set
-  - go through accessible edges
-    - if endpoint is in not in vert set
-      - ignore
-    -
+  bool operator()(const Graph::Connection * a, const Graph::Connection * b)
+  {
+    if(a->weight > b->weight)
+      return true;
+    return false;
+  }
+};
 
-  - if
+#define INVALID_VERTEX  -1
 
-  */
+int Graph::Prim(std::vector<std::vector<int> > * am)
+{
+  // vert a / vert b pair of the edge with the least weight
+  int vert_a = INVALID_VERTEX;
+  int vert_b = INVALID_VERTEX;
+  int minimum_edge_weight = INT_MAX;
+  // finding the edge with the least weight
+  for(int i = 0; i < (int)_vertices.size(); ++i){
+    const Vertex & vert = _vertices[i];
+    for(int j = 0; j < (int)vert.connections.size(); ++j){
+      const Connection & connection = vert.connections[j];
+      if(connection.weight < minimum_edge_weight){
+        vert_a = i;
+        vert_b = connection.b;
+        minimum_edge_weight = connection.weight;
+      }
+    }
+  }
+  // prepparing new adjacency matrixx
+  am->resize(_vertices.size());
+  for(std::vector<int> & adjacencies : *am)
+    adjacencies.resize(_vertices.size(), 0);
+  // filling first connection in adjacency matrix
+  int total_weight = minimum_edge_weight;
+  (*am)[vert_a][vert_b] = minimum_edge_weight;
+  (*am)[vert_b][vert_a] = minimum_edge_weight;
+  // first 2 verts are no longer usable
+  std::set<int> added_verts;
+  added_verts.insert(vert_a);
+  added_verts.insert(vert_b);
+  // adding all connections from a and b
+  std::priority_queue<Connection *, std::vector<Connection *>,
+    ConnectionCompare> available_connections;
+  std::vector<Connection> & a_connections = _vertices[vert_a].connections;
+  std::vector<Connection> & b_connections = _vertices[vert_b].connections;
+  for(Connection & connection : a_connections)
+    available_connections.push(&connection);
+  for(Connection & connection : b_connections)
+    available_connections.push(&connection);
+  // finding all other edges
+  while(!available_connections.empty()){
+    Connection * c = available_connections.top();
+    std::set<int>::iterator it = added_verts.find(c->b);
+    // introduced vertex is already connected
+    if(it != added_verts.end()){
+      available_connections.pop();
+      continue;
+    }
+    // introduced vertex in not already connected
+    (*am)[c->a][c->b] = c->weight;
+    (*am)[c->b][c->a] = c->weight;
+    total_weight += c->weight;
+    added_verts.insert(c->b);
+    // adding connections from new vert as available connections
+    std::vector<Connection> & new_connections = _vertices[c->b].connections;
+    for(Connection & connection : new_connections)
+      available_connections.push(&connection);
+  }
+  return total_weight;
 }
+
+// Kruskal's Algorithm Implementation //====================================//
+
+#define NO_TREE -1
+
+int Graph::Kruskal(std::vector<std::vector<int> > * am)
+{
+  // prep new minimum spanning tree adjacency matrix
+  am->resize(_vertices.size());
+  for(std::vector<int> & adjancencies : *am)
+    adjancencies.resize(_vertices.size(), 0);
+  // add every connection to min priority queue
+  std::priority_queue<Connection *, std::vector<Connection *>,
+    ConnectionCompare> available_connections;
+  for(Vertex & vert : _vertices){
+    for(Connection & c : vert.connections)
+      available_connections.push(&c);
+  }
+  // main algorithm start
+  int total_weight = 0;
+  std::vector<std::set<int> > trees;
+  // go through all available connections
+  while(!available_connections.empty()){
+    // get connection with least weight
+    Connection * c = available_connections.top();
+    // find which tree a and b are in
+    int a_tree = NO_TREE;
+    int b_tree = NO_TREE;
+    for(int t = 0; t < (int)trees.size(); ++t){
+      std::set<int> & tree = trees[t];
+      std::set<int>::iterator it_a = tree.find(c->a);
+      std::set<int>::iterator it_b = tree.find(c->b);
+      if(it_a != tree.end())
+        a_tree = t;
+      if(it_b != tree.end())
+        b_tree = t;
+    }
+    // verts are in the same tree
+    if(a_tree != NO_TREE && a_tree == b_tree){
+      available_connections.pop();
+      continue;
+    }
+    // verts are not in any tree
+    if(a_tree == NO_TREE && a_tree == b_tree){
+      trees.push_back(std::set<int>());
+      trees.back().insert(c->a);
+      trees.back().insert(c->b);
+    }
+    // vert a is not in a tree but b is
+    else if(a_tree == NO_TREE && a_tree != b_tree)
+      trees[b_tree].insert(c->a);
+    // vert b is not in a tree but a is
+    else if(b_tree == NO_TREE && a_tree != b_tree)
+      trees[a_tree].insert(c->b);
+    // verts are in different trees (combine trees together)
+    else{
+      std::set<int> & other_tree = trees[b_tree];
+      trees[a_tree].insert(other_tree.begin(), other_tree.end());
+      trees.erase(trees.begin() + b_tree);
+    }
+    // add edge to adjacency matrix
+    (*am)[c->a][c->b] = c->weight;
+    (*am)[c->b][c->a] = c->weight;
+    total_weight += c->weight;
+    // move to next connection
+    available_connections.pop();
+  }
+  return total_weight;
+}
+
+//==========================================================================//
 
 bool Graph::ReadGraphFile(std::vector<std::vector<int> > * am,
   const std::string & filename)
@@ -231,10 +368,10 @@ void Graph::FillDisjointSet(int vertex_id, std::set<int> * unvisited_vertices,
     verticies_to_visit.pop();
     // add unvisted vertex connections to verticies_to_visit
     for(const Connection & c : vertex.connections){
-      std::set<int>::iterator it = unvisited_vertices->find(c.vertex);
+      std::set<int>::iterator it = unvisited_vertices->find(c.b);
       if(it == unvisited_vertices->end())
         continue;
-      verticies_to_visit.push(c.vertex);
+      verticies_to_visit.push(c.b);
     }
   }
 }
@@ -304,18 +441,18 @@ void problem1()
 
   std::cout << "- Adjacency Matrix -" << std::endl;
   Graph::PrintAdjacencyMatrix(adjacency_matrix);
-  std::cout << "- Vertex Adjacencies -" << std::endl;
-  graph.Print();
   std::cout << "- Is Graph Connected -" << std::endl;
-  if(connected)
+  if(connected){
     std::cout << "Yes" << std::endl;
+    return;
+  }
   else
     std::cout << "No" << std::endl;
   std::cout << "- Disjoint Sets -" << std::endl;
   for(const std::vector<int> & disjoint_set: disjoint_sets){
     std::cout << "{";
     for(int vertex : disjoint_set)
-      std::cout << vertex << ",";
+      std::cout << vertex + 1 << ",";
     std::cout << "}" << std::endl;
   }
 }
@@ -341,9 +478,9 @@ void problem2()
   std::cout << "Input Ending Vertex (z): ";
   std::cin >> z; --z;
   std::vector<int> reverse_path;
-  bool path_found = graph.Dijkstra(a, z, &reverse_path);
+  int distance = graph.Dijkstra(a, z, &reverse_path);
   std::cout << "- Path Found -" << std::endl;
-  if(path_found){
+  if(distance != -1){
     std::cout << "Yes" << std::endl;
     std::cout << "- Path -" << std::endl;
     std::vector<int>::reverse_iterator rit = reverse_path.rbegin();
@@ -354,10 +491,11 @@ void problem2()
       ++rit;
     }
     std::cout << std::endl;
+    std::cout << "- Distance -" << std::endl
+      << distance << std::endl;
   }
   else{
     std::cout << "No" << std::endl;
-
   }
 
 }
@@ -366,20 +504,42 @@ void problem2()
 
 void problem3()
 {
+  // set up
   std::cout << "<Problem 3>" << std::endl;
   std::vector<std::vector<int> > adjacency_matrix;
   bool success = Graph::ReadGraphFile(&adjacency_matrix, "problem3.graph");
   if(!success)
     return;
-  // testing for connections
+  // performing operations
   Graph graph(adjacency_matrix);
-  std::cout << "- Adjacency Matrix -" << std::endl;
-  graph.PrintAdjacencyMatrix(adjacency_matrix);
+  std::vector<std::vector<int> > mst_am;
+  int total_weight = graph.Prim(&mst_am);
+  // printing results
+  std::cout << "- Original Adjacency Matrix -" << std::endl;
+  Graph::PrintAdjacencyMatrix(adjacency_matrix);
+  std::cout << "- Minimum Spanning Tree Adjacency Matrix -" << std::endl;
+  Graph::PrintAdjacencyMatrix(mst_am);
+  std::cout << "- Total Weight -" << std::endl << total_weight << std::endl;
 }
 
 // PROBLEM 4 CODE /////////////////////////////////////////////////////////////
 
 void problem4()
 {
+  // set up
   std::cout << "<Problem 4>" << std::endl;
+  std::vector<std::vector<int> > am;
+  bool success = Graph::ReadGraphFile(&am, "problem4.graph");
+  if(!success)
+    return;
+  // performing operations
+  Graph graph(am);
+  std::vector<std::vector<int> > mst_am;
+  int total_weight = graph.Kruskal(&mst_am);
+  // printing results
+  std::cout << "- Original Adjacency Matrix -" << std::endl;
+  Graph::PrintAdjacencyMatrix(am);
+  std::cout << "- Minimum Spanning Tree Adjacency Matrix -" << std::endl;
+  Graph::PrintAdjacencyMatrix(mst_am);
+  std::cout << "- Total Weight -" << std::endl << total_weight << std::endl;
 }
