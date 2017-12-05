@@ -281,7 +281,7 @@ int main(int argc, char * argv[])
 
 
   //quick test
-  Skybox skybox("Resource/Texture/Skybox/CriminalImpact/", 
+  Skybox skybox("Resource/Texture/Skybox/Crater/", 
     "up.tga", "dn.tga", "lf.tga", "rt.tga", "ft.tga", "bk.tga");
   bool result = skybox.Upload();
   if(result)

@@ -14,39 +14,39 @@ void main()
   vec3 position = abs(SFragPos);
   vec3 final_color = vec3(0.0, 0.0, 0.0);
   vec2 uv = vec2(0.0, 0.0);
-  if(position.x > position.y && position.x > position.z){
-    if(position.x > 0){
-      uv.x = (position.z + 0.5);
-      uv.y = (position.y + 0.5);
+  if(position.x >= position.y && position.x >= position.z){
+    if(SFragPos.x > 0){
+      uv.x = (SFragPos.z / -position.x + 1.0) / 2.0;
+      uv.y = (SFragPos.y / -position.x + 1.0) / 2.0;
       final_color = vec3(texture(URight, uv));
     }
     else{
-      uv.x = (position.z + 0.5);
-      uv.y = (position.y + 0.5);
+      uv.x = (SFragPos.z /  position.x + 1.0) / 2.0;
+      uv.y = (SFragPos.y / -position.x + 1.0) / 2.0;
       final_color = vec3(texture(ULeft, uv));
     }
   }
-  else if(position.y > position.x && position.y > position.z){
-    if(position.y > 0){
-      uv.x = (position.x + 0.5);
-      uv.y = (position.z + 0.5);
+  else if(position.y >= position.x && position.y >= position.z){
+    if(SFragPos.y > 0){
+      uv.x = (SFragPos.z / -position.y + 1.0) / 2.0;
+      uv.y = (SFragPos.x /  position.y + 1.0) / 2.0;
       final_color = vec3(texture(UUp, uv));
     }
     else{
-      uv.x = (position.z + 0.5);
-      uv.y = (position.y + 0.5);
+      uv.x = (SFragPos.z / -position.y + 1.0) / 2.0;
+      uv.y = (SFragPos.x / -position.y + 1.0) / 2.0;
       final_color = vec3(texture(UDown, uv));
     }
   }
   else {
-    if(position.z > 0){
-      uv.x = (position.x + 0.5);
-      uv.y = (position.y + 0.5);
+    if(SFragPos.z > 0){
+      uv.x = (SFragPos.x /  position.z + 1.0) / 2.0;
+      uv.y = (SFragPos.y / -position.z + 1.0) / 2.0;
       final_color = vec3(texture(UBack, uv));
     }
     else{
-      uv.x = (position.x + 0.5);
-      uv.y = (position.y + 0.5);
+      uv.x = (SFragPos.x / -position.z + 1.0) / 2.0;
+      uv.y = (SFragPos.y / -position.z + 1.0) / 2.0;
       final_color = vec3(texture(UFront, uv));
     }
   }
