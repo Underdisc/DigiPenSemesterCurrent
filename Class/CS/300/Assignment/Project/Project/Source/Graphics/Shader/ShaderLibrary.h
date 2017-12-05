@@ -16,6 +16,42 @@
 
 #define MAXLIGHTS 10
 
+//----------// Uniform Blocks //----------//
+struct UMaterial
+{
+  // Material Factors
+  GLuint UColor;
+  GLuint UAmbientFactor;
+  GLuint UDiffuseFactor;
+  GLuint USpecularFactor;
+  GLuint USpecularExponent;
+  // Texture Mapping Properties
+  GLuint UTextureMapping;
+  GLuint USpecularMapping;
+  GLuint UNormalMapping;
+  GLuint UMappingType;
+  GLuint UDiffuseMap;
+  GLuint USpecularMap;
+  GLuint UNormalMap;
+};
+
+
+struct ULight
+{
+  GLuint UType;
+  GLuint UPosition;
+  GLuint UDirection;
+  GLuint UInnerAngle;
+  GLuint UOuterAngle;
+  GLuint USpotExponent;
+  GLuint UAmbientColor;
+  GLuint UDiffuseColor;
+  GLuint USpecularColor;
+  GLuint UAttenuationC0;
+  GLuint UAttenuationC1;
+  GLuint UAttenuationC2;
+};
+
 /*****************************************************************************/
 /*!
 \class LineShader
@@ -57,40 +93,24 @@ public:
   GLuint UColor;
 };
 
-// uniform structs for materials and lights
-struct UMaterial
+class SkyboxShader : public Shader
 {
-  // Material Factors
-  GLuint UColor;
-  GLuint UAmbientFactor;
-  GLuint UDiffuseFactor;
-  GLuint USpecularFactor;
-  GLuint USpecularExponent;
-  // Texture Mapping Properties
-  GLuint UTextureMapping;
-  GLuint USpecularMapping;
-  GLuint UNormalMapping;
-  GLuint UMappingType;
-  GLuint UDiffuseMap;
-  GLuint USpecularMap;
-  GLuint UNormalMap;
-};
-
-
-struct ULight
-{
-  GLuint UType;
-  GLuint UPosition;
-  GLuint UDirection;
-  GLuint UInnerAngle;
-  GLuint UOuterAngle;
-  GLuint USpotExponent;
-  GLuint UAmbientColor;
-  GLuint UDiffuseColor;
-  GLuint USpecularColor;
-  GLuint UAttenuationC0;
-  GLuint UAttenuationC1;
-  GLuint UAttenuationC2;
+public:
+  virtual void EnableAttributes();
+  virtual void DisableAttributes();
+public:
+  SkyboxShader();
+  // Attributes
+  GLuint APosition;
+  // Uniforms
+  GLuint UProjection;
+  GLuint UView;
+  GLuint UUp;
+  GLuint UDown;
+  GLuint ULeft;
+  GLuint URight;
+  GLuint UFront;
+  GLuint UBack;
 };
 
 /*****************************************************************************/

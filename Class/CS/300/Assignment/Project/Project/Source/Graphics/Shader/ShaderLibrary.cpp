@@ -5,6 +5,8 @@
 // could be a cool way to segment out attributes
 // all shaders with the same buffer type share attribute types etc.
 
+//--------------------// LineShader //--------------------//
+
 LineShader::LineShader() : 
   Shader("Resource/Shader/line.vert", "Resource/Shader/line.frag")
 {
@@ -27,6 +29,8 @@ void LineShader::DisableAttributes()
   glDisableVertexAttribArray(APosition);
 }
 
+//--------------------// SolidShader //--------------------//
+
 SolidShader::SolidShader() :
   Shader("Resource/Shader/solid.vert", "Resource/Shader/solid.frag")
 {
@@ -48,6 +52,37 @@ void SolidShader::DisableAttributes()
 {
   glDisableVertexAttribArray(APosition);
 }
+
+//--------------------// SkyboxShader //--------------------//
+
+SkyboxShader::SkyboxShader() :
+  Shader("Resource/Shader/skybox.vert", "Resource/Shader/skybox.frag")
+{
+  APosition = GetAttribLocation("APosition");
+  UProjection = GetUniformLocation("UProjection");
+  UView = GetUniformLocation("UView");
+  UUp = GetUniformLocation("UUp");
+  UDown = GetUniformLocation("UDown");
+  ULeft = GetUniformLocation("ULeft");
+  URight = GetUniformLocation("URight");
+  UFront = GetUniformLocation("UFront");
+  UBack = GetUniformLocation("UBack");
+}
+
+void SkyboxShader::EnableAttributes()
+{
+  // you should find a way to get rid of that hard coded 14
+  glVertexAttribPointer(APosition, 3, GL_FLOAT, GL_FALSE,
+    14 * sizeof(GLfloat), nullptr);
+  glEnableVertexAttribArray(APosition);
+}
+
+void SkyboxShader::DisableAttributes()
+{
+  glDisableVertexAttribArray(APosition);
+}
+
+//--------------------// PhongShader //--------------------//
 
 PhongShader::PhongShader() :
   Shader("Resource/Shader/phong.vert", "Resource/Shader/phong.frag")
@@ -137,6 +172,8 @@ void PhongShader::DisableAttributes()
   glDisableVertexAttribArray(ATangent);
 }
 
+//--------------------// GouraudShader //--------------------//
+
 GouraudShader::GouraudShader() :
   Shader("Resource/Shader/gouraud.vert", "Resource/Shader/gouraud.frag")
 {
@@ -204,6 +241,8 @@ void GouraudShader::DisableAttributes()
   glDisableVertexAttribArray(APosition);
   glDisableVertexAttribArray(ANormal);
 }
+
+//--------------------// BlinnShader //--------------------//
 
 BlinnShader::BlinnShader() :
   Shader("Resource/Shader/blinn.vert", "Resource/Shader/blinn.frag")
@@ -273,6 +312,8 @@ void BlinnShader::DisableAttributes()
   glDisableVertexAttribArray(APosition);
   glDisableVertexAttribArray(ANormal);
 }
+
+//--------------------// TextureShader //--------------------//
 
 TextureShader::TextureShader() :
   Shader("Resource/Shader/texture.vert", "Resource/Shader/texture.frag")

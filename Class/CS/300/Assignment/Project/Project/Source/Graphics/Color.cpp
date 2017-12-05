@@ -1,3 +1,4 @@
+/* All content(c) 2017 - 2018 DigiPen(USA) Corporation, all rights reserved. */
 #include "Color.h"
 
 Color::Color() : _x(0.0f), _y(0.0f), _z(0.0f) 

@@ -215,7 +215,8 @@ void main()
 {
   // perform texture mapping
   vec2 uv;
-  if(UMaterial.UTextureMapping)
+  if(UMaterial.UTextureMapping || UMaterial.USpecularMapping ||
+    UMaterial.UNormalMapping)
     uv = ComputeUVs();
   // lighting
   // precomputations

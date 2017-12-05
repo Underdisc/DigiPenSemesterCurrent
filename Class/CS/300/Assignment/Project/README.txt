@@ -1,7 +1,7 @@
 Author: Connor Deakin
 Professor: Dr. Pushpak Karnick
 Class: CS 300
-Project: Assignment 2
+Project: Assignment 3
 Date: 28/11/2017
 
 I am listing the sections as listed they listed on the CS 300 syllabus.
@@ -10,9 +10,16 @@ a. Running the application
 - When you compile, whether it's in release or debug, MAKE SURE TO USE 32-bit(x86).
 - When you run the application, there is an ImGui window with a "Help" collapsing
   header at the top. Click that and it should explain everything needed to understand how to
-  use the interface. I added and changed a lot of things, so make sure to check it out.
-  The window is entirely resizable as well. If you can't see this section, maximize
-  the entire Windows window and adjust the ImGui window.
+  use the interface. The window is entirely resizable as well. If you can't see
+  this section, maximize the entire Windows window and adjust the ImGui window.
+
+a.5 Grading Criteria
+- On startup, the program will create an image called "normal_map.png" in
+  Project/Working/Resource/Texture. This is the normal map generated from the
+  specular map.
+- To view the t's & b's, look in the mesh tab of the main window. To apply
+  texture & normal mapping, open the material editor and select the appropriate
+  checkboxes.
 
 b. Everything should work except the Gouraud and Blinn shaders. They are still
   there, but since they were not necessary for this assignment, I didn't worry
@@ -42,6 +49,7 @@ c. Completed
 
 
 d. Not Completed
+- Everything is completed for this assignment
 
 e. File locations
 - Source Code: Project/Source/
@@ -51,13 +59,8 @@ e. File locations
 
 f. EDISON LAB MACHINE: DIT2853US
 
-g. 60-70~ish hours. This one took a really long time. I had to make a lot
-  of extensions and changes to my framework as I worked on the assignment.
-  This is definitely what took a majority of the time. Additionally, this assignment
-  is just huge, especially when making a custom framework for it.  I actually
-  implemented phong in the previous assignment, but this still took a large amount
-  of time.
-
-h. I implement the extra credit features that were mentioned in the assignment
-  PDF (camera rotation). I also implemented full camera controls that can be
-  used to move around in the environment.
+g. 50-60~ish hours. This might be an underestimate, but this assignment took
+  a very long time regardless. I am consistently failing to realize how much time
+  it will take to do everything in a custom framework. Not only that, but I still needed
+  to finish the texture mapping from the previous assignment. I had not finished
+  it because I didn't have the time to do so.

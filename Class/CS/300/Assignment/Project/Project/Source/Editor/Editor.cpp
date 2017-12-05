@@ -1,3 +1,4 @@
+/* All content(c) 2017 - 2018 DigiPen(USA) Corporation, all rights reserved. */
 #include "../External/Imgui/imgui.h"
 #include "../External/Imgui/imgui_impl_sdl_gl3.h"
 #include "../Graphics/SDLContext.h"
@@ -240,18 +241,25 @@ inline void Editor::MaterialEditorUpdate(Material & material)
     0.0f, 30.0f);
   ImGui::Separator();
   // Texture mapping section
-  if(material._textureMapping){
+  if(material._textureMapping || material._specularMapping || 
+    material._normalMapping){
     // mapping type
     ImGui::Combo("Mapping Type", &material._mappingType,
       "Spherical\0Cylindrical\0Planar\0\0");
     ImGui::Separator();
     // texture maps
-    ImGui::Text("Current Diffusue Texture: %s", 
+    if(material._textureMapping){
+      ImGui::Text("Current Diffusue Texture: %s", 
       _currentTextureDiffuse.c_str());
-    ImGui::Text("Current Specular Texture: %s", 
+    }
+    if(material._specularMapping){
+      ImGui::Text("Current Specular Texture: %s", 
       _currentTextureSpecular.c_str());
-    ImGui::Text("Current Normal Texture: %s",
+    }
+    if(material._normalMapping){
+      ImGui::Text("Current Normal Texture: %s",
       _currentTextureNormal.c_str());
+    }
     ImGui::Separator();
   }
   ImGui::End();
