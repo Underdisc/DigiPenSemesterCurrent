@@ -1,3 +1,4 @@
+/* All content(c) 2017 - 2018 DigiPen(USA) Corporation, all rights reserved. */
 /*****************************************************************************/
 /*!
 \file Time.cpp

@@ -194,6 +194,7 @@
     <ClInclude Include="Source\Graphics\Mesh\MeshRenderer.h" />
     <ClInclude Include="Source\Graphics\Renderer.h" />
     <ClInclude Include="Source\Graphics\Shader\ShaderLibrary.h" />
+    <ClInclude Include="Source\Graphics\Shader\ShaderManager.h" />
     <ClInclude Include="Source\Graphics\Texture\Texture.h" />
     <ClInclude Include="Source\Graphics\Texture\TexturePool.h" />
     <ClInclude Include="Source\Math\EulerAngles.h" />

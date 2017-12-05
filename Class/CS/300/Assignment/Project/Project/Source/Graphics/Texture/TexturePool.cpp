@@ -48,7 +48,8 @@ TextureObject * TexturePool::Upload(const Texture & texture)
     error.Add("Image file format not supported");
     error.Add("> Image file");
     error.Add(texture._imageFile.c_str());
-    throw(error);
+    ErrorLog::Write(error);
+    return nullptr;
   }
   glGenerateMipmap(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, 0); // need to make sure you rebind the texture that was bound here

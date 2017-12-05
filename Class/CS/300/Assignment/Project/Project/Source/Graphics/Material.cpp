@@ -1,8 +1,9 @@
+/* All content(c) 2017 - 2018 DigiPen(USA) Corporation, all rights reserved. */
 #include "Material.h"
 
 Material::Material() : _color(1.0f, 1.0f, 1.0f), _ambientFactor(0.1f),
 _diffuseFactor(1.0f), _specularFactor(1.0f), _specularExponent(3.0f),
-_textureMapping(false), _normalMapping(false),
+_textureMapping(false), _specularMapping(false), _normalMapping(false),
 _mappingType(MAPSPHERICAL), _diffuseMap(0),
 _specularMap(1), _normalMap(2)
 {}
