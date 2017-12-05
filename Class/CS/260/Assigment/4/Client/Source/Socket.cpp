@@ -64,7 +64,11 @@ void SocketTCP::Bind(int port)
   // creating the address that messages should be sent to
   sockaddr_in back_address;
   // sin_addr is a union. S_addr fills that entire union
+  #ifdef _WIN32
   back_address.sin_addr.S_un.S_addr = INADDR_ANY;
+  #else
+  back_address.sin_addr.s_addr = INADDR_ANY;
+  #endif
   back_address.sin_family = AF_INET;
   back_address.sin_port = htons(port);
   result = bind(_socket, (sockaddr *)&back_address, sizeof(sockaddr));
@@ -116,10 +120,18 @@ void SocketTCP::Listen(int backlog)
 SocketTCP * SocketTCP::Accept()
 {
   sockaddr from_address;
-  int from_address_size;
+  #ifdef _WIN32
+  int from_address_size = sizeof(sockaddr_in);
+  #else
+  unsigned int from_address_size = sizeof(sockaddr_in);
+  #endif
   SOCKET accepted_socket;
   accepted_socket = accept(_socket, &from_address, &from_address_size);
+  #ifdef _WIN32
   if(accepted_socket == INVALID_SOCKET)
+  #else
+  if(accepted_socket == -1)
+  #endif
     return nullptr;
   else
     return new SocketTCP(accepted_socket);

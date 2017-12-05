@@ -26,11 +26,9 @@
 
 #include "Socket.h"
 
-
-#include "vld.h"
-
 #define DEBUG
 
+//--------------------// WinSockLoader //--------------------// 
 #ifdef _WIN32
 class WinSockLoader
 {
@@ -203,13 +201,13 @@ bool HTTPProxy::WebSend()
 {
   // extract the domain name
   int domain_start = _data.find("Host: ");
-  if (domain_start == std::string::npos) {
+  if (domain_start == (int)std::string::npos) {
     // not a valid GET request
     return true;
   }
   domain_start += 6;
   int domain_end = _data.find("\n", domain_start);
-  std::string domain_name(_data.substr(domain_start, 
+  std::string domain_name(_data.substr(domain_start,
     domain_end - domain_start));
   // connect the web socket and send request
   _webSocket.Connect(80, domain_name.c_str());
@@ -240,7 +238,7 @@ bool HTTPProxy::WebToClient()
       _contentStart = FindContentStart(_data);
 
     if (_contentLength > 0 && _contentStart > 0) {
-      if (_contentLength == _data.length() - _contentStart){
+      if (_contentLength == (int)_data.length() - _contentStart){
         return true;
       }
     }
@@ -268,8 +266,8 @@ private:
 };
 
 
-HTTPProxyServer::HTTPProxyServer(int port) : 
-  _serverSocket(), _clientProxies(), _clientsServed(0)
+HTTPProxyServer::HTTPProxyServer(int port) :
+  _clientsServed(0), _serverSocket(), _clientProxies()
 {
   _serverSocket.Bind(port);
   _serverSocket.Listen(10);
@@ -284,7 +282,7 @@ void HTTPProxyServer::Update()
   if (new_client){
     _clientProxies.push_back(HTTPProxy(new_client));
     std::cout << "Proxy Client Connected" << std::endl;
-  } 
+  }
 
   std::list<HTTPProxy>::iterator it = _clientProxies.begin();
   std::list<HTTPProxy>::iterator it_e = _clientProxies.end();
@@ -313,7 +311,7 @@ void HTTPProxyServer::Close()
 
 //------------------// Main //------------------//
 int main(int argc, char * argv[])
-{ 
+{
   bool running = true;
 
   #ifdef _WIN32
@@ -331,10 +329,10 @@ int main(int argc, char * argv[])
     proxy_server.Update();
   }
   proxy_server.Close();
-  
+
   #ifdef _WIN32
   WinSockLoader::Purge();
   #endif
- 
+
   return 0;
 }
