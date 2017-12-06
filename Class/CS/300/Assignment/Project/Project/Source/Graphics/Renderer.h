@@ -4,6 +4,7 @@
 #include "Mesh/MeshRenderer.h"
 #include "Texture/TexturePool.h"
 #include "Skybox.h"
+#include "Camera.h"
 
 #ifndef RENDERER_H
 #define RENDERER_H
@@ -11,10 +12,9 @@
 class Renderer
 {
 public:
-  static void Initialize();
+  static void Initialize(Mesh & mesh);
   static void Purge();
-  static void Render(const Math::Matrix4 & projection, 
-    const Math::Matrix4 & view);
+  static void Render(const Math::Matrix4 & projection, Camera * camera);
 public:
   static Mesh * _mesh;
   static MeshRenderer::MeshObject * _meshObject;

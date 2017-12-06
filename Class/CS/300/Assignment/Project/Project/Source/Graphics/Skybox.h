@@ -16,9 +16,10 @@ public:
     const std::string & up, const std::string & down,
     const std::string & left, const std::string & right,
     const std::string & front, const std::string & back);
+  ~Skybox();
 
   bool Upload();
-  bool Unload();
+  void Unload();
   void Render(const Math::Matrix4 & projection, const Math::Matrix4 & view);
   // The texture objects used for rendering
   TextureObject * _tUp;

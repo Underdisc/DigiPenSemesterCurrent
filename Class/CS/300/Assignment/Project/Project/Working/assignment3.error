@@ -19,11 +19,11 @@ GL_INVALID_VALUE
 During initialization
 ----- Error End -----
 ---- Error Start ----
-File - main.cpp
-Function - Update()
+File - Renderer.cpp
+Function - Render()
 > Log
 > OPENGL ERROR CODE
 GL_INVALID_VALUE
 > DESCRIPTION
-During Update
+During Render
 ----- Error End -----

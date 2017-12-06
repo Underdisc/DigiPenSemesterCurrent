@@ -22,6 +22,11 @@ Skybox::Skybox(const std::string & directory,
   _sky._numElements = sm.IndexDataSize();
 }
 
+Skybox::~Skybox()
+{
+  _sky.Purge();
+}
+
 bool Skybox::Upload()
 {
   _tUp = TexturePool::Upload(_directory + _fUp);
@@ -33,6 +38,17 @@ bool Skybox::Upload()
   if (_tUp && _tDown && _tLeft && _tRight && _tFront && _tBack)
     return true;
   return false;
+}
+
+void Skybox::Unload()
+{
+  // TODO: make sure the skybox was successfully loaded first
+  TexturePool::Unload(_tUp);
+  TexturePool::Unload(_tDown);
+  TexturePool::Unload(_tLeft);
+  TexturePool::Unload(_tRight);
+  TexturePool::Unload(_tFront);
+  TexturePool::Unload(_tBack);
 }
 
 // use the linear part of your view matrix

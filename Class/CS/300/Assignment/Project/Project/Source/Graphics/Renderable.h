@@ -28,6 +28,13 @@ struct Renderable
   GLuint _vbo;
   GLuint _ebo;
   unsigned int _numElements;
+
+  void Purge()
+  {
+    glDeleteBuffers(1, &_vbo);
+    glDeleteBuffers(1, &_ebo);
+    glDeleteVertexArrays(1, &_vao);
+  }
 };
 
 #endif // !RENDERABLE_H
