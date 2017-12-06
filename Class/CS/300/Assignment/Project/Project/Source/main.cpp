@@ -17,6 +17,7 @@
 #include "Graphics\Light.h"
 #include "Graphics\Material.h"
 #include "Graphics\Renderer.h"
+#include "Graphics\Skybox.h"
 #include "Graphics\Texture\TexturePool.h"
 
 #include <GL\glew.h>
@@ -51,130 +52,6 @@
 
 // GLOBAL
 
-// Make a Renderable with vao, vbo, ebo, num_elements, done.
-
-//----------// BUFFER INTERFACE //----------//
-
-
-GLuint UploadArrayBuffer(void * data, unsigned int bytes)
-{
-  GLuint vbo;
-  glGenBuffers(1, &vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glBufferData(GL_ARRAY_BUFFER, bytes, data, GL_STATIC_DRAW);
-  return vbo;
-}
-
-GLuint UploadIndexBuffer(void * data, unsigned int bytes)
-{
-  GLuint ebo;
-  glGenBuffers(1, &ebo);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, bytes, data, GL_STATIC_DRAW);
-  return ebo;
-}
-
-//----------// SKYBOX //----------//
-
-class Skybox
-{
-public:
-  Skybox(const std::string & directory, 
-    const std::string & up, const std::string & down,
-    const std::string & left, const std::string & right,
-    const std::string & front, const std::string & back);
-
-  bool Upload();
-  bool Unload();
-  void Render(const Math::Matrix4 & projection, const Math::Matrix4 & view);
-  // The texture objects used for rendering
-  TextureObject * _tUp;
-  TextureObject * _tDown;
-  TextureObject * _tLeft;
-  TextureObject * _tRight;
-  TextureObject * _tFront;
-  TextureObject * _tBack;
-  // The filenames for the skybox textures
-  std::string _directory;
-  std::string _fUp;
-  std::string _fDown;
-  std::string _fLeft;
-  std::string _fRight;
-  std::string _fFront;
-  std::string _fBack;
-  // Buffer IDs
-  GLuint _vaoSky;
-  GLuint _vboSky;
-  GLuint _eboSky;
-  unsigned int _numElements;
-};
-
-Skybox::Skybox(const std::string & directory,
-  const std::string & up, const std::string & down,
-  const std::string & left, const std::string & right,
-  const std::string & front, const std::string & back) :
-  _directory(directory), _fUp(up), _fDown(down), _fLeft(left), _fRight(right), 
-  _fFront(front), _fBack(back)
-{
-  // uploading skybox mesh (sm)
-  Mesh sm("Resource/Model/skybox.obj", Mesh::OBJ);
-  glGenVertexArrays(1, &_vaoSky);
-  glBindVertexArray(_vaoSky);
-  _vboSky = UploadArrayBuffer(sm.VertexData(), sm.VertexDataSizeBytes());
-  _eboSky = UploadIndexBuffer(sm.IndexData(), sm.IndexDataSizeBytes());
-  ShaderManager::_skybox->EnableAttributes();
-  glBindVertexArray(0);
-  _numElements = sm.IndexDataSize();
-}
-
-bool Skybox::Upload()
-{
-  _tUp = TexturePool::Upload(_directory + _fUp);
-  _tDown = TexturePool::Upload(_directory + _fDown);
-  _tLeft = TexturePool::Upload(_directory + _fLeft);
-  _tRight = TexturePool::Upload(_directory + _fRight);
-  _tFront = TexturePool::Upload(_directory + _fFront);
-  _tBack = TexturePool::Upload(_directory + _fBack);
-  if(_tUp && _tDown && _tLeft && _tRight && _tFront && _tBack)
-    return true;
-  return false;
-}
-
-// use the linear part of your view matrix
-void Skybox::Render(const Math::Matrix4 & projection, 
-  const Math::Matrix4 & view)
-{
-  SkyboxShader * shader = ShaderManager::_skybox;
-  ShaderManager::_skybox->Use();
-  // transformation uniforms
-  glUniformMatrix4fv(shader->UProjection, 1, GL_TRUE, projection.array);
-  glUniformMatrix4fv(shader->UView, 1, GL_TRUE, view.array);
-  // sampler uniforms
-  glUniform1i(shader->UUp, 0);
-  glUniform1i(shader->UDown, 1);
-  glUniform1i(shader->ULeft, 2);
-  glUniform1i(shader->URight, 3);
-  glUniform1i(shader->UFront, 4);
-  glUniform1i(shader->UBack, 5);
-  // binding textures
-  TexturePool::Bind(_tUp, 0);
-  TexturePool::Bind(_tDown, 1);
-  TexturePool::Bind(_tLeft, 2);
-  TexturePool::Bind(_tRight, 3);
-  TexturePool::Bind(_tFront, 4);
-  TexturePool::Bind(_tBack, 5);
-  // drawing
-  glDepthMask(GL_FALSE);
-  glBindVertexArray(_vaoSky);
-  glPolygonMode(GL_FRONT, GL_FILL);
-  glDrawElements(GL_TRIANGLES, _numElements, GL_UNSIGNED_INT, nullptr);
-  glBindVertexArray(0);
-  glDepthMask(GL_TRUE);
-}
-
-
-
-//----------// !SKYBOX //----------//
 
 Mesh * mesh;
 MeshRenderer::MeshObject * mesh_object;
@@ -281,7 +158,7 @@ int main(int argc, char * argv[])
 
 
   //quick test
-  Skybox skybox("Resource/Texture/Skybox/Crater/", 
+  Skybox skybox("Resource/Texture/Skybox/Alpha/", 
     "up.tga", "dn.tga", "lf.tga", "rt.tga", "ft.tga", "bk.tga");
   bool result = skybox.Upload();
   if(result)

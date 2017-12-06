@@ -1,5 +1,8 @@
 #include "ShaderLibrary.h"
 
+#pragma once
+
+
 // for future reference
 // only the renderer should have this
 // not the mesh renderer
@@ -13,16 +16,3 @@ public:
 private:
   ShaderManager();
 };
-
-SkyboxShader * ShaderManager::_skybox = nullptr;
-
-void ShaderManager::Initialize()
-{
-  _skybox = new SkyboxShader();
-}
-
-void ShaderManager::Purge()
-{
-  _skybox->Purge();
-  delete _skybox;
-}

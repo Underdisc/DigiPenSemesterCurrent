@@ -152,6 +152,8 @@
     <ClCompile Include="Source\Graphics\Mesh\MeshRenderer.cpp" />
     <ClCompile Include="Source\Graphics\Renderer.cpp" />
     <ClCompile Include="Source\Graphics\Shader\ShaderLibrary.cpp" />
+    <ClCompile Include="Source\Graphics\Shader\ShaderManager.cpp" />
+    <ClCompile Include="Source\Graphics\Skybox.cpp" />
     <ClCompile Include="Source\Graphics\Texture\Texture.cpp" />
     <ClCompile Include="Source\Graphics\Texture\TexturePool.cpp" />
     <ClCompile Include="Source\main.cpp" />
@@ -192,9 +194,11 @@
     <ClInclude Include="Source\Graphics\Material.h" />
     <ClInclude Include="Source\Graphics\Mesh\Mesh.h" />
     <ClInclude Include="Source\Graphics\Mesh\MeshRenderer.h" />
+    <ClInclude Include="Source\Graphics\Renderable.h" />
     <ClInclude Include="Source\Graphics\Renderer.h" />
     <ClInclude Include="Source\Graphics\Shader\ShaderLibrary.h" />
     <ClInclude Include="Source\Graphics\Shader\ShaderManager.h" />
+    <ClInclude Include="Source\Graphics\Skybox.h" />
     <ClInclude Include="Source\Graphics\Texture\Texture.h" />
     <ClInclude Include="Source\Graphics\Texture\TexturePool.h" />
     <ClInclude Include="Source\Math\EulerAngles.h" />

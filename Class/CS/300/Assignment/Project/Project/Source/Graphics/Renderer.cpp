@@ -1,16 +1,19 @@
 /* All content(c) 2017 - 2018 DigiPen(USA) Corporation, all rights reserved. */
 #include "Renderer.h"
 
-void Renderer::AddRenderable(MeshRenderer::MeshObject * renderable)
-{
-  _renderables.insert({renderable, Math::Matrix4()});
-}
+// static initializations
+Mesh * Renderer::_mesh = nullptr;
+MeshRenderer::MeshObject * Renderer::_meshObject = nullptr;
+MeshRenderer::MeshObject * Renderer::_sphereMeshObject = nullptr;
+MeshRenderer::MeshObject * Renderer::_planeMeshObject = nullptr;
 
-Math::Matrix4 * Renderer::GetRenderableMatrix(
-  MeshRenderer::MeshObject * renderable)
+TextureObject * Renderer::_diffuseTextureObject = nullptr;
+TextureObject * Renderer::_specularTextureObject = nullptr;
+TextureObject * Renderer::_normalTextureObject = nullptr;
+
+Skybox * Renderer::_skybox = nullptr;
+
+void Renderer::Initialize() 
 {
-  std::unordered_map<MeshRenderer::MeshObject *, Math::Matrix4>::iterator
-    renderable_location;
-  renderable_location = _renderables.find(renderable);
-  return &renderable_location->second;
+
 }
