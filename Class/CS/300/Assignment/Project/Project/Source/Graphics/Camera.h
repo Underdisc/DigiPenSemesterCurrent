@@ -16,6 +16,7 @@ public:
   void MoveInDirection(const Math::Vector3 & direction, float delta);
   void MoveYaw(float delta);
   void MovePitch(float delta);
+  void LookIn(const Math::Vector3 & direction);
   void LookAt(const Math::Vector3 & position);
   const Math::Vector3 & GetPosition();
   float GetYaw();

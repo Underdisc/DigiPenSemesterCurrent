@@ -836,7 +836,7 @@ namespace Math
   Matrix4 Matrix4::Perspective(float fov, float aspect, float near_d, float far_d)
   {
     Matrix4 p_proj;
-    float f = 1/ Tan(fov / 2.0f);
+    float f = 1.0f / Tan(fov / 2.0f);
     // first two columns
     float t00 = f / aspect;
     p_proj[0][0] = t00;  p_proj[0][1] = 0.0f; 

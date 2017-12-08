@@ -75,10 +75,21 @@ void Camera::MovePitch(float delta)
   _updatedViewMatrix = false;
 }
 
+void Camera::LookIn(const Math::Vector3 & direction)
+{
+  _front = direction;
+  _front.Normalize();
+  _yaw = Math::ArcTan(_front.z / _front.x);
+  float xz_length = Math::Sqrt(_front.x * _front.x + _front.z * _front.z);
+  _pitch = Math::ArcTan(_front.y / xz_length);
+  _updatedOrientationVectors = false;
+  _updatedViewMatrix = false;
+}
+
 void Camera::LookAt(const Math::Vector3 & position)
 {
   _front = position - _position;
-  _front = _front.Normalized();
+  _front.Normalize();
   _yaw = Math::ArcTan(_front.z / _front.x);
   float xz_length = Math::Sqrt(_front.x * _front.x + _front.z * _front.z);
   _pitch = Math::ArcTan(_front.y / xz_length);

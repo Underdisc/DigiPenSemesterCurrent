@@ -12,7 +12,6 @@
 Mesh * Renderer::_mesh = nullptr;
 MeshRenderer::MeshObject * Renderer::_meshObject = nullptr;
 MeshRenderer::MeshObject * Renderer::_sphereMeshObject = nullptr;
-MeshRenderer::MeshObject * Renderer::_planeMeshObject = nullptr;
 
 TextureObject * Renderer::_diffuseTextureObject = nullptr;
 TextureObject * Renderer::_specularTextureObject = nullptr;
@@ -28,9 +27,6 @@ void Renderer::Initialize(Mesh & mesh)
   _meshObject = MeshRenderer::Upload(&mesh);
   Mesh sphere_mesh(MODEL_PATH + std::string("sphere.obj"), Mesh::OBJ);
   _sphereMeshObject = MeshRenderer::Upload(&sphere_mesh);
-  Mesh plane_mesh(MODEL_PATH + std::string("plane.obj"), Mesh::OBJ);
-  _planeMeshObject = MeshRenderer::Upload(&plane_mesh);
-
 
   // texture stuff
   _diffuseTextureObject = TexturePool::Upload("Resource/Texture/diffuse.tga");
@@ -43,17 +39,14 @@ void Renderer::Initialize(Mesh & mesh)
   TexturePool::Bind(_normalTextureObject, 2);
 
   // skybox
-  _skybox = new Skybox("Resource/Texture/Skybox/Alpha/",
+  _skybox = new Skybox("Resource/Texture/Skybox/Test/",
     "up.tga", "dn.tga", "lf.tga", "rt.tga", "ft.tga", "bk.tga");
-  bool res = _skybox->Upload();
-  if(res)
-    std::cout << "success" << std::endl;
+  _skybox->Upload();
 }
 
 void Renderer::Purge()
 {
   MeshRenderer::Unload(_sphereMeshObject);
-  MeshRenderer::Unload(_planeMeshObject);
   TexturePool::Unload(_diffuseTextureObject);
   TexturePool::Unload(_specularTextureObject);
   TexturePool::Unload(_normalTextureObject);
@@ -61,9 +54,10 @@ void Renderer::Purge()
   delete _skybox;
 }
 
-void Renderer::Render(const Math::Matrix4 & projection, Camera * camera)
+void Renderer::Render(const Math::Matrix4 & projection, 
+  const Math::Matrix4 & view, const Math::Vector3 & view_position, bool mesh)
 {
-  _skybox->Render(projection, camera->ViewMatrix());
+  _skybox->Render(projection, view);
 
   SolidShader * solid_shader = MeshRenderer::GetSolidShader();
   PhongShader * phong_shader = MeshRenderer::GetPhongShader();
@@ -83,7 +77,7 @@ void Renderer::Render(const Math::Matrix4 & projection, Camera * camera)
     model = translate * scale;
     Color & color = Editor::lights[i]._diffuseColor;
     glUniform3f(solid_shader->UColor, color._r, color._g, color._b);
-    MeshRenderer::Render(_sphereMeshObject, MeshRenderer::SOLID, projection, camera->ViewMatrix(), model);
+    MeshRenderer::Render(_sphereMeshObject, MeshRenderer::SOLID, projection, view, model);
   }
 
   translate.Translate(Editor::trans.x, Editor::trans.y, Editor::trans.z);
@@ -91,13 +85,12 @@ void Renderer::Render(const Math::Matrix4 & projection, Camera * camera)
   Math::ToMatrix4(Editor::rotation, &rotate);
   model = translate * rotate * scale;
 
-  const Math::Vector3 & cpos = camera->GetPosition();
   switch (Editor::shader_in_use)
   {
     //PHONG SHADER
   case MeshRenderer::ShaderType::PHONG:
     phong_shader->Use();
-    glUniform3f(phong_shader->UCameraPosition, cpos.x, cpos.y, cpos.z);
+    glUniform3f(phong_shader->UCameraPosition, view_position.x, view_position.y, view_position.z);
     glUniform1i(phong_shader->UActiveLights, Light::_activeLights);
     for (int i = 0; i < Light::_activeLights; ++i)
       Editor::lights[i].SetUniforms(i, phong_shader);
@@ -105,7 +98,7 @@ void Renderer::Render(const Math::Matrix4 & projection, Camera * camera)
     // GOURAUD SHADER
   case MeshRenderer::ShaderType::GOURAUD:
     gouraud_shader->Use();
-    glUniform3f(gouraud_shader->UCameraPosition, cpos.x, cpos.y, cpos.z);
+    glUniform3f(gouraud_shader->UCameraPosition, view_position.x, view_position.y, view_position.z);
     glUniform1i(gouraud_shader->UActiveLights, Light::_activeLights);
     glUniform1i(gouraud_shader->UActiveLights, Light::_activeLights);
     for (int i = 0; i < Light::_activeLights; ++i)
@@ -113,7 +106,7 @@ void Renderer::Render(const Math::Matrix4 & projection, Camera * camera)
     break;
   case MeshRenderer::ShaderType::BLINN:
     blinn_shader->Use();
-    glUniform3f(blinn_shader->UCameraPosition, cpos.x, cpos.y, cpos.z);
+    glUniform3f(blinn_shader->UCameraPosition, view_position.x, view_position.y, view_position.z);
     glUniform1i(blinn_shader->UActiveLights, Light::_activeLights);
     for (int i = 0; i < Light::_activeLights; ++i)
       Editor::lights[i].SetUniforms(i, blinn_shader);
@@ -122,11 +115,13 @@ void Renderer::Render(const Math::Matrix4 & projection, Camera * camera)
     break;
   }
   // rendering mesh
-  MeshRenderer::Render(_meshObject, Editor::shader_in_use, projection, camera->ViewMatrix(), model);
-  translate.Translate(0.0, -5.0f, 0.0f);
-  scale.Scale(20.0f, 20.0f, 20.0f);
-  model = translate * scale;
-  MeshRenderer::Render(_planeMeshObject, Editor::shader_in_use, projection, camera->ViewMatrix(), model);
+  if(mesh){
+    //const Math::Matrix4 & identity = Math::Matrix4::cIdentity;
+    //MeshRenderer::Render(_meshObject, Editor::shader_in_use, projection, identity, identity);
+    MeshRenderer::Render(_meshObject, Editor::shader_in_use, projection, view, model);
+  }
+    // correct line
+    //MeshRenderer::Render(_meshObject, Editor::shader_in_use, projection, view, model);
   // disable writing to error strings
   try
   {
@@ -137,4 +132,10 @@ void Renderer::Render(const Math::Matrix4 & projection, Camera * camera)
   {
     ErrorLog::Write(error);
   }
+}
+
+void Renderer::ReplaceMesh(Mesh & mesh)
+{
+  MeshRenderer::Unload(_meshObject);
+  _meshObject = MeshRenderer::Upload(&mesh);
 }

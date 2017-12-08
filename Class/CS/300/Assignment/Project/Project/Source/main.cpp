@@ -60,7 +60,12 @@ float mouse_wheel_sensitivity = 2.0f;
 // Global
 
 void LoadMesh(const std::string & model);
+
 void Update();
+
+void TempInit();
+
+void Draw();
 
 inline void ManageInput()
 {
@@ -128,6 +133,10 @@ int main(int argc, char * argv[])
   Texture bump_map("Resource/Texture/specular.tga");
   bump_map.CreateNormalMap("Resource/Texture/normal_map.png", 2.0f / 255.0f);
 
+
+  // need to get rid of this
+  TempInit();
+
   // starting main program
   glEnable(GL_DEPTH_TEST);
   Framer::Lock(FPS);
@@ -138,14 +147,7 @@ int main(int argc, char * argv[])
     InitialUpdate();
     Editor::Update(mesh, Renderer::_meshObject, LoadMesh);
     Update();
-    Clear();
-
-    Math::Matrix4 projection = Math::Matrix4::Perspective(PI / 2.0f,
-      OpenGLContext::AspectRatio(), MeshRenderer::_nearPlane,
-      MeshRenderer::_farPlane);
-
-    Renderer::Render(projection, &camera);
-   
+    Draw();
     Editor::Render();
     OpenGLContext::Swap();
     // frame end
@@ -159,6 +161,8 @@ int main(int argc, char * argv[])
   OpenGLContext::Purge();
   SDLContext::Purge();
 }
+
+//--------------------// Other //--------------------//
 
 void LoadMesh(const std::string & model)
 {
@@ -182,6 +186,7 @@ void LoadMesh(const std::string & model)
   // new mesh loaded
   mesh = new_mesh;
   Editor::current_mesh = model;
+  Renderer::ReplaceMesh(*mesh);
   try
   {
     GLenum gl_error = glGetError();
@@ -233,4 +238,154 @@ inline void Update()
     RotateLights();
   if(Editor::rotate_camera)
     RotateCamera();
+}
+
+//-----// Framebuffer //-----//
+
+class Framebuffer
+{
+public:
+  Framebuffer()
+  {}
+
+  void Initialize(unsigned int width, unsigned int height)
+  {
+    // create framebuffer
+    glGenFramebuffers(1, &_fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+    // create framebuffer texture
+    glGenTextures(1, &_tbo);
+    glBindTexture(GL_TEXTURE_2D, _tbo);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _tbo, 0);
+    // create renderbuffer
+    glGenRenderbuffers(1, &_rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, _rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _rbo);
+    // unbind framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    try{
+      GLenum gl_error = glGetError();
+      OPENGLERRORCHECK("main.cpp", "Framebuffer::Initialize", "During Framebuffer creation", gl_error);
+    }
+    catch(const Error & error){
+      ErrorLog::Write(error);
+    }
+  }
+
+  void Bind()
+  {
+    glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+  }
+
+  static void BindDefault() {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  }
+private:
+  GLuint _fbo;
+  GLuint _tbo;
+  GLuint _rbo;
+};
+
+Framebuffer fb_up;
+Framebuffer fb_down;
+Framebuffer fb_left;
+Framebuffer fb_right;
+Framebuffer fb_front;
+Framebuffer fb_back;
+
+void TempInit()
+{
+  fb_up.Initialize(512, 512);
+  fb_down.Initialize(512, 512);
+  fb_left.Initialize(512, 512);
+  fb_right.Initialize(512, 512);
+  fb_front.Initialize(512, 512);
+  fb_back.Initialize(512, 512);
+}
+
+//--------------------// Draw //--------------------//
+
+void Draw()
+{
+  Clear();
+  Math::Matrix4 environment_projection = Math::Matrix4::Perspective(PI / 2.0f,
+    1.0f, MeshRenderer::_nearPlane, MeshRenderer::_farPlane);
+
+
+  Math::Matrix4 translation_term(
+    1.0f, 0.0f, 0.0f, -Editor::trans.x,
+    0.0f, 1.0f, 0.0f, -Editor::trans.y,
+    0.0f, 0.0f, 1.0f, -Editor::trans.z,
+    0.0f, 0.0f, 0.0f, 1.0f);
+
+  Math::Vector4 pos_x(1.0f, 0.0f, 0.0f, 0.0f);
+  Math::Vector4 pos_y(0.0f, 1.0f, 0.0f, 0.0f);
+  Math::Vector4 pos_z(0.0f, 0.0f, 1.0f, 0.0f);
+  Math::Vector4 neg_x(-1.0f, 0.0f, 0.0f, 0.0f);
+  Math::Vector4 neg_y(0.0f, -1.0f, 0.0f, 0.0f);
+  Math::Vector4 neg_z(0.0f, 0.0f, -1.0f, 0.0f);
+  Math::Vector4 basis_w(0.0f, 0.0f, 0.0f, 1.0f);
+
+  // linear parts
+  Math::Matrix4 up(pos_x, pos_z, neg_y, basis_w);
+  up.Transpose();
+  Math::Matrix4 down(pos_x, neg_z, pos_y, basis_w);
+  down.Transpose();
+  Math::Matrix4 left(neg_z, pos_y, pos_x, basis_w);
+  left.Transpose();
+  Math::Matrix4 right(pos_z, pos_y, neg_x, basis_w);
+  right.Transpose();
+  Math::Matrix4 front(pos_x, pos_y, pos_z, basis_w);
+  front.Transpose();
+  Math::Matrix4 back(neg_x, pos_y, neg_z, basis_w);
+  back.Transpose();
+
+  up = up * translation_term;
+  down = down * translation_term;
+  left = left * translation_term;
+  right = right * translation_term;
+  front = front * translation_term;
+  back = back * translation_term;
+
+
+  // up render
+  fb_up.Bind();
+  Clear();
+  Renderer::Render(environment_projection, up, Editor::trans, true);
+  Framebuffer::BindDefault();
+  // down render
+  fb_down.Bind();
+  Clear();
+  Renderer::Render(environment_projection, down, Editor::trans, true);
+  Framebuffer::BindDefault();
+  // left render
+  fb_left.Bind();
+  Clear();
+  Renderer::Render(environment_projection, left, Editor::trans, true);
+  Framebuffer::BindDefault();
+  // right render
+  fb_right.Bind();
+  Clear();
+  Renderer::Render(environment_projection, right, Editor::trans, true);
+  Framebuffer::BindDefault();
+  // front render
+  fb_front.Bind();
+  Clear();
+  Renderer::Render(environment_projection, front, Editor::trans, true);
+  Framebuffer::BindDefault();
+  // back render
+  fb_back.Bind();
+  Clear();
+  Renderer::Render(environment_projection, back, Editor::trans, true);
+  Framebuffer::BindDefault();
+  
+  
+  Math::Matrix4 final_projection = Math::Matrix4::Perspective(PI / 2.0f,
+    OpenGLContext::AspectRatio(), MeshRenderer::_nearPlane,
+    MeshRenderer::_farPlane);
+  Renderer::Render(final_projection, camera.ViewMatrix(), camera.GetPosition(), true);
 }

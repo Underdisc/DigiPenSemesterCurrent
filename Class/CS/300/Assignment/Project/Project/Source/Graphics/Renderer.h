@@ -14,7 +14,9 @@ class Renderer
 public:
   static void Initialize(Mesh & mesh);
   static void Purge();
-  static void Render(const Math::Matrix4 & projection, Camera * camera);
+  static void Render(const Math::Matrix4 & projection,
+    const Math::Matrix4 & view, const Math::Vector3 & position, bool mesh);
+  static void ReplaceMesh(Mesh & mesh);
 public:
   static Mesh * _mesh;
   static MeshRenderer::MeshObject * _meshObject;
