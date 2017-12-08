@@ -17,6 +17,19 @@
 #define MAXLIGHTS 10
 
 //----------// Uniform Blocks //----------//
+
+struct UEnvrionment
+{
+  GLuint UEnvironmentMapping;
+  GLuint UEnvironmentMapType;
+  GLuint UUp;
+  GLuint UDown;
+  GLuint ULeft;
+  GLuint URight;
+  GLuint UFront;
+  GLuint UBack;
+};
+
 struct UMaterial
 {
   // Material Factors
@@ -140,6 +153,8 @@ public:
   GLuint UCameraPosition;
   GLuint UEmissiveColor;
   GLuint UGlobalAmbientColor;
+  // Environment Uniform
+  UEnvrionment UEnvironment;
   // Material Uniform
   UMaterial UMaterial;
   // Light Uniforms

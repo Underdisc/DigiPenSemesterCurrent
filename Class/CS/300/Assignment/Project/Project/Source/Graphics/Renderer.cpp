@@ -32,11 +32,6 @@ void Renderer::Initialize(Mesh & mesh)
   _diffuseTextureObject = TexturePool::Upload("Resource/Texture/diffuse.tga");
   _specularTextureObject = TexturePool::Upload("Resource/Texture/specular.tga");
   _normalTextureObject = TexturePool::Upload("Resource/Texture/normal.png");
-  // IT'S OK I KNOW YOU'RE WONDERING WHY YOUR NORMAL MAPS AREN'T SHOWING UP
-  // JUST PUT THESE BEFORE YOUR MESH RENDER
-  TexturePool::Bind(_diffuseTextureObject, 0);
-  TexturePool::Bind(_specularTextureObject, 1);
-  TexturePool::Bind(_normalTextureObject, 2);
 
   // skybox
   _skybox = new Skybox("Resource/Texture/Skybox/Test/",
@@ -58,6 +53,11 @@ void Renderer::Render(const Math::Matrix4 & projection,
   const Math::Matrix4 & view, const Math::Vector3 & view_position, bool mesh)
 {
   _skybox->Render(projection, view);
+
+  // bind textures for rendering
+  TexturePool::Bind(_diffuseTextureObject, 0);
+  TexturePool::Bind(_specularTextureObject, 1);
+  TexturePool::Bind(_normalTextureObject, 2);
 
   SolidShader * solid_shader = MeshRenderer::GetSolidShader();
   PhongShader * phong_shader = MeshRenderer::GetPhongShader();

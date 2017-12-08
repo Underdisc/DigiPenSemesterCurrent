@@ -127,7 +127,7 @@ int main(int argc, char * argv[])
   LoadMesh(Editor::current_mesh);
   Renderer::Initialize(*mesh);
 
-  camera.MoveBack(0.0f);
+  camera.MoveBack(2.0f);
 
   // loading normal map from specular bump map
   Texture bump_map("Resource/Texture/specular.tga");
@@ -289,7 +289,6 @@ public:
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     OpenGLContext::AdjustViewport();
   }
-private:
   GLuint _fbo;
   GLuint _tbo;
   GLuint _rbo;
@@ -367,33 +366,54 @@ void Draw()
   // up render
   fb_up.Bind();
   Clear();
-  Renderer::Render(environment_projection, up, Editor::trans, true);
+  Renderer::Render(environment_projection, up, Editor::trans, false);
   Framebuffer::BindDefault();
   // down render
   fb_down.Bind();
   Clear();
-  Renderer::Render(environment_projection, down, Editor::trans, true);
+  Renderer::Render(environment_projection, down, Editor::trans, false);
   Framebuffer::BindDefault();
   // left render
   fb_left.Bind();
   Clear();
-  Renderer::Render(environment_projection, left, Editor::trans, true);
+  Renderer::Render(environment_projection, left, Editor::trans, false);
   Framebuffer::BindDefault();
   // right render
   fb_right.Bind();
   Clear();
-  Renderer::Render(environment_projection, right, Editor::trans, true);
+  Renderer::Render(environment_projection, right, Editor::trans, false);
   Framebuffer::BindDefault();
   // front render
   fb_front.Bind();
   Clear();
-  Renderer::Render(environment_projection, front, Editor::trans, true);
+  Renderer::Render(environment_projection, front, Editor::trans, false);
   Framebuffer::BindDefault();
   // back render
   fb_back.Bind();
   Clear();
-  Renderer::Render(environment_projection, back, Editor::trans, true);
+  Renderer::Render(environment_projection, back, Editor::trans, false);
   Framebuffer::BindDefault();
+
+  // bind the new tbos
+  PhongShader * phong = MeshRenderer::GetPhongShader();
+  glUniform1i(phong->UEnvironment.UUp, 3);
+  glUniform1i(phong->UEnvironment.UDown, 4);
+  glUniform1i(phong->UEnvironment.ULeft, 5);
+  glUniform1i(phong->UEnvironment.URight, 6);
+  glUniform1i(phong->UEnvironment.UFront, 7);
+  glUniform1i(phong->UEnvironment.UBack, 8);
+  glActiveTexture(GL_TEXTURE0 + 3);
+  glBindTexture(GL_TEXTURE_2D, fb_up._tbo);
+  glActiveTexture(GL_TEXTURE0 + 4);
+  glBindTexture(GL_TEXTURE_2D, fb_down._tbo);
+  glActiveTexture(GL_TEXTURE0 + 5);
+  glBindTexture(GL_TEXTURE_2D, fb_left._tbo);
+  glActiveTexture(GL_TEXTURE0 + 6);
+  glBindTexture(GL_TEXTURE_2D, fb_right._tbo);
+  glActiveTexture(GL_TEXTURE0 + 7);
+  glBindTexture(GL_TEXTURE_2D, fb_front._tbo);
+  glActiveTexture(GL_TEXTURE0 + 8);
+  glBindTexture(GL_TEXTURE_2D, fb_back._tbo);
   
   
   Math::Matrix4 final_projection = Math::Matrix4::Perspective(PI / 2.0f,

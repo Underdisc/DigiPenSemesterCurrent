@@ -9,6 +9,9 @@
 #define MAP_CYLINDRICAL 1
 #define MAP_PLANAR 2
 
+#define ENVIRONMENT_REFLECT 0
+#define ENVIRONMENT_REFRACT 1
+
 in vec3 SNormal;
 in vec3 STangent;
 in vec3 SBitangent;
@@ -18,6 +21,19 @@ in vec3 SModelPos;
 in vec2 SUV;
 
 out vec4 OFragColor;
+
+// Samplers for environment mapping
+struct Environment
+{
+  bool UEnvironmentMapping;
+  int UEnvironmentMapType;
+  sampler2D UUp; // location 3
+  sampler2D UDown; // location 4
+  sampler2D ULeft; // location 5
+  sampler2D URight; // location 6
+  sampler2D UFront; // location 7
+  sampler2D UBack; // location 8
+};
 
 // Material values
 struct Material
@@ -64,6 +80,7 @@ struct Light
 
 const int MaxLights = 10;
 uniform int UActiveLights = 1;
+uniform Environment UEnvironment;
 uniform Material UMaterial;
 uniform Light ULights[MaxLights];
 

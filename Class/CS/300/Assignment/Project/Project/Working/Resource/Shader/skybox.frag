@@ -9,6 +9,7 @@ uniform sampler2D URight;
 uniform sampler2D UFront;
 uniform sampler2D UBack;
 
+// TODO: FLIP YOUR TEXTURES IN PAINT.NET AND IN FLIP ON LOAD
 void main()
 {
   vec3 position = abs(SFragPos);

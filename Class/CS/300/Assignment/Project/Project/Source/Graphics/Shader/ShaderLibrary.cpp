@@ -100,6 +100,15 @@ PhongShader::PhongShader() :
   UCameraPosition = GetUniformLocation("UCameraPosition");
   UEmissiveColor = GetUniformLocation("UEmissiveColor");
   UGlobalAmbientColor = GetUniformLocation("UGlobalAmbientColor");
+  // finding enviornment uniforms
+  UEnvironment.UEnvironmentMapping = GetUniformLocation("UEnvironment.UEnvironmentMapping");
+  UEnvironment.UEnvironmentMapType = GetUniformLocation("UEnvironment.UEnvironmentMapType");
+  UEnvironment.UUp = GetUniformLocation("UEnvironment.UUp");
+  UEnvironment.UDown  = GetUniformLocation("UEnvironment.UDown");
+  UEnvironment.ULeft = GetUniformLocation("UEnvironment.ULeft");
+  UEnvironment.URight = GetUniformLocation("UEnvironment.URight");
+  UEnvironment.UFront = GetUniformLocation("UEnvironment.UFront");
+  UEnvironment.UBack = GetUniformLocation("UEnvironment.UBack");
   // finding material uniforms
   UMaterial.UColor = GetUniformLocation("UMaterial.UColor");
   UMaterial.UAmbientFactor = GetUniformLocation("UMaterial.UAmbientFactor");
