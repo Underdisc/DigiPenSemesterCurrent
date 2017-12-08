@@ -324,9 +324,9 @@ void Draw()
 
 
   Math::Matrix4 translation_term(
-    1.0f, 0.0f, 0.0f, 0.0f,
-    0.0f, 1.0f, 0.0f, 0.0f,
-    0.0f, 0.0f, 1.0f, 0.0f,
+    1.0f, 0.0f, 0.0f, -Editor::trans.x,
+    0.0f, 1.0f, 0.0f, -Editor::trans.y,
+    0.0f, 0.0f, 1.0f, -Editor::trans.z,
     0.0f, 0.0f, 0.0f, 1.0f);
   /*Math::Matrix4 translation_term(
     1.0f, 0.0f, 0.0f, -Editor::trans.x,
