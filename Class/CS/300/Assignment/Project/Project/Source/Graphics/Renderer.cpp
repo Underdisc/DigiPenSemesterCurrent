@@ -115,13 +115,8 @@ void Renderer::Render(const Math::Matrix4 & projection,
     break;
   }
   // rendering mesh
-  if(mesh){
-    //const Math::Matrix4 & identity = Math::Matrix4::cIdentity;
-    //MeshRenderer::Render(_meshObject, Editor::shader_in_use, projection, identity, identity);
+  if(mesh)
     MeshRenderer::Render(_meshObject, Editor::shader_in_use, projection, view, model);
-  }
-    // correct line
-    //MeshRenderer::Render(_meshObject, Editor::shader_in_use, projection, view, model);
   // disable writing to error strings
   try
   {

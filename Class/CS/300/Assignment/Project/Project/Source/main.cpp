@@ -127,7 +127,7 @@ int main(int argc, char * argv[])
   LoadMesh(Editor::current_mesh);
   Renderer::Initialize(*mesh);
 
-  camera.MoveBack(2.0f);
+  camera.MoveBack(0.0f);
 
   // loading normal map from specular bump map
   Texture bump_map("Resource/Texture/specular.tga");
@@ -267,6 +267,9 @@ public:
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _rbo);
     // unbind framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // frame buffer done
+    _width = width;
+    _height = height;
     try{
       GLenum gl_error = glGetError();
       OPENGLERRORCHECK("main.cpp", "Framebuffer::Initialize", "During Framebuffer creation", gl_error);
@@ -279,15 +282,19 @@ public:
   void Bind()
   {
     glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+    glViewport(0, 0, _width, _height);
   }
 
   static void BindDefault() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    OpenGLContext::AdjustViewport();
   }
 private:
   GLuint _fbo;
   GLuint _tbo;
   GLuint _rbo;
+  unsigned int _width;
+  unsigned int _height;
 };
 
 Framebuffer fb_up;
@@ -317,10 +324,15 @@ void Draw()
 
 
   Math::Matrix4 translation_term(
+    1.0f, 0.0f, 0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f, 0.0f,
+    0.0f, 0.0f, 1.0f, 0.0f,
+    0.0f, 0.0f, 0.0f, 1.0f);
+  /*Math::Matrix4 translation_term(
     1.0f, 0.0f, 0.0f, -Editor::trans.x,
     0.0f, 1.0f, 0.0f, -Editor::trans.y,
     0.0f, 0.0f, 1.0f, -Editor::trans.z,
-    0.0f, 0.0f, 0.0f, 1.0f);
+    0.0f, 0.0f, 0.0f, 1.0f);*/
 
   Math::Vector4 pos_x(1.0f, 0.0f, 0.0f, 0.0f);
   Math::Vector4 pos_y(0.0f, 1.0f, 0.0f, 0.0f);
