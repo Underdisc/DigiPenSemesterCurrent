@@ -18,17 +18,6 @@
 
 //----------// Uniform Blocks //----------//
 
-struct UEnvrionment
-{
-  GLuint UEnvironmentMapping;
-  GLuint UEnvironmentMapType;
-  GLuint UUp;
-  GLuint UDown;
-  GLuint ULeft;
-  GLuint URight;
-  GLuint UFront;
-  GLuint UBack;
-};
 
 struct UMaterial
 {
@@ -38,14 +27,28 @@ struct UMaterial
   GLuint UDiffuseFactor;
   GLuint USpecularFactor;
   GLuint USpecularExponent;
+  GLuint UEnvironmentFactor;
+  GLuint URefractionIndex;
+  GLuint UChromaticAbberation;
+  GLuint UChromaticOffset;
+  GLuint UFresnelReflection;
+  GLuint UFresnelRatio;
   // Texture Mapping Properties
   GLuint UTextureMapping;
   GLuint USpecularMapping;
   GLuint UNormalMapping;
+  GLuint UEnvironmentMapping;
   GLuint UMappingType;
+  // Samplers
   GLuint UDiffuseMap;
   GLuint USpecularMap;
   GLuint UNormalMap;
+  GLuint UUp;
+  GLuint UDown;
+  GLuint ULeft;
+  GLuint URight;
+  GLuint UFront;
+  GLuint UBack;
 };
 
 
@@ -153,8 +156,6 @@ public:
   GLuint UCameraPosition;
   GLuint UEmissiveColor;
   GLuint UGlobalAmbientColor;
-  // Environment Uniform
-  UEnvrionment UEnvironment;
   // Material Uniform
   UMaterial UMaterial;
   // Light Uniforms

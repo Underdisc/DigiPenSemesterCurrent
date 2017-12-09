@@ -101,27 +101,33 @@ PhongShader::PhongShader() :
   UEmissiveColor = GetUniformLocation("UEmissiveColor");
   UGlobalAmbientColor = GetUniformLocation("UGlobalAmbientColor");
   // finding enviornment uniforms
-  UEnvironment.UEnvironmentMapping = GetUniformLocation("UEnvironment.UEnvironmentMapping");
-  UEnvironment.UEnvironmentMapType = GetUniformLocation("UEnvironment.UEnvironmentMapType");
-  UEnvironment.UUp = GetUniformLocation("UEnvironment.UUp");
-  UEnvironment.UDown  = GetUniformLocation("UEnvironment.UDown");
-  UEnvironment.ULeft = GetUniformLocation("UEnvironment.ULeft");
-  UEnvironment.URight = GetUniformLocation("UEnvironment.URight");
-  UEnvironment.UFront = GetUniformLocation("UEnvironment.UFront");
-  UEnvironment.UBack = GetUniformLocation("UEnvironment.UBack");
+
   // finding material uniforms
   UMaterial.UColor = GetUniformLocation("UMaterial.UColor");
   UMaterial.UAmbientFactor = GetUniformLocation("UMaterial.UAmbientFactor");
   UMaterial.UDiffuseFactor = GetUniformLocation("UMaterial.UDiffuseFactor");
   UMaterial.USpecularFactor = GetUniformLocation("UMaterial.USpecularFactor");
   UMaterial.USpecularExponent = GetUniformLocation("UMaterial.USpecularExponent");
+  UMaterial.UEnvironmentFactor = GetUniformLocation("UMaterial.UEnvironmentFactor");
+  UMaterial.URefractionIndex = GetUniformLocation("UMaterial.URefractionIndex");
+  UMaterial.UChromaticAbberation = GetUniformLocation("UMaterial.UChromaticAbberation");
+  UMaterial.UChromaticOffset = GetUniformLocation("UMaterial.UChromaticOffset");
+  UMaterial.UFresnelReflection = GetUniformLocation("UMaterial.UFresnelReflection");
+  UMaterial.UFresnelRatio = GetUniformLocation("UMaterial.UFresnelRatio");
   UMaterial.UTextureMapping = GetUniformLocation("UMaterial.UTextureMapping");
   UMaterial.USpecularMapping = GetUniformLocation("UMaterial.USpecularMapping");
   UMaterial.UNormalMapping = GetUniformLocation("UMaterial.UNormalMapping");
+  UMaterial.UEnvironmentMapping = GetUniformLocation("UMaterial.UEnvironmentMapping");
   UMaterial.UMappingType = GetUniformLocation("UMaterial.UMappingType");
   UMaterial.UDiffuseMap = GetUniformLocation("UMaterial.UDiffuseMap");
   UMaterial.USpecularMap = GetUniformLocation("UMaterial.USpecularMap");
   UMaterial.UNormalMap = GetUniformLocation("UMaterial.UNormalMap");
+  UMaterial.UUp = GetUniformLocation("UMaterial.UUp");
+  UMaterial.UDown = GetUniformLocation("UMaterial.UDown");
+  UMaterial.ULeft = GetUniformLocation("UMaterial.ULeft");
+  UMaterial.URight = GetUniformLocation("UMaterial.URight");
+  UMaterial.UFront = GetUniformLocation("UMaterial.UFront");
+  UMaterial.UBack = GetUniformLocation("UMaterial.UBack");
   // finding light uniforms
   for (unsigned int i = 0; i < MAXLIGHTS; ++i) {
     std::string index(std::to_string(i));

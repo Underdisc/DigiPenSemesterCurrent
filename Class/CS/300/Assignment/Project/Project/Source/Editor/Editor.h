@@ -59,6 +59,11 @@ public:
   static float cur_scale;
    // initializing to pie so rotations make sense at the start
   static Math::EulerAngles rotation;
+
+
+  // really really shouldn't be here but w/e for now
+  static bool _environmentMapping;
+  static int _environmentMappingType;
 private:
   Editor();
 };

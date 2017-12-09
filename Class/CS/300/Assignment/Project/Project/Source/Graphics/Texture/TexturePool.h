@@ -22,6 +22,7 @@ class TexturePool
 public:
   static TextureObject * TexturePool::Upload(const std::string & file);
   static TextureObject * Upload(const Texture & texture);
+  static TextureObject * Upload(GLuint glID);
   static void Unload(TextureObject * texture_object);
   static bool Bind(TextureObject * texture_object, int location);
   static bool Unbind(TextureObject * texture_object);

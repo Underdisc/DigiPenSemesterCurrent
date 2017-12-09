@@ -22,19 +22,6 @@ in vec2 SUV;
 
 out vec4 OFragColor;
 
-// Samplers for environment mapping
-struct Environment
-{
-  bool UEnvironmentMapping;
-  int UEnvironmentMapType;
-  sampler2D UUp; // location 3
-  sampler2D UDown; // location 4
-  sampler2D ULeft; // location 5
-  sampler2D URight; // location 6
-  sampler2D UFront; // location 7
-  sampler2D UBack; // location 8
-};
-
 // Material values
 struct Material
 {
@@ -44,14 +31,28 @@ struct Material
   float UDiffuseFactor;
   float USpecularFactor;
   float USpecularExponent;
+  float UEnvironmentFactor;
+  float URefractionIndex;
+  bool UChromaticAbberation;
+  float UChromaticOffset;
+  bool UFresnelReflection;
+  float UFresnelRatio;
   // texture mapping
   bool UTextureMapping;
   bool USpecularMapping;
   bool UNormalMapping;
+  bool UEnvironmentMapping;
   int UMappingType;
+  // samplers
   sampler2D UDiffuseMap;  // location 0
   sampler2D USpecularMap; // location 1
   sampler2D UNormalMap;   // location 2
+  sampler2D UUp; // location 3
+  sampler2D UDown; // location 4
+  sampler2D ULeft; // location 5
+  sampler2D URight; // location 6
+  sampler2D UFront; // location 7
+  sampler2D UBack; // location 8
 
 };
 
@@ -80,7 +81,6 @@ struct Light
 
 const int MaxLights = 10;
 uniform int UActiveLights = 1;
-uniform Environment UEnvironment;
 uniform Material UMaterial;
 uniform Light ULights[MaxLights];
 
@@ -92,6 +92,46 @@ uniform vec3 UEmissiveColor;
 uniform vec3 UGlobalAmbientColor;
 
 uniform vec3 UCameraPosition;
+
+vec2 PerformPlanarMapping(vec3 direction){
+  vec3 da = abs(direction);
+  vec2 uv;
+  // X mapping
+  if(da.x > da.y && da.x > da.z){
+    if(direction.x > 0){
+      uv.x = (direction.z / da.x + 1.0) / 2.0;
+      uv.y = (direction.y / da.x + 1.0) / 2.0;
+    }
+    else{
+      uv.x = (direction.z / da.x + 1.0) / 2.0;
+      uv.y = (direction.y / da.x + 1.0) / 2.0;
+    }
+  }
+  // Y mapping
+  else if(da.y > da.x && da.y > da.z){
+    if(direction.y > 0){
+      uv.x = (direction.x / da.y + 1.0) / 2.0;
+      uv.y = (direction.z / da.y + 1.0) / 2.0;
+    }
+    else{
+      uv.x = (direction.x / da.y + 1.0) / 2.0;
+      uv.y = (direction.z / da.y + 1.0) / 2.0;
+    }
+
+  }
+  // Z mapping
+  else if(da.z > da.x && da.z > da.y){
+    if(direction.z > 0){
+      uv.x = (direction.x / da.z + 1.0) / 2.0;
+      uv.y = (direction.y / da.z + 1.0) / 2.0;
+    }
+    else{
+      uv.x = (direction.x / da.z + 1.0) / 2.0;
+      uv.y = (direction.y / da.z + 1.0) / 2.0;
+    }
+  }
+  return uv;
+}
 
 /******************************************************************************/
 /*
@@ -121,27 +161,86 @@ vec2 ComputeUVs()
       break;
     // planar mapping method
     case MAP_PLANAR:
-      vec3 mpa = abs(SModelPos);
-      // X mapping
-      if(mpa.x > mpa.y && mpa.x > mpa.z){
-        uv.x = (SModelPos.z / SModelPos.x + 1.0) / 2.0;
-        uv.y = (SModelPos.y / SModelPos.x + 1.0) / 2.0;
-      }
-      // Y mapping
-      else if(mpa.y > mpa.x && mpa.y > mpa.z){
-        uv.x = (SModelPos.x / SModelPos.y + 1.0) / 2.0;
-        uv.y = (SModelPos.z / SModelPos.y + 1.0) / 2.0;
-      }
-      // Z mapping
-      else if(mpa.z > mpa.x && mpa.z > mpa.y){
-        uv.x = (SModelPos.x / SModelPos.z + 1.0) / 2.0;
-        uv.y = (SModelPos.y / SModelPos.z + 1.0) / 2.0;
-      }
+      uv = PerformPlanarMapping(SModelPos);
       break;
     default:
       break;
   }
   return uv;
+}
+
+vec3 GetEnvironmentColor(vec3 direction, vec2 uv)
+{
+  vec3 da = abs(direction);
+  if(da.x > da.y && da.x > da.z){
+    if(direction.x > 0)
+      return texture(UMaterial.URight, uv).xyz;
+    else{
+      uv.x = 1.0 - uv.x;
+      return texture(UMaterial.ULeft, uv).xyz;
+    }
+  }
+  else if(da.y > da.x && da.y > da.z){
+    if(direction.y > 0)
+      return texture(UMaterial.UUp, uv).xyz;
+    else{
+      uv.y = 1.0 - uv.y;
+      return texture(UMaterial.UDown, uv).xyz;
+    }
+  }
+  else if(da.z > da.x && da.z > da.y){
+    if(direction.z > 0){
+      uv.x = 1.0 - uv.x;
+      return texture(UMaterial.UBack, uv).xyz;
+    }
+    else
+      return texture(UMaterial.UFront, uv).xyz;
+  }
+}
+
+vec3 GetRefractColor(float refraction_index, vec3 normal, vec3 view_dir)
+{
+  float ndotv = dot(normal, view_dir);
+  float ndotv_2 = ndotv * ndotv;
+  float ir = 1.0 / refraction_index;
+  float ir_2 = ir * ir;
+  vec3 refract_view_dir = (ir * ndotv - sqrt(1.0 - ir_2 * (1.0 - ndotv_2))) * normal - ir * view_dir;
+  vec2 refract_uv = PerformPlanarMapping(refract_view_dir);
+  return GetEnvironmentColor(refract_view_dir, refract_uv);
+}
+
+vec3 EnvironmentMap(vec3 normal, vec3 view_dir)
+{
+
+  vec3 reflect_view_dir = 2.0 * dot(normal, view_dir) * normal - view_dir;
+  vec2 reflect_uv = PerformPlanarMapping(reflect_view_dir);
+  vec3 reflect_environment_color = GetEnvironmentColor(reflect_view_dir, reflect_uv);
+
+  vec3 refract_environment_color;
+  if(UMaterial.UChromaticAbberation){
+    refract_environment_color.r = GetRefractColor(UMaterial.URefractionIndex - UMaterial.UChromaticOffset, normal, view_dir).r;
+    refract_environment_color.g = GetRefractColor(UMaterial.URefractionIndex, normal, view_dir).g;
+    refract_environment_color.b = GetRefractColor(UMaterial.URefractionIndex + UMaterial.UChromaticOffset, normal, view_dir).b;
+  }
+  else{
+    refract_environment_color = GetRefractColor(UMaterial.URefractionIndex, normal, view_dir);
+  }
+
+  float fresnel_ratio;
+  if(UMaterial.UFresnelReflection){
+    // I understand what this is trying to accomplish but I do not fully understand
+    // how it works
+    float ndotv = dot(normal, view_dir);
+    float ir = 1.0 / UMaterial.URefractionIndex;
+    float fresnel_value = ((1.0-ir) * (1.0-ir)) / ((1.0+ir) * (1.0+ir));
+    fresnel_ratio = fresnel_value + (1.0 - fresnel_value) * pow((1.0 - ndotv), 5.0);
+  }
+  else{
+    fresnel_ratio = UMaterial.UFresnelRatio;
+  }
+
+
+  return mix(refract_environment_color, reflect_environment_color, fresnel_ratio);
 }
 
 /******************************************************************************/
@@ -258,6 +357,11 @@ void main()
   // accounting for emissive and global ambient
   final_color += UMaterial.UAmbientFactor * UGlobalAmbientColor;
   final_color += UEmissiveColor;
+  // account for environment mapping
+  if(UMaterial.UEnvironmentMapping){
+    vec3 environment_color = EnvironmentMap(normal, view_dir);
+    final_color = mix(final_color, environment_color, UMaterial.UEnvironmentFactor);
+  }
   // accounting for fog
   float dist = length(view_vec);
   float fog_factor = (dist - UNearPlane) / (UFarPlane - UNearPlane);

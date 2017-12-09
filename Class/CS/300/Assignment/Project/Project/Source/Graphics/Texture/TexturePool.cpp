@@ -56,6 +56,13 @@ TextureObject * TexturePool::Upload(const Texture & texture)
   return new_texture_object;
 }
 
+TextureObject * TexturePool::Upload(GLuint glID)
+{
+  TextureObject * new_texture_object = new TextureObject();
+  new_texture_object->_glID = glID;
+  return new_texture_object;
+}
+
 void TexturePool::Unload(TextureObject * texture_object)
 {
   Unbind(texture_object);

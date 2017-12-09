@@ -3,17 +3,21 @@
 #include "Mesh/Mesh.h"
 #include "Mesh/MeshRenderer.h"
 #include "Texture/TexturePool.h"
+#include "Framebuffer.h"
 #include "Skybox.h"
 #include "Camera.h"
 
 #ifndef RENDERER_H
 #define RENDERER_H
 
+
 class Renderer
 {
 public:
   static void Initialize(Mesh & mesh);
   static void Purge();
+  static void Clear();
+  static void RenderEnvironment();
   static void Render(const Math::Matrix4 & projection,
     const Math::Matrix4 & view, const Math::Vector3 & position, bool mesh);
   static void ReplaceMesh(Mesh & mesh);
@@ -28,6 +32,13 @@ public:
   static TextureObject * _normalTextureObject;
 
   static Skybox * _skybox;
+
+  static Framebuffer _fbUp;
+  static Framebuffer _fbDown;
+  static Framebuffer _fbLeft;
+  static Framebuffer _fbRight;
+  static Framebuffer _fbFront;
+  static Framebuffer _fbBack;
 
 };
 

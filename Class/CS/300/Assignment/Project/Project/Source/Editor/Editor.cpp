@@ -25,7 +25,7 @@ MeshRenderer::ShaderType Editor::shader_in_use = MeshRenderer::PHONG;
 std::string Editor::error_log;
 
 // these things probably shouldn't be here
-bool Editor::rotating_lights = false;
+bool Editor::rotating_lights = true;
 float Editor::rotate_light_speed = 1.5f;
 bool Editor::rotate_camera = false;
 float Editor::camera_rotate_speed = 1.0f;
@@ -241,27 +241,39 @@ inline void Editor::MaterialEditorUpdate(Material & material)
     0.0f, 30.0f);
   ImGui::Separator();
   // Texture mapping section
-  if(material._textureMapping || material._specularMapping || 
-    material._normalMapping){
+  if (material._textureMapping || material._specularMapping ||
+    material._normalMapping) {
     // mapping type
     ImGui::Combo("Mapping Type", &material._mappingType,
       "Spherical\0Cylindrical\0Planar\0\0");
     ImGui::Separator();
     // texture maps
-    if(material._textureMapping){
-      ImGui::Text("Current Diffusue Texture: %s", 
-      _currentTextureDiffuse.c_str());
+    if (material._textureMapping) {
+      ImGui::Text("Current Diffusue Texture: %s",
+        _currentTextureDiffuse.c_str());
     }
-    if(material._specularMapping){
-      ImGui::Text("Current Specular Texture: %s", 
-      _currentTextureSpecular.c_str());
+    if (material._specularMapping) {
+      ImGui::Text("Current Specular Texture: %s",
+        _currentTextureSpecular.c_str());
     }
-    if(material._normalMapping){
+    if (material._normalMapping) {
       ImGui::Text("Current Normal Texture: %s",
-      _currentTextureNormal.c_str());
+        _currentTextureNormal.c_str());
     }
     ImGui::Separator();
   }
+  ImGui::Checkbox("Environment Mapping", &material._environmentMapping);
+  if(material._environmentMapping){
+    ImGui::SliderFloat("Environment Factor", &material._environmentFactor,
+      0.0f, 1.0f);
+    ImGui::SliderFloat("Refraction Index", &material._refractionIndex,
+      1.0f, 2.0f);
+    ImGui::Checkbox("Chromatic Abberation", &material._chromaticAbberation);
+    ImGui::SliderFloat("Chromatic Offset", &material._chromaticOffset, 0.0f, 0.1f);
+    ImGui::Checkbox("Fresnel Reflection", &material._fresnelReflection);
+    ImGui::SliderFloat("Refraction <--> Reflection", &material._fresnelRatio, 0.0f, 1.0f);
+  }
+  ImGui::Separator();
   ImGui::End();
 }
 

@@ -81,4 +81,11 @@ void Skybox::Render(const Math::Matrix4 & projection,
   glDrawElements(GL_TRIANGLES, _sky._numElements, GL_UNSIGNED_INT, nullptr);
   glBindVertexArray(0);
   glDepthMask(GL_TRUE);
+  // unbind textures
+  TexturePool::Unbind(_tUp);
+  TexturePool::Unbind(_tDown);
+  TexturePool::Unbind(_tLeft);
+  TexturePool::Unbind(_tRight);
+  TexturePool::Unbind(_tFront);
+  TexturePool::Unbind(_tBack);
 }

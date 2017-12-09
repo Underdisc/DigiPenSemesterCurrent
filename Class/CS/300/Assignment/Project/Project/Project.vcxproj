@@ -146,6 +146,7 @@
     <ClCompile Include="Source\External\Imgui\imgui_impl_sdl_gl3.cpp" />
     <ClCompile Include="Source\Graphics\Camera.cpp" />
     <ClCompile Include="Source\Graphics\Color.cpp" />
+    <ClCompile Include="Source\Graphics\Framebuffer.cpp" />
     <ClCompile Include="Source\Graphics\Light.cpp" />
     <ClCompile Include="Source\Graphics\Material.cpp" />
     <ClCompile Include="Source\Graphics\Mesh\Mesh.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Source\External\Imgui\stb_truetype.h" />
     <ClInclude Include="Source\Graphics\Camera.h" />
     <ClInclude Include="Source\Graphics\Color.h" />
+    <ClInclude Include="Source\Graphics\Framebuffer.h" />
     <ClInclude Include="Source\Graphics\Light.h" />
     <ClInclude Include="Source\Graphics\Material.h" />
     <ClInclude Include="Source\Graphics\Mesh\Mesh.h" />
