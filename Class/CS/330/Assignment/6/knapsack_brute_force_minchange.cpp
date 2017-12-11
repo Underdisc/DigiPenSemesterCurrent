@@ -35,7 +35,7 @@ int GreyCode::FindPositionToChange(unsigned long long next_iteration)
   unsigned long long current_power = 1;
   while(next_iteration % current_power == 0){
     ++current_exp;
-    current_power *= 2;
+    current_power = current_power << 1;
   }
   // The position of the value that will change
   return current_exp - 1;
@@ -46,7 +46,7 @@ GreyCode::GreyCode(int s) : _numPermutations(1),
 {
   // finding number of permutations
   for(int i = 0; i < s; ++i)
-    _numPermutations *= 2;
+    _numPermutations = _numPermutations << 1;
 }
 
 // Finds the next Grey Code.
