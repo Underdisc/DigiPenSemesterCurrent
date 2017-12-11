@@ -40,7 +40,7 @@ SocketTCP::SocketTCP(const SOCKET & socket) :
   _socket(socket), _block(true)
 {}
 
-int SocketTCP::Connect(int port, const char * address)
+int SocketTCP::SetConnectAddress(int port, const char * address)
 {
   // getting address info using DNS
   addrinfo * address_info = nullptr;
@@ -55,17 +55,25 @@ int SocketTCP::Connect(int port, const char * address)
   sockaddr * sockaddr_address = address_info->ai_addr;
   // preparing address the socket will connect to
 
-  sockaddr_in c_address = *reinterpret_cast<sockaddr_in *>(sockaddr_address);
-  c_address.sin_family = AF_INET;
-  c_address.sin_port = htons(port);
-  int c_address_size = sizeof(sockaddr_in);
+  _connectAddress = *reinterpret_cast<sockaddr_in *>(sockaddr_address);
+  _connectAddress.sin_family = AF_INET;
+  _connectAddress.sin_port = htons(port);
   // free the addrinfo
   delete hints;
   freeaddrinfo(address_info);
-  // connect to address
-  result = connect(_socket, (sockaddr *)&c_address, c_address_size);
-  if(result == SOCKET_ERROR)
-    std::cout << "Connect Error: " << address << std::endl;
+  return 0;
+}
+
+int SocketTCP::Connect()
+{
+  int addrsize = sizeof(sockaddr_in);
+  int result = connect(_socket, (sockaddr *)&_connectAddress, addrsize);
+  if(result == SOCKET_ERROR){
+    if(errno == EINPROGRESS || errno == EALREADY)
+      return CONNECT_IN_PROGRESS;
+    std::cout << "Connect Error: " << errno << std::endl;
+    return -1;
+  }
   return 0;
 }
 

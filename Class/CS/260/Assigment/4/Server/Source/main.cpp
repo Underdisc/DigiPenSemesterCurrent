@@ -132,6 +132,7 @@ private:
   enum Stage
   {
     CLIENT_RECIEVE,
+    WEB_CONNECT,
     WEB_SEND,
     WEB_TO_CLIENT,
     DONE,
@@ -140,6 +141,7 @@ private:
   SocketTCP * _clientSocket;
   SocketTCP _webSocket;
   bool _webConnect;
+  int _bytesToSend;
   Stage _stage;
 
   std::string _data;
@@ -149,8 +151,10 @@ private:
   int _chunked;
   int _clientID;
 private:
-  void ClientRecieve();
-  bool WebSend();
+  bool ClientRecieve();
+  bool SetWebSocketAddress();
+  bool WebConnect();
+  void WebSend();
   bool WebToClient();
 
   friend HTTPProxyServer;
@@ -170,10 +174,13 @@ bool HTTPProxy::Update()
   switch (_stage)
   {
   case CLIENT_RECIEVE:
-    ClientRecieve();
+    done = ClientRecieve();
+    break;
+  case WEB_CONNECT:
+    done = WebConnect();
     break;
   case WEB_SEND:
-    done = WebSend();
+    WebSend();
     break;
   case WEB_TO_CLIENT:
     done = WebToClient();
@@ -198,26 +205,29 @@ int HTTPProxy::ClientID()
   return _clientID;
 }
 
-void HTTPProxy::ClientRecieve()
+bool HTTPProxy::ClientRecieve()
 {
   char recv_buff[MTU_SIZE];
   int recv_len = _clientSocket->Recieve(recv_buff, MTU_SIZE - 1);
   // ignore if no data is received
   if(recv_len < 1)
-    return;
+    return false;
   _data.append(recv_buff, recv_len);
   size_t end_1 = _data.find('\n');
   if(end_1 == std::string::npos)
-    return;
+    return false;
   size_t end_2 = _data.find('\n', end_1 + 1);
   if(end_2 == std::string::npos)
-    return;
+    return false;
   // move to next stage
-  _stage = WEB_SEND;
+  _stage = WEB_CONNECT;
+  int result = SetWebSocketAddress();
+  _webSocket.Block(false);
   //std::cout << _clientID << ": Client Receive Complete" << std::endl;
+  return result;
 }
 
-bool HTTPProxy::WebSend()
+bool HTTPProxy::SetWebSocketAddress()
 {
   // extract the domain name
   int domain_start = _data.find("Host: ");
@@ -236,21 +246,46 @@ bool HTTPProxy::WebSend()
   }
   std::string domain_name(_data.substr(domain_start,
     domain_end - domain_start));
-  // connect the web socket and send request
-  int result = _webSocket.Connect(80, domain_name.c_str());
+  // set the address we are connecting to
+  int result = _webSocket.SetConnectAddress(80, domain_name.c_str());
+  if(result == -1){
+    _stage = DONE;
+    return true;
+  }
+  return false;
+}
+
+bool HTTPProxy::WebConnect()
+{
+  int result = _webSocket.Connect();
   // checking for error during connect
   if(result == -1){
     _stage = DONE;
     return true;
   }
-  // connection successful - sending data
-  _webConnect = true;
-  _webSocket.Send(_data.c_str(), _data.size());
-  _webSocket.Block(false);
-  _stage = WEB_TO_CLIENT;
-  //std::cout << _clientID << ": Web Send complete" << std::endl;
-  _data.clear();
+  else if (result == CONNECT_DONE){
+    _stage = WEB_SEND;
+    _webConnect = true;
+    _bytesToSend = _data.size();
+    //std::cout << _clientID << ": Web Connect Completed" << std::endl;
+  }
   return false;
+}
+
+void HTTPProxy::WebSend()
+{
+  // sending data
+  int offset = _data.size() - _bytesToSend;
+  int bytes_sent = _webSocket.Send(_data.c_str() + offset, _bytesToSend);
+  if(bytes_sent == _bytesToSend){
+    _stage = WEB_TO_CLIENT;
+    _bytesToSend = 0;
+    _data.clear();
+    //std::cout << _clientID << ": Web Send Completed" << std::endl;
+  }
+  else{
+    _bytesToSend -= bytes_sent;
+  }
 }
 
 bool HTTPProxy::WebToClient()
@@ -262,6 +297,8 @@ bool HTTPProxy::WebToClient()
   if (recv_bytes > 0)
   {
     _data.append(recv_buff, recv_bytes);
+    // this might not work 100% of the time if our send buffer is full
+    // whoops
     _clientSocket->Send(recv_buff, recv_bytes);
     if (_contentLength == -1 && !_chunked) {
       _contentLength = FindContentLength(_data);
@@ -285,13 +322,11 @@ bool HTTPProxy::WebToClient()
         //std::cout << _clientID << ": Web to Client complete" << std::endl;
         return true;
       }
-
       end_start = _data.size() - 4;
       if (_data.substr(end_start) == "\n0\n\n"){
         //std::cout << _clientID << ": Web to Client complete" << std::endl;
         return true;
       }
-
     }
   }
   return false;

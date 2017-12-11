@@ -28,6 +28,8 @@ typedef int SOCKET;
 
 #define MTU_SIZE 1500
 
+#define CONNECT_DONE 0
+#define CONNECT_IN_PROGRESS 1
 #define SEND_SOCKET_FULL -1
 #define RECIEVE_NO_DATA -1
 #define RECIEVE_FIN 0
@@ -44,7 +46,8 @@ class SocketTCP
 public:
   SocketTCP();
   SocketTCP(const SOCKET & socket);
-  int Connect(int port, const char * address);
+  int SetConnectAddress(int port, const char * address);
+  int Connect();
   int Bind(int port);
   int Send(const char * data, int bytes);
   int Recieve(char * data, int bytes);
@@ -56,6 +59,7 @@ public:
   void CloseSend();
 private:
   SOCKET _socket;
+  sockaddr_in _connectAddress;
   bool _block;
 
   int ErrorCheck(int return_value);
