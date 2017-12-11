@@ -63,7 +63,7 @@ void WinSockLoader::Purge()
 #endif // _WIN32
 
 int main()
-{ 
+{
   bool running = true;
   std::ofstream outfile;
   outfile.open("output.txt");
@@ -72,14 +72,13 @@ int main()
   #ifdef _WIN32
   WinSockLoader::Initialize();
   #endif // !_WIN32
-  
+
   // connect to my server
   SocketTCP socket1;
   socket1.Connect(8008, "127.0.0.1");
   socket1.Block(false);
   std::cout << "Connected" << std::endl;
-  std::string message1("GET / HTTP/1.1\n"
-                      "Host: echo.cs260.net\n\n");
+  std::string message1("GET / HTTP/1.1\r\nHost: echo.cs260.net\r\n\r\n");
   socket1.Send(message1.c_str(), message1.size());
 
 
@@ -87,14 +86,13 @@ int main()
   socket2.Connect(8008, "127.0.0.1");
   socket2.Block(false);
   std::cout << "Connected" << std::endl;
-  std::string message2("GET / HTTP/1.1\n"
-    "Host: echo.cs260.net\n\n");
+  std::string message2("GET / HTTP/1.1\r\nHost: echo.cs260.net\r\n\r\n");
   socket2.Send(message2.c_str(), message2.size());
 
   std::string data1;
   std::string data2;
   int doh = 0;
-  while(true) 
+  while(doh < 2)
   {
     char recv_buff1[MTU_SIZE];
     int recv_len1 = socket1.Recieve(recv_buff1, MTU_SIZE);
@@ -109,10 +107,6 @@ int main()
       data2.append(recv_buff2, recv_len2);
       ++doh;
     }
-
-    if(doh == 2)
-      break;
-
 
   }
   std::cout << data1 << std::endl;

@@ -28,7 +28,7 @@
 
 #define DEBUG
 
-//--------------------// WinSockLoader //--------------------// 
+//--------------------// WinSockLoader //--------------------//
 #ifdef _WIN32
 class WinSockLoader
 {
@@ -124,19 +124,22 @@ class HTTPProxyServer;
 class HTTPProxy
 {
 public:
-  HTTPProxy(SocketTCP * client_socket);
+  HTTPProxy(SocketTCP * client_socket, int client_id);
   bool Update();
   void Close();
+  int ClientID();
 private:
   enum Stage
   {
     CLIENT_RECIEVE,
     WEB_SEND,
     WEB_TO_CLIENT,
+    DONE,
   };
 private:
   SocketTCP * _clientSocket;
   SocketTCP _webSocket;
+  bool _webConnect;
   Stage _stage;
 
   std::string _data;
@@ -144,7 +147,7 @@ private:
   int _contentLength;
   int _contentStart;
   int _chunked;
-
+  int _clientID;
 private:
   void ClientRecieve();
   bool WebSend();
@@ -153,9 +156,10 @@ private:
   friend HTTPProxyServer;
 };
 
-HTTPProxy::HTTPProxy(SocketTCP * client_socket) :
-  _clientSocket(client_socket), _webSocket(), _stage(CLIENT_RECIEVE), _data(),
-  _contentLength(-1), _contentStart(-1), _chunked(false)
+HTTPProxy::HTTPProxy(SocketTCP * client_socket, int client_id) :
+  _clientSocket(client_socket), _webSocket(), _webConnect(false),
+   _stage(CLIENT_RECIEVE), _data(), _contentLength(-1), _contentStart(-1),
+   _chunked(false), _clientID(client_id)
 {
   _clientSocket->Block(false);
 }
@@ -174,6 +178,9 @@ bool HTTPProxy::Update()
   case WEB_TO_CLIENT:
     done = WebToClient();
     break;
+  case DONE:
+    done = true;
+    break;
   }
   return done;
 }
@@ -181,20 +188,33 @@ bool HTTPProxy::Update()
 void HTTPProxy::Close()
 {
   _clientSocket->CloseSend();
-  _webSocket.CloseConnection();
+  // only close web socket if successfully connected
+  if(_webConnect)
+    _webSocket.CloseConnection();
+}
+
+int HTTPProxy::ClientID()
+{
+  return _clientID;
 }
 
 void HTTPProxy::ClientRecieve()
 {
   char recv_buff[MTU_SIZE];
-  int recv_len = _clientSocket->Recieve(recv_buff, MTU_SIZE);
+  int recv_len = _clientSocket->Recieve(recv_buff, MTU_SIZE - 1);
+  // ignore if no data is received
+  if(recv_len < 1)
+    return;
   _data.append(recv_buff, recv_len);
-  if (_data.size() >= 2) {
-    std::string end(_data.substr(_data.size() - 2));
-    if(end == "\n\n"){
-      _stage = WEB_SEND;
-    }
-  }
+  size_t end_1 = _data.find('\n');
+  if(end_1 == std::string::npos)
+    return;
+  size_t end_2 = _data.find('\n', end_1 + 1);
+  if(end_2 == std::string::npos)
+    return;
+  // move to next stage
+  _stage = WEB_SEND;
+  //std::cout << _clientID << ": Client Receive Complete" << std::endl;
 }
 
 bool HTTPProxy::WebSend()
@@ -206,14 +226,29 @@ bool HTTPProxy::WebSend()
     return true;
   }
   domain_start += 6;
-  int domain_end = _data.find("\n", domain_start);
+  size_t domain_end = _data.find("\r\n", domain_start);
+  if(domain_end == std::string::npos){
+    domain_end = _data.find('\n', domain_start);
+  }
+  if(domain_end == std::string::npos){
+    // not a valid get request
+    return true;
+  }
   std::string domain_name(_data.substr(domain_start,
     domain_end - domain_start));
   // connect the web socket and send request
-  _webSocket.Connect(80, domain_name.c_str());
+  int result = _webSocket.Connect(80, domain_name.c_str());
+  // checking for error during connect
+  if(result == -1){
+    _stage = DONE;
+    return true;
+  }
+  // connection successful - sending data
+  _webConnect = true;
   _webSocket.Send(_data.c_str(), _data.size());
   _webSocket.Block(false);
   _stage = WEB_TO_CLIENT;
+  //std::cout << _clientID << ": Web Send complete" << std::endl;
   _data.clear();
   return false;
 }
@@ -239,14 +274,24 @@ bool HTTPProxy::WebToClient()
 
     if (_contentLength > 0 && _contentStart > 0) {
       if (_contentLength == (int)_data.length() - _contentStart){
+        //std::cout << _clientID << ": Web to Client complete" << std::endl;
         return true;
       }
     }
 
     if (_chunked) {
       int end_start = _data.size() - 7;
-      if (_data.substr(end_start) == "\r\n0\r\n\r\n")
+      if (_data.substr(end_start) == "\r\n0\r\n\r\n"){
+        //std::cout << _clientID << ": Web to Client complete" << std::endl;
         return true;
+      }
+
+      end_start = _data.size() - 4;
+      if (_data.substr(end_start) == "\n0\n\n"){
+        //std::cout << _clientID << ": Web to Client complete" << std::endl;
+        return true;
+      }
+
     }
   }
   return false;
@@ -256,9 +301,11 @@ bool HTTPProxy::WebToClient()
 class HTTPProxyServer
 {
 public:
-  HTTPProxyServer(int port);
+  HTTPProxyServer();
   void Update();
+  bool Open(int port);
   void Close();
+  int _clientsConnected;
   int _clientsServed;
 private:
   SocketTCP _serverSocket;
@@ -266,22 +313,20 @@ private:
 };
 
 
-HTTPProxyServer::HTTPProxyServer(int port) :
-  _clientsServed(0), _serverSocket(), _clientProxies()
-{
-  _serverSocket.Bind(port);
-  _serverSocket.Listen(10);
-  _serverSocket.Block(false);
-  std::cout << "- Server Live -" << std::endl;
-}
+HTTPProxyServer::HTTPProxyServer() :
+  _clientsConnected(0), _clientsServed(0), _serverSocket(), _clientProxies()
+{}
+
 
 void HTTPProxyServer::Update()
 {
   SocketTCP * new_client;
   new_client = _serverSocket.Accept();
   if (new_client){
-    _clientProxies.push_back(HTTPProxy(new_client));
-    std::cout << "Proxy Client Connected" << std::endl;
+    _clientProxies.push_back(HTTPProxy(new_client, _clientsConnected));
+    std::cout << "Proxy Client (" << _clientProxies.back().ClientID()
+      << ") Connected" << std::endl;
+    ++_clientsConnected;
   }
 
   std::list<HTTPProxy>::iterator it = _clientProxies.begin();
@@ -291,14 +336,26 @@ void HTTPProxyServer::Update()
     if(done){
       it->Close();
       delete it->_clientSocket;
+      std::cout << "Proxy Client (" << it->ClientID()
+      <<  ") Served" << std::endl;
       it = _clientProxies.erase(it);
-      std::cout << "Proxy Client Served" << std::endl;
       ++_clientsServed;
     }
     else{
       ++it;
     }
   }
+}
+
+bool HTTPProxyServer::Open(int port)
+{
+  int result = _serverSocket.Bind(port);
+  if(result == -1)
+    return false;
+  _serverSocket.Listen(10);
+  _serverSocket.Block(false);
+  std::cout << "- Server Live | Port " << port << " -" << std::endl;
+  return true;
 }
 
 void HTTPProxyServer::Close()
@@ -324,11 +381,14 @@ int main(int argc, char * argv[])
   }
   int port = atoi(argv[1]);
   // create the socket for http connection
-  HTTPProxyServer proxy_server(port);
-  while (running) {
-    proxy_server.Update();
+  HTTPProxyServer proxy_server;
+  bool open = proxy_server.Open(port);
+  if(open){
+    while (running) {
+      proxy_server.Update();
+    }
+    proxy_server.Close();
   }
-  proxy_server.Close();
 
   #ifdef _WIN32
   WinSockLoader::Purge();

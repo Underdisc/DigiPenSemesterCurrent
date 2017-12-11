@@ -44,8 +44,8 @@ class SocketTCP
 public:
   SocketTCP();
   SocketTCP(const SOCKET & socket);
-  void Connect(int port, const char * address);
-  void Bind(int port);
+  int Connect(int port, const char * address);
+  int Bind(int port);
   int Send(const char * data, int bytes);
   int Recieve(char * data, int bytes);
   void Listen(int backlog);

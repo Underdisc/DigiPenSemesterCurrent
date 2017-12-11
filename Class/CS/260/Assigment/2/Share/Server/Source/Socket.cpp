@@ -40,15 +40,21 @@ SocketTCP::SocketTCP(const SOCKET & socket) :
   _socket(socket), _block(true)
 {}
 
-void SocketTCP::Connect(int port, const char * address)
+int SocketTCP::Connect(int port, const char * address)
 {
   // getting address info using DNS
   addrinfo * address_info = nullptr;
   addrinfo * hints = new addrinfo();
   memset((void *)hints, 0, sizeof(addrinfo));
-  getaddrinfo(address, "", hints, &address_info);
+  int result = getaddrinfo(address, "", hints, &address_info);
+  if(result != 0){
+    std::cout << "DNS Lookup Error: (" << result << ") "
+      << address << std::endl;
+    return -1;
+  }
   sockaddr * sockaddr_address = address_info->ai_addr;
   // preparing address the socket will connect to
+
   sockaddr_in c_address = *reinterpret_cast<sockaddr_in *>(sockaddr_address);
   c_address.sin_family = AF_INET;
   c_address.sin_port = htons(port);
@@ -57,12 +63,13 @@ void SocketTCP::Connect(int port, const char * address)
   delete hints;
   freeaddrinfo(address_info);
   // connect to address
-  int result = connect(_socket, (sockaddr *)&c_address, c_address_size);
+  result = connect(_socket, (sockaddr *)&c_address, c_address_size);
   if(result == SOCKET_ERROR)
     std::cout << "Connect Error: " << address << std::endl;
+  return 0;
 }
 
-void SocketTCP::Bind(int port)
+int SocketTCP::Bind(int port)
 {
   // creating the address that messages should be sent to
   sockaddr_in back_address;
@@ -75,8 +82,14 @@ void SocketTCP::Bind(int port)
 
   back_address.sin_family = AF_INET;
   back_address.sin_port = htons(port);
-  // bindin socket
-  bind(_socket, (sockaddr *)&back_address, sizeof(sockaddr));
+  int result = bind(_socket, (sockaddr *)&back_address, sizeof(sockaddr));
+  if(result == SOCKET_ERROR){
+    std::cout << "Bind Error: (" << errno << ") ";
+    if(errno == EACCES)
+      std::cout << "Protected Port";
+    std::cout << std::endl;
+  }
+  return result;
 }
 
 int SocketTCP::Send(const char * data, int bytes)
