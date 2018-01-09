@@ -1,0 +1,13 @@
+Implement Johnson-Trotter algorithm.
+Make sure your output matches "out0".
+
+Note:
+I implemented directions as follows:
+std::vector<int> dir; 
+which had values -1 for left and 1 for right, it allowed me to
+check for mobility like this
+element[i] > element[i+dir[i]].
+
+To submit:
+perm-jt.cpp
+perm-jt.h
