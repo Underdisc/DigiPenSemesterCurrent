@@ -41,7 +41,7 @@ void Renderer::Initialize(Mesh & mesh)
   _normalTextureObject = TexturePool::Upload("Resource/Texture/normal.png");
 
   // skybox
-  _skybox = new Skybox("Resource/Texture/Skybox/Alpha/",
+  _skybox = new Skybox("Resource/Texture/Skybox/Crater/",
     "up.tga", "dn.tga", "lf.tga", "rt.tga", "ft.tga", "bk.tga");
   _skybox->Upload();
 
