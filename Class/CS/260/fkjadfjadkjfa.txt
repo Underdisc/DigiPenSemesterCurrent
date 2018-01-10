@@ -1,7 +1,0 @@
-Four categories of data reliability in the tribes networking model
- 
-Non Guaranteed
-Guaranteed
-Most Recent
-Quickest
-
