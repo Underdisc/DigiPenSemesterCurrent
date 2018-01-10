@@ -232,9 +232,8 @@ inline void Update()
 
 void Draw()
 {
-  Renderer::RenderEnvironment();
-  Math::Matrix4 final_projection = Math::Matrix4::Perspective(PI / 2.0f,
+  Math::Matrix4 projection = Math::Matrix4::Perspective(PI / 2.0f,
     OpenGLContext::AspectRatio(), MeshRenderer::_nearPlane,
     MeshRenderer::_farPlane);
-  Renderer::Render(final_projection, camera.ViewMatrix(), camera.GetPosition(), true);
+  Renderer::Render(projection, camera.ViewMatrix(), camera.GetPosition(), true);
 }

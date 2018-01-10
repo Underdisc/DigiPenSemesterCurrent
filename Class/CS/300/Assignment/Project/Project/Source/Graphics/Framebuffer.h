@@ -5,8 +5,7 @@
 #include <GL/glew.h>
 #include "Texture/TexturePool.h"
 
-// you need a purge for the textureobject
-
+//--// FRAMEBUFFER INTERFACE //--//
 class Framebuffer
 {
 public:

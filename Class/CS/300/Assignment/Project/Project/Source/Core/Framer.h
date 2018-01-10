@@ -52,5 +52,7 @@ private:
   //! The amount of time passed for each frame over the duration specified
   // by _waitTimeForAverageCalculation
   static std::vector<float> _frameTimes;
+  //! The percentage used of each frame over the duration specified by
+  // _waitTimeForAverageCalculation
   static std::vector<float> _frameUsages;
 };

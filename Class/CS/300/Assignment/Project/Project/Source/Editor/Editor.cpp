@@ -203,7 +203,7 @@ void Editor::Update(Mesh * mesh, MeshRenderer::MeshObject * mesh_object,
   }
   if (ImGui::CollapsingHeader("Shader")) {
     int shader_int = MeshRenderer::ShaderTypeToInt(shader_in_use);
-    ImGui::Combo("Shader Type", &shader_int, "Phong\0Gouraud\0Blinn\0\0");
+    ImGui::Combo("Shader Type", &shader_int, "Phong\0\0");
     shader_in_use = MeshRenderer::IntToShaderType(shader_int);
     if (ImGui::Button("Reload Selected Shader"))
       MeshRenderer::ReloadShader(shader_in_use);

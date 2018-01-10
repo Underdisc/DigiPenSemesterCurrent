@@ -8,6 +8,14 @@
 #define PI 3.141592653589f
 #define PI2 6.28318530718f
 
+// framebuffer locations in environment render vector
+#define FB_UP 0 // up
+#define FB_DN 1 // down
+#define FB_LT 2 // left
+#define FB_RT 3 // right
+#define FB_FT 4 // front
+#define FB_BK 5 // back
+
 // static initializations
 Mesh * Renderer::_mesh = nullptr;
 MeshRenderer::MeshObject * Renderer::_meshObject = nullptr;
@@ -17,14 +25,10 @@ TextureObject * Renderer::_diffuseTextureObject = nullptr;
 TextureObject * Renderer::_specularTextureObject = nullptr;
 TextureObject * Renderer::_normalTextureObject = nullptr;
 
+bool Renderer::_renderSkybox = true;
 Skybox * Renderer::_skybox = nullptr;
 
-Framebuffer Renderer::_fbUp;
-Framebuffer Renderer::_fbDown;
-Framebuffer Renderer::_fbLeft;
-Framebuffer Renderer::_fbRight;
-Framebuffer Renderer::_fbFront;
-Framebuffer Renderer::_fbBack;
+std::vector<Renderer::EnvironmentRender> Renderer::_environmentRenders;
 
 #include <iostream>
 
@@ -45,13 +49,36 @@ void Renderer::Initialize(Mesh & mesh)
     "up.tga", "dn.tga", "lf.tga", "rt.tga", "ft.tga", "bk.tga");
   _skybox->Upload();
 
-  // environment framebuffers
-  _fbUp.Initialize(512, 512);
-  _fbDown.Initialize(512, 512);
-  _fbLeft.Initialize(512, 512);
-  _fbRight.Initialize(512, 512);
-  _fbFront.Initialize(512, 512);
-  _fbBack.Initialize(512, 512);
+  // initializing environment framebuffers
+  // Creating the linear parts of the view matrices used for
+  // environment rendering
+  Math::Vector4 pos_x(1.0f, 0.0f, 0.0f, 0.0f);
+  Math::Vector4 pos_y(0.0f, 1.0f, 0.0f, 0.0f);
+  Math::Vector4 pos_z(0.0f, 0.0f, 1.0f, 0.0f);
+  Math::Vector4 neg_x(-1.0f, 0.0f, 0.0f, 0.0f);
+  Math::Vector4 neg_y(0.0f, -1.0f, 0.0f, 0.0f);
+  Math::Vector4 neg_z(0.0f, 0.0f, -1.0f, 0.0f);
+  Math::Vector4 basis_w(0.0f, 0.0f, 0.0f, 1.0f);
+  Math::Matrix4 up(pos_x, pos_z, neg_y, basis_w);
+  up.Transpose();
+  Math::Matrix4 down(pos_x, neg_z, pos_y, basis_w);
+  down.Transpose();
+  Math::Matrix4 left(neg_z, pos_y, pos_x, basis_w);
+  left.Transpose();
+  Math::Matrix4 right(pos_z, pos_y, neg_x, basis_w);
+  right.Transpose();
+  Math::Matrix4 front(pos_x, pos_y, pos_z, basis_w);
+  front.Transpose();
+  Math::Matrix4 back(neg_x, pos_y, neg_z, basis_w);
+  back.Transpose();
+  // creating environment render instances
+  _environmentRenders.reserve(6);
+  _environmentRenders.push_back(EnvironmentRender(512, 512, up));
+  _environmentRenders.push_back(EnvironmentRender(512, 512, down));
+  _environmentRenders.push_back(EnvironmentRender(512, 512, left));
+  _environmentRenders.push_back(EnvironmentRender(512, 512, right));
+  _environmentRenders.push_back(EnvironmentRender(512, 512, front));
+  _environmentRenders.push_back(EnvironmentRender(512, 512, back));
 }
 
 void Renderer::Purge()
@@ -73,99 +100,53 @@ void Renderer::Clear()
 
 void Renderer::RenderEnvironment()
 {
-  Clear();
+  // custom projection for square texture (90 fov)
   Math::Matrix4 environment_projection = Math::Matrix4::Perspective(PI / 2.0f,
     1.0f, MeshRenderer::_nearPlane, MeshRenderer::_farPlane);
 
 
-  Math::Matrix4 translation_term(
+  Math::Matrix4 translation(
     1.0f, 0.0f, 0.0f, -Editor::trans.x,
     0.0f, 1.0f, 0.0f, -Editor::trans.y,
     0.0f, 0.0f, 1.0f, -Editor::trans.z,
     0.0f, 0.0f, 0.0f, 1.0f);
-  /*Math::Matrix4 translation_term(
-  1.0f, 0.0f, 0.0f, -Editor::trans.x,
-  0.0f, 1.0f, 0.0f, -Editor::trans.y,
-  0.0f, 0.0f, 1.0f, -Editor::trans.z,
-  0.0f, 0.0f, 0.0f, 1.0f);*/
 
-  Math::Vector4 pos_x(1.0f, 0.0f, 0.0f, 0.0f);
-  Math::Vector4 pos_y(0.0f, 1.0f, 0.0f, 0.0f);
-  Math::Vector4 pos_z(0.0f, 0.0f, 1.0f, 0.0f);
-  Math::Vector4 neg_x(-1.0f, 0.0f, 0.0f, 0.0f);
-  Math::Vector4 neg_y(0.0f, -1.0f, 0.0f, 0.0f);
-  Math::Vector4 neg_z(0.0f, 0.0f, -1.0f, 0.0f);
-  Math::Vector4 basis_w(0.0f, 0.0f, 0.0f, 1.0f);
-
-  // linear parts
-  Math::Matrix4 up(pos_x, pos_z, neg_y, basis_w);
-  up.Transpose();
-  Math::Matrix4 down(pos_x, neg_z, pos_y, basis_w);
-  down.Transpose();
-  Math::Matrix4 left(neg_z, pos_y, pos_x, basis_w);
-  left.Transpose();
-  Math::Matrix4 right(pos_z, pos_y, neg_x, basis_w);
-  right.Transpose();
-  Math::Matrix4 front(pos_x, pos_y, pos_z, basis_w);
-  front.Transpose();
-  Math::Matrix4 back(neg_x, pos_y, neg_z, basis_w);
-  back.Transpose();
-
-  up = up * translation_term;
-  down = down * translation_term;
-  left = left * translation_term;
-  right = right * translation_term;
-  front = front * translation_term;
-  back = back * translation_term;
-
-
-  // up render
-  _fbUp.Bind();
-  Clear();
-  Renderer::Render(environment_projection, up, Editor::trans, false);
-  Framebuffer::BindDefault();
-  // down render
-  _fbDown.Bind();
-  Clear();
-  Renderer::Render(environment_projection, down, Editor::trans, false);
-  Framebuffer::BindDefault();
-  // left render
-  _fbLeft.Bind();
-  Clear();
-  Renderer::Render(environment_projection, left, Editor::trans, false);
-  Framebuffer::BindDefault();
-  // right render
-  _fbRight.Bind();
-  Clear();
-  Renderer::Render(environment_projection, right, Editor::trans, false);
-  Framebuffer::BindDefault();
-  // front render
-  _fbFront.Bind();
-  Clear();
-  Renderer::Render(environment_projection, front, Editor::trans, false);
-  Framebuffer::BindDefault();
-  // back render
-  _fbBack.Bind();
-  Clear();
-  Renderer::Render(environment_projection, back, Editor::trans, false);
-  Framebuffer::BindDefault();
+  for (EnvironmentRender & er : _environmentRenders)
+  {
+    er._fb.Bind();
+    Clear();
+    Math::Matrix4 view(er._linear * translation);
+    RenderFrame(environment_projection, view, Editor::trans, false);
+    Framebuffer::BindDefault();
+  }
 }
 
 void Renderer::Render(const Math::Matrix4 & projection, 
   const Math::Matrix4 & view, const Math::Vector3 & view_position, bool mesh)
 {
-  _skybox->Render(projection, view);
+  RenderEnvironment();
+  Clear();
+  RenderFrame(projection, view, view_position, mesh);
+}
+
+void Renderer::RenderFrame(const Math::Matrix4 & projection,
+  const Math::Matrix4 & view, const Math::Vector3 & view_position, bool mesh)
+{
+  if (_renderSkybox)
+    _skybox->Render(projection, view);
 
   // bind textures for rendering
+  // model textures
   TexturePool::Bind(_diffuseTextureObject, 0);
   TexturePool::Bind(_specularTextureObject, 1);
   TexturePool::Bind(_normalTextureObject, 2);
-  TexturePool::Bind(_fbUp._texture, 3);
-  TexturePool::Bind(_fbDown._texture, 4);
-  TexturePool::Bind(_fbLeft._texture, 5);
-  TexturePool::Bind(_fbRight._texture, 6);
-  TexturePool::Bind(_fbFront._texture, 7);
-  TexturePool::Bind(_fbBack._texture, 8);
+  // environment map textures
+  TexturePool::Bind(_environmentRenders[FB_UP]._fb._texture, 3);
+  TexturePool::Bind(_environmentRenders[FB_DN]._fb._texture, 4);
+  TexturePool::Bind(_environmentRenders[FB_LT]._fb._texture, 5);
+  TexturePool::Bind(_environmentRenders[FB_RT]._fb._texture, 6);
+  TexturePool::Bind(_environmentRenders[FB_FT]._fb._texture, 7);
+  TexturePool::Bind(_environmentRenders[FB_BK]._fb._texture, 8);
 
 
   SolidShader * solid_shader = MeshRenderer::GetSolidShader();
@@ -224,19 +205,19 @@ void Renderer::Render(const Math::Matrix4 & projection,
     break;
   }
   // rendering mesh
-  if(mesh)
+  if (mesh)
     MeshRenderer::Render(_meshObject, Editor::shader_in_use, projection, view, model);
 
   // unbind textures
   TexturePool::Unbind(_diffuseTextureObject);
   TexturePool::Unbind(_specularTextureObject);
   TexturePool::Unbind(_normalTextureObject);
-  TexturePool::Unbind(_fbUp._texture);
-  TexturePool::Unbind(_fbDown._texture);
-  TexturePool::Unbind(_fbLeft._texture);
-  TexturePool::Unbind(_fbRight._texture);
-  TexturePool::Unbind(_fbFront._texture);
-  TexturePool::Unbind(_fbBack._texture);
+  TexturePool::Unbind(_environmentRenders[FB_UP]._fb._texture);
+  TexturePool::Unbind(_environmentRenders[FB_DN]._fb._texture);
+  TexturePool::Unbind(_environmentRenders[FB_LT]._fb._texture);
+  TexturePool::Unbind(_environmentRenders[FB_RT]._fb._texture);
+  TexturePool::Unbind(_environmentRenders[FB_FT]._fb._texture);
+  TexturePool::Unbind(_environmentRenders[FB_BK]._fb._texture);
   // disable writing to error strings
   try
   {
