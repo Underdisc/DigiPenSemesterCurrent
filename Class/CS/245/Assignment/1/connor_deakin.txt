@@ -1,0 +1,16 @@
+The first second of the file is the original sound sample. The remainder of the file is my sound collage.
+
+The techniques used for this project
+
+- Took a 0.2 second sample of the sound sample.
+- Changed the attack, sustain, and decay using the Envelope tool.
+- I may have modified the sample in another way, however this was a few days ago.
+- Used Change pitch to make notes for A#, C, D#, F and G.
+- Created a progression that goes C D# F G for 8 steps and then A# C D# F for another 8 steps.
+- Put everything onto one track and used an echo to give an effect similar to reverb.
+- Took a 0.8 second from the original sound sample onto a new track.
+- Applied a paulstretch to make the sound last 8 steps.
+- Used Change pitch to make notes for C and A# to act as a bassline.
+- Mixed everything into a single track.
+- Applied a wah that lasts for 8 steps so it completes two cycles during the entire collage.
+- Applied a high pass filter.
