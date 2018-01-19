@@ -2,9 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Precompiled.cpp" />
-    <ClCompile Include="Assignment1Tests.cpp">
-      <Filter>UnitTests</Filter>
-    </ClCompile>
     <ClCompile Include="Assignment2Tests.cpp">
       <Filter>UnitTests</Filter>
     </ClCompile>
@@ -61,6 +58,9 @@
     <ClCompile Include="Gizmo.cpp" />
     <ClCompile Include="Main\CommandLine.cpp" />
     <ClCompile Include="DebugDraw.cpp" />
+    <ClCompile Include="Assignment1Tests.cpp">
+      <Filter>UnitTests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Precompiled.hpp" />
