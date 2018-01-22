@@ -320,10 +320,10 @@ void Plane::Set(const Vector3& p0, const Vector3& p1, const Vector3& p2)
 
 void Plane::Set(const Vector3& normal, const Vector3& point)
 {
-  float normal_mag = normal.Length();
+  Vector3 n = normal.Normalized();
   for (int i = 0; i < 3; ++i)
-    mData[i] = normal[i] / normal_mag;
-  mData[4] = Math::Dot(normal, point);
+    mData[i] = n[i];
+  mData[3] = Math::Dot(n, point);
 }
 
 Vector3 Plane::GetNormal() const

@@ -9,7 +9,12 @@
 
 bool InRange(float min, float max, float value)
 {
-  return value > min && value < max;
+  return value >= min && value <= max;
+}
+
+bool OutRange(float min, float max, float value)
+{
+  return value < min || value > max;
 }
 
 bool BarycentricCoordinates(const Vector3& point, const Vector3& a, const Vector3& b,
@@ -67,32 +72,58 @@ bool BarycentricCoordinates(const Vector3& point, const Vector3& a, const Vector
 
 IntersectionType::Type PointPlane(const Vector3& point, const Vector4& plane, float epsilon)
 {
-  /******Student:Assignment1******/
-  Warn("Assignment1: Required function un-implemented");
-  return IntersectionType::NotImplemented;
+  // dot point and plane normal
+  float dot_result = 0.0f;
+  for(int i = 0; i < 3; ++i)
+    dot_result += point[i] * plane[i];
+  // subtract w d component
+  dot_result -= plane[3];
+  // find intersection type
+  if(dot_result < -epsilon)
+    return IntersectionType::Outside;
+  else if(dot_result > epsilon)
+    return IntersectionType::Inside;
+  return IntersectionType::Coplanar;
 }
 
 bool PointSphere(const Vector3& point, const Vector3& sphereCenter, float sphereRadius)
 {
-  /******Student:Assignment1******/
-  Warn("Assignment1: Required function un-implemented");
+  // center to point distance squared
+  float ctp_dist= point.DistanceSq(sphereCenter);
+  if(ctp_dist <= sphereRadius * sphereRadius)
+    return true;
   return false;
 }
 
 bool PointAabb(const Vector3& point, const Vector3& aabbMin, const Vector3& aabbMax)
 {
-  /******Student:Assignment1******/
-  Warn("Assignment1: Required function un-implemented");
-  return false;
+  // return false if one dimension is out of range
+  for (int i = 0; i < 3; ++i)
+  {
+    if(OutRange(aabbMin[i], aabbMax[i], point[i]))
+      return false;
+  }
+  return true;
 }
 
 bool RayPlane(const Vector3& rayStart, const Vector3& rayDir,
               const Vector4& plane, float& t, float parallelCheckEpsilon)
 {
   ++Application::mStatistics.mRayPlaneTests;
-  /******Student:Assignment1******/
-  Warn("Assignment1: Required function un-implemented");
-  return false;
+  float denom = 0.0f;
+  // dot(plane normal, ray dir)
+  for(int i = 0; i < 3; ++i)
+    denom += plane[i] * rayDir[i];
+  // make sure ray is not parallel
+  if(InRange(-parallelCheckEpsilon, parallelCheckEpsilon, denom))
+    return false;
+  // d - dot(plane normal, ray start
+  float numer = plane[3];
+  for(int i = 0; i < 3; ++i)
+    numer -= plane[i] * rayStart[i];
+  t = numer / denom;
+  // intersection if t is non-negative
+  return t >= 0.0f;
 }
 
 bool RayTriangle(const Vector3& rayStart, const Vector3& rayDir,
@@ -100,9 +131,21 @@ bool RayTriangle(const Vector3& rayStart, const Vector3& rayDir,
                  float& t, float triExpansionEpsilon, float parallelCheckEpsilon)
 {
   ++Application::mStatistics.mRayTriangleTests;
-  /******Student:Assignment1******/
-  Warn("Assignment1: Required function un-implemented");
-  return false;
+  // finding intersection with triangle plane
+  Plane plane;
+  plane.Set(triP0, triP1, triP2);
+  bool intersect = RayPlane(rayStart, rayDir, 
+    plane.mData, t, parallelCheckEpsilon);
+  // check for plane intersection
+  if(!intersect)
+    return false;
+  // find point on plane
+  Vector3 point = rayStart + rayDir * t;
+  // see if point exists within triangle
+  float u, v, w;
+  bool in_tri = BarycentricCoordinates(point, triP0, triP1, triP2, 
+    u, v, w, triExpansionEpsilon);
+  return in_tri;
 }
 
 bool RaySphere(const Vector3& rayStart, const Vector3& rayDir,
@@ -110,15 +153,43 @@ bool RaySphere(const Vector3& rayStart, const Vector3& rayDir,
                float& t)
 {
   ++Application::mStatistics.mRaySphereTests;
-  /******Student:Assignment1******/
-  Warn("Assignment1: Required function un-implemented");
-  return false;
+  Vector3 ray_center = sphereCenter - rayStart;
+
+  float a = Math::Dot(rayDir, rayDir);
+  float b = -2.0f * Math::Dot(ray_center, rayDir);
+  float c = Math::Dot(ray_center, ray_center) - sphereRadius * sphereRadius;
+
+  float discriminant = b * b - 4.0f * a * c;
+  if(discriminant < 0.0f)
+    return false;
+  float a2 = 2.0f * a;
+  if (discriminant == 0.0f)
+  {
+    t = -b / (a2);
+    return t >= 0.0f;
+  }
+  float sqrt_discriminant = Math::Sqrt(discriminant);
+  float t0 = (-b - sqrt_discriminant) / a2;
+  float t1 = (-b + sqrt_discriminant) / a2;
+  if(t1 < 0.0f)
+    return false;
+  else if (t0 < 0.0f)
+  {
+    t = 0.0f;
+    return true;
+  }
+  t = t0;
+  return true;
+
+
+
 }
 
 bool RayAabb(const Vector3& rayStart, const Vector3& rayDir,
              const Vector3& aabbMin, const Vector3& aabbMax, float& t, float parallelCheckEpsilon)
 {
   ++Application::mStatistics.mRayAabbTests;
+
   /******Student:Assignment1******/
   Warn("Assignment1: Required function un-implemented");
   return false;
