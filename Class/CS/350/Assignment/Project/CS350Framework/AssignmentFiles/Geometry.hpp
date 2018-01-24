@@ -18,7 +18,6 @@ namespace IntersectionType
   static const char* Names[] = {"Coplanar", "Outside", "Inside", "Overlaps", "NotImplemented"};
 }
 
-
 // Compute the barycentric coordinates of a point to a line. Returns false if the line is degenerate or the
 // passed in point is outside the line. The given epsilon should be used to expand the line before checking
 // if the point is outside (use it to expand the range of the barycentric coordinate checks).

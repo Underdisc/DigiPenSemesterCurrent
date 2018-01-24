@@ -153,24 +153,27 @@ bool RaySphere(const Vector3& rayStart, const Vector3& rayDir,
                float& t)
 {
   ++Application::mStatistics.mRaySphereTests;
+  // finding leading terms in quadratic
   Vector3 ray_center = sphereCenter - rayStart;
-
   float a = Math::Dot(rayDir, rayDir);
   float b = -2.0f * Math::Dot(ray_center, rayDir);
   float c = Math::Dot(ray_center, ray_center) - sphereRadius * sphereRadius;
-
+  // compute discriminant and find solution
   float discriminant = b * b - 4.0f * a * c;
   if(discriminant < 0.0f)
     return false;
   float a2 = 2.0f * a;
+  // one solution
   if (discriminant == 0.0f)
   {
     t = -b / (a2);
     return t >= 0.0f;
   }
+  // two solutions
   float sqrt_discriminant = Math::Sqrt(discriminant);
   float t0 = (-b - sqrt_discriminant) / a2;
   float t1 = (-b + sqrt_discriminant) / a2;
+  // find first intersection
   if(t1 < 0.0f)
     return false;
   else if (t0 < 0.0f)
@@ -180,19 +183,56 @@ bool RaySphere(const Vector3& rayStart, const Vector3& rayDir,
   }
   t = t0;
   return true;
-
-
-
 }
 
 bool RayAabb(const Vector3& rayStart, const Vector3& rayDir,
              const Vector3& aabbMin, const Vector3& aabbMax, float& t, float parallelCheckEpsilon)
 {
+  // for each dimension
   ++Application::mStatistics.mRayAabbTests;
-
-  /******Student:Assignment1******/
-  Warn("Assignment1: Required function un-implemented");
-  return false;
+  // min of all max
+  float t_min_of_max = FLT_MAX;
+  // max of all min
+  float t_max_of_min = -FLT_MAX;
+  for (int i = 0; i < 3; ++i)
+  {
+    // check for parallel axis
+    if (InRange(-parallelCheckEpsilon, parallelCheckEpsilon, rayDir[i])) 
+    {
+      if (InRange(aabbMin[i], aabbMax[i], rayStart[i]))
+        continue;
+      // not within the aabb's plane implies no collision
+      return false;
+    }
+    // calculate t min and t max
+    float min = (aabbMin[i] - rayStart[i]) / rayDir[i];
+    float max = (aabbMax[i] - rayStart[i]) / rayDir[i];
+    // max and min is flipped if direction is negative
+    if (rayDir[i] < 0.0f)
+    {
+      t_max_of_min = Math::Max(t_max_of_min, max);
+      t_min_of_max = Math::Min(t_min_of_max, min);
+    }
+    else
+    {
+      t_max_of_min = Math::Max(t_max_of_min, min);
+      t_min_of_max = Math::Min(t_min_of_max, max);
+    }
+  }
+  // test for intersection
+  if (t_max_of_min < t_min_of_max)
+  {
+    if (t_min_of_max < 0.0f)
+      return false;
+    else if (t_max_of_min < 0.0f)
+      t = 0.0f;
+    else
+      t = t_max_of_min;
+  }
+  else
+    return false;
+  return true;
+    
 }
 
 IntersectionType::Type PlaneTriangle(const Vector4& plane, 
@@ -200,27 +240,41 @@ IntersectionType::Type PlaneTriangle(const Vector4& plane,
                                      float epsilon)
 {
   ++Application::mStatistics.mPlaneTriangleTests;
-  /******Student:Assignment1******/
-  Warn("Assignment1: Required function un-implemented");
-  return IntersectionType::NotImplemented;
+  // finding where each point is in relation to the plane
+  char result = PointPlane(triP0, plane, epsilon);
+  result |= PointPlane(triP1, plane, epsilon);
+  result |= PointPlane(triP2, plane, epsilon);
+  return static_cast<IntersectionType::Type>(result);
 }
 
 IntersectionType::Type PlaneSphere(const Vector4& plane,
                                    const Vector3& sphereCenter, float sphereRadius)
 {
   ++Application::mStatistics.mPlaneSphereTests;
-  /******Student:Assignment1******/
-  Warn("Assignment1: Required function un-implemented");
-  return IntersectionType::NotImplemented;
+  // using sphere radius as the epsilon for point plane
+  IntersectionType::Type type = PointPlane(sphereCenter, plane, sphereRadius);
+  // coplanar is equivalent to overlap
+  if(type == IntersectionType::Coplanar)
+    return IntersectionType::Overlaps;
+  return type;
 }
 
 IntersectionType::Type PlaneAabb(const Vector4& plane,
                                  const Vector3& aabbMin, const Vector3& aabbMax)
 {
   ++Application::mStatistics.mPlaneAabbTests;
-  /******Student:Assignment1******/
-  Warn("Assignment1: Required function un-implemented");
-  return IntersectionType::NotImplemented;
+  Vector3 center;
+  // find center of aabb and radius relative to plane
+  float aabb_radius =0.0f;
+  for (int i = 0; i < 3; ++i)
+  {
+    float half_delta = (aabbMax[i] - aabbMin[i]) / 2.0f;
+    center[i] = aabbMin[i] + half_delta;
+    aabb_radius += half_delta * Math::Abs(plane[i]);
+
+  }
+  // find intersection type
+  return PlaneSphere(plane, center, aabb_radius);
 }
 
 IntersectionType::Type FrustumTriangle(const Vector4 planes[6],
@@ -228,43 +282,90 @@ IntersectionType::Type FrustumTriangle(const Vector4 planes[6],
                                        float epsilon)
 {
   ++Application::mStatistics.mFrustumTriangleTests;
-  /******Student:Assignment1******/
-  Warn("Assignment1: Required function un-implemented");
-  return IntersectionType::NotImplemented;
+  bool overlap = false;
+  for (int i = 0; i < 6; ++i)
+  {
+    // find intersection type with single plane
+    IntersectionType::Type result;
+    result = PlaneTriangle(planes[i], triP0, triP1, triP2, epsilon);
+    // no more checks needed if outside of plane
+    if(result == IntersectionType::Outside)
+    {
+      return IntersectionType::Outside;
+    }
+    // coplanar and overlap are equivalent
+    else if(result == IntersectionType::Coplanar || 
+      result == IntersectionType::Overlaps)
+    {
+      overlap = true;
+    }
+  }
+  // if one plane overlaps, the triangle is overlapping
+  if(overlap)
+    return IntersectionType::Overlaps;
+  return IntersectionType::Inside;
 }
 
 IntersectionType::Type FrustumSphere(const Vector4 planes[6],
                                      const Vector3& sphereCenter, float sphereRadius, size_t& lastAxis)
 {
   ++Application::mStatistics.mFrustumSphereTests;
-  /******Student:Assignment1******/
-  Warn("Assignment1: Required function un-implemented");
-  return IntersectionType::NotImplemented;
+  bool overlap = false;
+  for (int i = 0; i < 6; ++i)
+  {
+    // find intersection type with plane i
+    IntersectionType::Type result;
+    result = PlaneSphere(planes[i], sphereCenter, sphereRadius);
+    if(result == IntersectionType::Outside)
+      return IntersectionType::Outside;
+    else if(result == IntersectionType::Overlaps)
+      overlap = true;
+  }
+  // check for overlap on one or more planes
+  if(overlap)
+    return IntersectionType::Overlaps;
+  return IntersectionType::Inside;
 }
 
 IntersectionType::Type FrustumAabb(const Vector4 planes[6],
                                    const Vector3& aabbMin, const Vector3& aabbMax, size_t& lastAxis)
 {
   ++Application::mStatistics.mFrustumAabbTests;
-  /******Student:Assignment1******/
-  Warn("Assignment1: Required function un-implemented");
-  return IntersectionType::NotImplemented;
+  // same as FrustumAabb, but deals with PlaneAabb instead
+  bool overlap = false;
+  for (int i = 0; i < 6; ++i)
+  {
+    IntersectionType::Type result;
+    result = PlaneAabb(planes[i], aabbMin, aabbMax);
+    if (result == IntersectionType::Outside)
+      return IntersectionType::Outside;
+    else if (result == IntersectionType::Overlaps)
+      overlap = true;
+  }
+  if (overlap)
+    return IntersectionType::Overlaps;
+  return IntersectionType::Inside;
 }
 
 bool SphereSphere(const Vector3& sphereCenter0, float sphereRadius0,
                   const Vector3& sphereCenter1, float sphereRadius1)
 {
   ++Application::mStatistics.mSphereSphereTests;
-  /******Student:Assignment1******/
-  Warn("Assignment1: Required function un-implemented");
-  return false;
+  // test with one large sphere and point
+  float large_radius = sphereRadius0 + sphereRadius1;
+  return PointSphere(sphereCenter0, sphereCenter1, large_radius);
 }
 
 bool AabbAabb(const Vector3& aabbMin0, const Vector3& aabbMax0,
               const Vector3& aabbMin1, const Vector3& aabbMax1)
 {
   ++Application::mStatistics.mAabbAabbTests;
-  /******Student:Assignment1******/
-  Warn("Assignment1: Required function un-implemented");
-  return false;
+  // test each axis for non intersection
+  for (int i = 0; i < 3; ++i)
+  {
+    if(aabbMax0[i] < aabbMin1[i] || aabbMax1[i] < aabbMin0[i])
+      return false;
+  }
+  // no non intersections found
+  return true;
 }
