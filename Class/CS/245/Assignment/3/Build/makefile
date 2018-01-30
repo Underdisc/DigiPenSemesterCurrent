@@ -27,13 +27,13 @@ RESET=@tput sgr0
 
 #=MACROS========================================================================
 
-CC = clang++
+CC = g++
 CFLAGS = -c -O -Wall -Wextra -ansi -pedantic
 OTHER = -Wunused -Werror
 
 SRCDIR = ../Source/
 
-OBJS = Wave.o MyTest.o AudioData.o
+OBJS = Wave.o WaveTest.o AudioData.o
 EXTERNALOBJS =
 EXE = test.exe
 
@@ -42,7 +42,7 @@ EXE = test.exe
 $(EXE) : $(OBJS) $(EXTERNALOBJS)
 	$(GT)
 	$(BOLD)
-	$(CC) $(OBJS) $(EXTERNALOBJS)  -o $(EXE)
+	$(CC) $(OBJS) $(EXTERNALOBJS) -o $(EXE)
 	$(RESET)
 
 %.o : $(SRCDIR)%.cpp
