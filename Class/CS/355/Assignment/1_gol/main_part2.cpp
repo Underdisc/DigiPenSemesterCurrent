@@ -2,7 +2,10 @@
 #include <cstdio>    /* sscanf */
 #include <iostream>  /* cout */
 #include <string.h>  /* memset */
+#include <utility>   /* pair */
+#include <vector>    /* vector */
 #include <pthread.h> /* thread stuff */
+#include <semaphore.h> /* semaphores */
 
 #define ALIVE 1
 #define DEAD 0
@@ -67,7 +70,7 @@ Grid::Grid(const char * fname)
   Allocate();
   while(!in_file.eof())
   {
-    uint x, y;
+    int x, y;
     in_file >> x >> y;
     ValueAt(BUFFER_FRONT, x, y) = 1;
   }
@@ -218,13 +221,113 @@ void Grid::Allocate()
   memset(_backBuffer, 0, _size);
 }
 
-//-----// GAME OF LIFE //-----//
-void RunGameofLife(const char * read_file, unsigned iterations,
-  const char * write_file)
+
+
+//-----// THREADS //-----//
+// Contains a thread id and the range of indices that the
+// thread is supposed to update. The thread will update
+// the cells [_start, _end)
+struct GridRange
 {
+  GridRange(Grid * grid, uint start, uint end) :
+    _grid(grid), _start(start), _end(end) {}
+  Grid * _grid;
+  uint _start, _end;
+};
+
+// TODO: MAKE THESE NOT GLOBAL
+sem_t mutex;
+sem_t barrier_a;
+sem_t barrier_b;
+uint threads_at_barrier;
+uint total_threads;
+
+void * RunCell(void * range)
+{
+  sem_t * cur_barrier = &barrier_a;
+  GridRange * grid_range = reinterpret_cast<GridRange *>(range);
+  // TODO: 1 WILL NEED TO BE REPLACED BY ITERATIONS REMAINING
+  // YOU REALLY JUST NEED TO THINK ABOUT WHERE YOU ARE GOING TO PUT IT.
+  while(1)
+  {
+    for(uint i = grid_range->_start; i < grid_range->_end; ++i)
+    {
+      grid_range->_grid->UpdateCell(i);
+    }
+    // wait for all treads to hit the barrier
+    sem_wait(&mutex);
+    ++threads_at_barrier;
+    if(threads_at_barrier == total_threads)
+    {
+      sem_post(cur_barrier);
+    }
+    sem_post(&mutex);
+    // when last thread reaches line above
+    // all threads will breach through here
+    sem_wait(cur_barrier);
+    sem_post(cur_barrier);
+    sem_wait(&mutex);
+    --threads_at_barrier;
+    if(threads_at_barrier != 0)
+      // set this barrier back to zero so it can be
+      // reused during the iteration after the next
+      sem_post(cur_barrier);
+    sem_post(&mutex);
+    if(cur_barrier == &barrier_a)
+      cur_barrier = &barrier_b;
+    else
+      cur_barrier = &barrier_a;
+
+  }
+}
+
+//-----// GAME OF LIFE //-----//
+void RunGameofLife(unsigned num_threads, const char * read_file,
+  unsigned iterations, const char * write_file)
+{
+  // create grid
   Grid gol_grid(read_file);
+  // init semaphores for thread blockades
+  sem_init(&mutex, 0, 1);
+  sem_init(&barrier_a, 0, 0);
+  sem_init(&barrier_b, 0, 0);
+  threads_at_barrier = 0;
+  total_threads = num_threads;
+  // create space for thread ids and thread data
+  std::vector<pthread_t> threads;
+  std::vector<GridRange> ranges;
+  threads.reserve(num_threads);
+  ranges.reserve(num_threads);
+  // Begin creating all needed threads
+  uint threads_left = num_threads;
+  uint cells_left = gol_grid.Size();
+  uint range_start = 0;
+  while(threads_left > 0)
+  {
+    // find the range the cell will manage
+    uint num_cells = cells_left / threads_left;
+    uint range_end = range_start + num_cells;
+    ranges.push_back(GridRange(&gol_grid,range_start, range_end));
+    // create the thread for that range
+    pthread_t thread_id;
+    int error = pthread_create(&thread_id, NULL, RunCell,
+      (void *)&ranges.back());
+    if(error)
+      // TODO: THROW ERROR ON THREAD CREATION FAIL
+    threads.push_back(thread_id);
+    /*std::cout << "Thread " << threads_left << " created. Range: ["
+      << range_start << ", " << range_end << ")" << std::endl;*/
+    // end of previous range is the start of the next
+    range_start = range_end;
+    // decrease threads and cells left
+    cells_left -= num_cells;
+    --threads_left;
+  }
+
+
   std::cout << "Front Buffer" << std::endl;
   gol_grid.PrintBuffer(Grid::BUFFER_FRONT);
+
 
   uint size = gol_grid.Size();
   for(uint iteration = 0; iteration < iterations; ++iteration)
@@ -240,56 +343,27 @@ void RunGameofLife(const char * read_file, unsigned iterations,
   return;
 }
 
-struct Test
-{
-
-}
-
-void * fuck_you(void * fuck)
-{
-  std::cout << "fuck you" << std::endl;
-  pthread_exit(NULL);
-}
-
 //-----// MAIN //-----//
 int main( int argc, char ** argv )
 {
-    if ( argc != 4 ) {
-        std::cout << "<- Expected 3 parameters -> " << std::endl
+    if ( argc != 5 ) {
+        std::cout << "<- Expected 4 parameters -> " << std::endl
+          << "1. Number of threads to process with" << std::endl
           << "1. Initial population file to read" << std::endl
           << "2. Number of iterations" << std::endl
           << "3. Final population file to write to" << std::endl;
         return 1;
     }
+    int threads = 1;
     char read_file[FILE_BUFFSIZE];
-    char write_file[FILE_BUFFSIZE];
     int iterations = 0;
-    std::sscanf(argv[1],"%s",read_file);
-    std::sscanf(argv[2],"%i",&iterations);
-    std::sscanf(argv[3],"%s",write_file);
+    char write_file[FILE_BUFFSIZE];
+    std::sscanf(argv[1],"%i",&threads);
+    std::sscanf(argv[2],"%s",read_file);
+    std::sscanf(argv[3],"%i",&iterations);
+    std::sscanf(argv[4],"%s",write_file);
 
-    // performing some tests
-    pthread_t thread_id[5];
-    for(int i = 0; i < 5; ++i)
-    {
-      int error = pthread_create(&thread_id[i], NULL, fuck_you, NULL);
-      if(error)
-        std::cout << "Thread " << i << " failed to create." << std::endl;
-      else
-        std::cout << "Thread " << thread_id[i] << " created." << std::endl;
-    }
-
-    for(int i = 0; i < 5; ++i)
-    {
-      void * status;
-      int error = pthread_join(thread_id[i], &status);
-      if(error)
-        std::cout << "Thread " << i << " join failed." << std::endl;
-    }
-    std::cout << "done" << std::endl;
-    // done
-
-    //RunGameofLife(read_file, iterations, write_file);
+    RunGameofLife(threads, read_file, iterations, write_file);
 
 
 }

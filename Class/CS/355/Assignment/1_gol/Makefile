@@ -19,13 +19,13 @@ DRIVER2=main_part2.cpp
 DRIVER3=main_part3.cpp
 DRIVER4=main_part4.cpp
 
-part1:
-	g++  $(DRIVER1) $(OBJECTS0) $(GCCFLAGS) $(DEFINE) -lpthread -o $(PRG)
-part2:
+part1: $(DRIVER1)
+	g++  $(DRIVER1) $(OBJECTS0) $(GCCFLAGS) $(DEFINE) -lpthread -o $@.exe
+part2: $(DRIVER2)
 	g++  $(DRIVER2) $(OBJECTS0) $(GCCFLAGS) $(DEFINE) -lpthread -o $@.exe
-part3:
+part3: $(DRIVER3)
 	g++  $(DRIVER3) $(OBJECTS0) $(GCCFLAGS) $(DEFINE) -lpthread -o $@.exe
-part4:
+part4: $(DRIVER4)
 	g++  $(DRIVER4) $(OBJECTS0) $(GCCFLAGS) $(DEFINE) -lpthread -o $@.exe
 0 1:
 	@echo "should run in less than 2000 ms"
