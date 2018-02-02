@@ -14,7 +14,7 @@
 
 typedef unsigned int uint;
 
-//-----// GRID //-----//
+//-----// GRID //-------------------------------------------------------------//
 
 class Grid
 {
@@ -25,9 +25,9 @@ public:
     BUFFER_BACK
   };
 public:
-  Grid(uint width, uint height);
-  Grid(const char * fname);
-  ~Grid();
+  static void CreateInstance(const char * fname);
+  static Grid * GetInstance();
+  static void DestroyInstance();
   void UpdateCell(int i);
   void SwapBuffers();
   char ValueAt(Buffer buffer_name, uint x, uint y) const;
@@ -37,6 +37,9 @@ public:
   void PrintBuffer(Buffer buffer_name) const;
   uint Size() const;
 private:
+  Grid(uint width, uint height);
+  Grid(const char * fname);
+  ~Grid();
   void Allocate();
   char * _frontBuffer;
   char * _backBuffer;
@@ -45,41 +48,32 @@ private:
   int _maxCol;
   int _maxRow;
   uint _size;
+private:
+  // a pointer to the last grid created
+  static Grid * _instance;
 };
 
-//-----// GRID PUBLIC //-----//
+// static initializations
+Grid * Grid::_instance = NULL;
 
-Grid::Grid(uint width, uint height) : _width(width), _height(height),
-  _maxCol(width - 1), _maxRow(height - 1), _size(width * height)
+void Grid::CreateInstance(const char * fname)
 {
-  Allocate();
+  if(!_instance)
+    _instance = new Grid(fname);
 }
 
-Grid::Grid(const char * fname)
+Grid * Grid::GetInstance()
 {
-  std::ifstream in_file;
-  in_file.open(fname, std::ifstream::in);
-  if(!in_file.is_open())
-  {
-    //TODO: THROW EXCEPTION HERE
-  }
-  in_file >> _width >> _height;
-  _size = _width * _height;
-  _maxCol = _width - 1;
-  _maxRow = _height - 1;
-  Allocate();
-  while(!in_file.eof())
-  {
-    int x, y;
-    in_file >> x >> y;
-    ValueAt(BUFFER_FRONT, x, y) = 1;
-  }
+  return _instance;
 }
 
-Grid::~Grid()
+void Grid::DestroyInstance()
 {
-  delete [] _frontBuffer;
-  delete [] _backBuffer;
+  if(_instance)
+  {
+    delete _instance;
+    _instance = NULL;
+  }
 }
 
 void Grid::UpdateCell(int center)
@@ -211,7 +205,38 @@ uint Grid::Size() const
   return _size;
 }
 
-//-----// GRID PRIVATE //-----//
+Grid::Grid(uint width, uint height) : _width(width), _height(height),
+  _maxCol(width - 1), _maxRow(height - 1), _size(width * height)
+{
+  Allocate();
+}
+
+Grid::Grid(const char * fname)
+{
+  std::ifstream in_file;
+  in_file.open(fname, std::ifstream::in);
+  if(!in_file.is_open())
+  {
+    //TODO: THROW EXCEPTION HERE
+  }
+  in_file >> _width >> _height;
+  _size = _width * _height;
+  _maxCol = _width - 1;
+  _maxRow = _height - 1;
+  Allocate();
+  while(!in_file.eof())
+  {
+    int x, y;
+    in_file >> x >> y;
+    ValueAt(BUFFER_FRONT, x, y) = 1;
+  }
+}
+
+Grid::~Grid()
+{
+  delete [] _frontBuffer;
+  delete [] _backBuffer;
+}
 
 void Grid::Allocate()
 {
@@ -221,12 +246,139 @@ void Grid::Allocate()
   memset(_backBuffer, 0, _size);
 }
 
-
-
-//-----// THREADS //-----//
+//-----// THREADS //----------------------------------------------------------//
 // Contains a thread id and the range of indices that the
 // thread is supposed to update. The thread will update
 // the cells [_start, _end)
+
+// A barrier type that can be used multiple times in order to control thread
+// flow. The number of flow barriers must be known beforehand.
+
+//-----// CANAL //------------------------------------------------------------//
+// A canal is a way to make a group of threads (travelers) travel through a
+// certain number of locks (barriers) before the reach the end of the canal.
+// Each thread must be within a lock before they can move to the next.
+// This will continue until all threads have been through all locks.
+class Canal
+{
+public:
+  // Create travelers when a traveler thread is created. This will synchronize
+  // all threads so that they approach and wait at the same locks.
+  class Traveler
+  {
+  public:
+    Traveler();
+  private:
+    sem_t * _currentLock;
+    uint * _threadsAtCurrentLock;
+    friend Canal;
+  };
+public:
+  static void Initialize(uint total_threads, uint total_locks);
+  static void Lock(Traveler * traveler);
+  static bool AllLocksPassed();
+  static bool GateStop();
+  static bool GatePass();
+  static void Purge();
+private:
+  // semaphores for lock control
+  static sem_t _mutex;
+  static sem_t _lockA;
+  static sem_t _lockB;
+  // tracks the number of threads at each lock
+  static uint _threadsAtLockA;
+  static uint _threadsAtLockB;
+  // totals for tracking when locks are full and when the whole
+  // canal has been passed
+  static uint _totalThreads;
+  static uint _totalLocks;
+  static uint _locksComplete;
+};
+
+// static initializations
+sem_t Canal::_mutex;
+sem_t Canal::_lockA;
+sem_t Canal::_lockB;
+uint Canal::_threadsAtLockA;
+uint Canal::_threadsAtLockB;
+uint Canal::_totalThreads;
+uint Canal::_totalLocks;
+uint Canal::_locksComplete;
+
+void Canal::Initialize(uint total_threads, uint total_locks)
+{
+  // prep canal
+  sem_init(&_mutex, 0, 1);
+  sem_init(&_lockA, 0, 0);
+  sem_init(&_lockB, 0, 0);
+  _threadsAtLockA = 0;
+  _threadsAtLockB = 0;
+  _totalThreads = total_threads;
+  _totalLocks = total_locks;
+  _locksComplete = 0;
+}
+
+void Canal::Lock(Traveler * traveler)
+{
+  // traveler entering lock
+  sem_wait(&_mutex);
+  ++(*traveler->_threadsAtCurrentLock);
+  // once all travelers are in the lock, travelers can progress to the next
+  if(*traveler->_threadsAtCurrentLock == _totalThreads)
+  {
+    ++_locksComplete;
+    // Realistically, this should be a generic function call that is performed
+    // once all travelers are in the lock
+    // start SNBH
+    Grid::GetInstance()->SwapBuffers();
+    // end SNBH
+    sem_post(traveler->_currentLock);
+  }
+  sem_post(&_mutex);
+  // traveler waits here until final traveler reaches lock
+  sem_wait(traveler->_currentLock);
+  sem_post(traveler->_currentLock);
+  // traveler exits lock
+  sem_wait(&_mutex);
+  --(*traveler->_threadsAtCurrentLock);
+  // once all travelers exit lock, reset lock semaphore to 0 so it can be
+  // used as the next lock
+  if(*traveler->_threadsAtCurrentLock == 0)
+    sem_wait(traveler->_currentLock);
+  sem_post(&_mutex);
+  // set the traveler's next lock that they will wait at
+  if(traveler->_currentLock == &_lockA)
+  {
+    traveler->_currentLock = &_lockB;
+    traveler->_threadsAtCurrentLock = &_threadsAtLockB;
+  }
+  else
+  {
+    traveler->_currentLock = &_lockA;
+    traveler->_threadsAtCurrentLock = &_threadsAtLockA;
+  }
+}
+
+bool Canal::AllLocksPassed()
+{
+  if(_locksComplete < _totalLocks)
+    return false;
+  return true;
+}
+
+void Canal::Purge()
+{
+
+}
+
+Canal::Traveler::Traveler()
+{
+  _currentLock = &Canal::_lockA;
+  _threadsAtCurrentLock = &Canal::_threadsAtLockA;
+}
+
+//-----// GAME OF LIFE THREAD //----------------------------------------------//
+
 struct GridRange
 {
   GridRange(Grid * grid, uint start, uint end) :
@@ -235,64 +387,31 @@ struct GridRange
   uint _start, _end;
 };
 
-// TODO: MAKE THESE NOT GLOBAL
-sem_t mutex;
-sem_t barrier_a;
-sem_t barrier_b;
-uint threads_at_barrier;
-uint total_threads;
 
 void * RunCell(void * range)
 {
-  sem_t * cur_barrier = &barrier_a;
   GridRange * grid_range = reinterpret_cast<GridRange *>(range);
   // TODO: 1 WILL NEED TO BE REPLACED BY ITERATIONS REMAINING
   // YOU REALLY JUST NEED TO THINK ABOUT WHERE YOU ARE GOING TO PUT IT.
-  while(1)
+  Canal::Traveler traveler;
+  while(!Canal::AllLocksPassed())
   {
     for(uint i = grid_range->_start; i < grid_range->_end; ++i)
     {
       grid_range->_grid->UpdateCell(i);
     }
-    // wait for all treads to hit the barrier
-    sem_wait(&mutex);
-    ++threads_at_barrier;
-    if(threads_at_barrier == total_threads)
-    {
-      sem_post(cur_barrier);
-    }
-    sem_post(&mutex);
-    // when last thread reaches line above
-    // all threads will breach through here
-    sem_wait(cur_barrier);
-    sem_post(cur_barrier);
-    sem_wait(&mutex);
-    --threads_at_barrier;
-    if(threads_at_barrier != 0)
-      // set this barrier back to zero so it can be
-      // reused during the iteration after the next
-      sem_post(cur_barrier);
-    sem_post(&mutex);
-    if(cur_barrier == &barrier_a)
-      cur_barrier = &barrier_b;
-    else
-      cur_barrier = &barrier_a;
-
+    Canal::Lock(&traveler);
   }
 }
 
-//-----// GAME OF LIFE //-----//
+//-----// GAME OF LIFE //-----------------------------------------------------//
 void RunGameofLife(unsigned num_threads, const char * read_file,
   unsigned iterations, const char * write_file)
 {
   // create grid
-  Grid gol_grid(read_file);
-  // init semaphores for thread blockades
-  sem_init(&mutex, 0, 1);
-  sem_init(&barrier_a, 0, 0);
-  sem_init(&barrier_b, 0, 0);
-  threads_at_barrier = 0;
-  total_threads = num_threads;
+  Grid::CreateInstance(read_file);
+  // intialize the canal
+  Canal::Initialize(num_threads, iterations);
   // create space for thread ids and thread data
   std::vector<pthread_t> threads;
   std::vector<GridRange> ranges;
@@ -300,23 +419,26 @@ void RunGameofLife(unsigned num_threads, const char * read_file,
   ranges.reserve(num_threads);
   // Begin creating all needed threads
   uint threads_left = num_threads;
-  uint cells_left = gol_grid.Size();
+  uint cells_left = Grid::GetInstance()->Size();
   uint range_start = 0;
-  while(threads_left > 0)
+  while(threads_left)
   {
     // find the range the cell will manage
     uint num_cells = cells_left / threads_left;
     uint range_end = range_start + num_cells;
-    ranges.push_back(GridRange(&gol_grid,range_start, range_end));
+    ranges.push_back(GridRange(Grid::GetInstance(),range_start, range_end));
     // create the thread for that range
     pthread_t thread_id;
     int error = pthread_create(&thread_id, NULL, RunCell,
       (void *)&ranges.back());
     if(error)
+    {
       // TODO: THROW ERROR ON THREAD CREATION FAIL
+      std::cout << "Thread create error: " << std::endl;
+    }
     threads.push_back(thread_id);
     /*std::cout << "Thread " << threads_left << " created. Range: ["
-      << range_start << ", " << range_end << ")" << std::endl;*/
+      << range_start << ", " << range_end << ")" << std::endl; */
     // end of previous range is the start of the next
     range_start = range_end;
     // decrease threads and cells left
@@ -324,26 +446,23 @@ void RunGameofLife(unsigned num_threads, const char * read_file,
     --threads_left;
   }
 
+  for(uint t = 0; t < num_threads; ++t)
+  {
+    void * return_value;
+    int error = pthread_join(threads[t], &return_value);
+    if(error)
+    {
+      // TODO: THROW ERROR ON THREAD JOIN FAIL
+      std::cout << "Thread join error: " << threads[t] << std::endl;
+    }
+  }
 
   std::cout << "Front Buffer" << std::endl;
-  gol_grid.PrintBuffer(Grid::BUFFER_FRONT);
-
-
-  uint size = gol_grid.Size();
-  for(uint iteration = 0; iteration < iterations; ++iteration)
-  {
-    for(uint i = 0; i < size; ++i)
-    {
-      gol_grid.UpdateCell(i);
-    }
-    gol_grid.SwapBuffers();
-    std::cout << "Iteration: " << iteration << std::endl;
-    gol_grid.PrintBuffer(Grid::BUFFER_FRONT);
-  }
-  return;
+  Grid::GetInstance()->PrintBuffer(Grid::BUFFER_FRONT);
+  Grid::DestroyInstance();
 }
 
-//-----// MAIN //-----//
+//-----// MAIN //-------------------------------------------------------------//
 int main( int argc, char ** argv )
 {
     if ( argc != 5 ) {
