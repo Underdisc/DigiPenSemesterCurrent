@@ -1,6 +1,6 @@
 /*****************************************************************************/
 /*!
-\file main_part1.cpp
+\file main_part4.cpp
 \author Connor Deakin
 \par E-mail: connor.deakin\@digipen.edu
 \par DigiPen login: connor.deakin
@@ -8,8 +8,10 @@
 \par Assignment: 1 Game of Life
 \date 02/02/2018
 \brief
-  Contains the implementation of the first part of the assignemt. Runs game of
-  life by creating a thread for each cell in the game of life grid.
+  Contains the implementation of the fourth part of the assignment. This
+  implementation is identical to part 1, however, it tracks whether a specific
+  cell in the grid has been modified in order to speed up the process of
+  calculating the grid's next state.
 */
 /*****************************************************************************/
 
@@ -45,6 +47,7 @@ public:
   static void CreateInstance(const char * fname);
   static Grid * GetInstance();
   static void DestroyInstance();
+  bool CanCellChange(int center);
   char CalculateCell(int center);
   void SetCell(int center, char value);
   char ValueAt(uint x, uint y) const;
@@ -58,6 +61,8 @@ private:
   ~Grid();
   void Allocate();
   char * _buffer;
+  // tracks whether cells are modified or not
+  bool * _modified;
   std::vector<int *> _cellNeighbours;
   int _width;
   int _height;
@@ -92,6 +97,18 @@ void Grid::DestroyInstance()
   }
 }
 
+// Find out if this can change during the next grid iteration
+bool Grid::CanCellChange(int center)
+{
+  int * neighbors = _cellNeighbours[center];
+  for(uint i = 0; i < NUM_NEIGHBOURS; ++i)
+  {
+    if(_modified[neighbors[i]])
+      return true;
+  }
+  return false;
+}
+
 char Grid::CalculateCell(int center)
 {
   int * neighbours = _cellNeighbours[center];
@@ -106,20 +123,29 @@ char Grid::CalculateCell(int center)
       ++alive_neighbours;
   }
   // find out if the cell should be alive or dead in the next state
+  char current_state = _buffer[center];
+  char next_state;
   if(_buffer[center] == ALIVE)
   {
     if(alive_neighbours < 2 || alive_neighbours > 3)
-      return DEAD;
+      next_state = DEAD;
     else
-      return ALIVE;
+      next_state = ALIVE;
   }
   else
   {
     if(alive_neighbours == 3)
-      return ALIVE;
+      next_state = ALIVE;
     else
-      return DEAD;
+      next_state = DEAD;
   }
+  // update modified buffer if grid value changed
+  // It is assumed that set cell will be used in conjunction with this
+  if(current_state == next_state)
+    _modified[center] = false;
+  else
+    _modified[center] = true;
+  return next_state;
 }
 
 void Grid::SetCell(int center, char value)
@@ -149,7 +175,7 @@ void Grid::PrintBuffer() const
   {
     if(i % _width == 0 && i != 0)
       std::cout << std::endl;
-    if (_buffer[i] == 1)
+    if (_buffer[i])
       std::cout << "1";
     else
       std::cout << "0";
@@ -213,7 +239,9 @@ Grid::Grid(const char * fname)
   {
     int x, y;
     in_file >> x >> y;
-    ValueAt(x, y) = 1;
+    uint index = y * _width + x;
+    _buffer[index] = 1;
+    _modified[index] = true;
   }
 }
 
@@ -221,6 +249,7 @@ Grid::Grid(const char * fname)
 Grid::~Grid()
 {
   delete [] _buffer;
+  delete [] _modified;
   for(uint i = 0; i < _cellNeighbours.size(); ++i)
     delete [] _cellNeighbours[i];
 }
@@ -229,7 +258,9 @@ Grid::~Grid()
 void Grid::Allocate()
 {
   _buffer = new char[_size];
+  _modified = new bool[_size];
   memset(_buffer, 0, _size);
+  memset(_modified, 0, _size);
   // finding the indicies of neighbors for each cell
   for(int center = 0; center < static_cast<int>(_size); ++center)
   {
@@ -423,15 +454,20 @@ Canal::Traveler::Traveler()
 void * RunCell(void * cell_index)
 {
   uint index = *reinterpret_cast<uint *>(cell_index);
+  Grid * grid_instance = Grid::GetInstance();
   // the thread is a traveler in the canal
   Canal::Traveler traveler;
   while(!Canal::AllLocksPassed())
   {
+    bool change_cell_value = grid_instance->CanCellChange(index);
+    char cell_value;
+    if(change_cell_value)
+      cell_value = grid_instance->CalculateCell(index);
     // calculate next grid state
-    char cell_value = Grid::GetInstance()->CalculateCell(index);
     // stop all threads from progressing so we can set the cell values
     Canal::Lock(&traveler);
-    Grid::GetInstance()->SetCell(index, cell_value);
+    if(change_cell_value)
+      grid_instance->SetCell(index, cell_value);
     // wait for all threads to update the gird
     Canal::Lock(&traveler);
   }

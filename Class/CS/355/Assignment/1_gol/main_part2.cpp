@@ -185,15 +185,11 @@ void Grid::WriteFrontBuffer(const char * fname) const
     error.append(fname);
     throw std::runtime_error(error);
   }
-  for(int y = 0; y < _height; ++y)
+  for ( int i=0; i<_width; ++i )
   {
-    for(int x = 0; x < _width; ++x)
+    for ( int j=0; j<_height; ++j )
     {
-      if(ValueAt(BUFFER_FRONT, x, y) == ALIVE)
-        out_file << "#";
-      else
-        out_file << ".";
-      out_file << " ";
+      out_file << (ValueAt(BUFFER_FRONT, i, j)%2?"#":".") << " ";
     }
     out_file << std::endl;
   }
@@ -499,7 +495,6 @@ void RunGameofLife(unsigned num_threads, const char * read_file,
     ranges.push_back(GridRange(range_start, range_end));
     // create the thread for that range
     pthread_t thread_id;
-    // TODO: PASS THE ACTUAL VALUE STORED IN RANGES RATHER THAN A POINTER
     int error = pthread_create(&thread_id, NULL, RunCell,
       reinterpret_cast<void *>(&ranges.back()));
     if(error)
