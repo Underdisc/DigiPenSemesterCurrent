@@ -93,10 +93,19 @@ Sphere::Sphere(const Vector3& center, float radius)
 
 void Sphere::ComputeCentroid(const std::vector<Vector3>& points)
 {
-  /******Student:Assignment2******/
-  // The centroid method is roughly describe as: find the centroid (not mean) of all
-  // points and then find the furthest away point from the centroid.
-  Warn("Assignment2: Required function un-implemented");
+  // generate bounding aabb
+  Aabb aabb;
+  aabb.Compute(points);
+  mCenter = aabb.GetCenter();
+  // find the point furthest from aabb centroid
+  float farthest_distance = 0.0f;
+  for (const Vector3 point : points)
+  {
+    float point_dist = Math::DistanceSq(mCenter, point);
+    farthest_distance = Math::Max(farthest_distance, point_dist);
+  }
+  // distance from centroid to furthest point is the radius 
+  mRadius = Math::Sqrt(farthest_distance);
 }
 
 void Sphere::ComputeRitter(const std::vector<Vector3>& points)
@@ -172,18 +181,27 @@ Aabb Aabb::BuildFromMinMax(const Vector3& min, const Vector3& max)
 
 float Aabb::GetVolume() const
 {
-  /******Student:Assignment2******/
-  // Return the aabb's volume
-  Warn("Assignment2: Required function un-implemented");
-  return 0;
+  // volume = dx * dy * dz
+  Vector3 delta = mMax - mMin;
+  float volume = 1.0f;
+  for (int i = 0; i < 3; ++i)
+  {
+    volume *= delta[i];
+  }
+  return volume;
 }
 
 float Aabb::GetSurfaceArea() const
 {
-  /******Student:Assignment2******/
-  // Return the aabb's surface area
-  Warn("Assignment2: Required function un-implemented");
-  return 0;
+  // surface area = 2 * (dx * dy + dy * dz + dz * dx)
+  Vector3 delta = mMax - mMin;
+  float surface_area = 0.0f;
+  for (int i = 0; i < 3; ++i)
+  {
+    surface_area += delta[i] * delta[(i + 1) % 3];
+  }
+  surface_area *= 2.0f;
+  return surface_area;
 }
 
 void Aabb::Compute(const std::vector<Vector3>& points)
@@ -198,12 +216,18 @@ void Aabb::Compute(const std::vector<Vector3>& points)
   }
 }
 
-bool Aabb::Contains(const Aabb& aabb) const
+bool Aabb::Contains(const Aabb& other) const
 {
-  /******Student:Assignment2******/
-  // Return if aabb is completely contained in this
-  Warn("Assignment2: Required function un-implemented");
-  return false;
+  // test each axis
+  for (int i = 0; i < 3; ++i)
+  {
+    // see if other aabb is outside of this aabb on this axis
+    bool out = other.mMin[i] < mMin[i] || other.mMax[i] > mMax[i];
+    if(out)
+      return false;
+  }
+  // contained on all axes
+  return true;
 }
 
 void Aabb::Expand(const Vector3& point)
@@ -236,6 +260,14 @@ bool Aabb::Compare(const Aabb& rhs, float epsilon) const
 
 void Aabb::Transform(const Matrix4& transform)
 {
+  Vector3 half_delta = GetHalfSize();
+  Vector3 center = mMin + half_delta;
+  // compute new center
+  for (int i = 0; i < 3; ++i)
+  {
+    center[i] += transform.array[i * 4 + 3];
+  }
+
   /******Student:Assignment2******/
   // Compute aabb of the this aabb after it is transformed.
   // You should use the optimize method discussed in class (not transforming all 8 points).

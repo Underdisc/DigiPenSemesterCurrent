@@ -95,6 +95,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Assignment1Tests.cpp" />
+    <ClCompile Include="Assignment2Tests.cpp" />
     <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="Main\CommandLine.cpp" />
     <ClCompile Include="Precompiled.cpp">
@@ -103,7 +104,6 @@
     <ClCompile Include="Main\Main.cpp" />
     <ClCompile Include="Main\Support.cpp" />
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="Assignment2Tests.cpp" />
     <ClCompile Include="Assignment3Tests.cpp" />
     <ClCompile Include="Assignment4Tests.cpp" />
     <ClCompile Include="Assignment5Tests.cpp" />
