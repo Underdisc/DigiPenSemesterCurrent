@@ -56,7 +56,7 @@ public:
   char ValueAt(Buffer buffer_name, uint x, uint y) const;
   char & ValueAt(Buffer buffer_name, uint x, uint y);
   void PrintBuffer(Buffer buffer_name) const;
-  void WriteFrontBuffer(const char * fname) const;
+  void WriteFrontInInit(const char * fname) const;
   uint Size() const;
 private:
   Grid(uint width, uint height);
@@ -174,8 +174,8 @@ void Grid::PrintBuffer(Buffer buffer_name) const
   std::cout << std::endl;
 }
 
-// Write buffer to file
-void Grid::WriteFrontBuffer(const char * fname) const
+// Write buffer in an init file format
+void Grid::WriteFrontInInit(const char * fname) const
 {
   std::ofstream out_file;
   out_file.open(fname, std::ofstream::out);
@@ -185,13 +185,16 @@ void Grid::WriteFrontBuffer(const char * fname) const
     error.append(fname);
     throw std::runtime_error(error);
   }
-  for ( int i=0; i<_width; ++i )
+  // print size
+  out_file << _width << ' ' << _height << std::endl;
+  // print alive cell locations
+  for (int y = 0; y < _height; ++y)
   {
-    for ( int j=0; j<_height; ++j )
+    for (int x = 0; x < _width; ++x)
     {
-      out_file << (ValueAt(BUFFER_FRONT, i, j)%2?"#":".") << " ";
+      if (ValueAt(BUFFER_FRONT, x, y) == ALIVE)
+        out_file << x << ' ' << y << std::endl;
     }
-    out_file << std::endl;
   }
   out_file.close();
 }
@@ -515,7 +518,7 @@ void RunGameofLife(unsigned num_threads, const char * read_file,
     if(error)
       throw std::runtime_error("A thread failed to join");
   }
-  Grid::GetInstance()->WriteFrontBuffer(write_file);
+  Grid::GetInstance()->WriteFrontInInit(write_file);
   Grid::DestroyInstance();
 }
 

@@ -33,7 +33,7 @@ OTHER = -Wunused -Werror
 
 SRCDIR = ../Source/
 
-OBJS = Wave.o WaveTest.o AudioData.o
+OBJS = Wave.o MyTest.o AudioData.o
 EXTERNALOBJS =
 EXE = test.exe
 
