@@ -54,6 +54,10 @@ public:
   Sphere();
   Sphere(const Vector3& center, float radius);
 
+  // Compute Sphere helper
+  void ExpandStartingSpread(const Vector3 & a, const Vector3 & b, 
+    const std::vector<Vector3> & points);
+
   void ComputeCentroid(const std::vector<Vector3>& points);
   void ComputeRitter(const std::vector<Vector3>& points);
   void ComputePCA(const std::vector<Vector3>& points, int maxIterations = 50);
@@ -68,6 +72,7 @@ public:
   bool Compare(const Sphere& rhs, float epsilon) const;
 
   DebugShape& DebugDraw() const;
+
 
   Vector3 mCenter;
   float mRadius;

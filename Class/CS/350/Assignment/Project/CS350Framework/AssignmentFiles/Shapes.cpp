@@ -56,25 +56,107 @@ DebugShape& Ray::DebugDraw(float t) const
 //-----------------------------------------------------------------------------PCA Helpers
 Matrix3 ComputeCovarianceMatrix(const std::vector<Vector3>& points)
 {
-  /******Student:Assignment2******/
-  Warn("Assignment2: Required function un-implemented");
-  return Matrix3::cIdentity;
+  // calculate mean of points
+  Vector3 mean(0.0f, 0.0f, 0.0f);
+  for (const Vector3 & point : points)
+  {
+    mean += point;
+  }
+  float num_points = static_cast<float>(points.size());
+  mean = mean / num_points; 
+  // compute covariance
+  Matrix3 covariance;
+  covariance.ZeroOut();
+  for (const Vector3 & point : points)
+  {
+    Vector3 variance = point - mean;
+    for (int i = 0; i < 3; ++i) 
+    {
+      for (int j = 0; j < 3; ++j)
+      {
+        covariance.array[i * 3 + j] += (variance[i]) * (variance[j]);
+      }
+    }
+  }
+  covariance /= num_points;
+  return covariance;
 }
 
 Matrix3 ComputeJacobiRotation(const Matrix3& matrix)
 {
-  /******Student:Assignment2******/
-  // Compute the jacobi rotation matrix that will turn the largest (magnitude) off-diagonal element of the input
-  // matrix into zero. Note: the input matrix should always be (near) symmetric.
-  Warn("Assignment2: Required function un-implemented");
-  return Matrix3::cIdentity;
+  // find largest off diagonal
+  float off_diagonals[3];
+  off_diagonals[0] = Math::Abs(matrix.m01);
+  off_diagonals[1] = Math::Abs(matrix.m02);
+  off_diagonals[2] = Math::Abs(matrix.m12);
+  unsigned largest = 0;
+  for (int i = 1; i < 3; ++i)
+  {
+    if (off_diagonals[i] > off_diagonals[largest])
+    {
+      largest = i;
+    }
+  }
+  // finding the indicies of app, apq, aqp, and aqq
+  // I feel like there is a better way to do this, but I do not know what
+  // that better way is
+  unsigned app_i, apq_i, aqp_i, aqq_i; 
+  switch (largest)
+  {
+  case 0: app_i = 0; apq_i = 1; aqp_i = 3; aqq_i = 4; break;
+  case 1: app_i = 0; apq_i = 2; aqp_i = 6; aqq_i = 8; break;
+  case 2: app_i = 4; apq_i = 5; aqp_i = 7; aqq_i = 8; break;
+  }
+  // find values of app, apq, and aqq
+  // apq = aqp
+  float app, apq, aqq;
+  app = matrix.array[app_i];
+  apq = matrix.array[apq_i];
+  aqq = matrix.array[aqq_i];
+  // find beta and use beta to find tangent
+  float beta = (aqq - app) / (2.0f * apq);
+  float tangent;
+  (beta > 0.0f) ? tangent = 1.0f : tangent = -1.0f;
+  tangent = tangent / (Math::Abs(beta) + Math::Sqrt(beta * beta + 1.0f));
+  // find theta and use to find sin and cos terms of jacobi
+  float theta = Math::ArcTan(tangent);
+  float cos = Math::Sqrt(1.0f / (tangent * tangent + 1.0f));
+  float sin = tangent * cos;
+  // Construct jacobi
+  Matrix3 jacobi;
+  jacobi.SetIdentity();
+  jacobi.array[app_i] = cos;
+  jacobi.array[apq_i] = sin;
+  jacobi.array[aqp_i] = -sin;
+  jacobi.array[aqq_i] = cos;
+  return jacobi;
 }
 
 void ComputeEigenValuesAndVectors(const Matrix3& covariance, Vector3& eigenValues, Matrix3& eigenVectors, int maxIterations)
 {
-  /******Student:Assignment2******/
-  // Iteratively rotate off the largest off-diagonal elements until the resultant matrix is diagonal or maxIterations.
-  Warn("Assignment2: Required function un-implemented");
+  Matrix3 diagonal = covariance;
+  Matrix3 jacobi_final;
+  jacobi_final.SetIdentity();
+  // compute jacobi rotations
+  const float epsilon = 1.0e-7f;
+  for (int i = 0; i < maxIterations; ++i)
+  {
+    // stop computations if off diagonals are close to 0
+    float off_diagonal_sum = Math::Abs(diagonal.m01) + 
+      Math::Abs(diagonal.m02) + Math::Abs(diagonal.m12);
+    if(off_diagonal_sum < epsilon)
+      break;
+    Matrix3 jacobi = ComputeJacobiRotation(diagonal);
+    diagonal = jacobi.Transposed() * diagonal * jacobi;
+    jacobi_final = jacobi_final * jacobi;
+  }
+  // pull out eigenvalues from diagonal
+  for (int i = 0; i < 3; ++i)
+  {
+    eigenValues[i] = diagonal[i][i];
+  }
+  // set eigen vectors using jacobi
+  eigenVectors = jacobi_final;
 }
 
 
@@ -89,6 +171,32 @@ Sphere::Sphere(const Vector3& center, float radius)
 {
   mCenter = center;
   mRadius = radius;
+}
+
+void Sphere::ExpandStartingSpread(const Vector3 & a, const Vector3 & b,
+  const std::vector<Vector3> & points)
+{
+  Vector3 half_spread = 0.5f * (a - b);
+  mCenter = b + half_spread;
+  float sqr_radius = half_spread.LengthSq();
+  // expand sphere for each point not contained
+  for (const Vector3 & point : points)
+  {
+    Vector3 center_to_point = point - mCenter;
+    float ctp_dist = center_to_point.LengthSq();
+    // minimally expand sphere if point is outside sphere
+    if (ctp_dist > sqr_radius)
+    {
+      center_to_point.Normalize();
+      float current_radius = Math::Sqrt(sqr_radius);
+      Vector3 b = mCenter - center_to_point * current_radius;
+      mCenter = (b + point) * 0.5f;
+      sqr_radius = (point - mCenter).LengthSq();
+    }
+  }
+  // all points accounted for
+  // finding final radius
+  mRadius = Math::Sqrt(sqr_radius);
 }
 
 void Sphere::ComputeCentroid(const std::vector<Vector3>& points)
@@ -110,21 +218,80 @@ void Sphere::ComputeCentroid(const std::vector<Vector3>& points)
 
 void Sphere::ComputeRitter(const std::vector<Vector3>& points)
 {
-  /******Student:Assignment2******/
-  // The ritter method:
-  // Find the largest spread on each axis.
-  // Find which axis' pair of points are the furthest (euclidean distance) apart.
-  // Choose the center of this line as the sphere center. Now incrementally expand the sphere.
-  Warn("Assignment2: Required function un-implemented");
+  // min_max stores pointers to the min and max vectors for each component
+  // order: x min, x max, y min, y max, z min, z max
+  const Vector3 * min_max[6];
+  // fill min max array with first point
+  for(unsigned i = 0; i < 6; ++i)
+    min_max[i] = &(points[0]);
+  
+  for (unsigned p = 1; p < points.size(); ++p)
+  {
+    for (unsigned i = 0; i < 3; ++i)
+    {
+      float component_val = points[p][i];
+      // test (i component < current component min)
+      if (component_val < (*min_max[i * 2])[i])
+        min_max[i * 2] = &points[p];
+      // testing max
+      else if (component_val > (*min_max[i * 2 + 1])[i])
+        min_max[i * 2 + 1] = &points[p];
+    }
+  }
+  // find which set of points has the largest spread
+  int spread_i = -1;
+  float largest_sqr_dist = 0.0f;
+  for (unsigned i = 0; i < 3; ++i)
+  {
+    Vector3 spread = *min_max[i * 2 + 1] - *min_max[i * 2];
+    float sqr_dist = spread.LengthSq();
+    if(sqr_dist > largest_sqr_dist)
+    {
+      spread_i = i * 2;
+      largest_sqr_dist = sqr_dist;
+    }
+  }
+  // expand starting spread to contain all points
+  ExpandStartingSpread(*min_max[spread_i + 1], *min_max[spread_i], points);
 }
 
 void Sphere::ComputePCA(const std::vector<Vector3>& points, int maxIterations)
 {
-  // The PCA method:
-  // Compute the eigen values and vectors. Take the largest eigen vector as the axis of largest spread.
-  // Compute the sphere center as the center of this axis then expand by all points.
-  /******Student:Assignment2******/
-  Warn("Assignment2: Required function un-implemented");
+  Matrix3 covariance = ComputeCovarianceMatrix(points);
+  Vector3 eigen_values;
+  Matrix3 eigen_vectors;
+  ComputeEigenValuesAndVectors(covariance, eigen_values, eigen_vectors, 
+    maxIterations);
+  // find largest eigen value
+  int largest_i = 0;
+  for (int i = 1; i < 3; ++i)
+  {
+    if(eigen_values[i] > eigen_values[largest_i])
+      largest_i = i;
+  }
+  // found axis of largest spread
+  Vector3 axis = eigen_vectors.Basis(largest_i);
+  // find points 2 points with largest spread on axis
+  // 0 : most positive value
+  // 1 : most negative value
+  const Vector3 * largest_spread[2];
+  float dist[2] = {Math::NegativeMin(), Math::PositiveMax()};
+  for (const Vector3 & point : points)
+  {
+    float new_dist = Math::Dot(axis, point);
+    if(new_dist > dist[0])
+    {
+      largest_spread[0] = &point;
+      dist[0] = new_dist;
+    }
+    else if (new_dist < dist[1])
+    {
+      largest_spread[1] = &point;
+      dist[1] = new_dist;
+    }
+  }
+  // expand starting spread to contain all points
+  ExpandStartingSpread(*largest_spread[0], *largest_spread[1], points);
 }
 
 bool Sphere::ContainsPoint(const Vector3& point)
@@ -154,6 +321,8 @@ DebugShape& Sphere::DebugDraw() const
 {
   return gDebugDrawer->DrawSphere(*this);
 }
+
+
 
 //-----------------------------------------------------------------------------Aabb
 Aabb::Aabb()
@@ -261,18 +430,21 @@ bool Aabb::Compare(const Aabb& rhs, float epsilon) const
 void Aabb::Transform(const Matrix4& transform)
 {
   Vector3 half_delta = GetHalfSize();
-  Vector3 center = mMin + half_delta;
-  // compute new center
+  Vector3 new_half_delta(0.0f, 0.0f, 0.0f);
+  // compute new half delta
   for (int i = 0; i < 3; ++i)
   {
-    center[i] += transform.array[i * 4 + 3];
+    for (int j = 0; j < 3; ++j)
+    {
+      new_half_delta[i] += Math::Abs(transform.array[i * 4 + j]) * half_delta[j];
+    }
   }
-
-  /******Student:Assignment2******/
-  // Compute aabb of the this aabb after it is transformed.
-  // You should use the optimize method discussed in class (not transforming all 8 points).
-  Warn("Assignment2: Required function un-implemented");
-
+  // compute new center
+  Vector3 center = mMin + half_delta;
+  center = Math::TransformPoint(transform, center);
+  // compute new min and max
+  mMin = center - new_half_delta;
+  mMax = center + new_half_delta;
 }
 
 Vector3 Aabb::GetMin() const
