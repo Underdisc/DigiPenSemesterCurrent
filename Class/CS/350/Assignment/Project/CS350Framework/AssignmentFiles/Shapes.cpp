@@ -284,7 +284,7 @@ void Sphere::ComputePCA(const std::vector<Vector3>& points, int maxIterations)
       largest_spread[0] = &point;
       dist[0] = new_dist;
     }
-    else if (new_dist < dist[1])
+    if (new_dist < dist[1])
     {
       largest_spread[1] = &point;
       dist[1] = new_dist;
