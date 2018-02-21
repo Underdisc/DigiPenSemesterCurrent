@@ -6,6 +6,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 #pragma once
 
+#include <unordered_map>
 #include "SpatialPartition.hpp"
 
 //-----------------------------------------------------------------------------BoundingSphereSpatialPartition
@@ -40,8 +41,6 @@ public:
   int mCurrentId;
 };
 
-/******Student:Assignment2******/
-// Implement the n-squared sphere spatial partition
 //-----------------------------------------------------------------------------BoundingSphereSpatialPartition
 class BoundingSphereSpatialPartition : public SpatialPartition
 {
@@ -61,5 +60,8 @@ public:
 
   void FilloutData(std::vector<SpatialPartitionQueryData>& results) const override;
 
-  // Add your implementation here
+  // stores spatial partition data
+  std::unordered_map<unsigned int, SpatialPartitionData> mDataMap;
+  // Tracks how many times data has been added to this spatial partition
+  unsigned int mDataAdded;
 };

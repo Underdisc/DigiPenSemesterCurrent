@@ -5,6 +5,7 @@
 ///
 ///////////////////////////////////////////////////////////////////////////////
 #include "Precompiled.hpp"
+#include "Geometry.hpp"
 
 //-----------------------------------------------------------------------------NSquaredSpatialPartition
 NSquaredSpatialPartition::NSquaredSpatialPartition()
@@ -108,56 +109,121 @@ void NSquaredSpatialPartition::FilloutData(std::vector<SpatialPartitionQueryData
   }
 }
 
+typedef std::pair<unsigned int, SpatialPartitionData> MapElement;
+typedef std::unordered_map<unsigned int, SpatialPartitionData>::iterator MapPos;
+
 //-----------------------------------------------------------------------------BoundingSphereSpatialPartition
 BoundingSphereSpatialPartition::BoundingSphereSpatialPartition()
 {
   mType = SpatialPartitionTypes::NSquaredSphere;
+  mDataAdded = 0;
 }
 
 void BoundingSphereSpatialPartition::InsertData(SpatialPartitionKey& key, const SpatialPartitionData& data)
 {
-  /******Student:Assignment2******/
-  Warn("Assignment2: Required function un-implemented");
+  key.mUIntKey = mDataAdded;
+  MapElement new_element(key.mUIntKey, data);
+  mDataMap.insert(new_element);
+  ++mDataAdded;
 }
 
 void BoundingSphereSpatialPartition::UpdateData(SpatialPartitionKey& key, const SpatialPartitionData& data)
 {
-  /******Student:Assignment2******/
-  Warn("Assignment2: Required function un-implemented");
+  MapPos it = mDataMap.find(key.mUIntKey);
+  if(it == mDataMap.end())
+    return;
+  // update found data
+  it->second = data;
 }
 
 void BoundingSphereSpatialPartition::RemoveData(SpatialPartitionKey& key)
 {
-  /******Student:Assignment2******/
-  Warn("Assignment2: Required function un-implemented");
+  MapPos it = mDataMap.find(key.mUIntKey);
+  if (it == mDataMap.end())
+    return;
+  // erase found data
+  mDataMap.erase(it);
 }
 
 void BoundingSphereSpatialPartition::DebugDraw(int level, const Math::Matrix4& transform, const Vector4& color, int bitMask)
 {
-  /******Student:Assignment2******/
-  Warn("Assignment2: Required function un-implemented");
+  // draw all bounding spheres
+  for(const MapElement & element : mDataMap)
+  {
+    const Sphere & sphere = element.second.mBoundingSphere;
+    DebugShape & draw_shape = gDebugDrawer->DrawSphere(sphere);
+    // apply transform, color, and mask
+    draw_shape.SetTransform(transform);
+    draw_shape.Color(color);
+    draw_shape.SetMaskBit(bitMask);
+  }
 }
 
 void BoundingSphereSpatialPartition::CastRay(const Ray& ray, CastResults& results)
 {
-  /******Student:Assignment2******/
-  Warn("Assignment2: Required function un-implemented");
+  // check for collision with every sphere
+  for (const MapElement & element : mDataMap)
+  {
+    float t;
+    bool collision;
+    const Sphere & sphere = element.second.mBoundingSphere;
+    collision = RaySphere(ray.mStart, ray.mDirection, 
+      sphere.mCenter, sphere.mRadius, t);
+    // modify results when collision occurs
+    if(collision)
+      results.AddResult(CastResult(element.second.mClientData, t));
+  }
 }
 
 void BoundingSphereSpatialPartition::CastFrustum(const Frustum& frustum, CastResults& results)
 {
-  /******Student:Assignment2******/
-  Warn("Assignment2: Required function un-implemented");
+  // not currently used
+  size_t last_axis;
+  // check for collision with every sphere
+  for (const MapElement & element : mDataMap)
+  {
+    IntersectionType::Type intersection_type;
+    const Sphere & sphere = element.second.mBoundingSphere;
+    intersection_type = FrustumSphere(frustum.GetPlanes(), sphere.mCenter,
+      sphere.mRadius, last_axis);
+    // modify results if sphere is inside or overlapping
+    if(intersection_type >= IntersectionType::Inside)
+      results.AddResult(CastResult(element.second.mClientData, 0.0f));
+    
+  }
 }
 
 void BoundingSphereSpatialPartition::SelfQuery(QueryResults& results)
 {
-  /******Student:Assignment2******/
-  Warn("Assignment2: Required function un-implemented");
+  // go through all sphere pairs
+  MapPos data_a = mDataMap.begin();
+  while (data_a != mDataMap.end())
+  {
+    MapPos data_b = data_a;
+    ++data_b;
+    while (data_b != mDataMap.end())
+    { 
+      // check for collision between sphere pairs
+      bool collision;
+      const Sphere & s_a = data_a->second.mBoundingSphere;
+      const Sphere & s_b = data_b->second.mBoundingSphere;
+      collision = SphereSphere(s_a.mCenter, s_a.mRadius, 
+        s_b.mCenter, s_b.mRadius);
+      // modify results if collision occurs
+      if (collision)
+      {
+        QueryResult result(data_a->second.mClientData, 
+          data_b->second.mClientData);
+        results.AddResult(result);
+      }
+      ++data_b;
+    }
+    ++data_a;
+  }
 }
 
 void BoundingSphereSpatialPartition::FilloutData(std::vector<SpatialPartitionQueryData>& results) const
 {
-  /******Student:Assignment2******/
-  Warn("Assignment2: Required function un-implemented");
+  for(const MapElement & element : mDataMap)
+    results.push_back(SpatialPartitionQueryData(element.second));
 }
