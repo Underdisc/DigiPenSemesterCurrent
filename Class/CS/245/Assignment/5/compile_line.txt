@@ -1,0 +1,3 @@
+Build from the Source/ directory.
+
+cl /EHsc /I.
