@@ -2,6 +2,9 @@
 // -- MIDI input framework
 // cs245 2/18
 
+// To complile
+// 
+
 #ifndef CS245_MIDIIN_H
 #define CS245_MIDIIN_H
 

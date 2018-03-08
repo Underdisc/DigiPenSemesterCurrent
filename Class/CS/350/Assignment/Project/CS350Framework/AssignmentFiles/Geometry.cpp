@@ -311,13 +311,19 @@ IntersectionType::Type FrustumSphere(const Vector4 planes[6],
 {
   ++Application::mStatistics.mFrustumSphereTests;
   bool overlap = false;
+
   for (int i = 0; i < 6; ++i)
   {
+    // begin with the last axis
+    int plane_index = (i + lastAxis) % 6;
     // find intersection type with plane i
     IntersectionType::Type result;
     result = PlaneSphere(planes[i], sphereCenter, sphereRadius);
     if(result == IntersectionType::Outside)
+    {
+      lastAxis = i;
       return IntersectionType::Outside;
+    }
     else if(result == IntersectionType::Overlaps)
       overlap = true;
   }

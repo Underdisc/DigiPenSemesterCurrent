@@ -20,8 +20,13 @@ public:
   void* GetClientData() const;
   int GetHeight() const;
 
-  // Add you implementation here
+  Aabb mAabb;
+  void * mClientData;
 
+  DynamicAabbTreeNode * mParent;
+  DynamicAabbTreeNode * mLeftChild;
+  DynamicAabbTreeNode * mRightChild;
+  size_t mHeight;
 };
 
 //--------------------------------------------------------------------DynamicAabbTree
@@ -47,9 +52,12 @@ public:
   void SelfQuery(QueryResults& results) override;
 
   DynamicAabbTreeNode* GetRoot() const;
-
   // A fattening factor to use for insertion to prevent jitter from causing updates
   static const float mFatteningFactor;
+private:
+  
+  void InsertIntoTree(DynamicAabbTreeNode * node, DynamicAabbTreeNode * new_node);
 
-  // Add your implementation here
+  DynamicAabbTreeNode * mRoot;
+
 };

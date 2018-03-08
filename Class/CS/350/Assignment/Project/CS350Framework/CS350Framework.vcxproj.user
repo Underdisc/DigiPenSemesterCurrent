@@ -4,10 +4,10 @@
     <DebuggerFlavor Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>2 0</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>3 0</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>2 0</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>3 0</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>
