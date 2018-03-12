@@ -99,6 +99,10 @@ public:
   bool Contains(const Aabb& aabb) const;
   // Expand the to include the given point.
   void Expand(const Vector3& point);
+  // Expand the Aabb on all 3 axes by an amount.
+  void Expand(float amount);
+  // Fatten the half extents of the aabb
+  void Fatten(float factor);
   // Combine the two aabbs into a new one
   static Aabb Combine(const Aabb& lhs, const Aabb& rhs);
   // See if this aabb is equal to another (with epsilon). Used for unit testing.

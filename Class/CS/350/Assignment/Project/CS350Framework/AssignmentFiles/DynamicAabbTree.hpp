@@ -9,6 +9,8 @@
 #include "SpatialPartition.hpp"
 #include "Shapes.hpp"
 
+class DynamicAabbTree;
+
 //--------------------------------------------------------------------DynamicAabbTreeNode
 class DynamicAabbTreeNode
 {
@@ -19,14 +21,14 @@ public:
   Aabb GetAabb() const;
   void* GetClientData() const;
   int GetHeight() const;
-
-  Aabb mAabb;
-  void * mClientData;
-
+private:
   DynamicAabbTreeNode * mParent;
   DynamicAabbTreeNode * mLeftChild;
   DynamicAabbTreeNode * mRightChild;
+  Aabb mAabb;
+  void * mClientData;
   size_t mHeight;
+  friend DynamicAabbTree;
 };
 
 //--------------------------------------------------------------------DynamicAabbTree
@@ -56,7 +58,8 @@ public:
   static const float mFatteningFactor;
 private:
   
-  void InsertIntoTree(DynamicAabbTreeNode * node, DynamicAabbTreeNode * new_node);
+  // Inserts new_node into the tree and returns the new height of node.
+  size_t InsertIntoTree(DynamicAabbTreeNode * node, DynamicAabbTreeNode * new_node);
 
   DynamicAabbTreeNode * mRoot;
 

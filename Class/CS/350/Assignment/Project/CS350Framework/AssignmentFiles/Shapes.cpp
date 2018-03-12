@@ -408,6 +408,24 @@ void Aabb::Expand(const Vector3& point)
   }
 }
 
+void Aabb::Expand(float amount)
+{
+  for (size_t i = 0; i < 3; ++i)
+  {
+    mMin[i] = mMin[i] - amount;
+    mMax[i] = mMax[i] + amount;
+  }
+}
+
+void Aabb::Fatten(float factor)
+{
+  Vector3 center = GetCenter();
+  Vector3 half_delta = GetHalfSize();
+  half_delta *= factor;
+  mMin = center - half_delta;
+  mMax = center + half_delta;
+}
+
 Aabb Aabb::Combine(const Aabb& lhs, const Aabb& rhs)
 {
   Aabb result;

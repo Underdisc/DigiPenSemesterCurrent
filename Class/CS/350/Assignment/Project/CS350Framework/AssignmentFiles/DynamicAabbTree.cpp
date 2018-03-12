@@ -9,44 +9,32 @@
 //--------------------------------------------------------------------DynamicAabbTreeNode
 DynamicAabbTreeNode* DynamicAabbTreeNode::GetParent() const
 {
-  /******Student:Assignment3******/
-  Warn("Assignment3: Required function un-implemented");
-  return nullptr;
+  return mParent;
 }
 
 DynamicAabbTreeNode* DynamicAabbTreeNode::GetLeftChild() const
 {
-  /******Student:Assignment3******/
-  Warn("Assignment3: Required function un-implemented");
-  return nullptr;
+  return mLeftChild;
 }
 
 DynamicAabbTreeNode* DynamicAabbTreeNode::GetRightChild() const
 {
-  /******Student:Assignment3******/
-  Warn("Assignment3: Required function un-implemented");
-  return nullptr;
+  return mRightChild;
 }
 
 Aabb DynamicAabbTreeNode::GetAabb() const
 {
-  /******Student:Assignment3******/
-  Warn("Assignment3: Required function un-implemented");
-  return Aabb();
+  return mAabb;
 }
 
 void* DynamicAabbTreeNode::GetClientData() const
 {
-  /******Student:Assignment3******/
-  Warn("Assignment3: Required function un-implemented");
-  return nullptr;
+  return mClientData;
 }
 
 int DynamicAabbTreeNode::GetHeight() const
 {
-  /******Student:Assignment3******/
-  Warn("Assignment3: Required function un-implemented");
-  return -1;
+  return mHeight;
 }
 
 
@@ -65,28 +53,27 @@ DynamicAabbTree::~DynamicAabbTree()
 
 void DynamicAabbTree::InsertData(SpatialPartitionKey& key, const SpatialPartitionData& data)
 {
-  /******Student:Assignment3******/
-  // we are going to need to traverse down the correct side using the surface area
-  // heuristic.
-  // start at le root sir
-  // roger
-
   // create new node
   DynamicAabbTreeNode * new_node = new DynamicAabbTreeNode;
   new_node->mAabb = data.mAabb;
+  new_node->mAabb.Fatten(mFatteningFactor);
   new_node->mClientData = data.mClientData;
+
   // add node to structure
   if(!mRoot)
   {
+    // first node
+    new_node->mHeight = 0;
+    new_node->mLeftChild = nullptr;
+    new_node->mRightChild = nullptr;
+    new_node->mParent = nullptr;
     mRoot = new_node;
   }
   else
   {
-    InsertIntoTree(new_node);
+    InsertIntoTree(mRoot, new_node);
   }
   key.mVoidKey = (void *)new_node;
-
-  Warn("Assignment3: Required function un-implemented");
 }
 
 void DynamicAabbTree::UpdateData(SpatialPartitionKey& key, const SpatialPartitionData& data)
@@ -131,15 +118,67 @@ DynamicAabbTreeNode* DynamicAabbTree::GetRoot() const
 }
 
 
-void DynamicAabbTree::InsertIntoTree(DynamicAabbTreeNode * node, DynamicAabbTreeNode * new_node)
+size_t DynamicAabbTree::InsertIntoTree(DynamicAabbTreeNode * node, DynamicAabbTreeNode * new_node)
 {
-  //cases
-  // we have two children // choose
-  // we have one child // actually tho?
-  // we have no children
+  // leaf node
+  if (node->mHeight == 0)
+  {
+    // create and set up empty node
+    DynamicAabbTreeNode * empty_node = new DynamicAabbTreeNode;
+    empty_node->mAabb = Aabb::Combine(node->mAabb, new_node->mAabb);
+    empty_node->mClientData = nullptr;
+    empty_node->mHeight = 1;
+    empty_node->mParent = nullptr;
+    empty_node->mLeftChild = node;
+    empty_node->mRightChild = new_node;
 
+    // quick fix
+    if(node == mRoot)
+      mRoot = empty_node;
 
-  if(node->)
+    // set up left node
+    node->mParent = empty_node;
+    node->mLeftChild = nullptr;
+    node->mRightChild = nullptr;
+    node->mHeight = 0;
+    // set up right node
+    new_node->mParent = empty_node;
+    new_node->mLeftChild = nullptr;
+    new_node->mRightChild = nullptr;
+    new_node->mHeight = 0;
+    // return height of 1
+    return 1;
+  }
+  // not a leaf
+  // compute new aabbs
+  const Aabb & left_aabb = node->mLeftChild->mAabb;
+  const Aabb & right_aabb = node->mRightChild->mAabb;
+  Aabb left_new_combine = Aabb::Combine(left_aabb, new_node->mAabb);
+  Aabb right_new_combine = Aabb::Combine(right_aabb, new_node->mAabb);
+  // compute change in surface area
+  float l_sa = left_aabb.GetSurfaceArea();
+  float r_sa = right_aabb.GetSurfaceArea();
+  float delta_l_sa = left_new_combine.GetSurfaceArea() - l_sa;
+  float delta_r_sa = right_new_combine.GetSurfaceArea() - r_sa;
+  // go down correct node
+  size_t child_height;
+  if (delta_l_sa < delta_r_sa)
+  {
+    child_height = InsertIntoTree(node->mLeftChild, new_node);
+  }
+  else
+  {
+    child_height = InsertIntoTree(node->mRightChild, new_node);
+  }
+  // return node's new height
+  size_t node_height = child_height + 1;
+  if (node_height > node->mHeight)
+  {
+    node->mHeight = node_height;
+  }
+  return node->mHeight;
+
+  // all you need to do now is rotate the tree if the balance is fucked
 }
 
 
