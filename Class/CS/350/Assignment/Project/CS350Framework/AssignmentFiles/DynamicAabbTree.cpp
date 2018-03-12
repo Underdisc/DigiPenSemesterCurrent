@@ -37,6 +37,16 @@ int DynamicAabbTreeNode::GetHeight() const
   return mHeight;
 }
 
+void DynamicAabbTreeNode::UpdateAabb()
+{
+  mAabb = Aabb::Combine(mLeftChild->mAabb, mRightChild->mAabb);
+}
+
+void DynamicAabbTreeNode::UpdateHeight()
+{
+  size_t child_height = Math::Max(mLeftChild->mHeight, mRightChild->mHeight);
+  mHeight = child_height + 1;
+}
 
 //--------------------------------------------------------------------DynamicAabbTree
 const float DynamicAabbTree::mFatteningFactor = 1.1f;
@@ -58,7 +68,6 @@ void DynamicAabbTree::InsertData(SpatialPartitionKey& key, const SpatialPartitio
   new_node->mAabb = data.mAabb;
   new_node->mAabb.Fatten(mFatteningFactor);
   new_node->mClientData = data.mClientData;
-
   // add node to structure
   if(!mRoot)
   {
@@ -78,14 +87,52 @@ void DynamicAabbTree::InsertData(SpatialPartitionKey& key, const SpatialPartitio
 
 void DynamicAabbTree::UpdateData(SpatialPartitionKey& key, const SpatialPartitionData& data)
 {
-  /******Student:Assignment3******/
-  Warn("Assignment3: Required function un-implemented");
+  DynamicAabbTreeNode * update_node = (DynamicAabbTreeNode *)key.mVoidKey;
+  const Aabb & aabb = update_node->mAabb;
+  // reinsert if new aabb is not fully contained within old aabb
+  if (!aabb.Contains(data.mAabb))
+  {
+    RemoveData(key);
+    InsertData(key, data);
+  }
 }
 
 void DynamicAabbTree::RemoveData(SpatialPartitionKey& key)
 {
-  /******Student:Assignment3******/
-  Warn("Assignment3: Required function un-implemented");
+  DynamicAabbTreeNode * remove_node = (DynamicAabbTreeNode *)key.mVoidKey;
+  // node is root
+  if (remove_node == mRoot)
+  {
+    delete mRoot;
+    mRoot = nullptr;
+    return;
+  }
+  // node to replace empty node above remove_node
+  DynamicAabbTreeNode * replace_node;
+  DynamicAabbTreeNode * empty_node = remove_node->mParent;
+  // find replace node
+  if (remove_node == empty_node->mLeftChild)
+    replace_node = empty_node->mRightChild;
+  else
+    replace_node = empty_node->mLeftChild;
+  // connect replace node
+  replace_node->mParent = empty_node->mParent;
+  if (empty_node == mRoot)
+  {
+    // replace node becomes root
+    mRoot = replace_node;
+  }
+  else
+  {
+    // replace node takes empty nodes place
+    if(empty_node->mParent->mLeftChild == empty_node)
+      empty_node->mParent->mLeftChild = replace_node;
+    else
+      empty_node->mParent->mRightChild = replace_node;
+  }
+  delete empty_node;
+  delete remove_node;
+  BalanceAndUpdateFromBottom(replace_node->mParent);
 }
 
 void DynamicAabbTree::DebugDraw(int level, const Math::Matrix4& transform, const Vector4& color, int bitMask)
@@ -118,7 +165,7 @@ DynamicAabbTreeNode* DynamicAabbTree::GetRoot() const
 }
 
 
-size_t DynamicAabbTree::InsertIntoTree(DynamicAabbTreeNode * node, DynamicAabbTreeNode * new_node)
+void DynamicAabbTree::InsertIntoTree(DynamicAabbTreeNode * node, DynamicAabbTreeNode * new_node)
 {
   // leaf node
   if (node->mHeight == 0)
@@ -128,14 +175,22 @@ size_t DynamicAabbTree::InsertIntoTree(DynamicAabbTreeNode * node, DynamicAabbTr
     empty_node->mAabb = Aabb::Combine(node->mAabb, new_node->mAabb);
     empty_node->mClientData = nullptr;
     empty_node->mHeight = 1;
-    empty_node->mParent = nullptr;
+    empty_node->mParent = node->mParent;
     empty_node->mLeftChild = node;
     empty_node->mRightChild = new_node;
-
-    // quick fix
+    // set root 
     if(node == mRoot)
+    {
       mRoot = empty_node;
-
+    }
+    else
+    {
+      // attach parent to new empty node
+      if(node->mParent->mLeftChild == node)
+        node->mParent->mLeftChild = empty_node;
+      else
+        node->mParent->mRightChild = empty_node;
+    }
     // set up left node
     node->mParent = empty_node;
     node->mLeftChild = nullptr;
@@ -146,8 +201,7 @@ size_t DynamicAabbTree::InsertIntoTree(DynamicAabbTreeNode * node, DynamicAabbTr
     new_node->mLeftChild = nullptr;
     new_node->mRightChild = nullptr;
     new_node->mHeight = 0;
-    // return height of 1
-    return 1;
+    return;
   }
   // not a leaf
   // compute new aabbs
@@ -161,24 +215,103 @@ size_t DynamicAabbTree::InsertIntoTree(DynamicAabbTreeNode * node, DynamicAabbTr
   float delta_l_sa = left_new_combine.GetSurfaceArea() - l_sa;
   float delta_r_sa = right_new_combine.GetSurfaceArea() - r_sa;
   // go down correct node
-  size_t child_height;
   if (delta_l_sa < delta_r_sa)
   {
-    child_height = InsertIntoTree(node->mLeftChild, new_node);
+    InsertIntoTree(node->mLeftChild, new_node);
+    node->mAabb = left_new_combine;
   }
   else
   {
-    child_height = InsertIntoTree(node->mRightChild, new_node);
+    InsertIntoTree(node->mRightChild, new_node);
+    node->mAabb = right_new_combine;
   }
-  // return node's new height
-  size_t node_height = child_height + 1;
-  if (node_height > node->mHeight)
+  // balance if necessary
+  bool rotated = Balance(node);
+  // update aabb and height of node
+  // Balance will handle this if node is rotated
+  if (!rotated)
   {
-    node->mHeight = node_height;
+    node->UpdateAabb();
+    node->UpdateHeight();
   }
-  return node->mHeight;
+}
 
-  // all you need to do now is rotate the tree if the balance is fucked
+bool DynamicAabbTree::Balance(DynamicAabbTreeNode * node)
+{
+  size_t left_height = node->mLeftChild->mHeight;
+  size_t right_height = node->mRightChild->mHeight;
+  // preform rotation if necessary
+  if(left_height > (right_height + 1))
+  {
+    Rotate(node, node->mLeftChild);
+    return true;
+  }
+  else if(right_height > (left_height + 1))
+  {
+    Rotate(node, node->mRightChild);
+    return true;
+  }
+  return false;
+}
+
+void DynamicAabbTree::Rotate(DynamicAabbTreeNode * old_parent, DynamicAabbTreeNode * pivot)
+{
+  // find small child of pivot
+  size_t left_height = pivot->mLeftChild->mHeight;
+  size_t right_height = pivot->mRightChild->mHeight;
+  DynamicAabbTreeNode * small_child;
+  if(left_height < right_height)
+    small_child = pivot->mLeftChild;
+  else
+    small_child = pivot->mRightChild;
+  // connect pivot to old parent's parent
+  if (old_parent == mRoot)
+  {
+    mRoot = pivot;
+    pivot->mParent = nullptr;
+  }
+  else
+  {
+    pivot->mParent = old_parent->mParent;
+    if(old_parent->mParent->mLeftChild == old_parent)
+      old_parent->mParent->mLeftChild = pivot;
+    else
+      old_parent->mParent->mRightChild = pivot;
+  }
+  // connect old parent to pivot
+  old_parent->mParent = pivot;
+  if(pivot->mLeftChild == small_child)
+    pivot->mLeftChild = old_parent;
+  else
+    pivot->mRightChild = old_parent;
+  // connect small child to old parent
+  small_child->mParent = old_parent;
+  if(old_parent->mLeftChild == pivot)
+    old_parent->mLeftChild = small_child;
+  else
+    old_parent->mRightChild = small_child;
+  // update height of old parent then pivot
+  // pivot depends on old parent
+  old_parent->UpdateAabb();
+  old_parent->UpdateHeight();
+  pivot->UpdateAabb();
+  pivot->UpdateHeight();
+}
+
+void DynamicAabbTree::BalanceAndUpdateFromBottom(DynamicAabbTreeNode * node)
+{
+  // top of tree reached
+  if(node == nullptr)
+    return;
+  // perform balance if necessary
+  bool rotated = Balance(node);
+  // update aabb and height if rotation was not performed
+  if (!rotated)
+  {
+    node->UpdateAabb();
+    node->UpdateHeight();
+  }
+  BalanceAndUpdateFromBottom(node->mParent);
 }
 
 

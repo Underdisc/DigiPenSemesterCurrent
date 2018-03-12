@@ -22,6 +22,9 @@ public:
   void* GetClientData() const;
   int GetHeight() const;
 private:
+  void UpdateAabb();
+  void UpdateHeight();
+
   DynamicAabbTreeNode * mParent;
   DynamicAabbTreeNode * mLeftChild;
   DynamicAabbTreeNode * mRightChild;
@@ -59,7 +62,10 @@ public:
 private:
   
   // Inserts new_node into the tree and returns the new height of node.
-  size_t InsertIntoTree(DynamicAabbTreeNode * node, DynamicAabbTreeNode * new_node);
+  void InsertIntoTree(DynamicAabbTreeNode * node, DynamicAabbTreeNode * new_node);
+  bool Balance(DynamicAabbTreeNode * node);
+  void Rotate(DynamicAabbTreeNode * old_parent, DynamicAabbTreeNode * pivot);
+  void BalanceAndUpdateFromBottom(DynamicAabbTreeNode * node);
 
   DynamicAabbTreeNode * mRoot;
 
