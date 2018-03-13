@@ -46,11 +46,14 @@ public:
   ~DynamicAabbTree();
 
   // Spatial Partition Interface
-  void InsertData(SpatialPartitionKey& key, const SpatialPartitionData& data) override;
-  void UpdateData(SpatialPartitionKey& key, const SpatialPartitionData& data) override;
+  void InsertData(SpatialPartitionKey& key, 
+    const SpatialPartitionData& data) override;
+  void UpdateData(SpatialPartitionKey& key, 
+    const SpatialPartitionData& data) override;
   void RemoveData(SpatialPartitionKey& key) override;
 
-  void DebugDraw(int level, const Math::Matrix4& transform, const Vector4& color = Vector4(1), int bitMask = 0) override;
+  void DebugDraw(int level, const Math::Matrix4& transform, 
+    const Vector4& color = Vector4(1), int bitMask = 0) override;
 
   void CastRay(const Ray& ray, CastResults& results) override;
   void CastFrustum(const Frustum& frustum, CastResults& results) override;
@@ -58,12 +61,14 @@ public:
   void SelfQuery(QueryResults& results) override;
 
   DynamicAabbTreeNode* GetRoot() const;
-  // A fattening factor to use for insertion to prevent jitter from causing updates
+  // A fattening factor used for insertion to prevent 
+  // jitter from causing updates
   static const float mFatteningFactor;
 private:
   
   // Inserts new_node into the tree and returns the new height of node
-  void InsertIntoTree(DynamicAabbTreeNode * node, DynamicAabbTreeNode * new_node);
+  void InsertIntoTree(DynamicAabbTreeNode * node, 
+    DynamicAabbTreeNode * new_node);
   // Balances the tree if necessary.
   bool Balance(DynamicAabbTreeNode * node);
   void Rotate(DynamicAabbTreeNode * old_parent, DynamicAabbTreeNode * pivot);
@@ -71,13 +76,20 @@ private:
   void BalanceAndUpdateFromBottom(DynamicAabbTreeNode * node);
   
 
-  void CastRay(DynamicAabbTreeNode * node, const Ray & ray, CastResults & results);
-  void CastFrustum(DynamicAabbTreeNode * node, const Frustum & frustum, CastResults & results);
+  void CastRay(DynamicAabbTreeNode * node, const Ray & ray, 
+    CastResults & results);
+  void CastFrustum(DynamicAabbTreeNode * node, const Frustum & frustum, 
+    CastResults & results);
   // adds all leaf node client data below given node to results
   void AddLeafNodes(DynamicAabbTreeNode * node, CastResults & results);
 
-  void Query(DynamicAabbTreeNode * a, DynamicAabbTreeNode * b, QueryResults & results);
+  void TreeQuery(DynamicAabbTreeNode * node, QueryResults & results);
+  void ChildQuery(DynamicAabbTreeNode * a, DynamicAabbTreeNode * b, 
+    QueryResults & results);
+
+  void DebugDraw(DynamicAabbTreeNode * node, int level, 
+    const Math::Matrix4& transform, const Vector4& color = Vector4(1), 
+    int bitMask = 0);
 
   DynamicAabbTreeNode * mRoot;
-
 };

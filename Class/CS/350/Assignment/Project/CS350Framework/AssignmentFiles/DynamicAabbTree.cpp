@@ -140,8 +140,8 @@ void DynamicAabbTree::RemoveData(SpatialPartitionKey& key)
 void DynamicAabbTree::DebugDraw(int level, const Math::Matrix4& transform, 
   const Vector4& color, int bitMask)
 {
-  /******Student:Assignment3******/
-  Warn("Assignment3: Required function un-implemented");
+  if(mRoot)
+    DebugDraw(mRoot, level, transform, color, bitMask);
 }
 
 void DynamicAabbTree::CastRay(const Ray& ray, CastResults& results)
@@ -158,16 +158,14 @@ void DynamicAabbTree::CastFrustum(const Frustum& frustum, CastResults& results)
 
 void DynamicAabbTree::SelfQuery(QueryResults& results)
 {
-  // the first thing you are going to want to do is see if
-  // the two children intersect
+  if(mRoot)
+    TreeQuery(mRoot, results);
 }
 
 DynamicAabbTreeNode* DynamicAabbTree::GetRoot() const
-{/******Student:Assignment3******/
-  Warn("Assignment3: Required function un-implemented");
+{
   return mRoot;
 }
-
 
 void DynamicAabbTree::InsertIntoTree(DynamicAabbTreeNode * node, 
   DynamicAabbTreeNode * new_node)
@@ -390,37 +388,87 @@ void DynamicAabbTree::AddLeafNodes(DynamicAabbTreeNode * node,
   }
 }
 
-void DynamicAabbTree::Query(DynamicAabbTreeNode * a, DynamicAabbTreeNode * b, 
+void DynamicAabbTree::TreeQuery(DynamicAabbTreeNode * node,
   QueryResults & results)
 {
+  if(node->mHeight == 0)
+    return;
+  // query children
+  ChildQuery(node->mLeftChild, node->mRightChild, results);
+  // perform tree query on both nodes
+  TreeQuery(node->mLeftChild, results);
+  TreeQuery(node->mRightChild, results);
+}
+
+void DynamicAabbTree::ChildQuery(DynamicAabbTreeNode * a, 
+  DynamicAabbTreeNode * b, QueryResults & results)
+{
+  // check for intersection
   bool intersection;
   intersection = AabbAabb(a->mAabb.mMin, a->mAabb.mMax,
     b->mAabb.mMin, b->mAabb.mMax);
+  if(!intersection)
+    return;
   if (a->mHeight == 0)
   {
     if (b->mHeight == 0)
     {
-      if (!intersection)
-        return;
+      // both leaf nodes
       QueryResult result(a->mClientData, b->mClientData);
       results.AddResult(result);
       return;
     }
-    Query(a, b->mLeftChild, results);
-    Query(a, b->mRightChild, results);
+    // split b
+    ChildQuery(a, b->mLeftChild, results);
+    ChildQuery(a, b->mRightChild, results);
     return;
   }
   if (b->mHeight == 0)
   {
-    Query(b, a->mLeftChild, results);
-    Query(b, a->mRightChild, results);
+    // split a
+    ChildQuery(b, a->mLeftChild, results);
+    ChildQuery(b, a->mRightChild, results);
     return;
   }
-  Query(a, b->mLeftChild, results);
-  Query(a, b->mRightChild, results);
-  Query(b, a->mLeftChild, results);
-  Query(b, a->mRightChild, results);
+  // split node with largest volume
+  float a_volume = a->mAabb.GetVolume();
+  float b_volume = b->mAabb.GetVolume();
+  if(a_volume > b_volume)
+  {
+    ChildQuery(a->mLeftChild, b, results);
+    ChildQuery(a->mRightChild, b, results);
+  }
+  else
+  {
+    ChildQuery(b->mLeftChild, a, results);
+    ChildQuery(b->mRightChild, a, results);
+  }
 }
 
+
+void DynamicAabbTree::DebugDraw(DynamicAabbTreeNode * node, int level,
+  const Math::Matrix4& transform, const Vector4& color, int bitMask)
+{
+  if(level < 1)
+  {
+    // draw aabb at correct level
+    const Aabb & aabb = node->mAabb;
+    DebugShape & draw_shape = gDebugDrawer->DrawAabb(aabb);
+    draw_shape.SetTransform(transform);
+    draw_shape.Color(color);
+    draw_shape.SetMaskBit(bitMask);
+  }
+  // stop recursion
+  if (node->mHeight == 0 || level == 0)
+    return;
+  // find next level and move to next nodes
+  int next_level;
+  if(level == -1)
+    next_level =  -1;
+  else
+    next_level = level - 1;
+  DebugDraw(node->mLeftChild, next_level, transform, color, bitMask);
+  DebugDraw(node->mRightChild, next_level, transform, color, bitMask);
+}
 
 
