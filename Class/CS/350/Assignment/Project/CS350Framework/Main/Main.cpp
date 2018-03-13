@@ -8,6 +8,7 @@
 ///
 ///////////////////////////////////////////////////////////////////////////////
 #include "Precompiled.hpp"
+#include <vld.h>
 
 // Function called by AntTweakBar to copy the content of a std::string handled
 // by the AntTweakBar library to a std::string handled by your application

@@ -59,6 +59,8 @@ DynamicAabbTree::DynamicAabbTree()
 
 DynamicAabbTree::~DynamicAabbTree()
 {
+  DeallocateAll(mRoot);
+  mRoot = nullptr;
 }
 
 void DynamicAabbTree::InsertData(SpatialPartitionKey& key, 
@@ -469,6 +471,16 @@ void DynamicAabbTree::DebugDraw(DynamicAabbTreeNode * node, int level,
     next_level = level - 1;
   DebugDraw(node->mLeftChild, next_level, transform, color, bitMask);
   DebugDraw(node->mRightChild, next_level, transform, color, bitMask);
+}
+
+void DynamicAabbTree::DeallocateAll(DynamicAabbTreeNode * node)
+{
+  if (node)
+  {
+    DeallocateAll(node->mLeftChild);
+    DeallocateAll(node->mRightChild);
+    delete node;
+  }
 }
 
 

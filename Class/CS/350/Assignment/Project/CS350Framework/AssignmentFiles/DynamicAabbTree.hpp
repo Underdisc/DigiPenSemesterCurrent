@@ -37,7 +37,6 @@ private:
 
 //--------------------------------------------------------------------DynamicAabbTree
 /******Student:Assignment3******/
-/// You must implement a dynamic aabb tree as we discussed in class.
 class DynamicAabbTree : public SpatialPartition
 {
 public:
@@ -65,7 +64,6 @@ public:
   // jitter from causing updates
   static const float mFatteningFactor;
 private:
-  
   // Inserts new_node into the tree and returns the new height of node
   void InsertIntoTree(DynamicAabbTreeNode * node, 
     DynamicAabbTreeNode * new_node);
@@ -74,22 +72,22 @@ private:
   void Rotate(DynamicAabbTreeNode * old_parent, DynamicAabbTreeNode * pivot);
   // Updates the aabb and height of each node from givent node to root
   void BalanceAndUpdateFromBottom(DynamicAabbTreeNode * node);
-  
-
   void CastRay(DynamicAabbTreeNode * node, const Ray & ray, 
     CastResults & results);
   void CastFrustum(DynamicAabbTreeNode * node, const Frustum & frustum, 
     CastResults & results);
   // adds all leaf node client data below given node to results
   void AddLeafNodes(DynamicAabbTreeNode * node, CastResults & results);
-
+  // create self query of a tree
   void TreeQuery(DynamicAabbTreeNode * node, QueryResults & results);
+  // query children within three query
   void ChildQuery(DynamicAabbTreeNode * a, DynamicAabbTreeNode * b, 
     QueryResults & results);
-
   void DebugDraw(DynamicAabbTreeNode * node, int level, 
     const Math::Matrix4& transform, const Vector4& color = Vector4(1), 
     int bitMask = 0);
-
+  // deallocate all nodes in tree
+  void DeallocateAll(DynamicAabbTreeNode * node);
+private:
   DynamicAabbTreeNode * mRoot;
 };
