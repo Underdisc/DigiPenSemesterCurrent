@@ -6,7 +6,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "Precompiled.hpp"
 
-//--------------------------------------------------------------------DynamicAabbTreeNode
+//----------------------------------------------------------DynamicAabbTreeNode
 DynamicAabbTreeNode* DynamicAabbTreeNode::GetParent() const
 {
   return mParent;
@@ -48,7 +48,7 @@ void DynamicAabbTreeNode::UpdateHeight()
   mHeight = child_height + 1;
 }
 
-//--------------------------------------------------------------------DynamicAabbTree
+//--------------------------------------------------------------DynamicAabbTree
 const float DynamicAabbTree::mFatteningFactor = 1.1f;
 
 DynamicAabbTree::DynamicAabbTree()
@@ -61,7 +61,8 @@ DynamicAabbTree::~DynamicAabbTree()
 {
 }
 
-void DynamicAabbTree::InsertData(SpatialPartitionKey& key, const SpatialPartitionData& data)
+void DynamicAabbTree::InsertData(SpatialPartitionKey& key, 
+  const SpatialPartitionData& data)
 {
   // create new node
   DynamicAabbTreeNode * new_node = new DynamicAabbTreeNode;
@@ -85,7 +86,8 @@ void DynamicAabbTree::InsertData(SpatialPartitionKey& key, const SpatialPartitio
   key.mVoidKey = (void *)new_node;
 }
 
-void DynamicAabbTree::UpdateData(SpatialPartitionKey& key, const SpatialPartitionData& data)
+void DynamicAabbTree::UpdateData(SpatialPartitionKey& key, 
+  const SpatialPartitionData& data)
 {
   DynamicAabbTreeNode * update_node = (DynamicAabbTreeNode *)key.mVoidKey;
   const Aabb & aabb = update_node->mAabb;
@@ -135,7 +137,8 @@ void DynamicAabbTree::RemoveData(SpatialPartitionKey& key)
   BalanceAndUpdateFromBottom(replace_node->mParent);
 }
 
-void DynamicAabbTree::DebugDraw(int level, const Math::Matrix4& transform, const Vector4& color, int bitMask)
+void DynamicAabbTree::DebugDraw(int level, const Math::Matrix4& transform, 
+  const Vector4& color, int bitMask)
 {
   /******Student:Assignment3******/
   Warn("Assignment3: Required function un-implemented");
@@ -143,29 +146,31 @@ void DynamicAabbTree::DebugDraw(int level, const Math::Matrix4& transform, const
 
 void DynamicAabbTree::CastRay(const Ray& ray, CastResults& results)
 {
-  /******Student:Assignment3******/
-  Warn("Assignment3: Required function un-implemented");
+  if(mRoot)
+    CastRay(mRoot, ray, results);
 }
 
 void DynamicAabbTree::CastFrustum(const Frustum& frustum, CastResults& results)
 {
-  /******Student:Assignment3******/
-  Warn("Assignment3: Required function un-implemented");
+  if(mRoot)
+    CastFrustum(mRoot, frustum, results);
 }
 
 void DynamicAabbTree::SelfQuery(QueryResults& results)
 {
-  /******Student:Assignment3******/
-  Warn("Assignment3: Required function un-implemented");
+  // the first thing you are going to want to do is see if
+  // the two children intersect
 }
 
 DynamicAabbTreeNode* DynamicAabbTree::GetRoot() const
-{
+{/******Student:Assignment3******/
+  Warn("Assignment3: Required function un-implemented");
   return mRoot;
 }
 
 
-void DynamicAabbTree::InsertIntoTree(DynamicAabbTreeNode * node, DynamicAabbTreeNode * new_node)
+void DynamicAabbTree::InsertIntoTree(DynamicAabbTreeNode * node, 
+  DynamicAabbTreeNode * new_node)
 {
   // leaf node
   if (node->mHeight == 0)
@@ -254,7 +259,8 @@ bool DynamicAabbTree::Balance(DynamicAabbTreeNode * node)
   return false;
 }
 
-void DynamicAabbTree::Rotate(DynamicAabbTreeNode * old_parent, DynamicAabbTreeNode * pivot)
+void DynamicAabbTree::Rotate(DynamicAabbTreeNode * old_parent, 
+  DynamicAabbTreeNode * pivot)
 {
   // find small child of pivot
   size_t left_height = pivot->mLeftChild->mHeight;
@@ -312,6 +318,108 @@ void DynamicAabbTree::BalanceAndUpdateFromBottom(DynamicAabbTreeNode * node)
     node->UpdateHeight();
   }
   BalanceAndUpdateFromBottom(node->mParent);
+}
+
+void DynamicAabbTree::CastRay(DynamicAabbTreeNode * node, const Ray & ray, 
+  CastResults & results)
+{
+  // check for intersection
+  float t;
+  bool intersect = RayAabb(ray.mStart, ray.mDirection, 
+    node->mAabb.mMin, node->mAabb.mMax, t);
+  if(!intersect)
+    return;
+  if (node->mHeight == 0)
+  {
+    // add client data at a leaf node
+    CastResult result(node->mClientData, t);
+    results.AddResult(result);
+  }
+  else
+  {
+    // cast ray down children at empty node
+    CastRay(node->mLeftChild, ray, results);
+    CastRay(node->mRightChild, ray, results);
+  }
+}
+
+void DynamicAabbTree::CastFrustum(DynamicAabbTreeNode * node,
+  const Frustum & frustum, CastResults & results)
+{
+  // find intersection type
+  IntersectionType::Type intersection_type;
+  intersection_type = FrustumAabb(frustum.GetPlanes(), 
+    node->mAabb.mMin, node->mAabb.mMax, node->mLastAxis);
+  // exit on no intersection
+  if(intersection_type < IntersectionType::Inside)
+    return;
+  // add all leaf nodes if aabb is completely contained
+  if(intersection_type ==  IntersectionType::Inside)
+  {
+    AddLeafNodes(node, results);
+    return;
+  }
+  if (node->mHeight == 0)
+  {
+    // at a leaf node
+    CastResult result(node->mClientData);
+    results.AddResult(result);
+  }
+  else
+  {
+    // recurse down children
+    CastFrustum(node->mLeftChild, frustum, results);
+    CastFrustum(node->mRightChild, frustum, results);
+  }
+}
+
+void DynamicAabbTree::AddLeafNodes(DynamicAabbTreeNode * node, 
+  CastResults & results)
+{
+  if (node->mHeight == 0)
+  {
+    // add result
+    CastResult result(node->mClientData);
+    results.AddResult(result);
+  }
+  else
+  {
+    // recurse down children
+    AddLeafNodes(node->mLeftChild, results);
+    AddLeafNodes(node->mRightChild, results);
+  }
+}
+
+void DynamicAabbTree::Query(DynamicAabbTreeNode * a, DynamicAabbTreeNode * b, 
+  QueryResults & results)
+{
+  bool intersection;
+  intersection = AabbAabb(a->mAabb.mMin, a->mAabb.mMax,
+    b->mAabb.mMin, b->mAabb.mMax);
+  if (a->mHeight == 0)
+  {
+    if (b->mHeight == 0)
+    {
+      if (!intersection)
+        return;
+      QueryResult result(a->mClientData, b->mClientData);
+      results.AddResult(result);
+      return;
+    }
+    Query(a, b->mLeftChild, results);
+    Query(a, b->mRightChild, results);
+    return;
+  }
+  if (b->mHeight == 0)
+  {
+    Query(b, a->mLeftChild, results);
+    Query(b, a->mRightChild, results);
+    return;
+  }
+  Query(a, b->mLeftChild, results);
+  Query(a, b->mRightChild, results);
+  Query(b, a->mLeftChild, results);
+  Query(b, a->mRightChild, results);
 }
 
 

@@ -311,17 +311,16 @@ IntersectionType::Type FrustumSphere(const Vector4 planes[6],
 {
   ++Application::mStatistics.mFrustumSphereTests;
   bool overlap = false;
-
   for (int i = 0; i < 6; ++i)
   {
     // begin with the last axis
     int plane_index = (i + lastAxis) % 6;
     // find intersection type with plane i
     IntersectionType::Type result;
-    result = PlaneSphere(planes[i], sphereCenter, sphereRadius);
+    result = PlaneSphere(planes[plane_index], sphereCenter, sphereRadius);
     if(result == IntersectionType::Outside)
     {
-      lastAxis = i;
+      lastAxis = plane_index;
       return IntersectionType::Outside;
     }
     else if(result == IntersectionType::Overlaps)
@@ -341,10 +340,16 @@ IntersectionType::Type FrustumAabb(const Vector4 planes[6],
   bool overlap = false;
   for (int i = 0; i < 6; ++i)
   {
+    // begin with the last axis
+    int plane_index = (i + lastAxis) % 6;
+    // find intersection with plane i
     IntersectionType::Type result;
-    result = PlaneAabb(planes[i], aabbMin, aabbMax);
+    result = PlaneAabb(planes[plane_index], aabbMin, aabbMax);
     if (result == IntersectionType::Outside)
+    {
+      lastAxis = plane_index;
       return IntersectionType::Outside;
+    }
     else if (result == IntersectionType::Overlaps)
       overlap = true;
   }
