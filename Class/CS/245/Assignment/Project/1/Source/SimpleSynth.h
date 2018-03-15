@@ -1,50 +1,53 @@
 #ifndef CS245_SIMPLESYNTH_H
 #define CS245_SIMPLESYNTH_H
 
+#include <vector>
 #include "MidiIn.h"
-#include <iostream>
 
-using namespace std;
+#define NUM_CHANNELS 16
 
-struct SimpleSynth : MidiIn {
-  SimpleSynth(int n, int r) : MidiIn(n) { }
-  ~SimpleSynth() { }
-  float operator()(void) { return 0; }
-  void onNoteOn(int channel, int note, int velocity) {
-    cout <<  "note on: " << channel << ' '
-         << note << ' ' << velocity << endl;
-  }
-  void onNoteOff(int channel, int note) {
-    cout << "note off: " << channel << ' ' << note << endl;
-  }
-  void onPitchWheelChange(int channel, float value) {
-    cout << "pitch wheel: " << channel << ' ' << value << endl;
-  }
-  void onVolumeChange(int channel, int level) {
-    cout << "volume: " << channel << ' ' << level << endl;
-  }
-  void onModulationWheelChange(int channel, int value) {
-    cout << "mod wheel: " << channel << ' ' << value << endl;
-  }
-  void onControlChange(int channel, int number, int value) {
-    cout << "control: " << channel << ' '
-         << number << ' ' << value << endl;
-  }
+float SinWave(int R, float f);
+
+struct Note
+{
+  Note(int midi_index, int midi_velocity);
+  float CalculateSample(float time);
+  float m_frequency;
+  float m_gain;
+  int m_id;
 };
 
-/*
+struct Channel
+{
+  void AddNote(int midi_index, int midi_velocity);
+  void RemoveNote(int midi_index);
+  float CalculateSample(float time);
+  std::vector<Note> m_notes;
+  float m_gain;
+  float m_pitch_shift;
+  bool m_balance;
+};
+
+
 class SimpleSynth : private MidiIn
 {
 public:
   SimpleSynth(int devno, int R);
   ~SimpleSynth();
   float operator()(void);
+private:
   void onNoteOn(int channel, int note, int velocity);
   void onNoteOff(int channel, int note);
   void onPitchWheelChange(int channel, float value);
   void onVolumeChange(int channel, int level);
   void onModulationWheelChange(int channel, int value);
   void onControlChange(int channel, int number, int value);
+
+  int m_sample_rate;
+  int m_current_sample;
+
+  Channel m_channels[NUM_CHANNELS];
+
 };
-*/
+
 #endif

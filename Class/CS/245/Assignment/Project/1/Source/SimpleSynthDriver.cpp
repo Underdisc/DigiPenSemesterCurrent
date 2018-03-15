@@ -83,8 +83,6 @@ int main(int argc, char *argv[]) {
   Pa_OpenStream(&output_stream,0,&params,RATE,0,0,onWrite,synth);
   Pa_StartStream(output_stream);
 
-  synth->start();
-
   cin.get();
 
   Pa_StopStream(output_stream);
