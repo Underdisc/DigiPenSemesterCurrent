@@ -1,3 +1,3 @@
-Build from the Source/ directory.
+Build from the Build/ directory.
 
 cl /EHsc /I../Source/. ../Source/MidiIn.cpp ../Source/MidiInTest.cpp portmidi.lib pthreadVC2.lib /Fetest.exe

@@ -67,6 +67,7 @@ MidiIn::~MidiIn()
   pthread_join(event_thread, 0);
   // close input stream
   Pm_Close(input_stream);
+  Pm_Terminate();
 }
 
 void MidiIn::start()

@@ -1,0 +1,3 @@
+Build from Build/
+
+cl /EHsc /I../Source/. ../Source/SimpleSynthDriver.cpp ../Source/SimpleSynth.cpp MidiIn.lib portaudio_x86.lib portmidi.lib pthreadVC2.lib /Fetest.exe
