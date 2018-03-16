@@ -76,8 +76,9 @@ int main(int argc, char *argv[]) {
   params.device = Pa_GetDefaultOutputDevice();
   params.channelCount = 1;
   params.sampleFormat = paFloat32;
-  params.suggestedLatency = min(0.01,Pa_GetDeviceInfo(params.device)
-                                     ->defaultLowOutputLatency);
+  params.suggestedLatency =
+    Pa_GetDeviceInfo(params.device)->defaultLowOutputLatency;
+  std::cout << params.suggestedLatency << std::endl;
   params.hostApiSpecificStreamInfo = 0;
   PaStream *output_stream;
   Pa_OpenStream(&output_stream,0,&params,RATE,0,0,onWrite,synth);

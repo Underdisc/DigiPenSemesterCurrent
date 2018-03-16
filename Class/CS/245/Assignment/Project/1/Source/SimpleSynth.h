@@ -6,13 +6,45 @@
 
 #define NUM_CHANNELS 16
 
-float SinWave(int R, float f);
+//============================================================================//
+// Waveform //
+//============================================================================//
+
+
+class Waveform
+{
+public:
+  Waveform();
+  void IncrementSample();
+  virtual float CalculateSample() = 0;
+  float m_f_index;
+  float m_f_index_increment;
+  static float s_sample_rate;
+};
+
+class Sine : public Waveform
+{
+public:
+  Sine(float frequency);
+  float CalculateSample();
+  float m_omega;
+};
+
+// maybe do a function callback for waveform type
+// or inheritance (but new)
+// or just put everything in Waveform
+//
+
+// well, every note is dependent on some waveform
+// they are different only in frequency
+// so we should have a waveform per note
+
 
 struct Note
 {
   Note(int midi_index, int midi_velocity);
-  float CalculateSample(float time);
-  float m_frequency;
+  float CalculateSample();
+  Waveform * m_waveform;
   float m_gain;
   int m_id;
 };
@@ -21,7 +53,7 @@ struct Channel
 {
   void AddNote(int midi_index, int midi_velocity);
   void RemoveNote(int midi_index);
-  float CalculateSample(float time);
+  float CalculateSample();
   std::vector<Note> m_notes;
   float m_gain;
   float m_pitch_shift;
@@ -43,7 +75,6 @@ private:
   void onModulationWheelChange(int channel, int value);
   void onControlChange(int channel, int number, int value);
 
-  int m_sample_rate;
   int m_current_sample;
 
   Channel m_channels[NUM_CHANNELS];

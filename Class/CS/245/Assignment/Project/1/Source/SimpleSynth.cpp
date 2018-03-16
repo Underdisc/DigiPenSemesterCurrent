@@ -7,6 +7,8 @@
 #include <math.h>
 #include <iostream>
 
+#define MAGIC_GAIN_FACTOR 0.3f
+
 #define PI  3.14159265f
 #define TAU 6.283185307179586f
 
@@ -15,19 +17,29 @@
 int index = 0;
 
 //============================================================================//
-// Waveform Functions //
+// Waveform //
 //============================================================================//
 
-float SinWave(int R, float f)
+// static initialization
+float Waveform::s_sample_rate = 44100.0f;
+
+Waveform::Waveform() : m_f_index(0.0f), m_f_index_increment(1.0f)
+{}
+
+void Waveform::IncrementSample()
 {
-  // we are going to need to figure out the incremental calculations
-  // cause time is screwing shit up me thinks
+  m_f_index += m_f_index_increment;
+}
 
+// Sine : Waveform //=====//
 
-  float omega = (TAU * f / R);
-  float sample = 0.3f *sin(omega * index);
-  ++index;
-  return sample;
+Sine::Sine(float frequency) :
+  m_omega(TAU * frequency / s_sample_rate)
+{}
+
+float Sine::CalculateSample()
+{
+  return std::sin(m_omega * m_f_index);
 }
 
 //============================================================================//
@@ -38,14 +50,17 @@ Note::Note(int midi_index, int midi_velocity)
 {
   float delta_semtiones = (float)(midi_index - 69);
   float speed_up = std::pow(2.0f, delta_semtiones / 12.0f);
-  m_frequency = 440.0f * speed_up;
+  float frequency = 440.0f * speed_up;
+  Sine * sine_waveform = new Sine(frequency);
+  m_waveform = reinterpret_cast<Waveform *>(sine_waveform);
   m_gain = (float)midi_velocity /  MAX_MIDI_VELOCITY;
   m_id = midi_index;
 }
 
-float Note::CalculateSample(float time)
+float Note::CalculateSample()
 {
-  float sample = SinWave(time, m_frequency) * m_gain;
+  float sample = m_waveform->CalculateSample() * m_gain;
+  m_waveform->IncrementSample();
   return sample;
 }
 
@@ -74,15 +89,15 @@ void Channel::RemoveNote(int midi_index)
   }
 }
 
-float Channel::CalculateSample(float time)
+float Channel::CalculateSample()
 {
   float sample = 0.0f;
   size_t num_notes = m_notes.size();
   for(int i = 0; i < num_notes; ++i)
   {
-    sample += m_notes[i].CalculateSample(time);
+    sample += m_notes[i].CalculateSample();
   }
-  // TODO: TAKE GAIN INTO ACCOUNT
+  sample *= MAGIC_GAIN_FACTOR;
   return sample;
 }
 
@@ -90,10 +105,11 @@ float Channel::CalculateSample(float time)
 //============================================================================//
 // SimpleSynth //
 //============================================================================//
-SimpleSynth::SimpleSynth(int devno, int R) : MidiIn(devno), m_sample_rate(R),
+SimpleSynth::SimpleSynth(int devno, int R) : MidiIn(devno),
   m_current_sample(0)
 {
-  // begin processing midi events
+  // set waveform sample rate and begin processing midi events
+  Waveform::s_sample_rate = (float)R;
   start();
 }
 
@@ -102,17 +118,12 @@ SimpleSynth::~SimpleSynth()
 
 float SimpleSynth::operator()(void)
 {
-  float current_time = (float)m_current_sample / (float)m_sample_rate;
   float sample = 0.0f;
   for(int i = 0; i < NUM_CHANNELS; ++i)
   {
-    sample += m_channels[i].CalculateSample(current_time);
+    sample += m_channels[i].CalculateSample();
   }
-  ++m_current_sample;
-
-  // return calculated value
-
-  return SinWave(m_sample_rate, 440.0f);
+  return sample;
 }
 
 
