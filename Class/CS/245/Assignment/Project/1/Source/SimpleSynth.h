@@ -6,19 +6,26 @@
 
 #define NUM_CHANNELS 16
 
+class Envelope
+{
+  float m_attack_time;
+  float m_decay_time;
+  float m_sustain;
+  float m_release_time;
+};
+
 //============================================================================//
 // Waveform //
 //============================================================================//
 
+// prolly need another thing for envelope
+// which would get calculated as part of the channel
 
 class Waveform
 {
 public:
   Waveform();
-  void IncrementSample();
-  virtual float CalculateSample() = 0;
-  float m_f_index;
-  float m_f_index_increment;
+  virtual float CalculateSample(float fractional_index) = 0;
   static float s_sample_rate;
 };
 
@@ -26,40 +33,45 @@ class Sine : public Waveform
 {
 public:
   Sine(float frequency);
-  float CalculateSample();
+  float CalculateSample(float fractional_index);
   float m_omega;
 };
 
-// maybe do a function callback for waveform type
-// or inheritance (but new)
-// or just put everything in Waveform
-//
+//============================================================================//
+// Note //
+//============================================================================//
 
-// well, every note is dependent on some waveform
-// they are different only in frequency
-// so we should have a waveform per note
-
-
-struct Note
+class Note
 {
+public:
   Note(int midi_index, int midi_velocity);
-  float CalculateSample();
+  float CalculateSample(float fractional_index);
   Waveform * m_waveform;
   float m_gain;
   int m_id;
 };
 
-struct Channel
+//============================================================================//
+// Channel //
+//============================================================================//
+class Channel
 {
+public:
+  Channel::Channel();
   void AddNote(int midi_index, int midi_velocity);
   void RemoveNote(int midi_index);
   float CalculateSample();
-  std::vector<Note> m_notes;
+  void PitchShift(float delta_cents);
   float m_gain;
-  float m_pitch_shift;
-  bool m_balance;
+private:
+  std::vector<Note> m_notes;
+  float m_f_index;
+  float m_f_index_increment;
 };
 
+//============================================================================//
+// SimpleSynth //
+//============================================================================//
 
 class SimpleSynth : private MidiIn
 {
@@ -75,8 +87,7 @@ private:
   void onModulationWheelChange(int channel, int value);
   void onControlChange(int channel, int number, int value);
 
-  int m_current_sample;
-
+  // should probably initialize
   Channel m_channels[NUM_CHANNELS];
 
 };

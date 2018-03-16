@@ -7,14 +7,11 @@
 #include <math.h>
 #include <iostream>
 
-#define MAGIC_GAIN_FACTOR 0.3f
-
 #define PI  3.14159265f
 #define TAU 6.283185307179586f
-
+#define MAGIC_GAIN_FACTOR 0.3f
 #define MAX_MIDI_VELOCITY 127.0f
-
-int index = 0;
+#define OCTAVE_CENTS 1200.0f
 
 //============================================================================//
 // Waveform //
@@ -23,23 +20,17 @@ int index = 0;
 // static initialization
 float Waveform::s_sample_rate = 44100.0f;
 
-Waveform::Waveform() : m_f_index(0.0f), m_f_index_increment(1.0f)
-{}
+Waveform::Waveform() {}
 
-void Waveform::IncrementSample()
-{
-  m_f_index += m_f_index_increment;
-}
-
-// Sine : Waveform //=====//
+// Sine : Waveform //=========================================================//
 
 Sine::Sine(float frequency) :
   m_omega(TAU * frequency / s_sample_rate)
 {}
 
-float Sine::CalculateSample()
+float Sine::CalculateSample(float fractional_index)
 {
-  return std::sin(m_omega * m_f_index);
+  return std::sin(m_omega * fractional_index);
 }
 
 //============================================================================//
@@ -57,16 +48,21 @@ Note::Note(int midi_index, int midi_velocity)
   m_id = midi_index;
 }
 
-float Note::CalculateSample()
+float Note::CalculateSample(float fractional_index)
 {
-  float sample = m_waveform->CalculateSample() * m_gain;
-  m_waveform->IncrementSample();
-  return sample;
+  return m_waveform->CalculateSample(fractional_index) * m_gain;
 }
 
 //============================================================================//
 // Channel //
 //============================================================================//
+
+Channel::Channel()
+{
+  m_gain = 1.0f;
+  m_f_index = 0.0f;
+  m_f_index_increment = 1.0f;
+}
 
 void Channel::AddNote(int midi_index, int midi_velocity)
 {
@@ -91,22 +87,30 @@ void Channel::RemoveNote(int midi_index)
 
 float Channel::CalculateSample()
 {
+  // calculuate sample value of all notes
   float sample = 0.0f;
   size_t num_notes = m_notes.size();
   for(int i = 0; i < num_notes; ++i)
   {
-    sample += m_notes[i].CalculateSample();
+    sample += m_notes[i].CalculateSample(m_f_index);
   }
-  sample *= MAGIC_GAIN_FACTOR;
+  sample *= MAGIC_GAIN_FACTOR * m_gain;
+  // update fractional index for next sample
+  m_f_index += m_f_index_increment;
   return sample;
+}
+
+void Channel::PitchShift(float cents)
+{
+  float exponent = cents / OCTAVE_CENTS;
+  m_f_index_increment = std::pow(2.0f, exponent);
 }
 
 
 //============================================================================//
 // SimpleSynth //
 //============================================================================//
-SimpleSynth::SimpleSynth(int devno, int R) : MidiIn(devno),
-  m_current_sample(0)
+SimpleSynth::SimpleSynth(int devno, int R) : MidiIn(devno)
 {
   // set waveform sample rate and begin processing midi events
   Waveform::s_sample_rate = (float)R;
@@ -139,12 +143,14 @@ void SimpleSynth::onNoteOff(int channel, int note)
 
 void SimpleSynth::onPitchWheelChange(int channel, float value)
 {
-  std::cout << "works" << std::endl;
+  value += 1.0f;
+  value *= 200.0f;
+  m_channels[channel].PitchShift(value);
 }
 
 void SimpleSynth::onVolumeChange(int channel, int level)
 {
-  std::cout << "works" << std::endl;
+  m_channels[channel].m_gain = (float)level / 127.0f;
 }
 
 void SimpleSynth::onModulationWheelChange(int channel, int value)
