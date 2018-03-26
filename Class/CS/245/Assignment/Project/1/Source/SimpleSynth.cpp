@@ -47,6 +47,22 @@ float Sine::CalculateSample(float fractional_index)
   return std::sin(m_omega * fractional_index);
 }
 
+// Sawtooth : Waveform //=====================================================//
+
+Sawtooth::Sawtooth(float frequency)
+{
+  m_delta = frequency / s_sample_rate;
+}
+
+float Sawtooth::CalculateSample(float fractional_index)
+{
+  float sample = m_delta * fractional_index;
+  float removal = (float)((int)(fractional_index / 2) * 2);
+  sample = sample - removal;
+  sample -= 1.0f;
+  return sample;
+}
+
 //============================================================================//
 // Note //
 //============================================================================//
@@ -56,8 +72,8 @@ Note::Note(int midi_index, int midi_velocity)
   float delta_semtiones = (float)(midi_index - 69);
   float speed_up = std::pow(2.0f, delta_semtiones / OCTAVE_SEMITONES);
   float frequency = BASE_FREQUENCY * speed_up;
-  Sine * sine_waveform = new Sine(frequency);
-  m_waveform = reinterpret_cast<Waveform *>(sine_waveform);
+  Sawtooth * waveform = new Sawtooth(frequency);
+  m_waveform = reinterpret_cast<Waveform *>(waveform);
   m_f_index = 0.0;
   m_gain = (float)midi_velocity /  MAX_MIDI_VELOCITY;
   m_id = midi_index;

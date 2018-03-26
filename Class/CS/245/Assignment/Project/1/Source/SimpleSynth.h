@@ -50,6 +50,15 @@ public:
   float m_omega;
 };
 
+class Sawtooth : public Waveform
+{
+public:
+  Sawtooth(float frequency);
+  float CalculateSample(float fractional_index);
+
+  float m_delta;
+};
+
 //============================================================================//
 // Note //
 //============================================================================//
