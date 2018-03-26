@@ -1,0 +1,3 @@
+Run from build directory
+
+cl /EHsc /I../Source/. ../Source/ADSRTest.cpp ../Source/ADSR.cpp /Fetest.exe

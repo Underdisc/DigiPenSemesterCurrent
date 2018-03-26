@@ -1,0 +1,1 @@
+cl /EHsc /I../Source/. ../Source/SineTest.cpp ../Source/Sine.cpp /Fetest.exe
