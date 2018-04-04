@@ -5,13 +5,14 @@ LFSV lfsv;
 #include <algorithm>//copy, random_shuffle
 #include <ctime>    //std::time (NULL) to seed srand
 
+
 void insert_range( int b, int e ) {
     int * range = new int [e-b];
     for ( int i=b; i<e; ++i ) {
         range[i-b] = i;
     }
     std::srand( static_cast<unsigned int>(std::time (NULL)) );
-    std::random_shuffle( range, range+e-b );
+    std::random_shuffle(range, range + e - b);
     for ( int i=0; i<e-b; ++i ) {
         lfsv.Insert( range[i] );
     }
@@ -45,8 +46,8 @@ void test( int num_threads, int num_per_thread )
     doread.store( false );
     reader.join();
 
-    for (int i=0; i<num_threads*num_per_thread; ++i) { 
-        //        std::cout << lfsv[i] << ' '; 
+    for (int i=0; i<num_threads*num_per_thread; ++i) {
+        //        std::cout << lfsv[i] << ' ';
         if ( lfsv[i] != i-1 ) {
             std::cout << "Error\n";
             return;
@@ -60,10 +61,20 @@ void test1() { test( 2, 100 ); }
 void test2() { test( 8, 100 ); }
 void test3() { test( 100, 100 ); }
 
-void (*pTests[])() = { 
+void (*pTests[])() = {
     test0,test1,test2,test3//,test4,test5,test6,test7
-}; 
+};
 
+/*
+Basically what's going to happen here
+This driver is going to create a LFSV structer
+It's then going to create a shit ton of threads and all of these threads are
+going to try inserting into LFSV at the same time.
+
+You're gaol is to make it work
+
+with lock free shit
+*/
 
 #include <cstdio>    /* sscanf */
 int main( int argc, char ** argv ) {

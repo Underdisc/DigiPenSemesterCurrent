@@ -2,7 +2,7 @@ GCC=g++
 GCCFLAGS=-O3 -Wall -Wextra -std=c++11 -latomic -mcx16
 
 VALGRIND_OPTIONS=-q --leak-check=full
-DIFFLAGS=--strip-trailing-cr -y --suppress-common-lines 
+DIFFLAGS=--strip-trailing-cr -y --suppress-common-lines
 
 OBJECTS0=
 DRIVER0=driver.cpp

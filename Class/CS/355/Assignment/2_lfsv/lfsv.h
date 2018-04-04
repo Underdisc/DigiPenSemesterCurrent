@@ -6,6 +6,8 @@
 #include <mutex>          // std::mutex
 #include <cstring>
 
+// so this isn't lock free
+// why can I use it if I want to make a lock free vector
 template< typename T, int NUMBER, unsigned SIZE >
 class MemoryBank {
     std::deque< T* > slots;
@@ -46,9 +48,9 @@ class LFSV {
     public:
 
     LFSV() : mb2(), pdata( Pair{ mb2.Get(), 0 } ) {
-    }   
+    }
 
-    ~LFSV() { 
+    ~LFSV() {
         Pair temp = pdata.load();
         int* p = temp.pointer;
         if ( p != nullptr ) {
@@ -62,9 +64,9 @@ class LFSV {
         pdata_new.pointer  = nullptr;
         do {
             //delete pdata_new.pointer;
-            if ( pdata_new.pointer != nullptr ) { 
+            if ( pdata_new.pointer != nullptr ) {
 //                pdata_new.pointer->~vector();
-                mb2.Store( pdata_new.pointer ); 
+                mb2.Store( pdata_new.pointer );
             }
             pdata_old = pdata.load();
 
@@ -72,7 +74,7 @@ class LFSV {
 //            pdata_new.pointer   = new (mb.Get()) std::vector<int>( *pdata_old.pointer );
             pdata_new.pointer   = mb2.Get();
             std::memcpy( pdata_new.pointer, pdata_old.pointer, pdata_new.size*sizeof(int) );
-            
+
             int * a = pdata_new.pointer;
             a[pdata_new.size]=v; // add new value in the end
 
@@ -92,7 +94,7 @@ class LFSV {
     }
 
     int operator[] ( int pos ) { // not a const method anymore
-        int ret_val = pdata.load().pointer[pos]; 
+        int ret_val = pdata.load().pointer[pos];
         return ret_val;
     }
 };
