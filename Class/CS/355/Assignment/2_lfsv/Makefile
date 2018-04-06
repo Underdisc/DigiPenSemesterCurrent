@@ -6,6 +6,7 @@ DIFFLAGS=--strip-trailing-cr -y --suppress-common-lines
 
 OBJECTS0=
 DRIVER0=driver.cpp
+PRG=gcc0.exe
 
 OSTYPE := $(shell uname)
 ifeq ($(OSTYPE),Linux)
@@ -15,16 +16,16 @@ CYGWIN=-Wl,--enable-auto-import
 endif
 
 gcc0:
-	$(GCC) -o $@.exe $(CYGWIN) $(DRIVER0) $(OBJECTS0) $(GCCFLAGS) -pthread
+	$(GCC) -o $(PRG) $(CYGWIN) $(DRIVER0) $(OBJECTS0) $(GCCFLAGS) -pthread
 0 1 2 3:
 	@echo "running test$@"
-	watchdog 100 ./$(PRG) $@ >studentout$@
-	diff out$@ studentout$@ $(DIFFLAGS) > difference$@
+	./$(PRG) $@ >studentout$@
+	diff out$@ studentout$@ $(DIFFLAGS)
 4 5 6 7:
 	@echo "running test$@"
-	watchdog 2000 ./$(PRG) $@ >studentout$@
-	diff out$@ studentout$@ $(DIFFLAGS) > difference$@
+	./$(PRG) $@ >studentout$@
+	diff out$@ studentout$@ $(DIFFLAGS)
 mem0 mem1:
-	watchdog 800 valgrind $(VALGRIND_OPTIONS) ./$(PRG) $(subst mem,,$@) 1>/dev/null 2>difference$@
+	valgrind $(VALGRIND_OPTIONS) ./$(PRG) $(subst mem,,$@) 1>/dev/null 2>difference$@
 clean:
 	rm -f *.exe *.o *.obj
