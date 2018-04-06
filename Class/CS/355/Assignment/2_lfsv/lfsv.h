@@ -35,66 +35,123 @@ class MemoryBank {
 };
 
 
-struct Pair {
-    int*    pointer;
-    int     size;
+struct Data
+{
+    int * pointer;
+    int size;
+    int reference_count;
 }; //  __attribute__((aligned(16),packed)); // bug in GCC 4.*, fixed in 5.1?
-// alignment needed to stop std::atomic<Pair>::load to segfault
+// alignment needed to stop std::atomic<Data>::load to segfault
 
-class LFSV {
-//    MemoryBank<std::vector<int>, 290000, sizeof(void*) > mb;
-    MemoryBank<int, 2000, sizeof(int[10000]) > mb2;
-    std::atomic< Pair > pdata;
-    public:
+class LFSV
+{
+    //MemoryBank<std::vector<int>, 290000, sizeof(void*) > mb;
+    MemoryBank<int, 2000, sizeof(int[10000])> mb2;
+    std::atomic<Data> data;
+public:
 
-    LFSV() : mb2(), pdata( Pair{ mb2.Get(), 0 } ) {
-    }
+    LFSV() : mb2(), data( Data{mb2.Get(), 0, 0} )
+    {}
 
-    ~LFSV() {
-        Pair temp = pdata.load();
+    ~LFSV()
+    {
+        Data temp = data.load();
         int* p = temp.pointer;
-        if ( p != nullptr ) {
-//            p->~vector();
+        if ( p != nullptr )
+        {
+            //p->~vector();
             mb2.Store( p );
         }
     }
 
-    void Insert( int const & v ) {
-        Pair pdata_new, pdata_old;
-        pdata_new.pointer  = nullptr;
-        do {
-            //delete pdata_new.pointer;
-            if ( pdata_new.pointer != nullptr ) {
-//                pdata_new.pointer->~vector();
-                mb2.Store( pdata_new.pointer );
+    void Insert( int const & v )
+    {
+        Data data_old;
+        Data data_new;
+
+        // START -- MY IMPLEMENTATION
+        data_old.size = data.load().size;
+        data_old.reference_count = 1;
+        data_new.pointer = nullptr;
+        data_new.size = 0;
+        data_new.reference_count = 1;
+
+        int * previous_pointer = nullptr;
+        do
+        {
+            data_old.pointer = data.load().pointer;
+            if(previous_pointer != data_old.pointer)
+            {
+                if(data_new.pointer != nullptr)
+                    mb2.Store(data_new.pointer)
+                data_new.pointer = mb2.Get();
+                data_new.size = data
+                std::memcpy(data_new.pointer, data_old.pointer,
+                    data_new.size*sizeof(int));
+
+                int * a = data_new.pointer;
+                // add new value in the end
+                a[data_new.size] = v;
+                // switch values position to put array in ascending order
+                for (int i=0; i<data_new.size; ++i)
+                {
+                    if ( a[i]>=v )
+                    {
+                        for (int j = data_new.size; j > i; --j)
+                        {
+                            // move new element to proper position
+                            std::swap( a[j], a[j-1] );
+                        }
+                        break;
+                    }
+                }
+                // set new size
+                ++data_new.size;
             }
-            pdata_old = pdata.load();
+        } while(!(this->data).compare_exchange_strong(data_old, data_new))
+        mb2.Store(data_old.pointer)
+        // END -- MY IMPLEMENTATION
+        /*do
+        {
+            //delete data_new.pointer;
+            if (data_new.pointer != nullptr)
+            {
+                //data_new.pointer->~vector();
+                mb2.Store(data_new.pointer);
+            }
+            data_old = data.load();
 
-            pdata_new.size = pdata_old.size;
-//            pdata_new.pointer   = new (mb.Get()) std::vector<int>( *pdata_old.pointer );
-            pdata_new.pointer   = mb2.Get();
-            std::memcpy( pdata_new.pointer, pdata_old.pointer, pdata_new.size*sizeof(int) );
+            data_new.size = data_old.size;
+            //data_new.pointer = new (mb.Get()) std::vector<int>( *data_old.pointer );
+            data_new.pointer = mb2.Get();
+            std::memcpy( data_new.pointer, data_old.pointer, data_new.size*sizeof(int));
 
-            int * a = pdata_new.pointer;
-            a[pdata_new.size]=v; // add new value in the end
-
-            for ( int i=0; i<pdata_new.size; ++i ) {
-                if ( a[i]>=v ) {
-                    for ( int j=pdata_new.size; j>i; --j ) {
-                        std::swap( a[j], a[j-1] ); // move new element to proper position
+            int * a = data_new.pointer;
+            // add new value in the end
+            a[data_new.size] = v;
+            // switch values position to put array in ascending order
+            for (int i=0; i<data_new.size; ++i)
+            {
+                if ( a[i]>=v )
+                {
+                    for (int j = data_new.size; j > i; --j)
+                    {
+                        // move new element to proper position
+                        std::swap( a[j], a[j-1] );
                     }
                     break;
                 }
             }
-            ++pdata_new.size; // set new size
-        } while ( !(this->pdata).compare_exchange_strong( pdata_old, pdata_new  ));
-        //delete pdata_old.pointer;
-        //pdata_old.pointer->~vector();
-        mb2.Store( pdata_old.pointer );
+            // set new size
+            ++data_new.size;
+        } while ( !(this->data).compare_exchange_strong(data_old, data_new));
+        //delete data_old.pointer;
+        //data_old.pointer->~vector();
+        mb2.Store( data_old.pointer );*/
     }
 
     int operator[] ( int pos ) { // not a const method anymore
-        int ret_val = pdata.load().pointer[pos];
+        int ret_val = data.load().pointer[pos];
         return ret_val;
     }
 };
