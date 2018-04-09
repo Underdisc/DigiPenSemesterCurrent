@@ -10,6 +10,8 @@
 
 typedef std::vector<Triangle> TriangleList;
 
+class BspTree;
+
 //--------------------------------------------------------------------BspTreeNode
 class BspTreeNode
 {
@@ -19,7 +21,12 @@ public:
   BspTreeNode* GetBackChild() const;
   Plane GetSplitPlane() const;
   void GetTriangles(TriangleList& triangles) const;
-
+private:
+  Plane mPlane;
+  TriangleList mTriangles;
+  BspTreeNode * mFrontChild;
+  BspTreeNode * mBackChild;
+  friend BspTree;
 };
 
 //--------------------------------------------------------------------BspTree
@@ -77,5 +84,8 @@ public:
   // The mask bit is just a helper to allow run-time toggling of debug shapes.
   void DebugDraw(int level, const Vector4& color, int bitMask = 0);
 
-  // Add your implementation here
+private:
+  BspTreeNode * mRoot;
+
+  BspTreeNode * ConstructRecursive(const TriangleList & triangles, float k, float epsilon);
 };

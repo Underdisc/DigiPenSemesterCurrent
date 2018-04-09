@@ -128,7 +128,7 @@ class Triangle
 public:
   Triangle();
   Triangle(const Vector3& p0, const Vector3& p1, const Vector3& p2);
-
+  Vector3 ScaledNormal() const;
   DebugShape& DebugDraw() const;
 
   Vector3 mPoints[3];

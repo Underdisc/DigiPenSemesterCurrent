@@ -503,6 +503,14 @@ Triangle::Triangle(const Vector3& p0, const Vector3& p1, const Vector3& p2)
   mPoints[2] = p2;
 }
 
+Vector3 Triangle::ScaledNormal() const
+{
+  Vector3 ab = mPoints[1] - mPoints[0];
+  Vector3 ac = mPoints[2] - mPoints[0];
+  Vector3 normal = Math::Cross(ab, ac);
+  return normal;
+}
+
 DebugShape& Triangle::DebugDraw() const
 {
   return gDebugDrawer->DrawTriangle(*this);

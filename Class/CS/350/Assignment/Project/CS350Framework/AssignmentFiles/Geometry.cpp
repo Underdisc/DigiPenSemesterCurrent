@@ -117,7 +117,7 @@ bool RayPlane(const Vector3& rayStart, const Vector3& rayDir,
   // make sure ray is not parallel
   if(InRange(-parallelCheckEpsilon, parallelCheckEpsilon, denom))
     return false;
-  // d - dot(plane normal, ray start
+  // d - dot(plane normal, ray start)
   float numer = plane[3];
   for(int i = 0; i < 3; ++i)
     numer -= plane[i] * rayStart[i];
