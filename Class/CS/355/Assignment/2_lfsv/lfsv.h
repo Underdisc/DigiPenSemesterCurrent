@@ -62,8 +62,8 @@ class LFSV
 {
   //MemoryBank<std::vector<int>, 290000, sizeof(void*) > mb;
   MemoryBank<int, 2000, sizeof(int[10000])> mb2;
-  std::atomic<Data> data;
 public:
+  std::atomic<Data> data;
 
   LFSV() : mb2(), data(Data{mb2.Get(), 0, 0})
   {}
@@ -82,51 +82,46 @@ public:
   // ascending order.
   void Insert(int const & v)
   {
-    // value of data will only change on when its reference_count becomes 1
-    // during operator[] function
+    // value of data will only change on when its reference_count is 1
     Data data_old;
     Data data_new;
-    data_old.reference_count = 1;
+    data_old.reference_count = 0;
     data_new.pointer = nullptr;
     data_new.size = 0;
-    data_new.reference_count = 1;
-    int * previous_pointer = nullptr;
+    data_new.reference_count = 0;
     do
     {
       // get current pointer and size
       data_old.pointer = data.load().pointer;
       data_old.size = data.load().size;
-      // update data_new only if the data_old.pointer has changed
-      if(previous_pointer != data_old.pointer)
+      // get new pointer for data
+      if(data_new.pointer != nullptr)
       {
-        if(data_new.pointer != nullptr)
-        {
-          mb2.Store(data_new.pointer);
-        }
-        data_new.pointer = mb2.Get();
-        data_new.size = data_old.size;
-        std::memcpy(data_new.pointer, data_old.pointer,
-          data_new.size*sizeof(int));
-        int * vector = data_new.pointer;
-        // add new value to array sorted in ascending order
-        vector[data_new.size] = v;
-        // switch value's position to sort
-        for (int i=0; i<data_new.size; ++i)
-        {
-          if (vector[i]>=v )
-          {
-            for (int j = data_new.size; j > i; --j)
-            {
-              // move new element to proper position
-              std::swap(vector[j], vector[j-1]);
-            }
-            break;
-          }
-        }
-        // set new size
-        ++data_new.size;
+        mb2.Store(data_new.pointer);
       }
-    } while(!(this->data).compare_exchange_strong(data_old, data_new));
+      data_new.pointer = mb2.Get();
+      data_new.size = data_old.size;
+      std::memcpy(data_new.pointer, data_old.pointer,
+        data_new.size * sizeof(int));
+      int * vector = data_new.pointer;
+      // add new value to array sorted in ascending order
+      vector[data_new.size] = v;
+      // switch value's position to sort
+      for (int i=0; i < data_new.size; ++i)
+      {
+        if (vector[i] > v )
+        {
+          for (int j = data_new.size; j > i; --j)
+          {
+            // move new element to proper position
+            std::swap(vector[j], vector[j-1]);
+          }
+          break;
+        }
+      }
+      // set new size
+      ++data_new.size;
+    } while(!data.compare_exchange_strong(data_old, data_new));
     mb2.Store(data_old.pointer);
   }
 
@@ -141,14 +136,14 @@ public:
       data_new = data_old;
       ++data_new.reference_count;
     } while(!data.compare_exchange_strong(data_old, data_new));
-    int ret_val = data.load().pointer[pos];
+    int ret_val = data_new.pointer[pos];
     // decrement reference_count
     do
     {
       data_old = data.load();
       data_new = data_old;
       --data_new.reference_count;
-    } while(!(data).compare_exchange_strong(data_old, data_new));
+    } while(!data.compare_exchange_strong(data_old, data_new));
     return ret_val;
   }
 };
