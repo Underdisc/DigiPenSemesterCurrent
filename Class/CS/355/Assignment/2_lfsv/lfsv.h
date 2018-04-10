@@ -54,6 +54,13 @@ struct Data
   int * pointer;
   int size;
   int reference_count;
+
+  void Print()
+  {
+    std::cout << "Pointer: " << pointer << std::endl;
+    std::cout << "Size:    " << size << std::endl;
+    std::cout << "Count:   " << reference_count << std::endl;
+  }
 }; //  __attribute__((aligned(16),packed)); // bug in GCC 4.*, fixed in 5.1?
 // alignment needed to stop std::atomic<Data>::load to segfault
 
@@ -85,10 +92,10 @@ public:
     // value of data will only change on when its reference_count is 1
     Data data_old;
     Data data_new;
-    data_old.reference_count = 1;
+    data_old.reference_count = 0;
     data_new.pointer = nullptr;
     data_new.size = 0;
-    data_new.reference_count = 1;
+    data_new.reference_count = 0;
     do
     {
       // get current pointer and size
@@ -121,29 +128,65 @@ public:
       }
       // set new size
       ++data_new.size;
+      char thing[50];
+      sprintf(thing, ">=====================> %i\n", data.load().reference_count);
+      std::cout << thing;
     } while(!data.compare_exchange_strong(data_old, data_new));
+    std::cout << "SUCCESS" << std::endl;
     mb2.Store(data_old.pointer);
+    /*std::cout << "Insert Finished" << std::endl;
+    int * vec = data.load().pointer;
+    std::cout << "Pointer: " << vec << std::endl;
+    for(int i = 0; i < data.load().size; ++i)
+    {
+      std::cout << vec[i] << " ";
+    }
+    std::cout << std::endl;*/
   }
 
   // access a value of pos within the vector
   int operator[] ( int pos ) { // not a const method anymore
     Data data_old;
     Data data_new;
+
+    std::cout << "<===< Access >===>" << std::endl;
+    data.load().Print();
     // increment reference_count
     do
     {
       data_old = data.load();
       data_new = data_old;
       ++data_new.reference_count;
+
+      std::cout << " <---< Increase >--->" << std::endl;
+      data_new.Print();
+
     } while(!data.compare_exchange_strong(data_old, data_new));
-    int ret_val = data_new.pointer[pos];
+    std::cout << " <---< Update >--->" << std::endl;
+    data.load().Print();
+
+    int ret_val = data.load().pointer[pos];
+
+    /*if(ret_val != -1)
+    {
+      for(int i = 0; i < 5; ++i)
+        std::cout << ret_val << " ";
+      std::cout << std::endl;
+    }*/
+
     // decrement reference_count
     do
     {
       data_old = data.load();
       data_new = data_old;
       --data_new.reference_count;
+
+      std::cout << " <---< Decrease >--->" << std::endl;
+      data_new.Print();
     } while(!data.compare_exchange_strong(data_old, data_new));
+
+    std::cout << " <---< Final >--->" << std::endl;
+    data_new.Print();
     return ret_val;
   }
 };
