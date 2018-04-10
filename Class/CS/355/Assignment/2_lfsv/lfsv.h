@@ -72,7 +72,7 @@ class LFSV
 public:
   std::atomic<Data> data;
 
-  LFSV() : mb2(), data(Data{mb2.Get(), 0, 1})
+  LFSV() : mb2(), data(Data{mb2.Get(), 0, 0})
   {}
 
   ~LFSV()
@@ -89,38 +89,26 @@ public:
   // ascending order.
   void Insert(int const & v)
   {
-    // value of data will only change on when its reference_count is 1
+    // value of data will only change on when its reference_count is 0
     Data data_old;
     Data data_new;
-    data_old.reference_count = 1;
     data_new.pointer = nullptr;
     data_new.size = 0;
-    data_new.reference_count = 1;
-    std::cout << "Fuck\n";
     do
     {
       // get current pointer and size
-
-      // FUCK NO TWO DAT LOADS
-      //data_old = data.load();
-
-      // So you need to set the reference_count every loop
-      //compare_exchange_strong strong might change data old because fuck
-      // references
-      //data_old.reference_count = 0;
-      data_old.pointer = data.load().pointer;
-      data_old.size = data.load().size;
-      //data_old.reference_count = 0;
-      std::cout << data_old.reference_count << std::endl;
+      // reference_count needs to be set to zero everytime because data_old
+      // might be modified by compare_exchange_strong
+      data_old = data.load();
+      data_old.reference_count = 0;
       // get new pointer for data
       if(data_new.pointer != nullptr)
       {
         mb2.Store(data_new.pointer);
       }
-
       data_new.pointer = mb2.Get();
       data_new.size = data_old.size;
-      //data_new.reference_count = 0;
+      data_new.reference_count = 0;
       std::memcpy(data_new.pointer, data_old.pointer,
         data_new.size * sizeof(int));
       int * vector = data_new.pointer;
@@ -141,65 +129,30 @@ public:
       }
       // set new size
       ++data_new.size;
-      //char thing[50];
-      //sprintf(thing, ">=====================> %i\n", data.load().reference_count);
-      //std::cout << thing;
     } while(!data.compare_exchange_strong(data_old, data_new));
-    //std::cout << "SUCCESS\n";
+    // store unused pointer
     mb2.Store(data_old.pointer);
-    /*std::cout << "Insert Finished" << std::endl;
-    int * vec = data.load().pointer;
-    std::cout << "Pointer: " << vec << std::endl;
-    for(int i = 0; i < data.load().size; ++i)
-    {
-      std::cout << vec[i] << " ";
-    }
-    std::cout << std::endl;*/
   }
 
   // access a value of pos within the vector
-  int operator[] ( int pos ) { // not a const method anymore
+  int operator[] ( int pos ) {
     Data data_old;
     Data data_new;
-
-    //std::cout << "<===< Access >===>\n";
-    //data.load().Print();
     // increment reference_count
     do
     {
       data_old = data.load();
       data_new = data_old;
       ++data_new.reference_count;
-
-      //std::cout << "<---< Increase >--->\n";
-      //data_new.Print();
-
     } while(!data.compare_exchange_strong(data_old, data_new));
-    //std::cout << "<---< Update >--->\n";
-    //data.load().Print();
-
     int ret_val = data.load().pointer[pos];
-
-    /*if(ret_val != -1)
-    {
-      for(int i = 0; i < 5; ++i)
-        std::cout << ret_val << " ";
-      std::cout << std::endl;
-    }*/
-
     // decrement reference_count
     do
     {
       data_old = data.load();
       data_new = data_old;
       --data_new.reference_count;
-
-      //std::cout << "<---< Decrease >--->\n";
-      //data_new.Print();
     } while(!data.compare_exchange_strong(data_old, data_new));
-
-    //std::cout << "<---< Final >--->\n";
-    //data_new.Print();
     return ret_val;
   }
 };
