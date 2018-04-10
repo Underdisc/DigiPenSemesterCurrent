@@ -57,9 +57,9 @@ struct Data
 
   void Print()
   {
-    std::cout << "Pointer: " << pointer << std::endl;
-    std::cout << "Size:    " << size << std::endl;
-    std::cout << "Count:   " << reference_count << std::endl;
+    char str[100];
+    sprintf(str, "Size: %i\nCount: %i\n", size, reference_count);
+    std::cout << str;
   }
 }; //  __attribute__((aligned(16),packed)); // bug in GCC 4.*, fixed in 5.1?
 // alignment needed to stop std::atomic<Data>::load to segfault
@@ -72,7 +72,7 @@ class LFSV
 public:
   std::atomic<Data> data;
 
-  LFSV() : mb2(), data(Data{mb2.Get(), 0, 0})
+  LFSV() : mb2(), data(Data{mb2.Get(), 0, 1})
   {}
 
   ~LFSV()
@@ -92,22 +92,35 @@ public:
     // value of data will only change on when its reference_count is 1
     Data data_old;
     Data data_new;
-    data_old.reference_count = 0;
+    data_old.reference_count = 1;
     data_new.pointer = nullptr;
     data_new.size = 0;
-    data_new.reference_count = 0;
+    data_new.reference_count = 1;
+    std::cout << "Fuck\n";
     do
     {
       // get current pointer and size
+
+      // FUCK NO TWO DAT LOADS
+      //data_old = data.load();
+
+      // So you need to set the reference_count every loop
+      //compare_exchange_strong strong might change data old because fuck
+      // references
+      //data_old.reference_count = 0;
       data_old.pointer = data.load().pointer;
       data_old.size = data.load().size;
+      //data_old.reference_count = 0;
+      std::cout << data_old.reference_count << std::endl;
       // get new pointer for data
       if(data_new.pointer != nullptr)
       {
         mb2.Store(data_new.pointer);
       }
+
       data_new.pointer = mb2.Get();
       data_new.size = data_old.size;
+      //data_new.reference_count = 0;
       std::memcpy(data_new.pointer, data_old.pointer,
         data_new.size * sizeof(int));
       int * vector = data_new.pointer;
@@ -128,11 +141,11 @@ public:
       }
       // set new size
       ++data_new.size;
-      char thing[50];
-      sprintf(thing, ">=====================> %i\n", data.load().reference_count);
-      std::cout << thing;
+      //char thing[50];
+      //sprintf(thing, ">=====================> %i\n", data.load().reference_count);
+      //std::cout << thing;
     } while(!data.compare_exchange_strong(data_old, data_new));
-    std::cout << "SUCCESS" << std::endl;
+    //std::cout << "SUCCESS\n";
     mb2.Store(data_old.pointer);
     /*std::cout << "Insert Finished" << std::endl;
     int * vec = data.load().pointer;
@@ -149,8 +162,8 @@ public:
     Data data_old;
     Data data_new;
 
-    std::cout << "<===< Access >===>" << std::endl;
-    data.load().Print();
+    //std::cout << "<===< Access >===>\n";
+    //data.load().Print();
     // increment reference_count
     do
     {
@@ -158,12 +171,12 @@ public:
       data_new = data_old;
       ++data_new.reference_count;
 
-      std::cout << " <---< Increase >--->" << std::endl;
-      data_new.Print();
+      //std::cout << "<---< Increase >--->\n";
+      //data_new.Print();
 
     } while(!data.compare_exchange_strong(data_old, data_new));
-    std::cout << " <---< Update >--->" << std::endl;
-    data.load().Print();
+    //std::cout << "<---< Update >--->\n";
+    //data.load().Print();
 
     int ret_val = data.load().pointer[pos];
 
@@ -181,12 +194,12 @@ public:
       data_new = data_old;
       --data_new.reference_count;
 
-      std::cout << " <---< Decrease >--->" << std::endl;
-      data_new.Print();
+      //std::cout << "<---< Decrease >--->\n";
+      //data_new.Print();
     } while(!data.compare_exchange_strong(data_old, data_new));
 
-    std::cout << " <---< Final >--->" << std::endl;
-    data_new.Print();
+    //std::cout << "<---< Final >--->\n";
+    //data_new.Print();
     return ret_val;
   }
 };
