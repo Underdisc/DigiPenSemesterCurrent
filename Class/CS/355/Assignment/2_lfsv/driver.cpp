@@ -5,7 +5,6 @@ LFSV lfsv;
 #include <algorithm>//copy, random_shuffle
 #include <ctime>    //std::time (NULL) to seed srand
 
-
 void insert_range( int b, int e ) {
     int * range = new int [e-b];
     for ( int i=b; i<e; ++i ) {
@@ -14,7 +13,11 @@ void insert_range( int b, int e ) {
     std::srand( static_cast<unsigned int>(std::time (NULL)) );
     std::random_shuffle(range, range + e - b);
     for ( int i=0; i<e-b; ++i ) {
+        // LOCKS ARE MINE
+        //printing_mutex.lock();
+        //std::cout << " " << range[i] << "\r\n";
         lfsv.Insert( range[i] );
+        //printing_mutex.unlock();
     }
     delete [] range;
 }
@@ -25,8 +28,17 @@ void read_position_0() {
     int c = 0;
     while ( doread.load() ) {
         std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
-        if ( lfsv[0] != -1 ) {
-            std::cout << "not -1 on iteration " << c << "\n"; // see main - all element are non-negative, so index 0 should always be -1
+        int val = lfsv[0];
+        if ( val != -1 ) {
+            std::cout << "not -1 on iteration " << c << " - was " << val << "\r\n"; // see main - all element are non-negative, so index 0 should always be -1
+            // S: MY CODE
+            /*printing_mutex.lock();
+            int size = lfsv.data.load().size;
+            for (int i=0; i<size; ++i) {
+                std::cout << lfsv[i] << ' ';
+            }
+            printing_mutex.unlock();*/
+            // E: MY CODE
         }
         ++c;
     }
@@ -47,13 +59,13 @@ void test( int num_threads, int num_per_thread )
     reader.join();
 
     for (int i=0; i<num_threads*num_per_thread; ++i) {
-        //        std::cout << lfsv[i] << ' ';
+        //std::cout << lfsv[i] << ' ';
         if ( lfsv[i] != i-1 ) {
             std::cout << "Error\n";
             return;
         }
     }
-    std::cout << "All good\n";
+    std::cout << "All good\r\n";
 }
 
 void test0() { test( 1, 100 ); }
