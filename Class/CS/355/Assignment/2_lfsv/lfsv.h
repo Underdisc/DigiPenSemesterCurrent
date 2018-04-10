@@ -85,10 +85,10 @@ public:
     // value of data will only change on when its reference_count is 1
     Data data_old;
     Data data_new;
-    data_old.reference_count = 0;
+    data_old.reference_count = 1;
     data_new.pointer = nullptr;
     data_new.size = 0;
-    data_new.reference_count = 0;
+    data_new.reference_count = 1;
     do
     {
       // get current pointer and size
