@@ -6,29 +6,36 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "Precompiled.hpp"
 
-//--------------------------------------------------------------------Helpers
-
-Vector3 RayPlaneIntersection(const Vector3 & p0, const Vector3 & p1, const Plane & plane)
-{
-  Vector3 ray_start = p0;
-  Vector3 ray_dir = p1 - p0;
-  Ray edge_ray(ray_start, ray_dir);
-  float t;
-  RayPlane(edge_ray.mStart, edge_ray.mDirection, plane.mData, t);
-  return edge_ray.GetPoint(t);
-}
-
-void AddPointsToTriangleList(const std::vector<const Vector3 *> & p, TriangleList & list)
-{
-  list.push_back(Triangle(*p[0], *p[1], *p[2]));
-  if (p.size() == 4)
-  {
-    list.push_back(Triangle(*p[0], *p[2], *p[3]));
-  }
-}
 
 
 //--------------------------------------------------------------------BspTreeNode
+void BspTreeNode::ClipTo(BspTreeNode * node)
+{
+  // CLIP THIS NODE TO GIVEN NODE
+  /*
+  
+  TRIANGLE IN THIS NODE WHEN THE FUNCTION BEGINS
+     /|
+    / |
+   /  |  -
+ ------------ node split plane 
+  /   |  +
+ ------
+
+
+  END RESULT TRIANGLES NOW IN THIS NODE
+
+     ----
+    / \ |
+   ------
+  
+  */
+
+  // need a new and old triangle list
+
+
+}
+
 BspTreeNode* BspTreeNode::GetFrontChild() const
 {
   return mFrontChild;
@@ -49,6 +56,27 @@ void BspTreeNode::GetTriangles(TriangleList& triangles) const
   triangles = mTriangles;
 }
 
+//--------------------------------------------------------------------Helpers
+
+Vector3 RayPlaneIntersection(const Vector3 & p0, const Vector3 & p1, const Plane & plane)
+{
+  // find and return point where ray intersects plane
+  Vector3 ray_start = p0;
+  Vector3 ray_dir = p1 - p0;
+  Ray edge_ray(ray_start, ray_dir);
+  float t;
+  RayPlane(edge_ray.mStart, edge_ray.mDirection, plane.mData, t);
+  return edge_ray.GetPoint(t);
+}
+
+void AddPointsToTriangleList(const std::vector<const Vector3 *> & p, TriangleList & list)
+{
+  list.push_back(Triangle(*p[0], *p[1], *p[2]));
+  if (p.size() == 4)
+  {
+    list.push_back(Triangle(*p[0], *p[2], *p[3]));
+  }
+}
 
 //--------------------------------------------------------------------BspTree
 BspTree::BspTree() : mRoot(nullptr)
@@ -175,8 +203,10 @@ float BspTree::CalculateScore(const TriangleList& triangles, size_t testIndex, f
   int overlap = 0;
   const Triangle & test_tri = triangles[testIndex];
   Vector3 normal = test_tri.ScaledNormal();
+  // ignore degenerate triangles
   if(normal.Length() < epsilon)
     return Math::PositiveMax();
+  // find how many tris are inside, outside and overlapping plane
   Plane test_plane(normal, test_tri.mPoints[0]);
   for (size_t i = 0; i < triangles.size(); ++i)
   {
@@ -193,6 +223,7 @@ float BspTree::CalculateScore(const TriangleList& triangles, size_t testIndex, f
     case IntersectionType::Overlaps: ++overlap; break;
     }
   }
+  // calculate score
   float score = k * (float)overlap;
   score += (1.0f - k) * (float)Math::Abs(front - back);
   return score;
@@ -200,6 +231,7 @@ float BspTree::CalculateScore(const TriangleList& triangles, size_t testIndex, f
 
 size_t BspTree::PickSplitPlane(const TriangleList& triangles, float k, float epsilon)
 {
+  // finding and returning the index of the tri with the lowest score
   float lowest_score = Math::PositiveMax();
   size_t split_tri = 0;
   for (size_t i = 0; i < triangles.size(); ++i)
@@ -233,14 +265,12 @@ bool BspTree::RayCast(const Ray& ray, float& t, float planeThicknessEpsilon,
 
 void BspTree::AllTriangles(TriangleList& triangles) const
 {
-  /******Student:Assignment4******/
-  Warn("Assignment4: Required function un-implemented");
+  AllTrianglesRecursive(mRoot, &triangles);
 }
 
 void BspTree::Invert()
 {
-  /******Student:Assignment4******/
-  Warn("Assignment4: Required function un-implemented");
+  InvertRecursive(mRoot);
 }
 
 void BspTree::ClipTo(BspTree* tree, float epsilon)
@@ -272,7 +302,6 @@ void BspTree::DebugDraw(int level, const Vector4& color, int bitMask)
   DebugDrawRecursive(mRoot, level, color, bitMask);
 }
 
-
 BspTreeNode * BspTree::ConstructRecursive(const TriangleList & triangles, float k, float epsilon)
 {
   if (triangles.size() == 0)
@@ -301,7 +330,6 @@ BspTreeNode * BspTree::ConstructRecursive(const TriangleList & triangles, float 
   }
   node->mFrontChild = ConstructRecursive(front_tris, k, epsilon);
   node->mBackChild = ConstructRecursive(back_tris, k, epsilon);
-  
   return node;
 }
 
@@ -312,12 +340,11 @@ bool BspTree::RayCastRecursive(const Ray & ray, float * t, float t_min,
   if(!node)
     return false;
   bool intersection = false;
-
+  // find where the ray start is in relation to the plane
   Vector3 segment_start = ray.GetPoint(t_min);
-  IntersectionType::Type min_intersection = PointPlane(segment_start, 
+  IntersectionType::Type min_intersection = PointPlane(ray.mStart, 
     node->mPlane.mData, planeThicknessEpsilon);
-
-  // I bet I could do better
+  // check contained tris and recurse down front and back
   if (min_intersection == IntersectionType::Coplanar)
   {
     intersection |= RayCastContainedTriangles(ray, node, t,
@@ -329,7 +356,7 @@ bool BspTree::RayCastRecursive(const Ray & ray, float * t, float t_min,
       planeThicknessEpsilon, triExpansionEpsilon);
     return intersection;
   }
-
+  // define near and far nodes
   BspTreeNode * near_node;
   BspTreeNode * far_node;
   if (min_intersection == IntersectionType::Inside)
@@ -342,24 +369,23 @@ bool BspTree::RayCastRecursive(const Ray & ray, float * t, float t_min,
     near_node = node->mBackChild;
     far_node = node->mFrontChild;
   }
-
-
+  // only recurse down near node if there is no plane intersection
   float t_plane;
   bool plane_intersection = RayPlane(ray.mStart, ray.mDirection,
     node->mPlane.mData, t_plane);
-  // handle case where ray faces away from plane
   if (!plane_intersection)
   {
     intersection |= RayCastRecursive(ray, t, t_min, t_max, near_node,
       planeThicknessEpsilon, triExpansionEpsilon);
     return intersection;
   }
+  // find t values for thick plane start and end
   Vector3 normal = node->mPlane.GetNormal();
   float normal_dot_raydir = Math::Dot(normal, ray.mDirection);
   float t_plane_epsilon = Math::Abs(planeThicknessEpsilon / normal_dot_raydir);
   float t_plane_min = t_plane - t_plane_epsilon;
   float t_plane_max = t_plane + t_plane_epsilon;
-  // handle case where ray is all on one side
+  // only recurse down one side if segment does not hit thick plane
   if (t_plane_min > t_max)
   {
     intersection |= RayCastRecursive(ray, t, t_min, t_max,
@@ -372,22 +398,12 @@ bool BspTree::RayCastRecursive(const Ray & ray, float * t, float t_min,
       far_node, planeThicknessEpsilon, triExpansionEpsilon);
     return intersection;
   }
-
-  // ray cast in this, front, and back nodes
-  // find t mins and t maxes for front and back
-  float near_t_min, near_t_max;
-  float far_t_min, far_t_max;
-
-  near_t_min = t_min;
-  near_t_max = t_plane_max;
-  far_t_max = t_max;
-  far_t_min = t_plane_min;
-
-
-
-
-  
-  // check coplanar tris and recurse down both front and back
+  // find t_min and t_max for near and far sides
+  float near_t_min = t_min;
+  float near_t_max = t_plane_max;
+  float far_t_min = t_plane_min; 
+  float far_t_max = t_max;
+  // check coplanar tris and recurse down both near and far nodes
   intersection |=  RayCastContainedTriangles(ray, node, t, 
     triExpansionEpsilon);
   intersection |= RayCastRecursive(ray, t, near_t_min, near_t_max, 
@@ -395,7 +411,42 @@ bool BspTree::RayCastRecursive(const Ray & ray, float * t, float t_min,
   intersection |= RayCastRecursive(ray, t, far_t_min, far_t_max, 
     far_node, planeThicknessEpsilon, triExpansionEpsilon);
   return intersection;
+}
 
+void BspTree::AllTrianglesRecursive(const BspTreeNode * node,
+  TriangleList * triangles) const
+{
+  if(!node)
+    return;
+  // add triangles in pre-order traversal
+  for (const Triangle & tri : node->mTriangles)
+  {
+    triangles->push_back(tri);
+  }
+  AllTrianglesRecursive(node->mFrontChild, triangles);
+  AllTrianglesRecursive(node->mBackChild, triangles);
+}
+
+void BspTree::InvertRecursive(BspTreeNode * node)
+{
+  if(!node)
+    return;
+  // flip plane
+  node->mPlane.mData *= -1.0f;
+  // flip all triangles
+  for (Triangle & tri : node->mTriangles)
+  {
+    Vector3 temp_point = tri.mPoints[0];
+    tri.mPoints[0] = tri.mPoints[1];
+    tri.mPoints[1] = temp_point;
+  }
+  // flip front and back nodes
+  BspTreeNode * temp_node = node->mFrontChild;
+  node->mFrontChild = node->mBackChild;
+  node->mBackChild = temp_node;
+  // recurse into front and back nodes
+  InvertRecursive(node->mFrontChild);
+  InvertRecursive(node->mBackChild);
 }
 
 void BspTree::DebugDrawRecursive(const BspTreeNode * node, int level,
@@ -424,6 +475,8 @@ void BspTree::DebugDrawRecursive(const BspTreeNode * node, int level,
   DebugDrawRecursive(node->mFrontChild, next_level, color, bitMask);
   DebugDrawRecursive(node->mBackChild, next_level, color, bitMask);
 }
+
+// Helpers
 
 bool BspTree::RayCastContainedTriangles(const Ray & ray, 
   const BspTreeNode * node, float * t, float triExpansionEpsilon)

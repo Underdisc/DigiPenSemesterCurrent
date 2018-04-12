@@ -16,7 +16,7 @@ class BspTree;
 class BspTreeNode
 {
 public:
-  
+  void ClipTo(BspTreeNode * node);
   BspTreeNode* GetFrontChild() const;
   BspTreeNode* GetBackChild() const;
   Plane GetSplitPlane() const;
@@ -91,6 +91,9 @@ private:
   bool RayCastRecursive(const Ray & ray, float * t, float t_min, float t_max,
     const BspTreeNode * node, float planeThicknessEpsilon, 
     float triExpansionEpsilon);
+  void AllTrianglesRecursive(const BspTreeNode * node, 
+    TriangleList * tirangles) const;
+  void InvertRecursive(BspTreeNode * node);
   void DebugDrawRecursive(const BspTreeNode * node, int level,
     const Vector4 & color, int bitMask);
 
