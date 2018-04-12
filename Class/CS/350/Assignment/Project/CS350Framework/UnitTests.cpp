@@ -704,6 +704,7 @@ void BspTreePrinter::PrintEmbedded(bool verbose, int nodeId, std::string indent,
     fprintf(mFile, "(%d): %s\n", nodeData.mId, PrintPlane(splitPlane).c_str());
     TriangleList triangles;
     nodeData.mNode->GetTriangles(triangles);
+    std::sort(triangles.begin(), triangles.end());
     for(size_t triId = 0; triId < triangles.size(); ++triId)
     {
       fprintf(mFile, "%s", indent.c_str());

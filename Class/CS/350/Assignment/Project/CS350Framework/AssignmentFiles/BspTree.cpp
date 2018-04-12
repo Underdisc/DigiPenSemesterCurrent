@@ -227,14 +227,6 @@ BspTreeNode* BspTree::GetRoot() const
 bool BspTree::RayCast(const Ray& ray, float& t, float planeThicknessEpsilon, 
   float triExpansionEpsilon, int debuggingIndex)
 {
-  // positive max denotes infinit - cause duh
-  // ray dir is always normalized
-
-  // check if the ray start is coplanar my dude
-
-  // always take the absolute value for the thickness epsilon
-
-  /******Student:Assignment4******/
   return RayCastRecursive(ray, &t, 0.0f, Math::PositiveMax(), mRoot,
     planeThicknessEpsilon, triExpansionEpsilon);
 }
@@ -277,8 +269,7 @@ void BspTree::Subtract(BspTree* tree, float k, float epsilon)
 
 void BspTree::DebugDraw(int level, const Vector4& color, int bitMask)
 {
-  /******Student:Assignment4******/
-  Warn("Assignment4: Required function un-implemented");
+  DebugDrawRecursive(mRoot, level, color, bitMask);
 }
 
 
@@ -318,137 +309,120 @@ bool BspTree::RayCastRecursive(const Ray & ray, float * t, float t_min,
   float t_max, const BspTreeNode * node, float planeThicknessEpsilon, 
   float triExpansionEpsilon)
 {
-  // you have forgotten that we are using line segments
-  // terminate when node does not exist
   if(!node)
     return false;
+  bool intersection = false;
+
   Vector3 segment_start = ray.GetPoint(t_min);
-  float t_plane;
-  bool plane_intersection = RayPlane(segment_start, ray.mDirection,
-    node->mPlane.mData, t_plane);
-  IntersectionType::Type min_intersection = PointPlane(segment_start,
+  IntersectionType::Type min_intersection = PointPlane(segment_start, 
     node->mPlane.mData, planeThicknessEpsilon);
-  IntersectionType::Type max_intersection;
-  float t_plane_min, t_plane_max;
-  if(plane_intersection)
+
+  // I bet I could do better
+  if (min_intersection == IntersectionType::Coplanar)
   {
-    Vector3 normal = node->mPlane.GetNormal();
-    float normal_dot_raydir = Math::Dot(normal, ray.mDirection);
-    float t_plane_epsilon = Math::Abs(planeThicknessEpsilon / normal_dot_raydir);
-    t_plane_min = t_plane - t_plane_epsilon;
-    t_plane_max = t_plane + t_plane_epsilon;
-    if (t_plane_max < t_max)
-    {
-      if(min_intersection == IntersectionType::Inside)
-        max_intersection = IntersectionType::Outside;
-      else if(min_intersection == IntersectionType::Outside)
-        max_intersection = IntersectionType::Inside;
-      else
-      {
-        // use ray direction??
-      }
-    }
+    intersection |= RayCastContainedTriangles(ray, node, t,
+      triExpansionEpsilon);
+    intersection |= RayCastRecursive(ray, t, t_min, t_max,
+      node->mFrontChild, planeThicknessEpsilon, triExpansionEpsilon);
+    intersection |= RayCastRecursive(ray, t, t_min, t_max,
+      node->mBackChild,
+      planeThicknessEpsilon, triExpansionEpsilon);
+    return intersection;
   }
 
-  if(t_plane < t_max)
-  IntersectionType::Type min_intersection = PointPlane(segment_start,
-    node->mPlane.mData, planeThicknessEpsilon);
-  
-
-
-  bool intersection = false;
-  bool finite;
-  if(t_max == Math::PositiveMax())
-    finite = false;
+  BspTreeNode * near_node;
+  BspTreeNode * far_node;
+  if (min_intersection == IntersectionType::Inside)
+  {
+    near_node = node->mFrontChild;
+    far_node = node->mBackChild;
+  }
   else
-    finite = true;
-  Vector3 segment_end;
-  if(finite)
-     segment_end = ray.GetPoint(t_max);
+  {
+    near_node = node->mBackChild;
+    far_node = node->mFrontChild;
+  }
 
 
-  // or together the results to see if it overlaps
-
-  // if one of these is coplanar, we need to do the thing
-  // what if our float is positive max
-
-  // find out what max intersection is if the ray is infinite
-  IntersectionType::Type max_intersection;
-  if(finite)
-    max_intersection = PointPlane(segment_end,
-    node->mPlane.mData, planeThicknessEpsilon);
-  // all coplanar triangles must be checked if the start is coplanar
-  // there are some other times when the coplanar needs to be checked
-
-  // if it starts as coplanar, that means everything needs to be checked
-  // WRONG
-
-  // if t_plane is great than t_max, why bother we only need got handle
-  // one side assuming it is not coplanar
+  float t_plane;
+  bool plane_intersection = RayPlane(ray.mStart, ray.mDirection,
+    node->mPlane.mData, t_plane);
+  // handle case where ray faces away from plane
   if (!plane_intersection)
   {
-    // check coplanar tris and recruse down both sides when coplanar
-    if (min_intersection == IntersectionType::Coplanar ||
-      max_intersection == IntersectionType::Coplanar)
-    {
-      intersection |= RayCastContainedTriangles(ray, node, t, 
-        triExpansionEpsilon);
-      intersection |= RayCastRecursive(ray, t, t_min, t_max, node->mFrontChild,
-        planeThicknessEpsilon, triExpansionEpsilon);
-      intersection |= RayCastRecursive(ray, t, t_min, t_max, node->mBackChild,
-        planeThicknessEpsilon, triExpansionEpsilon);
-    }
-    // recurse down front side when inside
-    else if(min_intersection == IntersectionType::Inside &&
-      max_intersection == IntersectionType::Inside)
-    {
-      intersection |= RayCastRecursive(ray, t, t_min, t_max, node->mFrontChild,
-        planeThicknessEpsilon, triExpansionEpsilon);
-    }
-    // recurse down back side when outside
-    else if(min_intersection == IntersectionType::Outside &&
-      max_intersection == IntersectionType::Outside)
-    {
-      intersection |= RayCastRecursive(ray, t, t_min, t_max, node->mBackChild, 
-        planeThicknessEpsilon, triExpansionEpsilon);
-    }
-    // all cases for no intersection handled
-    return;
+    intersection |= RayCastRecursive(ray, t, t_min, t_max, near_node,
+      planeThicknessEpsilon, triExpansionEpsilon);
+    return intersection;
   }
-  // we have handled ray being on one side or the other
-
-  // now handle the splitting
   Vector3 normal = node->mPlane.GetNormal();
   float normal_dot_raydir = Math::Dot(normal, ray.mDirection);
   float t_plane_epsilon = Math::Abs(planeThicknessEpsilon / normal_dot_raydir);
   float t_plane_min = t_plane - t_plane_epsilon;
   float t_plane_max = t_plane + t_plane_epsilon;
-  // find t mins and t maxes for front and back
-  float front_t_min, front_t_max;
-  float back_t_min, back_t_max;
-  // what if you are coplanar
-  if (min_intersection == IntersectionType::Inside)
+  // handle case where ray is all on one side
+  if (t_plane_min > t_max)
   {
-    front_t_min = t_min;
-    front_t_max = t_plane_max;
-    back_t_min = t_plane_min;
-    back_t_max = t_max;
+    intersection |= RayCastRecursive(ray, t, t_min, t_max,
+      near_node, planeThicknessEpsilon, triExpansionEpsilon);
+    return intersection;
   }
-  else if (min_intersection == IntersectionType::Outside)
+  if (t_plane_max < t_min)
   {
-    front_t_min = t_plane_min;
-    front_t_max = t_max;
-    back_t_min = t_min;
-    back_t_max = t_plane_max;
+    intersection |= RayCastRecursive(ray, t, t_min, t_max,
+      far_node, planeThicknessEpsilon, triExpansionEpsilon);
+    return intersection;
   }
-  // check coplanar tris and recurse down both front and back
-  intersection |=  RayCastContainedTriangles(ray, node, t, triExpansionEpsilon);
-  intersection |= RayCastRecursive(ray, t, front_t_min, front_t_max, node->mFrontChild,
-    planeThicknessEpsilon, triExpansionEpsilon);
-  intersection |= RayCastRecursive(ray, t, back_t_min, back_t_max, node->mFrontChild,
-    planeThicknessEpsilon, triExpansionEpsilon);
-  return;
 
+  // ray cast in this, front, and back nodes
+  // find t mins and t maxes for front and back
+  float near_t_min, near_t_max;
+  float far_t_min, far_t_max;
+
+  near_t_min = t_min;
+  near_t_max = t_plane_max;
+  far_t_max = t_max;
+  far_t_min = t_plane_min;
+
+
+
+
+  
+  // check coplanar tris and recurse down both front and back
+  intersection |=  RayCastContainedTriangles(ray, node, t, 
+    triExpansionEpsilon);
+  intersection |= RayCastRecursive(ray, t, near_t_min, near_t_max, 
+    near_node, planeThicknessEpsilon, triExpansionEpsilon);
+  intersection |= RayCastRecursive(ray, t, far_t_min, far_t_max, 
+    far_node, planeThicknessEpsilon, triExpansionEpsilon);
+  return intersection;
+
+}
+
+void BspTree::DebugDrawRecursive(const BspTreeNode * node, int level,
+  const Vector4 & color, int bitMask)
+{
+  if(!node)
+    return;
+  // draw shape if at appropriate level
+  if (level < 1)
+  {
+    const Plane & plane = node->mPlane;
+    DebugShape & draw_shape = gDebugDrawer->DrawPlane(plane, 5.0f, 5.0f);
+    draw_shape.SetTransform(Matrix4::cIdentity);
+    draw_shape.Color(color);
+    draw_shape.SetMaskBit(bitMask);
+  }
+  // find next level and move to next nodes
+  // or return at final level
+  int next_level;
+  if (level == -1)
+    next_level = -1;
+  else if(level == 0)
+    return;
+  else
+    next_level = level - 1;
+  DebugDrawRecursive(node->mFrontChild, next_level, color, bitMask);
+  DebugDrawRecursive(node->mBackChild, next_level, color, bitMask);
 }
 
 bool BspTree::RayCastContainedTriangles(const Ray & ray, 
@@ -457,10 +431,13 @@ bool BspTree::RayCastContainedTriangles(const Ray & ray,
   bool intersection = false;
   for (const Triangle & tri : node->mTriangles)
   {
-    float new_t;
-    intersection |= RayTriangle(ray.mStart, ray.mDirection, tri.mPoints[0], 
+    float new_t ;
+    bool tri_intersection;
+    tri_intersection = RayTriangle(ray.mStart, ray.mDirection, tri.mPoints[0], 
       tri.mPoints[1], tri.mPoints[2], new_t, triExpansionEpsilon);
-    if (new_t < *t)
+    intersection |= tri_intersection;
+    if (tri_intersection && new_t < *t)
       *t = new_t;
   }
+  return intersection;
 }

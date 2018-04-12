@@ -91,6 +91,8 @@ private:
   bool RayCastRecursive(const Ray & ray, float * t, float t_min, float t_max,
     const BspTreeNode * node, float planeThicknessEpsilon, 
     float triExpansionEpsilon);
+  void DebugDrawRecursive(const BspTreeNode * node, int level,
+    const Vector4 & color, int bitMask);
 
   // Helpers
   bool RayCastContainedTriangles(const Ray & ray, const BspTreeNode * node, 
