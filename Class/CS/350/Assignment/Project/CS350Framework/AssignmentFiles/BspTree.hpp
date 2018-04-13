@@ -16,7 +16,10 @@ class BspTree;
 class BspTreeNode
 {
 public:
-  void ClipTo(BspTreeNode * node);
+  void ClipTo(BspTreeNode * node, float epsilon);
+  void ClipTriangles(const TriangleList & triangles, 
+    TriangleList * front_triangles, TriangleList * back_triangles, 
+    float epsilon);
   BspTreeNode* GetFrontChild() const;
   BspTreeNode* GetBackChild() const;
   Plane GetSplitPlane() const;
@@ -30,7 +33,6 @@ private:
 };
 
 //--------------------------------------------------------------------BspTree
-/******Student:Assignment4******/
 // Implement a bsp-tree and the CSG operation of subtraction
 class BspTree
 {
@@ -94,6 +96,10 @@ private:
   void AllTrianglesRecursive(const BspTreeNode * node, 
     TriangleList * tirangles) const;
   void InvertRecursive(BspTreeNode * node);
+  void ClipToRecurseThisTree(BspTreeNode * current_node, BspTree * tree, 
+    float epsilon);
+  void ClipToRecurseOtherTree(BspTreeNode * this_node, 
+    BspTreeNode * other_current_node, float epsilon);
   void DebugDrawRecursive(const BspTreeNode * node, int level,
     const Vector4 & color, int bitMask);
 

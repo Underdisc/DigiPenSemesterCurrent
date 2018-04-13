@@ -9,32 +9,32 @@
 
 
 //--------------------------------------------------------------------BspTreeNode
-void BspTreeNode::ClipTo(BspTreeNode * node)
+void BspTreeNode::ClipTo(BspTreeNode * clip_node, float epsilon)
 {
-  // CLIP THIS NODE TO GIVEN NODE
-  /*
-  
-  TRIANGLE IN THIS NODE WHEN THE FUNCTION BEGINS
-     /|
-    / |
-   /  |  -
- ------------ node split plane 
-  /   |  +
- ------
-
-
-  END RESULT TRIANGLES NOW IN THIS NODE
-
-     ----
-    / \ |
-   ------
-  
-  */
 
   // need a new and old triangle list
+  TriangleList front_triangles;
+  TriangleList back_triangles;
 
+  for (const Triangle & tri : mTriangles)
+  {
+    BspTree::SplitTriangle(clip_node->mPlane, tri, front_triangles, 
+      back_triangles, front_triangles, back_triangles, epsilon);
+  }
 
+  mTriangles = front_triangles;
 }
+
+void BspTreeNode::ClipTriangles(const TriangleList & triangles,
+  TriangleList * front_triangles, TriangleList * back_triangles, float epsilon)
+{
+  for (const Triangle & tri : triangles)
+  {
+    BspTree::SplitTriangle(mPlane, tri, *front_triangles, *back_triangles,
+      *front_triangles, *back_triangles, epsilon);
+  }
+}
+
 
 BspTreeNode* BspTreeNode::GetFrontChild() const
 {
@@ -275,8 +275,7 @@ void BspTree::Invert()
 
 void BspTree::ClipTo(BspTree* tree, float epsilon)
 {
-  /******Student:Assignment4******/
-  Warn("Assignment4: Required function un-implemented");
+  ClipToRecurseThisTree(mRoot, tree, epsilon);
 }
 
 void BspTree::Union(BspTree* tree, float k, float epsilon)
@@ -449,6 +448,29 @@ void BspTree::InvertRecursive(BspTreeNode * node)
   InvertRecursive(node->mBackChild);
 }
 
+void BspTree::ClipToRecurseThisTree(BspTreeNode * current_node, BspTree * tree,
+  float epsilon)
+{
+  if(!current_node)
+    return;
+  ClipToRecurseOtherTree(current_node, tree->mRoot, epsilon);
+  
+  ClipToRecurseThisTree(current_node->mFrontChild, tree, epsilon);
+  ClipToRecurseThisTree(current_node->mBackChild, tree, epsilon);
+  
+}
+
+void BspTree::ClipToRecurseOtherTree(BspTreeNode * this_node,  
+  BspTreeNode * other_current_node, float epsilon)
+{
+  if(!other_current_node)
+    return;
+  this_node->ClipTo(other_current_node, epsilon);
+
+  ClipToRecurseOtherTree(this_node, other_current_node->mFrontChild, epsilon);
+  ClipToRecurseOtherTree(this_node, other_current_node->mBackChild, epsilon);
+}
+
 void BspTree::DebugDrawRecursive(const BspTreeNode * node, int level,
   const Vector4 & color, int bitMask)
 {
@@ -457,11 +479,20 @@ void BspTree::DebugDrawRecursive(const BspTreeNode * node, int level,
   // draw shape if at appropriate level
   if (level < 1)
   {
+    // draw plane
     const Plane & plane = node->mPlane;
-    DebugShape & draw_shape = gDebugDrawer->DrawPlane(plane, 5.0f, 5.0f);
-    draw_shape.SetTransform(Matrix4::cIdentity);
-    draw_shape.Color(color);
-    draw_shape.SetMaskBit(bitMask);
+    DebugShape & plane_draw = gDebugDrawer->DrawPlane(plane, 5.0f, 5.0f);
+    plane_draw.SetTransform(Matrix4::cIdentity);
+    plane_draw.Color(color);
+    plane_draw.SetMaskBit(bitMask);
+    // draw all tirangles in node
+    for (const Triangle & tri : node->mTriangles)
+    {
+      DebugShape & tri_draw = gDebugDrawer->DrawTriangle(tri);
+      tri_draw.SetTransform(Matrix4::cIdentity);
+      tri_draw.Color(color);
+      tri_draw.SetMaskBit(bitMask);
+    }
   }
   // find next level and move to next nodes
   // or return at final level
