@@ -11,28 +11,26 @@
 //--------------------------------------------------------------------BspTreeNode
 void BspTreeNode::ClipTo(BspTreeNode * clip_node, float epsilon)
 {
-
-  // need a new and old triangle list
-  TriangleList front_triangles;
-  TriangleList back_triangles;
-
-  for (const Triangle & tri : mTriangles)
-  {
-    BspTree::SplitTriangle(clip_node->mPlane, tri, front_triangles, 
-      back_triangles, front_triangles, back_triangles, epsilon);
-  }
-
-  mTriangles = front_triangles;
+  // this is going to be called be every node in
+  // tree being clipped
+  
+  clip_node->ClipTriangles(mTriangles, epsilon);
 }
 
-void BspTreeNode::ClipTriangles(const TriangleList & triangles,
-  TriangleList * front_triangles, TriangleList * back_triangles, float epsilon)
+void BspTreeNode::ClipTriangles(const TriangleList & triangles, float epsilon)
 {
+
+// just add the front triangles to m ttriangesl
+  TriangleList front_triangles;
+  TriangleList back_triangles;
   for (const Triangle & tri : triangles)
   {
-    BspTree::SplitTriangle(mPlane, tri, *front_triangles, *back_triangles,
-      *front_triangles, *back_triangles, epsilon);
+    BspTree::SplitTriangle(mPlane, tri, front_triangles, back_triangles,
+      front_triangles, back_triangles, epsilon);
   }
+
+  if(mFrontChild)
+    mFrontChild->ClipTriangles()
 }
 
 
@@ -448,27 +446,14 @@ void BspTree::InvertRecursive(BspTreeNode * node)
   InvertRecursive(node->mBackChild);
 }
 
-void BspTree::ClipToRecurseThisTree(BspTreeNode * current_node, BspTree * tree,
+void BspTree::ClipToRecursive(BspTreeNode * this_node, BspTree * clip_tree,
   float epsilon)
 {
-  if(!current_node)
+  if(!this_node)
     return;
-  ClipToRecurseOtherTree(current_node, tree->mRoot, epsilon);
-  
-  ClipToRecurseThisTree(current_node->mFrontChild, tree, epsilon);
-  ClipToRecurseThisTree(current_node->mBackChild, tree, epsilon);
-  
-}
-
-void BspTree::ClipToRecurseOtherTree(BspTreeNode * this_node,  
-  BspTreeNode * other_current_node, float epsilon)
-{
-  if(!other_current_node)
-    return;
-  this_node->ClipTo(other_current_node, epsilon);
-
-  ClipToRecurseOtherTree(this_node, other_current_node->mFrontChild, epsilon);
-  ClipToRecurseOtherTree(this_node, other_current_node->mBackChild, epsilon);
+  this_node->ClipTo(clip_tree->mRoot, epsilon);
+  ClipToRecursive(this_node->mFrontChild, clip_tree, epsilon);
+  ClipToRecursive(this_node->mBackChild, clip_tree, epsilon);
 }
 
 void BspTree::DebugDrawRecursive(const BspTreeNode * node, int level,

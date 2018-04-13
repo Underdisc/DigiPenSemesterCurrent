@@ -17,9 +17,7 @@ class BspTreeNode
 {
 public:
   void ClipTo(BspTreeNode * node, float epsilon);
-  void ClipTriangles(const TriangleList & triangles, 
-    TriangleList * front_triangles, TriangleList * back_triangles, 
-    float epsilon);
+  void ClipTriangles(const TriangleList & triangles, float epsilon);
   BspTreeNode* GetFrontChild() const;
   BspTreeNode* GetBackChild() const;
   Plane GetSplitPlane() const;
@@ -96,6 +94,8 @@ private:
   void AllTrianglesRecursive(const BspTreeNode * node, 
     TriangleList * tirangles) const;
   void InvertRecursive(BspTreeNode * node);
+  void ClipToRecursive(BspTreeNode * this_node, BspTree * clip_tree, 
+    float epsilon);
   void ClipToRecurseThisTree(BspTreeNode * current_node, BspTree * tree, 
     float epsilon);
   void ClipToRecurseOtherTree(BspTreeNode * this_node, 
