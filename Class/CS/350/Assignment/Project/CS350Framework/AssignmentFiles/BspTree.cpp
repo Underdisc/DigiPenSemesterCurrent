@@ -6,21 +6,56 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "Precompiled.hpp"
 
+//----------------------------------------------------------------------Helpers
 
-
-//--------------------------------------------------------------------BspTreeNode
-void BspTreeNode::ClipTo(BspTreeNode * clip_node, float epsilon)
+Vector3 RayPlaneIntersection(const Vector3 & p0, const Vector3 & p1, 
+  const Plane & plane)
 {
-  // this is going to be called be every node in
-  // tree being clipped
-  
-  clip_node->ClipTriangles(mTriangles, epsilon);
+  // find and return point where ray intersects plane
+  Vector3 ray_start = p0;
+  Vector3 ray_dir = p1 - p0;
+  Ray edge_ray(ray_start, ray_dir);
+  float t;
+  RayPlane(edge_ray.mStart, edge_ray.mDirection, plane.mData, t);
+  return edge_ray.GetPoint(t);
 }
 
-void BspTreeNode::ClipTriangles(const TriangleList & triangles, float epsilon)
+void AddPointsToTriangleList(const std::vector<const Vector3 *> & p, 
+  TriangleList & list)
 {
+  list.push_back(Triangle(*p[0], *p[1], *p[2]));
+  if (p.size() == 4)
+  {
+    list.push_back(Triangle(*p[0], *p[2], *p[3]));
+  }
+}
 
-// just add the front triangles to m ttriangesl
+void AddTriangleListToTriangleList(TriangleList * triangles,
+  const TriangleList & new_triangles)
+{
+  for (const Triangle & tri : new_triangles)
+  {
+    triangles->push_back(tri);
+  }
+}
+
+//------------------------------------------------------------------BspTreeNode
+void BspTreeNode::ClipTo(BspTreeNode * clip_node, float epsilon)
+{
+  // find the clipped set of triangles
+  // clip_node is the root of the tree the triangles will be clipped against
+  mTriangles = clip_node->ClipTriangles(mTriangles, epsilon);
+  // clip front and back childrent to clip_node
+  if(mFrontChild)
+    mFrontChild->ClipTo(clip_node, epsilon);
+  if(mBackChild)
+    mBackChild->ClipTo(clip_node, epsilon);
+}
+
+TriangleList BspTreeNode::ClipTriangles(const TriangleList & triangles, 
+  float epsilon)
+{
+  // split every triangle in the triangle list
   TriangleList front_triangles;
   TriangleList back_triangles;
   for (const Triangle & tri : triangles)
@@ -28,9 +63,23 @@ void BspTreeNode::ClipTriangles(const TriangleList & triangles, float epsilon)
     BspTree::SplitTriangle(mPlane, tri, front_triangles, back_triangles,
       front_triangles, back_triangles, epsilon);
   }
-
+  // add all tris that still exist after clipping to a list
+  TriangleList existing_tris;
   if(mFrontChild)
-    mFrontChild->ClipTriangles()
+  {
+    front_triangles = mFrontChild->ClipTriangles(front_triangles, epsilon);
+    AddTriangleListToTriangleList(&existing_tris, front_triangles);
+  }
+  else
+  {
+    AddTriangleListToTriangleList(&existing_tris, front_triangles);
+  }
+  if(mBackChild)
+  {
+    back_triangles = mBackChild->ClipTriangles(back_triangles, epsilon);
+    AddTriangleListToTriangleList(&existing_tris, back_triangles);
+  }
+  return existing_tris;
 }
 
 
@@ -54,38 +103,19 @@ void BspTreeNode::GetTriangles(TriangleList& triangles) const
   triangles = mTriangles;
 }
 
-//--------------------------------------------------------------------Helpers
-
-Vector3 RayPlaneIntersection(const Vector3 & p0, const Vector3 & p1, const Plane & plane)
-{
-  // find and return point where ray intersects plane
-  Vector3 ray_start = p0;
-  Vector3 ray_dir = p1 - p0;
-  Ray edge_ray(ray_start, ray_dir);
-  float t;
-  RayPlane(edge_ray.mStart, edge_ray.mDirection, plane.mData, t);
-  return edge_ray.GetPoint(t);
-}
-
-void AddPointsToTriangleList(const std::vector<const Vector3 *> & p, TriangleList & list)
-{
-  list.push_back(Triangle(*p[0], *p[1], *p[2]));
-  if (p.size() == 4)
-  {
-    list.push_back(Triangle(*p[0], *p[2], *p[3]));
-  }
-}
-
-//--------------------------------------------------------------------BspTree
+//----------------------------------------------------------------------BspTree
 BspTree::BspTree() : mRoot(nullptr)
 {
 }
 
 BspTree::~BspTree()
 {
+  DestroyTree(mRoot);
 }
 
-void BspTree::SplitTriangle(const Plane& plane, const Triangle& tri, TriangleList& coplanarFront, TriangleList& coplanarBack, TriangleList& front, TriangleList& back, float epsilon)
+void BspTree::SplitTriangle(const Plane& plane, const Triangle& tri, 
+  TriangleList& coplanarFront, TriangleList& coplanarBack, TriangleList& front,
+  TriangleList& back, float epsilon)
 {
   // not calling PlaneTriangle because the intersection data from PointPlane
   // is needed
@@ -194,7 +224,8 @@ void BspTree::SplitTriangle(const Plane& plane, const Triangle& tri, TriangleLis
   AddPointsToTriangleList(back_points, back);
 }
 
-float BspTree::CalculateScore(const TriangleList& triangles, size_t testIndex, float k, float epsilon)
+float BspTree::CalculateScore(const TriangleList& triangles, size_t testIndex, 
+  float k, float epsilon)
 {
   int front = 0;
   int back = 0;
@@ -202,7 +233,7 @@ float BspTree::CalculateScore(const TriangleList& triangles, size_t testIndex, f
   const Triangle & test_tri = triangles[testIndex];
   Vector3 normal = test_tri.ScaledNormal();
   // ignore degenerate triangles
-  if(normal.Length() < epsilon)
+  if(normal.Length() < 0.001f)
     return Math::PositiveMax();
   // find how many tris are inside, outside and overlapping plane
   Plane test_plane(normal, test_tri.mPoints[0]);
@@ -227,7 +258,8 @@ float BspTree::CalculateScore(const TriangleList& triangles, size_t testIndex, f
   return score;
 }
 
-size_t BspTree::PickSplitPlane(const TriangleList& triangles, float k, float epsilon)
+size_t BspTree::PickSplitPlane(const TriangleList& triangles, float k, 
+  float epsilon)
 {
   // finding and returning the index of the tri with the lowest score
   float lowest_score = Math::PositiveMax();
@@ -273,25 +305,40 @@ void BspTree::Invert()
 
 void BspTree::ClipTo(BspTree* tree, float epsilon)
 {
-  ClipToRecurseThisTree(mRoot, tree, epsilon);
+  mRoot->ClipTo(tree->mRoot, epsilon);
 }
 
 void BspTree::Union(BspTree* tree, float k, float epsilon)
 {
-  /******Student:Assignment4******/
-  Warn("Assignment4: Required function un-implemented");
+  // clip this tree to the other tree and vice versa
+  mRoot->ClipTo(tree->mRoot, epsilon);
+  tree->mRoot->ClipTo(mRoot, epsilon);
+  // clip away coplanar faces
+  tree->Invert();
+  tree->ClipTo(this, epsilon);
+  tree->Invert();
+  // construct the new tree with the triangle union
+  TriangleList triangle_union;
+  AllTriangles(triangle_union);
+  tree->AllTriangles(triangle_union);
+  DestroyTree(mRoot);
+  Construct(triangle_union, k, epsilon);
 }
 
 void BspTree::Intersection(BspTree* tree, float k, float epsilon)
 {
-  /******Student:Assignment4******/
-  Warn("Assignment4: Required function un-implemented");
+  // this && tree == ~(~this || ~tree)
+  Invert();
+  tree->Invert();
+  Union(tree, k, epsilon);
+  Invert();
 }
 
 void BspTree::Subtract(BspTree* tree, float k, float epsilon)
 {
-  /******Student:Assignment4******/
-  Warn("Assignment4: Required function un-implemented");
+  // this - tree == this && ~tree
+  tree->Invert();
+  Intersection(tree, k, epsilon);
 }
 
 void BspTree::DebugDraw(int level, const Vector4& color, int bitMask)
@@ -299,7 +346,8 @@ void BspTree::DebugDraw(int level, const Vector4& color, int bitMask)
   DebugDrawRecursive(mRoot, level, color, bitMask);
 }
 
-BspTreeNode * BspTree::ConstructRecursive(const TriangleList & triangles, float k, float epsilon)
+BspTreeNode * BspTree::ConstructRecursive(const TriangleList & triangles,
+  float k, float epsilon)
 {
   if (triangles.size() == 0)
   {
@@ -308,15 +356,17 @@ BspTreeNode * BspTree::ConstructRecursive(const TriangleList & triangles, float 
   BspTreeNode * node = new BspTreeNode;
   if(triangles.size() <= 1)
   {
+    // create node with single triangle
     node->mFrontChild = nullptr;
     node->mBackChild = nullptr;
     node->mTriangles = triangles;
     node->mPlane = Plane(triangles[0]);
     return node;
   }
+  // find split plane
   size_t split_tri = PickSplitPlane(triangles, k, epsilon);
-  // is it even worth to add the split plane at the start
   node->mPlane = Plane(triangles[split_tri]);
+  // split tris with found plane
   TriangleList front_tris;
   TriangleList back_tris;
   for (size_t i = 0; i < triangles.size(); ++i)
@@ -325,6 +375,7 @@ BspTreeNode * BspTree::ConstructRecursive(const TriangleList & triangles, float 
     SplitTriangle(node->mPlane, tri, node->mTriangles, node->mTriangles,
       front_tris, back_tris, epsilon);
   }
+  // construct front and back children with front and back triangles
   node->mFrontChild = ConstructRecursive(front_tris, k, epsilon);
   node->mBackChild = ConstructRecursive(back_tris, k, epsilon);
   return node;
@@ -416,10 +467,7 @@ void BspTree::AllTrianglesRecursive(const BspTreeNode * node,
   if(!node)
     return;
   // add triangles in pre-order traversal
-  for (const Triangle & tri : node->mTriangles)
-  {
-    triangles->push_back(tri);
-  }
+  AddTriangleListToTriangleList(triangles, node->mTriangles);
   AllTrianglesRecursive(node->mFrontChild, triangles);
   AllTrianglesRecursive(node->mBackChild, triangles);
 }
@@ -446,15 +494,6 @@ void BspTree::InvertRecursive(BspTreeNode * node)
   InvertRecursive(node->mBackChild);
 }
 
-void BspTree::ClipToRecursive(BspTreeNode * this_node, BspTree * clip_tree,
-  float epsilon)
-{
-  if(!this_node)
-    return;
-  this_node->ClipTo(clip_tree->mRoot, epsilon);
-  ClipToRecursive(this_node->mFrontChild, clip_tree, epsilon);
-  ClipToRecursive(this_node->mBackChild, clip_tree, epsilon);
-}
 
 void BspTree::DebugDrawRecursive(const BspTreeNode * node, int level,
   const Vector4 & color, int bitMask)
@@ -479,8 +518,7 @@ void BspTree::DebugDrawRecursive(const BspTreeNode * node, int level,
       tri_draw.SetMaskBit(bitMask);
     }
   }
-  // find next level and move to next nodes
-  // or return at final level
+  // find next level and move to next nodes or return at final level
   int next_level;
   if (level == -1)
     next_level = -1;
@@ -490,6 +528,15 @@ void BspTree::DebugDrawRecursive(const BspTreeNode * node, int level,
     next_level = level - 1;
   DebugDrawRecursive(node->mFrontChild, next_level, color, bitMask);
   DebugDrawRecursive(node->mBackChild, next_level, color, bitMask);
+}
+
+void BspTree::DestroyTree(BspTreeNode * node)
+{
+  if(!node)
+    return;
+  DestroyTree(node->mFrontChild);
+  DestroyTree(node->mBackChild);
+  delete node;
 }
 
 // Helpers

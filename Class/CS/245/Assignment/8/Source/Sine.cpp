@@ -15,6 +15,8 @@
 #include <stdexcept>
 #include "Sine.h"
 
+#include <iostream>
+
 #define TAU 6.28318531
 #define TAUF 6.28318531f
 
@@ -46,6 +48,12 @@ Sine::Sine(unsigned R)
     sine_table[i] = (float)yn;
     yn_2 = yn_1;
     yn_1 = yn;
+
+
+    if(i < 30)
+    {
+      std::cout << yn << std::endl;
+    }
   }
 }
 

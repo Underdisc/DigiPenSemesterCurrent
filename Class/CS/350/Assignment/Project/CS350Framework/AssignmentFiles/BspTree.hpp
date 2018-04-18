@@ -12,12 +12,12 @@ typedef std::vector<Triangle> TriangleList;
 
 class BspTree;
 
-//--------------------------------------------------------------------BspTreeNode
+//------------------------------------------------------------------BspTreeNode
 class BspTreeNode
 {
 public:
   void ClipTo(BspTreeNode * node, float epsilon);
-  void ClipTriangles(const TriangleList & triangles, float epsilon);
+  TriangleList ClipTriangles(const TriangleList & triangles, float epsilon);
   BspTreeNode* GetFrontChild() const;
   BspTreeNode* GetBackChild() const;
   Plane GetSplitPlane() const;
@@ -30,7 +30,7 @@ private:
   friend BspTree;
 };
 
-//--------------------------------------------------------------------BspTree
+//---------------------------------------------------------------------BspTree
 // Implement a bsp-tree and the CSG operation of subtraction
 class BspTree
 {
@@ -86,23 +86,17 @@ public:
 
 private:
   BspTreeNode * mRoot;
-
-  BspTreeNode * ConstructRecursive(const TriangleList & triangles, float k, float epsilon);
+  BspTreeNode * ConstructRecursive(const TriangleList & triangles, float k, 
+    float epsilon);
   bool RayCastRecursive(const Ray & ray, float * t, float t_min, float t_max,
     const BspTreeNode * node, float planeThicknessEpsilon, 
     float triExpansionEpsilon);
   void AllTrianglesRecursive(const BspTreeNode * node, 
     TriangleList * tirangles) const;
   void InvertRecursive(BspTreeNode * node);
-  void ClipToRecursive(BspTreeNode * this_node, BspTree * clip_tree, 
-    float epsilon);
-  void ClipToRecurseThisTree(BspTreeNode * current_node, BspTree * tree, 
-    float epsilon);
-  void ClipToRecurseOtherTree(BspTreeNode * this_node, 
-    BspTreeNode * other_current_node, float epsilon);
   void DebugDrawRecursive(const BspTreeNode * node, int level,
     const Vector4 & color, int bitMask);
-
+  void DestroyTree(BspTreeNode * node);
   // Helpers
   bool RayCastContainedTriangles(const Ray & ray, const BspTreeNode * node, 
     float * t, float triExpansionEpsilon);
