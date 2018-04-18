@@ -305,11 +305,19 @@ void BspTree::Invert()
 
 void BspTree::ClipTo(BspTree* tree, float epsilon)
 {
-  mRoot->ClipTo(tree->mRoot, epsilon);
+  if(mRoot)
+    mRoot->ClipTo(tree->mRoot, epsilon);
 }
 
 void BspTree::Union(BspTree* tree, float k, float epsilon)
 {
+  if (!mRoot)
+  {
+    TriangleList tree_triangles;
+    tree->AllTriangles(tree_triangles);
+    Construct(tree_triangles, k, epsilon);
+    return;
+  }
   // clip this tree to the other tree and vice versa
   mRoot->ClipTo(tree->mRoot, epsilon);
   tree->mRoot->ClipTo(mRoot, epsilon);
@@ -327,6 +335,8 @@ void BspTree::Union(BspTree* tree, float k, float epsilon)
 
 void BspTree::Intersection(BspTree* tree, float k, float epsilon)
 {
+  if(!mRoot)
+    return;
   // this && tree == ~(~this || ~tree)
   Invert();
   tree->Invert();
@@ -537,6 +547,8 @@ void BspTree::DestroyTree(BspTreeNode * node)
   DestroyTree(node->mFrontChild);
   DestroyTree(node->mBackChild);
   delete node;
+  if(node == mRoot)
+    mRoot = nullptr;
 }
 
 // Helpers
