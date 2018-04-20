@@ -278,7 +278,7 @@ size_t BspTree::PickSplitPlane(const TriangleList& triangles, float k,
 
 void BspTree::Construct(const TriangleList& triangles, float k, float epsilon)
 {
-  //DestroyTree(mRoot);
+  DestroyTree(mRoot);
   mRoot = ConstructRecursive(triangles, k, epsilon);
 }
 
@@ -330,7 +330,6 @@ void BspTree::Union(BspTree* tree, float k, float epsilon)
   TriangleList triangle_union;
   AllTriangles(triangle_union);
   tree->AllTriangles(triangle_union);
-  DestroyTree(mRoot);
   Construct(triangle_union, k, epsilon);
 }
 

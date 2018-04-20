@@ -57,7 +57,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <AdditionalDependencies>Helpers.lib;SDL2.lib;SDL2main.lib;AntTweakBar.lib;Opengl32.lib;glu32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SDLPath)\lib\x86;$(AntTweakBarPath);OpenGL\;$(HelpersPath)\Libs\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
