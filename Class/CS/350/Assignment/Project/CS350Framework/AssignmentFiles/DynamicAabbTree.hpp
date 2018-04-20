@@ -36,7 +36,6 @@ private:
 };
 
 //--------------------------------------------------------------------DynamicAabbTree
-/******Student:Assignment3******/
 class DynamicAabbTree : public SpatialPartition
 {
 public:
