@@ -54,14 +54,13 @@ struct Data
 {
   int * pointer;
   int size;
-  int reference_count;
 
-  void Print()
+  /*void Print()
   {
     char str[100];
     sprintf(str, "Size: %i\nCount: %i\n", size, reference_count);
     std::cout << str;
-  }
+  }*/
 }; //  __attribute__((aligned(16),packed)); // bug in GCC 4.*, fixed in 5.1?
 // alignment needed to stop std::atomic<Data>::load to segfault
 
@@ -81,6 +80,10 @@ struct Data
 // We can use a lock too, but will refrain for now
 // if the thread gets succcessfully added great, we
 // have another thread, if not, return false and try again
+
+//============================================================================//
+// RetiredRecord //
+//============================================================================//
 class RetiredRecord
 {
 public:
@@ -101,6 +104,10 @@ std::vector<void *> * RetiredRecord::GetRetired(unsigned thread)
   return &(retired[thread]);
 }
 
+
+//============================================================================//
+// HazardPointerNode //
+//============================================================================//
 struct HazardPointerNode
 {
   HazardPointerNode * next;
@@ -108,13 +115,21 @@ struct HazardPointerNode
   std::atomic<bool> active;
 }
 
-
 // This leaks hard man
 // just do a single threaded delete of all the hazard pointer nodes at the
 // end
+//============================================================================//
+// HazardPointerRecord //
+//============================================================================//
 class HazardPointerRecord
 {
+private:
   static std::atomic<HazardPointerNode *> head;
+public:
+  static HazardPointerNode * Head()
+  {
+    return head;
+  }
 
   static HazardPointerNode * Take()
   {
@@ -153,10 +168,6 @@ class HazardPointerRecord
   }
 };
 
-void DeleteRetiredPointers(std::)
-
-
-
 // why not do some sort of multi pointer
 // where every pointer has a refcount
 // and when that ref count reaches zero
@@ -171,6 +182,9 @@ void DeleteRetiredPointers(std::)
 
 
 // A "lock-free" sorted vector implementation
+//============================================================================//
+// LFSV //
+//============================================================================//
 class LFSV
 {
   //MemoryBank<std::vector<int>, 290000, sizeof(void*) > mb;
@@ -191,6 +205,40 @@ public:
     }
   }
 
+  void DeleteRetiredPointers(std::vector<void *> * retired_pointers)
+  {
+    // get all existing non null hazard pointers
+    std::vector<void *> hazard_pointers;
+    HazardPointerNode * current_node = HazardPointerRecord::Head();
+    while(current_node)
+    {
+      void * hp = current_node->hazard_pointer;
+      if(hp)
+      {
+        hazard_pointers.push_back(hp);
+      }
+      current_node = current_node->next;
+    }
+    // sort the hazard pointers that have been collected
+    std::sort(hazard_pointers.begin(), hazard_pointers.end());
+    // iterate through retire pointers
+    // if a retired cannot be found among hazard pointes, we can delete it
+    unsigned num_retired_pointers = retired_pointers->Size();
+    for(unsigned i = 0; i < num_retired_pointers; ++i)
+    {
+      void * retired = retired_pointers[i];
+      bool found = std::binary_search(hazard_pointers.begin(),
+        hazard_pointers.end(), retired);
+      if(!found)
+      {
+        int * int_retired = (int *)retired;
+        mb2.store(int_retired);
+        retired_pointers[i] = retired_pointers.back();
+        retired_pointers.pop_back();
+      }
+    }
+  }
+
   void Retire(void * retired_address, unsigned retired_index)
   {
     std::vector<void *> * retired_vector;
@@ -198,7 +246,7 @@ public:
     retired_vector->push_back(retired_address);
     if(retired_vector.size() >= 10)
     {
-
+      DeleteRetiredPointers(retired_vector);
     }
   }
 
@@ -210,15 +258,12 @@ public:
     // value of data will only change on when its reference_count is 0
     Data data_old;
     Data data_new;
-    data_new.pointer = nullptr;
-    data_new.size = 0;
     do
     {
       // get current pointer and size
       // reference_count needs to be set to zero everytime because data_old
       // might be modified by compare_exchange_strong
       data_old = data.load();
-      data_old.reference_count = 0;
       // get new pointer for data
       if(data_new.pointer != nullptr)
       {
@@ -226,7 +271,6 @@ public:
       }
       data_new.pointer = mb2.Get();
       data_new.size = data_old.size;
-      data_new.reference_count = 0;
       std::memcpy(data_new.pointer, data_old.pointer,
         data_new.size * sizeof(int));
       int * vector = data_new.pointer;
@@ -239,7 +283,6 @@ public:
         {
           for (int j = data_new.size; j > i; --j)
           {
-            // move new element to proper position
             std::swap(vector[j], vector[j-1]);
           }
           break;
@@ -248,29 +291,23 @@ public:
       // set new size
       ++data_new.size;
     } while(!data.compare_exchange_strong(data_old, data_new));
-    // store unused pointer
-    mb2.Store(data_old.pointer);
+    // retired the old pointer
+    Retire((void *)data_old.pointer);
   }
 
   // access a value of pos within the vector
   int operator[] ( int pos ) {
-    Data data_old;
-    Data data_new;
-    // increment reference_count
-    do
-    {
-      data_old = data.load();
-      data_new = data_old;
-      ++data_new.reference_count;
-    } while(!data.compare_exchange_strong(data_old, data_new));
-    int ret_val = data.load().pointer[pos];
-    // decrement reference_count
-    do
-    {
-      data_old = data.load();
-      data_new = data_old;
-      --data_new.reference_count;
-    } while(!data.compare_exchange_strong(data_old, data_new));
-    return ret_val;
+    HazardPointerNode * node = HazardPointerRecord::Take();
+    int * pointer;
+    // TODO: THIS MIGHT CAUSE AN ERROR
+    // I DID SOMETHING DIFFERENT
+    do {
+      node->hazard_pointer = data.load().pointer;
+    } while(node->hazard_pointer != data.load().pointer);
+
+    int value = node->hazard_pointer[pos];
+
+    HazardPointerRecord::Give(node);
+    return value;
   }
 };
