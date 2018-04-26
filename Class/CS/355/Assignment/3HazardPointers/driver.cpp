@@ -5,7 +5,7 @@ LFSV lfsv;
 #include <algorithm>//copy, random_shuffle
 #include <ctime>    //std::time (NULL) to seed srand
 
-void insert_range( int b, int e ) {
+void insert_range(int b, int e, unsigned retired_index) {
     int * range = new int [e-b];
     for ( int i=b; i<e; ++i ) {
         range[i-b] = i;
@@ -13,10 +13,8 @@ void insert_range( int b, int e ) {
     std::srand( static_cast<unsigned int>(std::time (NULL)) );
     std::random_shuffle(range, range + e - b);
     for ( int i=0; i<e-b; ++i ) {
-        // LOCKS ARE MINE
-        //printing_mutex.lock();
         //std::cout << " " << range[i] << "\r\n";
-        lfsv.Insert( range[i] );
+        lfsv.Insert(range[i], retired_index);
         //printing_mutex.unlock();
     }
     delete [] range;
@@ -38,13 +36,20 @@ void read_position_0() {
 
 void test( int num_threads, int num_per_thread )
 {
-    // you're going to need to to create a retired list hear for each thread
     std::vector<std::thread> threads;
     lfsv.Insert( -1 );
     std::thread reader = std::thread( read_position_0 );
-
+    // prepare retired vectors
+    // A vector contain retired indicies isn't necessarily needed
+    std::vector<unsigned> retired_indices;
+    for(int i = 0; i < num_threads; ++i)
+    {
+      retired_indices.push_back(RetiredRecord::AddThread());
+    }
+    // kick off writer threads
     for (int i=0; i<num_threads; ++i) {
-        threads.push_back( std::thread( insert_range, i*num_per_thread, (i+1)*num_per_thread ) );
+        threads.push_back(std::thread(insert_range, i * num_per_thread,
+          (i + 1) * num_per_thread ), retired_indices[i]);
     }
     for (auto& th : threads) th.join();
 
