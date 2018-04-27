@@ -631,7 +631,6 @@ All good
 -
 All good
 -
-not -1 on iteration 1 - was 0
 All good
 -
 All good
@@ -1188,7 +1187,6 @@ All good
 -
 All good
 -
-not -1 on iteration 1 - was 0
 All good
 -
 All good
@@ -1937,7 +1935,6 @@ All good
 -
 All good
 -
-not -1 on iteration 3 - was 0
 All good
 -
 All good

@@ -24,11 +24,14 @@ std::atomic<bool> doread( true );
 
 void read_position_0() {
     int c = 0;
-    while ( doread.load() ) {
-        //std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+    while (doread.load())
+    {
         int val = lfsv[0];
         if ( val != -1 ) {
-            std::cout << "not -1 on iteration " << c << " - was " << val << "\r\n"; // see main - all element are non-negative, so index 0 should always be -1
+            // see main - all element are non-negative,
+            // so index 0 should always be -1
+            std::cout << "not -1 on iteration " << c
+              << " - was " << val << "\r\n";
         }
         ++c;
     }
@@ -36,33 +39,42 @@ void read_position_0() {
 
 void test( int num_threads, int num_per_thread )
 {
-    std::vector<std::thread> threads;
-    lfsv.Insert( -1 );
-    std::thread reader = std::thread( read_position_0 );
     // prepare retired vectors
     // A vector contain retired indicies isn't necessarily needed
     std::vector<unsigned> retired_indices;
-    for(int i = 0; i < num_threads; ++i)
+    // thread 0: main thread
+    // thread 1: reader thread
+    // thread [2, total_threads): writer threads
+    int total_threads = num_threads + 2;
+    for(int i = 0; i < total_threads; ++i)
     {
       retired_indices.push_back(RetiredRecord::AddThread());
     }
+    // insert using the main thread
+    lfsv.Insert(-1, 0);
+    // kick off reader thread
+    std::thread reader = std::thread(read_position_0);
     // kick off writer threads
-    for (int i=0; i<num_threads; ++i) {
-        threads.push_back(std::thread(insert_range, i * num_per_thread,
-          (i + 1) * num_per_thread ), retired_indices[i]);
+    std::vector<std::thread> threads;
+    for (int i = 2; i < total_threads; ++i) {
+        int start = (i - 2) * num_per_thread;
+        int end = start + num_per_thread;
+        threads.push_back(std::thread(insert_range, start, end,
+          retired_indices[i]));
     }
     for (auto& th : threads) th.join();
 
     doread.store( false );
     reader.join();
 
-    for (int i=0; i<num_threads*num_per_thread; ++i) {
-        //std::cout << lfsv[i] << ' ';
+    for (int i = 0; i < num_threads * num_per_thread; ++i) {
+        std::cout << lfsv[i] << ' ';
         /*if ( lfsv[i] != i-1 ) {
             std::cout << "Error\n";
-            return;
+            //return;
         }*/
     }
+    HazardPointerRecord::FreeNodes();
     std::cout << "All good\r\n";
 }
 
@@ -87,15 +99,25 @@ with lock free shit
 */
 
 #include <cstdio>    /* sscanf */
-int main( int argc, char ** argv ) {
-    if (argc==2) { //use test[ argv[1] ]
-		int test = 0;
-		std::sscanf(argv[1],"%i",&test);
-		try {
-            pTests[test]();
-		} catch( const char* msg) {
-			std::cerr << msg << std::endl;
-		}
-        return 0;
-	}
+int main( int argc, char ** argv )
+{
+  if (argc==2)
+  { //use test[ argv[1] ]
+    int test = 0;
+    // TODO: REPLACE WITH SCANF
+    sscanf(argv[1],"%i",&test);
+    try
+    {
+      pTests[test]();
+    }
+    catch( const char* msg)
+    {
+      std::cerr << msg << std::endl;
+    }
+  }
+  else
+  {
+    std::cout << "Include Test number as argument - ./gcc0.exe TestNumber\n";
+  }
+  return 0;
 }

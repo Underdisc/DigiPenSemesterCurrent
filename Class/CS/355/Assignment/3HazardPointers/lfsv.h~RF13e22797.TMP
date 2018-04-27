@@ -13,9 +13,6 @@
 /*****************************************************************************/
 
 #include <iostream>       // std::cout
-// TODO: REMOVE
-#define _ENABLE_ATOMIC_ALIGNMENT_FIX
-
 #include <atomic>         // std::atomic
 #include <thread>         // std::thread
 #include <vector>         // std::vector
@@ -247,7 +244,8 @@ public:
     std::sort(hazard_pointers.begin(), hazard_pointers.end());
     // iterate through retire pointers
     // if a retired cannot be found among hazard pointes, we can delete it
-    for(unsigned i = 0; i < retired_pointers->size(); ++i)
+    unsigned num_retired_pointers = retired_pointers->size();
+    for(unsigned i = 0; i < num_retired_pointers; ++i)
     {
       void * retired = (*retired_pointers)[i];
       bool found = std::binary_search(hazard_pointers.begin(),
