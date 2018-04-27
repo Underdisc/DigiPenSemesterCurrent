@@ -68,11 +68,11 @@ void test( int num_threads, int num_per_thread )
     reader.join();
 
     for (int i = 0; i < num_threads * num_per_thread; ++i) {
-        std::cout << lfsv[i] << ' ';
-        /*if ( lfsv[i] != i-1 ) {
+        //std::cout << lfsv[i] << ' ';
+        if ( lfsv[i] != i-1 ) {
             std::cout << "Error\n";
             //return;
-        }*/
+        }
     }
     HazardPointerRecord::FreeNodes();
     std::cout << "All good\r\n";

@@ -24,31 +24,7 @@
 #include <algorithm>
 #include <cstring>
 
-template< typename T, int NUMBER, unsigned SIZE >
-class MemoryBank {
-  std::deque< T* > slots;
-  std::mutex m;
-  public:
-    MemoryBank() : slots(NUMBER) {
-      for ( int i=0; i<NUMBER; ++i ) {
-        slots[i] = reinterpret_cast<T*>( new char[ SIZE ] );
-      }
-    }
-    T* Get() {
-      std::lock_guard<std::mutex> lock( m );
-      T* p = slots[0];
-      slots.pop_front();
-      return p;
-    }
-    void Store( T* p ) {
-      std::memset( p, 0, SIZE ); // clear data
-      std::lock_guard<std::mutex> lock( m );
-      slots.push_back( p );
-    }
-    ~MemoryBank() {
-      for ( auto & el : slots ) { delete [] reinterpret_cast<char*>( el ); }
-    }
-};
+
 // so it is the scan function that will actually perform the
 // deletion of pointers
 
@@ -211,12 +187,10 @@ struct Data
 
 class LFSV
 {
-  //MemoryBank<std::vector<int>, 290000, sizeof(void*) > mb;
-  MemoryBank<int, 2000, sizeof(int[10000])> mb2;
 public:
   std::atomic<Data> data;
 
-  LFSV() : mb2(), data(Data{mb2.Get(), 0})
+  LFSV() : data(Data{nullptr, 0})
   {}
 
   ~LFSV()
@@ -225,7 +199,7 @@ public:
     int* p = temp.pointer;
     if ( p != nullptr )
     {
-      mb2.Store( p );
+      delete [] p;
     }
   }
 
@@ -255,7 +229,7 @@ public:
       if(!found)
       {
         int * int_retired = (int *)retired;
-        mb2.Store(int_retired);
+        delete [] int_retired;
         (*retired_pointers)[i] = retired_pointers->back();
         retired_pointers->pop_back();
       }
@@ -291,29 +265,45 @@ public:
       // get new pointer for data
       if(data_new.pointer != nullptr)
       {
-        mb2.Store(data_new.pointer);
+        delete [] data_new.pointer;
       }
-      data_new.pointer = mb2.Get();
-      data_new.size = data_old.size;
+      data_new.size = data_old.size + 1;
+      data_new.pointer = new int[data_new.size];
+      /*//std::cout << "======\n";
+      for(int i = 0; i < data_old.size; ++i)
+      {
+        data_new.pointer[i] = data_old.pointer[i];
+        //std::cout << data_new.pointer[i] << " ";
+      }
+      //std::cout << std::endl;*/
+
+
+      //std::cout << "------\nInserting " << v << std::endl;
+
       std::memcpy(data_new.pointer, data_old.pointer,
-        data_new.size * sizeof(int));
+        data_old.size * sizeof(int));
       int * vector = data_new.pointer;
       // add new value to array sorted in ascending order
-      vector[data_new.size] = v;
+      vector[data_old.size] = v;
       // switch value's position to sort
-      for (int i=0; i < data_new.size; ++i)
+      for (int i = 0; i < data_old.size; ++i)
       {
         if (vector[i] > v )
         {
-          for (int j = data_new.size; j > i; --j)
+          for (int j = data_old.size; j > i; --j)
           {
             std::swap(vector[j], vector[j-1]);
           }
           break;
         }
       }
-      // set new size
-      ++data_new.size;
+
+      /*std::cout << "------\n";
+      for(int i = 0; i < data_new.size; ++i)
+      {
+        std::cout << data_new.pointer[i] << " ";
+      }
+      std::cout << std::endl << "======" << std::endl << std::endl;*/
     } while(!data.compare_exchange_strong(data_old, data_new));
     // retired the old pointer
     Retire((void *)data_old.pointer, retired_index);
