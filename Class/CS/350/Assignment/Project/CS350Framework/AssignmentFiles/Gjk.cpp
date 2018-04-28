@@ -197,7 +197,7 @@ VoronoiRegion::Type Gjk::IdentifyVoronoiRegion(const Vector3& q, const Vector3& 
   // edge and triangle regions
   float u, v, w;
   BarycentricCoordinates(q, p0, p1, p2, u, v, w);
-  if (u <= 0.0f)
+  if (u <= 0.0f && u1 > 0.0f && v1 > 0.0f)
   {
     newSize = 2;
     newIndices[0] = 1;
@@ -206,7 +206,7 @@ VoronoiRegion::Type Gjk::IdentifyVoronoiRegion(const Vector3& q, const Vector3& 
     searchDirection = q - closestPoint;
     return VoronoiRegion::Edge12;
   }
-  if (v <= 0.0f)
+  if (v <= 0.0f && u2 > 0.0f && v2 > 0.0f)
   {
     newSize = 2;
     newIndices[0] = 0;
@@ -215,7 +215,7 @@ VoronoiRegion::Type Gjk::IdentifyVoronoiRegion(const Vector3& q, const Vector3& 
     searchDirection = q - closestPoint;
     return VoronoiRegion::Edge02;
   }
-  if (w <= 0.0f)
+  if (w <= 0.0f && u0 > 0.0f && v0 > 0.0f)
   {
     newSize = 2;
     newIndices[0] = 0;
@@ -229,7 +229,7 @@ VoronoiRegion::Type Gjk::IdentifyVoronoiRegion(const Vector3& q, const Vector3& 
   {
     newIndices[i] = i;
   }
-  closestPoint = q;
+  closestPoint = u * p0 + v * p1 + w * p2;
   searchDirection = q - closestPoint;
   return VoronoiRegion::Triangle012;
 }
@@ -238,8 +238,7 @@ VoronoiRegion::Type Gjk::IdentifyVoronoiRegion(const Vector3& q, const Vector3& 
   size_t& newSize, int newIndices[4],
   Vector3& closestPoint, Vector3& searchDirection)
 {
-  /******Student:Assignment5******/
-  Warn("Assignment5: Required function un-implemented");
+ 
   return VoronoiRegion::Unknown;
 }
 

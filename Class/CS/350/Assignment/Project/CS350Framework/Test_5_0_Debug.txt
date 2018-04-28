@@ -239,7 +239,7 @@ TriangleVoronoiRegions13
   Given 3 points: 
   Voronoi Region: Triangle012
   Closest Point: (0.00, 0.33, 0.00)
-  Search Direction: (0.00, 0.00, 0.00)
+  Search Direction: (0.00, -1.00, 0.00)
   Reduced to 3 indices: 0 1 2 
 
 ////////////////////////////////////////////////////////////
@@ -336,10 +336,10 @@ TriangleVoronoiRegions23
 TriangleVoronoiRegions24
 ////////////////////////////////////////////////////////////
   Given 3 points: 
-  Voronoi Region: Edge12
-  Closest Point: (0.00, 0.99, 1.02)
-  Search Direction: (0.00, -0.89, -0.45)
-  Reduced to 2 indices: 1 2 
+  Voronoi Region: Edge02
+  Closest Point: (0.00, 1.75, 0.50)
+  Search Direction: (0.00, -0.89, 0.45)
+  Reduced to 2 indices: 0 2 
 
 ////////////////////////////////////////////////////////////
 TriangleVoronoiRegions25
@@ -11919,8 +11919,8 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.15, -1.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.37, 0.18, -0.74)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -11955,14 +11955,14 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.35, -1.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.41, 0.37, -0.83)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.35, -1.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.37, 0.38, -0.75)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -12423,8 +12423,8 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.05, -1.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.29, -0.03, -0.59)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -12453,20 +12453,20 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.15, -1.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.38, 0.17, -0.76)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.15, -1.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.33, 0.17, -0.67)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.15, -1.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.29, 0.17, -0.59)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -12489,26 +12489,26 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.35, -1.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.42, 0.36, -0.84)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.35, -1.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.37, 0.37, -0.76)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.35, -1.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.33, 0.37, -0.68)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.35, -1.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.28, 0.37, -0.59)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -12543,14 +12543,14 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.55, -1.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.32, 0.57, -0.68)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.55, -1.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.28, 0.57, -0.59)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -12927,8 +12927,8 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.25, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.21, -0.23, -0.43)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -12957,20 +12957,20 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.05, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.30, -0.04, -0.60)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.05, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.25, -0.03, -0.52)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.05, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.21, -0.03, -0.43)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -12993,26 +12993,26 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.15, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.34, 0.16, -0.69)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.15, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.29, 0.16, -0.60)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.15, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.25, 0.17, -0.52)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.15, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.20, 0.17, -0.43)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -13023,38 +13023,38 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.35, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.43, 0.35, -0.86)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.35, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.38, 0.35, -0.77)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.35, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.33, 0.36, -0.69)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.35, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.29, 0.36, -0.60)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.35, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.24, 0.37, -0.52)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.35, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.20, 0.37, -0.44)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -13071,32 +13071,32 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.55, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.38, 0.55, -0.77)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.55, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.33, 0.56, -0.69)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.55, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.28, 0.56, -0.61)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.55, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.24, 0.57, -0.52)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.55, -0.85)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.19, 0.57, -0.44)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -13425,14 +13425,14 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.45, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.18, -0.43, -0.36)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.45, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.13, -0.43, -0.27)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -13461,20 +13461,20 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.25, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.22, -0.24, -0.44)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.25, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.17, -0.23, -0.36)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.25, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.13, -0.23, -0.28)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -13491,32 +13491,32 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.05, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.31, -0.05, -0.61)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.05, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.26, -0.04, -0.53)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.05, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.21, -0.04, -0.45)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.05, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.17, -0.03, -0.36)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.05, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.12, -0.03, -0.28)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -13527,122 +13527,122 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.15, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.35, 0.15, -0.70)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.15, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.30, 0.15, -0.62)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.15, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.26, 0.16, -0.53)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.15, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.21, 0.16, -0.45)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.15, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.16, 0.17, -0.36)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.15, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.12, 0.17, -0.28)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.35, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.39, 0.34, -0.79)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.35, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.34, 0.35, -0.70)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.35, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.30, 0.35, -0.62)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.35, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.25, 0.36, -0.53)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.35, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.21, 0.36, -0.45)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.35, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.16, 0.36, -0.37)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.35, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.11, 0.37, -0.28)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.55, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.38, 0.54, -0.79)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.55, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.34, 0.55, -0.70)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.55, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.29, 0.55, -0.62)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.55, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.25, 0.56, -0.54)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.55, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.20, 0.56, -0.45)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.55, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.16, 0.56, -0.37)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.55, -0.65)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.11, 0.57, -0.28)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -13929,14 +13929,14 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.65, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.10, -0.64, -0.20)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.65, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.05, -0.63, -0.12)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -13965,20 +13965,20 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.45, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.14, -0.44, -0.29)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.45, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.09, -0.44, -0.20)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.45, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.05, -0.43, -0.12)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -13995,200 +13995,200 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.25, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.23, -0.25, -0.46)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.25, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.18, -0.25, -0.37)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.25, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.13, -0.24, -0.29)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.25, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.09, -0.24, -0.20)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.25, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.04, -0.23, -0.12)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.05, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.31, -0.06, -0.63)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.05, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.27, -0.05, -0.54)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.05, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.22, -0.05, -0.46)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.05, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.18, -0.05, -0.37)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.05, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.13, -0.04, -0.29)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.05, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.08, -0.04, -0.21)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.05, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.04, -0.03, -0.12)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.15, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.31, 0.14, -0.63)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.15, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.26, 0.15, -0.54)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.15, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.22, 0.15, -0.46)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.15, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.17, 0.15, -0.38)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.15, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.13, 0.16, -0.29)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.15, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.08, 0.16, -0.21)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.15, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.03, 0.17, -0.13)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.35, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.30, 0.34, -0.63)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.35, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.26, 0.34, -0.55)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.35, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.21, 0.35, -0.46)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.35, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.17, 0.35, -0.38)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.35, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.12, 0.36, -0.30)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.35, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.08, 0.36, -0.21)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.35, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.03, 0.37, -0.13)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.55, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.30, 0.54, -0.63)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.55, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.25, 0.54, -0.55)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.55, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.21, 0.55, -0.47)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.55, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.16, 0.55, -0.38)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.55, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.12, 0.56, -0.30)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.55, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.07, 0.56, -0.21)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.55, -0.45)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.03, 0.57, -0.13)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -14433,14 +14433,14 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.85, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.02, -0.84, -0.04)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.85, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.03, -0.83, 0.04)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -14463,26 +14463,26 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.65, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.11, -0.65, -0.21)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.65, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.06, -0.64, -0.13)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.65, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.01, -0.64, -0.05)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.65, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.03, -0.63, 0.04)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -14499,242 +14499,242 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.45, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.15, -0.45, -0.30)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.45, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.10, -0.45, -0.22)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.45, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.06, -0.44, -0.13)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.45, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.00, -0.44, -0.05)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.45, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.04, -0.43, 0.04)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.25, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.23, -0.26, -0.47)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.25, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.19, -0.26, -0.39)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.25, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.14, -0.25, -0.30)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.25, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.10, -0.25, -0.22)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.25, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.05, -0.24, -0.13)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.25, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.00, -0.24, -0.05)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.25, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.04, -0.24, 0.03)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.05, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.23, -0.06, -0.47)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.05, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.18, -0.06, -0.39)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.05, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.14, -0.05, -0.30)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.05, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.09, -0.05, -0.22)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.05, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.05, -0.04, -0.14)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.05, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.00, -0.04, -0.05)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.05, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.04, -0.04, 0.03)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.15, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.22, 0.14, -0.47)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.15, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.18, 0.14, -0.39)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.15, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.13, 0.15, -0.31)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.15, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.09, 0.15, -0.22)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.15, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.04, 0.16, -0.14)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.15, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.00, 0.16, -0.06)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.15, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.05, 0.16, 0.03)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.35, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.22, 0.34, -0.48)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.35, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.17, 0.34, -0.39)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.35, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.13, 0.35, -0.31)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.35, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.08, 0.35, -0.23)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.35, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.04, 0.36, -0.14)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.35, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.00, 0.36, -0.06)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.35, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.05, 0.36, 0.03)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.55, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.22, 0.54, -0.48)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.55, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.17, 0.54, -0.40)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.55, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.12, 0.55, -0.31)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.55, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.08, 0.55, -0.23)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.55, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.03, 0.56, -0.14)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.55, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.01, 0.56, -0.06)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.55, -0.25)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.06, 0.56, 0.02)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -14967,14 +14967,14 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.85, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.03, -0.85, -0.06)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.85, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.02, -0.85, 0.03)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -14997,32 +14997,32 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.65, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.11, -0.66, -0.23)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.65, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.07, -0.65, -0.14)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.65, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.02, -0.65, -0.06)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.65, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.02, -0.65, 0.03)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.65, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.07, -0.64, 0.11)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -15033,254 +15033,254 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.45, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.15, -0.46, -0.31)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.45, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.11, -0.46, -0.23)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.45, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.06, -0.45, -0.14)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.45, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.02, -0.45, -0.06)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.45, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.03, -0.45, 0.02)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.45, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.07, -0.44, 0.11)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.45, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.12, -0.44, 0.19)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.25, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.15, -0.26, -0.31)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.25, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.10, -0.26, -0.23)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.25, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.06, -0.26, -0.15)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.25, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.01, -0.25, -0.06)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.25, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.03, -0.25, 0.02)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.25, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.08, -0.24, 0.10)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.25, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.12, -0.24, 0.19)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.05, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.15, -0.06, -0.32)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.05, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.10, -0.06, -0.23)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.05, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.05, -0.06, -0.15)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.05, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.00, -0.05, -0.07)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.05, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.04, -0.05, 0.02)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.05, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.08, -0.04, 0.10)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.05, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.13, -0.04, 0.19)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.15, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.14, 0.14, -0.32)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.15, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.10, 0.14, -0.24)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.15, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.05, 0.14, -0.15)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.15, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.00, 0.15, -0.07)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.15, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.04, 0.15, 0.02)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.15, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.09, 0.16, 0.10)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.15, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.13, 0.16, 0.18)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.35, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.14, 0.34, -0.32)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.35, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.09, 0.34, -0.24)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.35, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.05, 0.34, -0.15)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.35, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.00, 0.35, -0.07)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.35, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.05, 0.35, 0.01)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.35, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.09, 0.36, 0.10)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.35, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.14, 0.36, 0.18)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.55, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.13, 0.54, -0.32)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.55, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.09, 0.54, -0.24)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.55, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.04, 0.54, -0.16)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.55, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.00, 0.55, -0.07)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.55, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.05, 0.55, 0.01)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.55, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.10, 0.56, 0.09)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.55, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.14, 0.56, 0.18)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -15315,14 +15315,14 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.75, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.10, 0.76, 0.09)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.75, -0.05)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.15, 0.76, 0.18)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -15501,14 +15501,14 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.85, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.03, -0.86, -0.07)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.85, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.01, -0.86, 0.01)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -15537,26 +15537,26 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.65, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.07, -0.67, -0.16)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.65, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.03, -0.66, -0.07)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.65, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.02, -0.66, 0.01)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.65, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.06, -0.65, 0.10)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -15579,38 +15579,38 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.45, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.07, -0.47, -0.16)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.45, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.02, -0.46, -0.07)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.45, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.02, -0.46, 0.00)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.45, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.07, -0.45, 0.09)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.45, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.11, -0.45, 0.18)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.45, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.16, -0.44, 0.26)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -15621,212 +15621,212 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.25, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.07, -0.27, -0.16)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.25, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.02, -0.26, -0.08)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.25, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.03, -0.26, 0.00)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.25, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.07, -0.25, 0.09)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.25, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.12, -0.25, 0.17)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.25, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.16, -0.24, 0.26)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.25, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.21, -0.24, 0.34)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.05, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.06, -0.07, -0.16)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.05, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.02, -0.06, -0.08)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.05, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.03, -0.06, 0.00)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.05, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.08, -0.05, 0.09)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.05, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.12, -0.05, 0.17)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.05, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.17, -0.04, 0.26)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, -0.05, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.21, -0.04, 0.34)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.15, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.06, 0.13, -0.17)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.15, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.01, 0.14, -0.08)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.15, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.03, 0.14, 0.00)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.15, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.08, 0.15, 0.09)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.15, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.13, 0.15, 0.17)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.15, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.17, 0.16, 0.25)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.15, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.22, 0.16, 0.34)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.35, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.05, 0.33, -0.17)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.35, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.00, 0.34, -0.08)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.35, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.04, 0.34, 0.00)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.35, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.08, 0.35, 0.08)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.35, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.13, 0.35, 0.17)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.35, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.18, 0.36, 0.25)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.35, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.22, 0.36, 0.34)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.55, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (-0.05, 0.53, -0.17)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.55, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.00, 0.54, -0.09)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.55, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.04, 0.54, 0.00)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.55, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.09, 0.55, 0.08)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.55, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.13, 0.55, 0.17)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.55, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.18, 0.56, 0.25)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.55, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.23, 0.56, 0.33)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -15843,32 +15843,32 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.75, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.05, 0.74, 0.00)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.75, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.09, 0.75, 0.08)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.75, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.14, 0.75, 0.16)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.75, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.18, 0.76, 0.25)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.75, 0.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.23, 0.76, 0.33)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -16041,8 +16041,8 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.85, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.00, -0.87, 0.00)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -16083,20 +16083,20 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.65, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.00, -0.67, 0.00)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.65, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.05, -0.66, 0.08)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.65, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.10, -0.66, 0.17)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -16125,26 +16125,26 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.45, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.01, -0.47, 0.00)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.45, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.06, -0.46, 0.08)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.45, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.10, -0.46, 0.16)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.45, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.15, -0.46, 0.25)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -16167,32 +16167,32 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.25, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.02, -0.27, 0.00)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.25, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.06, -0.26, 0.08)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.25, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.11, -0.26, 0.16)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.25, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.15, -0.26, 0.25)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.25, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.20, -0.25, 0.33)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -16209,38 +16209,38 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.05, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.02, -0.07, 0.00)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.05, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.07, -0.06, 0.08)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.05, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.11, -0.06, 0.16)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.05, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.16, -0.06, 0.24)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, -0.05, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.20, -0.05, 0.33)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, -0.05, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.25, -0.05, 0.41)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -16251,170 +16251,170 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.15, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.03, 0.13, -0.01)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.15, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.07, 0.14, 0.07)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.15, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.12, 0.14, 0.16)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.15, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.16, 0.14, 0.24)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.15, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.21, 0.15, 0.32)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.15, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.25, 0.15, 0.41)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.15, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.30, 0.16, 0.49)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.35, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.03, 0.33, -0.01)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.35, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.08, 0.34, 0.07)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.35, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.12, 0.34, 0.15)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.35, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.17, 0.34, 0.24)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.35, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.21, 0.35, 0.32)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.35, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.26, 0.35, 0.41)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.35, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.30, 0.36, 0.49)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.55, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.04, 0.53, -0.02)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.55, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.08, 0.54, 0.07)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.55, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.13, 0.54, 0.15)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.55, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.17, 0.54, 0.24)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.55, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.22, 0.55, 0.32)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.55, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.26, 0.55, 0.40)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.55, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.31, 0.56, 0.49)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.75, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.04, 0.73, -0.02)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.75, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.09, 0.74, 0.07)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.75, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.13, 0.74, 0.15)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.75, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.18, 0.74, 0.23)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.75, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.22, 0.75, 0.32)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.75, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.27, 0.75, 0.40)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.75, 0.35)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.31, 0.76, 0.49)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -16629,8 +16629,8 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.65, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.09, -0.67, 0.15)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -16671,14 +16671,14 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.45, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.10, -0.47, 0.15)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.45, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.14, -0.47, 0.23)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -16713,20 +16713,20 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.25, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.10, -0.27, 0.15)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.25, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.15, -0.27, 0.23)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.25, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.19, -0.26, 0.32)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -16755,26 +16755,26 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.05, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.11, -0.07, 0.15)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.05, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.15, -0.07, 0.23)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, -0.05, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.20, -0.06, 0.31)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, -0.05, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.24, -0.06, 0.40)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -16797,38 +16797,38 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.15, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.11, 0.13, 0.14)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.15, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.16, 0.13, 0.23)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.15, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.20, 0.14, 0.31)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.15, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.25, 0.14, 0.40)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.15, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.29, 0.15, 0.48)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.15, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.34, 0.15, 0.56)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -16839,128 +16839,128 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.35, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.11, 0.33, 0.14)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.35, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.16, 0.33, 0.23)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.35, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.21, 0.34, 0.31)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.35, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.25, 0.34, 0.39)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.35, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.30, 0.35, 0.48)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.35, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.34, 0.35, 0.56)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.35, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.39, 0.35, 0.64)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.55, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.12, 0.53, 0.14)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.55, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.16, 0.53, 0.22)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.55, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.21, 0.54, 0.31)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.55, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.26, 0.54, 0.39)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.55, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.30, 0.55, 0.47)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.55, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.35, 0.55, 0.56)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.55, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.39, 0.55, 0.64)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.75, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.12, 0.73, 0.14)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.75, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.17, 0.73, 0.22)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.75, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.21, 0.74, 0.30)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.75, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.26, 0.74, 0.39)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.75, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.31, 0.75, 0.47)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.75, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.35, 0.75, 0.56)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.75, 0.55)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.40, 0.75, 0.64)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -17259,8 +17259,8 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.25, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.19, -0.27, 0.30)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -17301,14 +17301,14 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.05, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.19, -0.07, 0.30)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, -0.05, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.24, -0.07, 0.38)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -17343,26 +17343,26 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.15, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.19, 0.13, 0.30)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.15, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.24, 0.13, 0.38)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.15, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.29, 0.14, 0.47)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.15, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.33, 0.14, 0.55)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -17385,32 +17385,32 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.35, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.20, 0.33, 0.30)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.35, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.24, 0.33, 0.38)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.35, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.29, 0.33, 0.46)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.35, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.34, 0.34, 0.55)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.35, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.38, 0.34, 0.63)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -17427,38 +17427,38 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.55, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.20, 0.53, 0.29)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.55, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.25, 0.53, 0.38)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.55, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.29, 0.53, 0.46)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.55, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.34, 0.54, 0.55)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.55, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.39, 0.54, 0.63)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.55, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.43, 0.55, 0.71)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -17469,44 +17469,44 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.75, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.21, 0.73, 0.29)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.75, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.25, 0.73, 0.38)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.75, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.30, 0.73, 0.46)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.75, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.34, 0.74, 0.54)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.75, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.39, 0.74, 0.63)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.75, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.44, 0.75, 0.71)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.75, 0.75)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.48, 0.75, 0.79)
+  Search Direction: (0.88, -0.03, -0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -17847,8 +17847,8 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, -0.05, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.27, -0.08, 0.46)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -17889,14 +17889,14 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.15, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.28, 0.12, 0.45)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.15, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.32, 0.13, 0.54)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -17931,20 +17931,20 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.35, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.28, 0.32, 0.45)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.35, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.33, 0.33, 0.53)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.35, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.37, 0.33, 0.62)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -17973,26 +17973,26 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.55, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.29, 0.52, 0.45)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.55, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.33, 0.53, 0.53)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.55, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.38, 0.53, 0.62)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.55, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.42, 0.54, 0.70)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -18015,38 +18015,38 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.75, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.29, 0.72, 0.45)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.75, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.34, 0.73, 0.53)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.75, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.38, 0.73, 0.61)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.75, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.43, 0.74, 0.70)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.75, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.47, 0.74, 0.78)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.75, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.52, 0.75, 0.86)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -18081,20 +18081,20 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.95, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.48, 0.94, 0.78)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.36, 0.95, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.52, 0.95, 0.86)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.56, 0.95, 0.95)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.57, 0.95, 0.95)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -18477,8 +18477,8 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.35, 1.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.37, 0.32, 0.61)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -18519,14 +18519,14 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.55, 1.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.37, 0.52, 0.60)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.55, 1.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.42, 0.53, 0.69)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -18561,26 +18561,26 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.64, 0.75, 1.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.38, 0.72, 0.60)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.44, 0.75, 1.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.42, 0.73, 0.68)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.75, 1.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.47, 0.73, 0.77)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.75, 1.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.51, 0.73, 0.85)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
@@ -18615,20 +18615,20 @@ VoronoiRegionsStress2
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.24, 0.95, 1.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.47, 0.93, 0.77)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (-0.04, 0.95, 1.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.52, 0.93, 0.85)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
   Voronoi Region: Triangle012
-  Closest Point: (0.16, 0.95, 1.15)
-  Search Direction: (0.00, 0.00, 0.00)
+  Closest Point: (0.56, 0.94, 0.93)
+  Search Direction: (-0.88, 0.03, 0.48)
   Reduced to 3 indices: 0 1 2 
   ------------------------------
   Given 3 points: 
