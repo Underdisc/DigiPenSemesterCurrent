@@ -5,46 +5,28 @@
 \par E-mail: connor.deakin\@digipen.edu
 \par DigiPen login: connor.deakin
 \par Course: CS 355
-\par Assignment: lfsv
-\date 06/04/2018
+\par Assignment: HazardPointers
+\date 26/04/2018
 \brief
-  Contains an interface and implementation for a "lock-free" sorted vector.
+  Contains an interface and implementation for a "lock-free" sorted vector that
+  makes use of hazard pointers in order to make the structure lock free.
 */
 /*****************************************************************************/
 
-#include <iostream>       // std::cout
-// TODO: REMOVE
-#define _ENABLE_ATOMIC_ALIGNMENT_FIX
-
-#include <atomic>         // std::atomic
-#include <thread>         // std::thread
-#include <vector>         // std::vector
-#include <deque>          // std::deque
-#include <mutex>          // std::mutex
+#include <iostream>
+#include <atomic>
+#include <thread>
+#include <vector>
 #include <algorithm>
 #include <cstring>
-
-
-// so it is the scan function that will actually perform the
-// deletion of pointers
-
-// The scan
-// we make a vector of hazard pointers
-// adding every hazard pointer in our shared list into a single vector
-// (make sure the hp is not null)
-// sort the vector
-// go through every element in threads retired list
-
-// why am I using a map of unsigned to unsigned
-// if we Add threads during execution - problems
-// map aims to fix that
-// We can use a lock too, but will refrain for now
-// if the thread gets succcessfully added great, we
-// have another thread, if not, return false and try again
 
 //============================================================================//
 // RetiredRecord //
 //============================================================================//
+/*//////////////////////////////////////////////////////////////////////////////
+Holds and maintains all of the pointers that are considered retired from the
+LFSV.
+//////////////////////////////////////////////////////////////////////////////*/
 class RetiredRecord
 {
 public:
@@ -67,10 +49,13 @@ std::vector<void *> * RetiredRecord::GetRetired(unsigned thread)
   return &(retired[thread]);
 }
 
-
 //============================================================================//
 // HazardPointerNode //
 //============================================================================//
+/*//////////////////////////////////////////////////////////////////////////////
+A node that is used in the HazardPointerRecord. The HazardPointerRecord is a
+linked list of HazardPointerNodes
+//////////////////////////////////////////////////////////////////////////////*/
 struct HazardPointerNode
 {
   HazardPointerNode * next;
@@ -78,12 +63,13 @@ struct HazardPointerNode
   std::atomic<bool> active;
 };
 
-// This leaks hard man
-// just do a single threaded delete of all the hazard pointer nodes at the
-// end
 //============================================================================//
 // HazardPointerRecord //
 //============================================================================//
+/*//////////////////////////////////////////////////////////////////////////////
+A linked list of HazardPointerNodes. Anytime a lookup is performed into the
+LFSV, a HazardPointer node is acquired by the thread lookin up information
+//////////////////////////////////////////////////////////////////////////////*/
 class HazardPointerRecord
 {
 private:
@@ -148,42 +134,18 @@ public:
 
 std::atomic<HazardPointerNode *> HazardPointerRecord::head;
 
-// why not do some sort of multi pointer
-// where every pointer has a refcount
-// and when that ref count reaches zero
-// it can be freed
-// that's essentially hazard pointers
-
-// each thread will hold it's own list of retire pointers
-// figuring out how to get that in here might be a bit difficult
-
-// So ok, now we need the rlist
-// The constructor for lfsv won't work
-
-
-// A "lock-free" sorted vector implementation
 //============================================================================//
 // LFSV //
 //============================================================================//
-
-// stores vector pointer and size
-// reference_counter stores how many threads are currently reading a value in
-// the vector
+/*//////////////////////////////////////////////////////////////////////////////
+A lock free sorted vector implementation that uses hazard pointers to provide
+multithreaded access
+//////////////////////////////////////////////////////////////////////////////*/
 struct Data
 {
   int * pointer;
   int size;
-
-  /*void Print()
-  {
-    char str[100];
-    sprintf(str, "Size: %i\nCount: %i\n", size, reference_count);
-    std::cout << str;
-  }*/
-}; //  __attribute__((aligned(16),packed)); // bug in GCC 4.*, fixed in 5.1?
-// alignment needed to stop std::atomic<Data>::load to segfault
-
-
+};
 
 class LFSV
 {
@@ -247,15 +209,12 @@ public:
     }
   }
 
-
   // Inserts a value into the vector. The vector will stay sorted in an
   // ascending order.
   void Insert(int const & v, unsigned retired_index)
   {
-    // value of data will only change on when its reference_count is 0
     Data data_old;
     Data data_new;
-
     data_new.pointer = nullptr;
     data_new.size = 0;
     do
@@ -269,23 +228,11 @@ public:
       }
       data_new.size = data_old.size + 1;
       data_new.pointer = new int[data_new.size];
-      /*//std::cout << "======\n";
-      for(int i = 0; i < data_old.size; ++i)
-      {
-        data_new.pointer[i] = data_old.pointer[i];
-        //std::cout << data_new.pointer[i] << " ";
-      }
-      //std::cout << std::endl;*/
-
-
-      //std::cout << "------\nInserting " << v << std::endl;
-
       std::memcpy(data_new.pointer, data_old.pointer,
         data_old.size * sizeof(int));
       int * vector = data_new.pointer;
       // add new value to array sorted in ascending order
       vector[data_old.size] = v;
-      // switch value's position to sort
       for (int i = 0; i < data_old.size; ++i)
       {
         if (vector[i] > v )
@@ -297,13 +244,6 @@ public:
           break;
         }
       }
-
-      /*std::cout << "------\n";
-      for(int i = 0; i < data_new.size; ++i)
-      {
-        std::cout << data_new.pointer[i] << " ";
-      }
-      std::cout << std::endl << "======" << std::endl << std::endl;*/
     } while(!data.compare_exchange_strong(data_old, data_new));
     // retired the old pointer
     Retire((void *)data_old.pointer, retired_index);
@@ -313,15 +253,11 @@ public:
   int operator[] ( int pos ) {
     HazardPointerNode * node = HazardPointerRecord::Take();
     int * pointer;
-    // TODO: THIS MIGHT CAUSE AN ERROR
-    // I DID SOMETHING DIFFERENT
     do {
       pointer = data.load().pointer;
       node->hazard_pointer = (void *)pointer;
     } while(pointer != data.load().pointer);
-
     int value = pointer[pos];
-
     HazardPointerRecord::Give(node);
     return value;
   }

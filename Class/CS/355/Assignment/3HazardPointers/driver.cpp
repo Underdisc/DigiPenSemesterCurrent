@@ -1,3 +1,11 @@
+/*//////////////////////////////////////////////////////////////////////////////
+Connor Deakin - connor.deakin
+CS 355 Final Project - Hazard Pointers
+
+Compile
+g++ -o gcc0.exe -Wl,--enable-auto-import driver.cpp  -O3 -Wall -Wextra -std=c++11 -latomic -mcx16 -pthread
+/*//////////////////////////////////////////////////////////////////////////////
+
 #include "lfsv.h"
 
 LFSV lfsv;
@@ -13,9 +21,7 @@ void insert_range(int b, int e, unsigned retired_index) {
     std::srand( static_cast<unsigned int>(std::time (NULL)) );
     std::random_shuffle(range, range + e - b);
     for ( int i=0; i<e-b; ++i ) {
-        //std::cout << " " << range[i] << "\r\n";
         lfsv.Insert(range[i], retired_index);
-        //printing_mutex.unlock();
     }
     delete [] range;
 }
@@ -27,6 +33,8 @@ void read_position_0() {
     while (doread.load())
     {
         int val = lfsv[0];
+        // I removed the sleep here to continuously test the lock free
+        // vector from the main thread
         if ( val != -1 ) {
             // see main - all element are non-negative,
             // so index 0 should always be -1
@@ -62,16 +70,15 @@ void test( int num_threads, int num_per_thread )
         threads.push_back(std::thread(insert_range, start, end,
           retired_indices[i]));
     }
+    // Join threads
     for (auto& th : threads) th.join();
-
     doread.store( false );
     reader.join();
-
+    // check for error
     for (int i = 0; i < num_threads * num_per_thread; ++i) {
-        //std::cout << lfsv[i] << ' ';
         if ( lfsv[i] != i-1 ) {
             std::cout << "Error\n";
-            //return;
+            return;
         }
     }
     HazardPointerRecord::FreeNodes();
@@ -87,24 +94,12 @@ void (*pTests[])() = {
     test0,test1,test2,test3//,test4,test5,test6,test7
 };
 
-/*
-Basically what's going to happen here
-This driver is going to create a LFSV structer
-It's then going to create a shit ton of threads and all of these threads are
-going to try inserting into LFSV at the same time.
-
-You're gaol is to make it work
-
-with lock free shit
-*/
-
 #include <cstdio>    /* sscanf */
 int main( int argc, char ** argv )
 {
   if (argc==2)
-  { //use test[ argv[1] ]
+  {
     int test = 0;
-    // TODO: REPLACE WITH SCANF
     sscanf(argv[1],"%i",&test);
     try
     {
