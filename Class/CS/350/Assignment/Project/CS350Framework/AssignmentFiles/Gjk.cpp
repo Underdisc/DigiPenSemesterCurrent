@@ -6,8 +6,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "Precompiled.hpp"
 
-//-----------------------------------------------------------------------------SupportShape
-Vector3 SupportShape::GetCenter(const std::vector<Vector3>& localPoints, const Matrix4& transform) const
+//-----------------------------------------------------------------SupportShape
+Vector3 SupportShape::GetCenter(const std::vector<Vector3>& localPoints, 
+  const Matrix4& transform) const
 {
   // use aabb to find center
   Aabb aabb;
@@ -19,7 +20,9 @@ Vector3 SupportShape::GetCenter(const std::vector<Vector3>& localPoints, const M
   return Vector3(t_center.x, t_center.y, t_center.z);
 }
 
-Vector3 SupportShape::Support(const Vector3& worldDirection, const std::vector<Vector3>& localPoints, const Matrix4& localToWorldTransform) const
+Vector3 SupportShape::Support(const Vector3& worldDirection, 
+  const std::vector<Vector3>& localPoints, 
+  const Matrix4& localToWorldTransform) const
 {
   // compute direction in local space
   const Matrix4& t = localToWorldTransform;
@@ -44,12 +47,14 @@ Vector3 SupportShape::Support(const Vector3& worldDirection, const std::vector<V
     }
   }
   // transform furthest point
-  Vector4 furthest_final = Vector4(furthest->x, furthest->y, furthest->z, 1.0f);
+  Vector4 furthest_final = Vector4(furthest->x, furthest->y, furthest->z, 
+    1.0f);
   furthest_final = Math::Transform(localToWorldTransform, furthest_final);
   return Vector3(furthest_final.x, furthest_final.y, furthest_final.z);
 }
 
-void SupportShape::DebugDraw(const std::vector<Vector3>& localPoints, const Matrix4& localToWorldTransform, const Vector4& color) const
+void SupportShape::DebugDraw(const std::vector<Vector3>& localPoints, 
+  const Matrix4& localToWorldTransform, const Vector4& color) const
 {
   unsigned num_points = localPoints.size();
   for (unsigned i = 0; i < num_points; ++i)
@@ -60,23 +65,26 @@ void SupportShape::DebugDraw(const std::vector<Vector3>& localPoints, const Matr
   }
 }
 
-//-----------------------------------------------------------------------------ModelSupportShape
+//------------------------------------------------------------ModelSupportShape
 Vector3 ModelSupportShape::GetCenter() const
 {
-  return SupportShape::GetCenter(mModel->mMesh->mVertices, mModel->mOwner->has(Transform)->GetTransform());
+  return SupportShape::GetCenter(mModel->mMesh->mVertices, 
+    mModel->mOwner->has(Transform)->GetTransform());
 }
 
 Vector3 ModelSupportShape::Support(const Vector3& worldDirection) const
 {
-  return SupportShape::Support(worldDirection, mModel->mMesh->mVertices, mModel->mOwner->has(Transform)->GetTransform());
+  return SupportShape::Support(worldDirection, mModel->mMesh->mVertices, 
+    mModel->mOwner->has(Transform)->GetTransform());
 }
 
 void ModelSupportShape::DebugDraw(const Vector4& color) const
 {
-  SupportShape::DebugDraw(mModel->mMesh->mVertices, mModel->mOwner->has(Transform)->GetTransform());
+  SupportShape::DebugDraw(mModel->mMesh->mVertices, 
+    mModel->mOwner->has(Transform)->GetTransform());
 }
 
-//-----------------------------------------------------------------------------PointsSupportShape
+//-----------------------------------------------------------PointsSupportShape
 PointsSupportShape::PointsSupportShape()
 {
   mScale = Vector3(1);
@@ -102,7 +110,7 @@ void PointsSupportShape::DebugDraw(const Vector4& color) const
   SupportShape::DebugDraw(mLocalSpacePoints, transform, color);
 }
 
-//-----------------------------------------------------------------------------SphereSupportShape
+//-----------------------------------------------------------SphereSupportShape
 Vector3 SphereSupportShape::GetCenter() const
 {
   return mSphere.mCenter;
@@ -122,7 +130,7 @@ void SphereSupportShape::DebugDraw(const Vector4& color) const
   shape.Color(color);
 }
 
-//-----------------------------------------------------------------------------ObbSupportShape
+//--------------------------------------------------------------ObbSupportShape
 Vector3 ObbSupportShape::GetCenter() const
 {
   return mTranslation;
@@ -130,10 +138,12 @@ Vector3 ObbSupportShape::GetCenter() const
 
 Vector3 ObbSupportShape::Support(const Vector3& worldDirection) const
 {
-  // half extentes are in the scale
+  // find local direction
   Vector3 local_dir = Math::Transform(mRotation.Inverted(), worldDirection);
   local_dir = local_dir.Normalized();
+  // compute half extents
   Vector3 half_extent = mScale / 2.0f;
+  // find furthest point
   Vector3 furthest = Vector3::cZero;
   for (unsigned i = 0; i < 3; ++i)
   {
@@ -147,12 +157,13 @@ Vector3 ObbSupportShape::Support(const Vector3& worldDirection) const
 void ObbSupportShape::DebugDraw(const Vector4& color) const
 {
   Matrix4 transform = Math::BuildTransform(mTranslation, mRotation, mScale);
-  DebugShape& shape = gDebugDrawer->DrawAabb(Aabb(Vector3(-0.5f), Vector3(0.5f)));
+  DebugShape & shape = gDebugDrawer->DrawAabb(Aabb(Vector3(-0.5f), 
+    Vector3(0.5f)));
   shape.Color(color);
   shape.SetTransform(transform);
 }
 
-//------------------------------------------------------------ Voronoi Region Tests
+//-------------------------------------------------------- Voronoi Region Tests
 
 
 VoronoiRegion::Type Gjk::IdentifyVoronoiRegion(const Vector3& q, 
@@ -175,6 +186,7 @@ VoronoiRegion::Type Gjk::IdentifyVoronoiRegion(const Vector3& q,
   float u, v;
   BarycentricCoordinates(q, p0, p1, u, v);
   VoronoiRegion::Type region;
+  // check point regions
   if (v <= 0.0f)
   {
     newSize = 1;
@@ -206,13 +218,12 @@ VoronoiRegion::Type Gjk::IdentifyVoronoiRegion(const Vector3& q,
   size_t& newSize, int newIndices[4],
   Vector3& closestPoint, Vector3& searchDirection)
 {
-  // handle triangle point regions first
   // edge [0, 2]
+  // point regions
   float u0, v0, u1, v1, u2, v2;
   BarycentricCoordinates(q, p0, p1, u0, v0);
   BarycentricCoordinates(q, p1, p2, u1, v1);
   BarycentricCoordinates(q, p2, p0, u2, v2);
-  // point 0 region
   if (v0 <= 0.0f && u2 <= 0.0f)
   {
     newSize = 1;
@@ -221,7 +232,6 @@ VoronoiRegion::Type Gjk::IdentifyVoronoiRegion(const Vector3& q,
     searchDirection = q - closestPoint;
     return VoronoiRegion::Point0;
   }
-  // point 1 region
   if (v1 <= 0.0f && u0 <= 0.0f)
   {
     newSize = 1;
@@ -230,7 +240,6 @@ VoronoiRegion::Type Gjk::IdentifyVoronoiRegion(const Vector3& q,
     searchDirection = q - closestPoint;
     return VoronoiRegion::Point1;
   }
-  // point 2 region
   if (v2 <= 0.0f && u1 <= 0.0f)
   {
     newSize = 1;
@@ -239,7 +248,7 @@ VoronoiRegion::Type Gjk::IdentifyVoronoiRegion(const Vector3& q,
     searchDirection = q - closestPoint;
     return VoronoiRegion::Point2;
   }
-  // edge and triangle regions
+  // check edge regions
   float u, v, w;
   BarycentricCoordinates(q, p0, p1, p2, u, v, w);
   if (u <= 0.0f && u1 > 0.0f && v1 > 0.0f)
@@ -269,6 +278,7 @@ VoronoiRegion::Type Gjk::IdentifyVoronoiRegion(const Vector3& q,
     searchDirection = q - closestPoint;
     return VoronoiRegion::Edge01;
   }
+  // in triangle region
   newSize = 3;
   for (int i = 0; i < 3; ++i)
   {
@@ -279,6 +289,7 @@ VoronoiRegion::Type Gjk::IdentifyVoronoiRegion(const Vector3& q,
   return VoronoiRegion::Triangle012;
 }
 
+// finds if a point is on the positive or negative side of a triangle
 bool OnPositiveSide(const Vector3 & q, const Vector3 & a, const Vector3 & b,
   const Vector3 & c, const Vector3 & d)
 {
@@ -296,8 +307,7 @@ VoronoiRegion::Type Gjk::IdentifyVoronoiRegion(const Vector3& q,
   size_t& newSize, int newIndices[4],
   Vector3& closestPoint, Vector3& searchDirection)
 {
-  // barycentric edges
-  // identify all point regions
+  // check all point regions
   float u01, v01, u02, v02, u03, v03;
   float u12, v12, u13, v13;
   float u23, v23;
@@ -339,8 +349,7 @@ VoronoiRegion::Type Gjk::IdentifyVoronoiRegion(const Vector3& q,
     searchDirection = q - closestPoint;
     return VoronoiRegion::Point3;
   }
-  // barycentric triangles
-  // identify all edge regions
+  // check all edge regions
   float u012, v012, w012;
   float u031, v031, w031;
   float u023, v023, w023;
@@ -403,7 +412,7 @@ VoronoiRegion::Type Gjk::IdentifyVoronoiRegion(const Vector3& q,
     searchDirection = q - closestPoint;
     return VoronoiRegion::Edge23;
   }
-  // identify all triangle regions
+  // check all triangle regions
   bool positive;
   positive = OnPositiveSide(q, p0, p1, p2, p3);
   if (positive && u012 > 0.0f && v012 > 0.0f && w012 > 0.0f)
@@ -449,7 +458,7 @@ VoronoiRegion::Type Gjk::IdentifyVoronoiRegion(const Vector3& q,
     searchDirection = q - closestPoint;
     return VoronoiRegion::Triangle123;
   }
-  // only remaining case is to be inside the tetrahedron
+  // inside of the tetrahedron
   newSize = 4;
   for (unsigned i = 0; i < 4; ++i)
   {
@@ -468,6 +477,7 @@ bool Gjk::Intersect(const SupportShape* shapeA, const SupportShape* shapeB,
   unsigned int maxIterations, CsoPoint& closestPoint, float epsilon, 
   int debuggingIndex, bool debugDraw)
 {
+  // find initial search direction
   Vector3 q  = Vector3::cZero;
   Vector3 center_a = shapeA->GetCenter();
   Vector3 center_b = shapeB->GetCenter();
@@ -476,21 +486,44 @@ bool Gjk::Intersect(const SupportShape* shapeA, const SupportShape* shapeB,
   {
     search_direction = Vector3(-1.0f, 0.0f, 0.0f);
   }
-
+  // begin iterative gjk computation
   unsigned simplex_size = 0;
   int indices[4];
   CsoPoint p[4];
-  Vector3 closest_point;
+  Vector3 closest_point = Vector3(Math::PositiveMax());
   CsoPoint new_simplex_point = ComputeSupport(shapeA, shapeB, 
     search_direction);
-  
-  // why do we have a region enum when it is already baked into the
-  // indices
   for (unsigned i = 0; i < maxIterations; ++i)
   {
+    // add new simplex point
     p[simplex_size] = new_simplex_point;
     ++simplex_size;
-    // identify the voronoi region
+    // uncomment for debug drawing
+    /*if (debuggingIndex == i && debugDraw)
+    {
+      for (unsigned j = 0; j < simplex_size; ++j)
+      {
+        DebugShape & red_point = gDebugDrawer->DrawPoint(p[j].mPointA);
+        red_point.Color(Vector4(1.0f, 0.0f, 0.0f, 0.0f));
+        DebugShape & green_point = gDebugDrawer->DrawPoint(p[j].mPointB);
+        green_point.Color(Vector4(0.0f, 1.0f, 0.0f, 0.0f));
+        for (unsigned k = j + 1; k < simplex_size; ++k)
+        {
+          LineSegment red_segment;
+          red_segment.mStart = p[j].mPointA;
+          red_segment.mEnd = p[k].mPointA;
+          DebugShape & red_line = gDebugDrawer->DrawLine(red_segment);
+          red_line.Color(Vector4(1.0f, 0.0f, 0.0f, 0.0f));
+          LineSegment green_segment;
+          green_segment.mStart = p[j].mPointB;
+          green_segment.mEnd = p[k].mPointB;
+          DebugShape & green_line = gDebugDrawer->DrawLine(green_segment);
+          green_line.Color(Vector4(0.0f, 1.0f, 0.0f, 0.0f));
+        }
+      }
+    }*/
+    // find voronoi region
+    Vector3 previous_closest_point =  closest_point;
     switch (simplex_size)
     {
     case 1:
@@ -513,7 +546,9 @@ bool Gjk::Intersect(const SupportShape* shapeA, const SupportShape* shapeB,
       break;
     }
     // check for collision
-    if (q == closest_point)
+    // NOTE: Please look at the bottom of this file to find out why I am
+    // using the the condition below and why I believe it works.
+    if (q == closest_point || previous_closest_point == closest_point)
     {
       return true;
     }
@@ -533,6 +568,7 @@ bool Gjk::Intersect(const SupportShape* shapeA, const SupportShape* shapeB,
       break;
     }
   }
+  // no collision
   // compute closest cso points
   float u, v, w;
   closestPoint.mCsoPoint = closest_point;
@@ -558,15 +594,48 @@ bool Gjk::Intersect(const SupportShape* shapeA, const SupportShape* shapeB,
     break;
   }
   return false;
-  // q is going to be the origin
 }
 
 Gjk::CsoPoint Gjk::ComputeSupport(const SupportShape* shapeA, 
   const SupportShape* shapeB, const Vector3& direction)
 {
+  // compute support and cso point
   CsoPoint cso_point;
   cso_point.mPointA = shapeA->Support(direction);
   cso_point.mPointB = shapeB->Support(-direction);
   cso_point.mCsoPoint = cso_point.mPointA - cso_point.mPointB;
   return cso_point;
 }
+
+/*////////////////////////////////////////////////////////////////////////////
+There was an issue with GjkFuzzTest78 when only the following condition 
+was used.
+
+if (q == closest_point)
+{
+  return true;
+}
+
+q is a zero vector. This was failing due to the fact that closest_point
+was never actually reaching zero, but it got very close to reaching zero.
+With a value very close to zero, the search direction for the next simplex
+point had very little meaning. In fact, the search direction used caused
+the lower condition that checks for no progress to fail repeatedly. Each time
+a new simplex point was added, it seemed like progress was made, but in
+reality, the same simplex point was just getting repeatedly added and
+removed. Even though it looked like there was progress, there was actually none
+at all.
+
+However, the addition of the following works.
+
+if (q == closest_point || previous_closest_point == closest_point)
+{
+  return true;
+}
+
+Essentially, if our closest point hasn't changed, there must be a collision.
+This works because the addition of the new simplex point and check for no 
+progress happens later in the loop. If a simplex point is added that provides 
+no progress, then there is no collision. If this check was not there, the above
+condition would be asserted during the next iteration of the loop.
+/*////////////////////////////////////////////////////////////////////////////
