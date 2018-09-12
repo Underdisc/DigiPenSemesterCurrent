@@ -1,0 +1,5 @@
+DFA
+===
+- Accepting state means that a state is valid.
+- The root state should never be an accepting state.
+
