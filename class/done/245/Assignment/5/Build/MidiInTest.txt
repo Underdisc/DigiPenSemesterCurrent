@@ -1,9 +1,0 @@
-note on: 1 50 99
-note off: 1 50
-note off: 2 26
-pitch wheel: 3 -0.685833
-volume: 4 100
-control: 4 7 100
-mod wheel: 5 83
-control: 5 1 83
-control: 6 2 42
