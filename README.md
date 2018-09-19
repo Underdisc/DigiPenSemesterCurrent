@@ -1,2 +1,2 @@
 # Semester
-Files for the current DigiPen semester.
+Files for the current semester.
