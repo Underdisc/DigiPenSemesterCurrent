@@ -24,7 +24,7 @@ UNDERLINE=@tput smul
 RESET=@tput sgr0
 
 #=MICROSOFT COMPILER VERSION====================================================
-vs_version=2017/Enterprise
+vs_version=2017/Community
 
 #=MICROSOFT COMPILER DEFINITION=================================================
 prgx86="Program Files (x86)"
@@ -37,8 +37,6 @@ bindir=$(vsdir)/$(versiondir)/bin/HostX86/x86
 invoke_vsdir=/cygdrive/c/$(bindir)
 invoke_cl=$(invoke_vsdir)/cl.exe
 invoke_link=$(invoke_vsdir)/link.exe
-
-vs_include=$(vsdir)/$(versiondir)/include
 
 vs_include=$(vsdir)/$(versiondir)/include
 winkit_include_root=$(prgx86)/$(winkit)/10/Include/10.0.15063.0
@@ -80,7 +78,7 @@ EXE=ToneOut.exe
 CCEXTENSION=cpp
 
 #=FLAGS=========================================================================
-CL_FLAGS=
+CL_FLAGS=/WX /W3
 GNU_FLAGS = -c -O -Wall -Wextra -ansi -pedantic -Wunused -Werror -std=c++11
 
 #=BUILD=========================================================================
