@@ -10,24 +10,81 @@
 class Range
 {
 public:
-    void Init(char start, char end);
-    bool Within(char c);
+    Range(char start, char end);
+    bool Within(char c) const;
 private:
     char _start;
     char _end;
 };
 
-void Range::Init(char start, char end)
+Range::Range(char start, char end)
 {
     _start = start;
     _end = end;
 }
 
-bool Range::Within(char c)
+bool Range::Within(char c) const
 {
     return (_start <= c && _end >= c);
 }
 
+class Qualifier
+{
+public:
+    void AddChar(char c);
+    void AddRange(char start, char end);
+    void AddRange(Range range);
+    void Clear();
+    bool Qualify(char c) const;
+private:
+    std::vector<char> _chars;
+    std::vector<Range> _ranges;
+};
+
+void Qualifier::AddChar(char c)
+{
+    _chars.push_back(c);
+}
+
+void Qualifier::AddRange(char start, char end)
+{
+    _ranges.push_back(Range(start, end));
+}
+
+void Qualifier::AddRange(Range range)
+{
+    _ranges.push_back(range);
+}
+
+void Qualifier::Clear()
+{
+    _chars.clear();
+    _ranges.clear();
+}
+
+bool Qualifier::Qualify(char c) const
+{
+    // Test to see if the character is equivalent to any single characters.
+    for(char compare_c : _chars)
+    {
+        if(compare_c == c)
+        {
+            return true;
+        }
+    }
+
+    // Test to see if the character is within any of the ranges.
+    for(const Range & range : _ranges)
+    {
+        if(range.Within(c))
+        {
+            return true;
+        }
+    }
+
+    // The character did not qualify for this qualifier.
+    return false;
+}
 
 
 class DfaState
@@ -35,7 +92,7 @@ class DfaState
 public:
     void Init(int acceptingToken);
     void DeleteAllChildren();
-    void AddEdge(DfaState * to, char c);
+    void AddEdge(DfaState * to, const Qualifier & q);
     void AddDefault(DfaState * to);
     DfaState * FindNextState(char c);
     
@@ -45,42 +102,14 @@ public:
 private:
     struct Edge
     {
-        bool Qualify(char c);
         DfaState * _next;
-        std::vector<char> _single_chars;
-        std::vector<Range> _ranges;
+        Qualifier _qualifier;
     };
+    Edge * FindEdge(DfaState * to);
 
     std::vector<Edge> _edges;
     DfaState * _default;
 };
-
-bool DfaState::Edge::Qualify(char c)
-{
-    // Test to see if the character is equivalent to any of the single 
-    // characters for this edge.
-    for(char compare_c : _single_chars)
-    {
-        if(compare_c == c)
-        {
-            return true;
-        }
-    }
-
-    // Test to see if the character is within any of the ranges used on this
-    // edge.
-    for(const Range & range : _ranges)
-    {
-        if(range.Within(c))
-        {
-            return true;
-        }
-    }
-    
-    // If the character was not found within the single characters or ranges,
-    // the character is not qualified for passing over the edge.
-    return false;
-}
 
 
 void DfaState::Init(int acceptingToken)
@@ -89,11 +118,31 @@ void DfaState::Init(int acceptingToken)
     _default = nullptr;
 }
 
-void DfaState::AddEdge(DfaState * to, char c)
+void DfaState::DeleteAllChildren()
 {
+    for(const Edge & edge : _edges)
+    {
+        if(edge._next != this)
+        {
+            edge._next->DeleteAllChildren();
+            delete edge._next;
+        }
+    }
+    _edges.clear();
+
+    if(_default && _default != this)
+    {
+        _default->DeleteAllChildren();
+        delete _default;
+    }
+}
+
+void DfaState::AddEdge(DfaState * to, const Qualifier & q)
+{
+    // Create a new edge.
     Edge new_edge;
     new_edge._next = to;
-    new_edge._token = c;
+    new_edge._qualifier = q;
     _edges.push_back(new_edge);
 }
 
@@ -108,7 +157,7 @@ DfaState * DfaState::FindNextState(char c)
     // edge leads to.
     for(const Edge & edge : _edges)
     {
-        if(c == edge._token)
+        if(edge._qualifier.Qualify(c))
         {
             return edge._next;
         }
@@ -129,24 +178,18 @@ DfaState * DfaState::FindNextState(char c)
     return nullptr;
 }
 
-void DfaState::DeleteAllChildren()
+DfaState::Edge * DfaState::FindEdge(DfaState * to)
 {
-    for(const Edge & edge : _edges)
+    // Find the edge that goes to the given state and return a nullptr if it
+    // does not exist.
+    for(Edge & edge : _edges)
     {
-        if(edge._next != this)
+        if(edge._next == to)
         {
-            edge._next->DeleteAllChildren();
-            delete edge._next;
+            return &edge;
         }
     }
-    _edges.clear();
-
-    if(_default && _default != this)
-    {
-        _default->DeleteAllChildren();
-        delete _default;
-    }
-
+    return nullptr;
 }
 
 // Assignment Implementation
@@ -160,7 +203,14 @@ DfaState* AddState(int acceptingToken)
 
 void AddEdge(DfaState* from, DfaState* to, char c)
 {
-    from->AddEdge(to, c);
+    Qualifier q;
+    q.AddChar(c);
+    from->AddEdge(to, q);
+}
+
+void AddEdge(DfaState * from, DfaState * to, const Qualifier & q)
+{
+    from->AddEdge(to, q);
 }
 
 void AddDefaultEdge(DfaState* from, DfaState* to)
@@ -207,15 +257,93 @@ void ReadToken(DfaState* starting_state, const char* stream, Token& out_token)
 
 void DeleteStateAndChildren(DfaState* root)
 {
-    root->DeleteAllChildren();
-    delete root;
+    //root->DeleteAllChildren();
+    //delete root;
 }
 
-void ReadLanguageToken(DfaState* startingState, const char* stream, Token& outToken)
+void ReadLanguageToken(DfaState* startingState,
+                       const char* stream,
+                       Token& outToken)
 {
+
 }
 
 DfaState* CreateLanguageDfa()
 {
-    return nullptr;
+    DfaState * root = AddState(0);
+
+    // Creating states and edges for identifiers.
+    {
+        DfaState * id0 = AddState(TokenType::Identifier);
+        Qualifier q;
+        q.AddRange('a', 'z');
+        q.AddRange('A', 'Z');
+        q.AddChar('_');
+        AddEdge(root, id0, q);
+        q.AddRange('0', '9');
+        AddEdge(id0, id0, q);
+    }
+
+    // We create a single state for the beginning of integer and float literals
+    // since they start with the same range of values.
+    DfaState * nl0 = AddState(TokenType::IntegerLiteral);
+    
+    // Create the edges for integer literals.
+    {
+        Qualifier q;
+        q.AddRange('0', '9');
+        AddEdge(root, nl0, q);
+        AddEdge(nl0, nl0, q);
+    }
+
+    // Create the states and edges for float literals.
+    {
+        DfaState * fl0 AddState(0);
+        DfaState * fl1 AddState(TokenType::FloatLiteral);
+        DfaState * fl2 AddState(TokenType::FloatLiteral);
+        DfaState * fl3 AddState(0);
+        DfaState * fl4 AddState(0);
+        DfaState * fl5 AddState(TokenType::FloatLiteral);
+
+        Qualifier q;
+        q.AddChar('.');
+        AddEdge(nl0, fl0, q);
+
+        q.Clear();
+        q.AddRange('0', '9');
+        AddEdge(fl0, fl1, q);
+        AddEdge(fl1, fl1, q);
+
+        q.Clear()
+        q.AddChar('f');
+        AddEdge(fl1, fl2, q);
+
+        q.Clear();
+        q.AddChar('e');
+        AddEdge(f11, fl3, q);
+
+        q.Clear();
+        q.AddChar('-');
+        q.AddChar('+');
+        AddEdge(fl3, fl4, q);
+
+        q.Clear();
+        q.AddRange('0', '9');
+        AddEdge(fl3, fl5, q);
+        AddEdge(fl4, fl5, q);
+        AddEdge(fl5, fl5, q);
+
+        q.Clear()
+        q.AddChar('f');
+        AddEdge(fl5, fl2, q);
+    }
+
+    // Create the states and edges from string literals
+    {
+
+    }
+
+
+
+    return root;
 }

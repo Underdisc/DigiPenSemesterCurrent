@@ -150,7 +150,7 @@ void Driver1Part1Test0()
   DfaState* s3 = AddState(2);
   AddEdge(root, s3, ' ');
 
-  const char* toknNames[] =
+  const char* tokenNames[] =
   {
     "Invalid",
     "AbaIdentifier",

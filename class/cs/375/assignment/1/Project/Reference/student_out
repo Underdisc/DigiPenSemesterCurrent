@@ -1,0 +1,245 @@
+************** PART 1 TEST 0 **************
+Token: ' ' of type 2 (Space)
+Token: 'abbbba' of type 1 (AbaIdentifier)
+Token: ' ' of type 2 (Space)
+Token: 'aba' of type 1 (AbaIdentifier)
+Token: 'aa' of type 1 (AbaIdentifier)
+Token: ' ' of type 2 (Space)
+Token: 'abbbbbbbbbba' of type 1 (AbaIdentifier)
+Token: ' ' of type 2 (Space)
+Token: ' ' of type 2 (Space)
+Token: 'aba' of type 1 (AbaIdentifier)
+Token: ' ' of type 2 (Space)
+Token: 'abb' of type 0 (Invalid)
+Token: ' ' of type 2 (Space)
+Token: 'aa' of type 1 (AbaIdentifier)
+*******************************************
+
+************** PART 1 TEST 1 **************
+Token: '==>' of type 1 (RightArrow)
+Token: '(hello)+' of type 2 (Group)
+Token: '(world)' of type 2 (Group)
+Token: '=>' of type 1 (RightArrow)
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '>'
+Token: '(=>)+' of type 2 (Group)
+Token: '++' of type 4 (Increment)
+Token: '+' of type 3 (Plus)
+Token: '(+ => hello)' of type 2 (Group)
+*******************************************
+
+************** PART 1 TEST 2 **************
+Token: '&' of type 1 (And)
+Token: '@at' of type 0 (Invalid)
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 't'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'r'
+Token: '@a' of type 0 (Invalid)
+Token: 'int' of type 0 (Invalid)
+Token: 'in' of type 0 (Invalid)
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '-'
+Token: '+++' of type 0 (Invalid)
+Token: '&' of type 1 (And)
+Token: '+++' of type 0 (Invalid)
+Token: '@' of type 0 (Invalid)
+Token: '+hello|' of type 0 (Invalid)
+Token: '+world' of type 0 (Invalid)
+*******************************************
+
+************** PART 2 TEST 3 **************
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'h'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'e'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'l'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'l'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'o'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'w'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'o'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'r'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'l'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'd'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '_'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '_'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'T'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'h'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'i'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 's'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'i'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 's'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '_'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '_'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'a'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'T'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'e'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 's'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 't'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '_'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'o'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'f'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '_'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '\t'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'i'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'd'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'e'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'n'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 't'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'i'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'f'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'i'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'e'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'r'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 's'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '1'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '2'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '3'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'A'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'N'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'D'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'w'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'h'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'i'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 't'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'e'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 's'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'p'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'a'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'c'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'e'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '\r'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '\n'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 's'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'U'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'c'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'h'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'a'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'S'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '\t'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '\r'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: ' '
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'T'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'A'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'B'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'S'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '_'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'a'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'n'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'd'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: '_'
+Token: '' of type 0 (Invalid)
+Skipping one character of input: 'N
