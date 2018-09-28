@@ -7,13 +7,10 @@
 // Date:        2018-09-24
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #include "RingBuffer.h"
 
-RingBuffer::RingBuffer(int size)
+RingBuffer::RingBuffer(int size) : buffer(size, 0), current_index(0)
 {
-    buffer.resize(size);
-    current_index = 0;
 }
 
 void RingBuffer::put(float x)

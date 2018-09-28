@@ -24,7 +24,7 @@ UNDERLINE=@tput smul
 RESET=@tput sgr0
 
 #=MICROSOFT COMPILER VERSION====================================================
-vs_version=2017/Enterprise
+vs_version=2017/Community
 
 #=MICROSOFT COMPILER DEFINITION=================================================
 prgx86="Program Files (x86)"
@@ -66,19 +66,19 @@ LINKER=$(cll)
 SRCDIR=../src/
 INC=/I../../inc/ext
 
-EXTOBJS=
-OBJS=RingBuffer.obj RingBufferTest.obj
+EXTOBJ=
+OBJS=RingBuffer.obj Echo.obj EchoDemo.obj
 
 LIBDIR=../../lib/
 LIBS=$(LIBDIR)portaudio_x86.lib $(LIBDIR)Control.lib user32.lib
 
-EXE=RingBufferTest.exe
+EXE=EchoTest.exe
 
 #=OTHER OPTIONS=================================================================
 CCEXTENSION=cpp
 
 #=FLAGS=========================================================================
-CL_FLAGS=/WX /W3
+CL_FLAGS=
 GNU_FLAGS = -c -O -Wall -Wextra -ansi -pedantic -Wunused -Werror -std=c++11
 
 #=BUILD=========================================================================

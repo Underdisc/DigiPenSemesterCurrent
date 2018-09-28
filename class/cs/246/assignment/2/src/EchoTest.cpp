@@ -19,7 +19,7 @@ int main(void) {
   for (unsigned i=0; i < count; ++i)
     fsamples[i] = 0.75f*exp(-k*i)*sin(omegac*i + 0.5f*sin(omegam*i));
 
-  Echo echo(0.5f,rate);
+  Echo echo(0.5f,(float)rate);
   echo.setDelay(0.2f);
   echo.setMix(0.5f);
   echo.setFeedback(0.5f);
