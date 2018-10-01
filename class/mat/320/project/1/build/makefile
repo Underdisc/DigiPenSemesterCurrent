@@ -62,18 +62,18 @@ clc=$(invoke_cl) /nologo /EHsc /c $(inc_a) $(inc_b) $(inc_c) $(inc_d)
 cll=$(invoke_link) /NOLOGO $(lib_a) $(lib_b) $(lib_c)
 
 #=OPTIONS=======================================================================
-CC=g++
+CC=clang++
 LINKER=g++
 
 SRCDIR=../src/
 INCDIR=
 
 EXTOBJS=
-OBJS=Complex 
+OBJS=Complex.o main.o
 
 LIBS=
 
-EXE=test.exe
+EXE=prog.exe
 
 #=OTHER OPTIONS=================================================================
 CCEXTENSION=cc
