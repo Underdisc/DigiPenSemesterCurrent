@@ -1,0 +1,1452 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Semantic Analysis &mdash; Compilers and Interpreters 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Compilers and Interpreters 1.0 documentation" href="index.html"/>
+        <link rel="next" title="Error Recovery" href="ErrorRecovery.html"/>
+        <link rel="prev" title="Static vs Dynamic" href="StaticVsDynamic.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="index.html" class="icon icon-home"> Compilers and Interpreters
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="PartsOfTheCompiler.html">Parts Of The Compiler</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#lexical-analysis-tokenizer">Lexical Analysis (Tokenizer)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#syntax-analysis-parser">Syntax Analysis (Parser)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#abstract-syntax-tree-ast">Abstract Syntax Tree (AST)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#semantic-analysis">Semantic Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#interpreter">Interpreter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DeterministicFiniteAutomata.html">Deterministic Finite Automata (DFA)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#traversal-algorithm">Traversal Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#backtracking-and-lookahead">Backtracking and Lookahead</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-1-examples">LA(1) Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-2-examples">LA(2) Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-examples">LA(*) Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#lookahead-implementation">Lookahead Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-integers">Parsing Integers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-floats">Parsing Floats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-keywords">Parsing Keywords</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-identifiers">Parsing Identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-operators">Parsing Operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#state-structure">State Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#hard-coded-dfa">Hard-coded DFA</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="RegularExpressions.html">Regular Expressions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#core-operators">Core Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#union">Union <strong>|</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#concatenation">Concatenation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#kleene-closure">Kleene Closure <strong>*</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#extended-operators">Extended Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#character-sets">Character Sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#positive-closure">Positive Closure <strong>+</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#optional">Optional <strong>?</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#interval-min-max-min-n">Interval <strong>{min,max}</strong> <strong>{min,}</strong> <strong>{n}</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#any-character">Any Character <strong>.</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#other-operators">Other Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#escape-character">Escape Character <strong>\</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#anchors-and">Anchors <strong>^</strong> and <strong>$</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#word-boundaries-b">Word Boundaries <strong>\b</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#capture-group">Capture Group <strong>()</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#passive-group">Passive Group <strong>(?:)</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#replacement-back-reference">Replacement Back Reference <strong>$</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#cheat-sheets">Cheat Sheets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Grammars.html">Grammars</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#similarity-to-regular-expressions">Similarity To Regular Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#derivations-and-parse-trees">Derivations and Parse Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#ambiguity">Ambiguity</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Grammars.html#classic-examples-of-ambiguity">Classic Examples of Ambiguity</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#elimination-of-ambiguity">Elimination of Ambiguity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#left-recursion">Left Recursion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Operators.html">Operators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Operators.html#associativity">Associativity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Operators.html#precedence">Precedence</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="RecursiveDescent.html">Recursive Descent Parsing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#predictive-parser">Predictive Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#guidelines">Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternations">Alternations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternation-and-concatenation">Alternation and Concatenation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#recursion">Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternation-empty-rule">Alternation Empty Rule</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-token">Optional Token</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-rule">Optional Rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-concatenation">Optional Concatenation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#kleene-and-positive-closures">Kleene and Positive Closures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AbstractSyntaxTree.html">Abstract Syntax Tree</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#heterogeneous-nodes">Heterogeneous Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#homogeneous-nodes">Homogeneous Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#heterogeneous-double-dispatch">Heterogeneous Double Dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#node-allocation-and-storage">Node Allocation And Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="StaticVsDynamic.html">Static vs Dynamic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="StaticVsDynamic.html#static-typing">Static Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="StaticVsDynamic.html#dynamic-typing">Dynamic Typing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#scalar-variables">Scalar Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#table-or-object">Table or Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#inheritance-and-polymorphism">Inheritance and Polymorphism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#operator-overloading">Operator Overloading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#reflection">Reflection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#templates">Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#overloads-function-templates">Overloads &amp; Function Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#monkey-patching">Monkey Patching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#implementation">Implementation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="SemanticAnalysis.html#">Semantic Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#scope-resolution">Scope Resolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="SemanticAnalysis.html#name-hiding">Name Hiding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SemanticAnalysis.html#types-members-variables">Types, Members, Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#symbol-table-aka-meta">Symbol Table aka Meta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#computing-types">Computing Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#type-inference">Type Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#l-r-values">L/R Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#syntactic-sugar">Syntactic Sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#control-flow">Control Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#member-resolution">Member Resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#duplicate-members-overloads">Duplicate Members &amp; Overloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#overload-resolution">Overload Resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#module-based-compilation">Module Based Compilation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ErrorRecovery.html">Error Recovery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#tokenization">Tokenization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#panic-mode">Panic Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#error-edges">Error Edges</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#parsing">Parsing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#id1">Panic Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#semantic-analysis">Semantic Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#classnode">ClassNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#poison">Poison</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#code-generation">Code Generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AstInterpreter.html">AST Interpreter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#advantages">Advantages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#disadvantages">Disadvantages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#execution">Execution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="AstInterpreter.html#expressions">Expressions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#literals">Literals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#binary-operators">Binary Operators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#unary-operators">Unary Operators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#type-casting">Type Casting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#member-access">Member Access</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#if-statements">If Statements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#while-do-while-for-etc">While, Do-While, For, Etc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#return">Return</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#break-and-continue">Break and Continue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#exceptions">Exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#function-calls">Function Calls</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ModernLanguages.html">Modern Languages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#return-type-inference">Return Type Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#decltype">Decltype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#delegates">Delegates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#closures-anonymous-functions">Closures &amp; Anonymous Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#properties">Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#extension-functions-properties">Extension Functions &amp; Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#pure-functions">Pure Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#mixins">Mixins</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="IntermediateRepresentation.html">Intermediate Representation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#front-back-end">Front/Back End</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#three-address-code">Three Address Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="IntermediateRepresentation.html#code-generation-example">Code Generation Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#static-single-assignment">Static Single Assignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#basic-blocks">Basic Blocks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="VirtualMachine.html">Virtual Machine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#instructions">Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#reduced-instruction-set-computing">Reduced Instruction Set Computing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#complex-instruction-set-computing">Complex Instruction Set Computing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#stack-machine">Stack Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#advantages">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#disadvantages">Disadvantages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#random-access-machine">Random Access Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id1">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id2">Disadvantages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#register-machine">Register Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id3">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id4">Disadvantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#register-allocation">Register Allocation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="VirtualMachine.html#infinite-registers">Infinite Registers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="VirtualMachine.html#register-reuse">Register Reuse</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GarbageCollection.html">Garbage Collection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#why">Why?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#safety">Safety</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#misconceptions">Misconceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#garbage-collector-roots">Garbage Collector Roots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#common-issues">Common Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#mark-and-sweep">Mark and Sweep</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#mark-phase">Mark Phase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#sweep-phase">Sweep Phase</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#defragmentation">Defragmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#reference-counting">Reference Counting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#advantages">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#disadvantages">Disadvantages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ApplicationBinaryInterface.html">Application Binary Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#name-mangling">Name Mangling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#standardization">Standardization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#calling-convention">Calling Convention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#libraries">Libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ApplicationBinaryInterface.html#dynamic-linked-libraries">Dynamic Linked Libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#structures">Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#virtual-tables">Virtual Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#runtime-type-identification">Runtime Type Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CompilerAsAService.html">Compiler As A Service (IDE)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#minimal-rebuild">Minimal Rebuild</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#member-auto-complete">Member Auto Complete</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#call-tips-overloads">Call Tips / Overloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#local-expression-completion">Local / Expression Completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#cursor-hovering">Cursor Hovering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#go-to-definition">Go To Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#symbol-querying">Symbol Querying</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#typenode">TypeNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#variablenode">VariableNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#callnode">CallNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#classnode-functionnode">ClassNode/FunctionNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#expressionnode">ExpressionNode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#comments">Comments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#refactor-rename">Refactor Rename</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#debuggers">Debuggers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#formatting">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#statement-evaluation">Statement Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#read-eval-print-loop">Read Eval Print Loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#other-features">Other Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment1.html">Assignment 1</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment1.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment2.html">Assignment 2</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment2.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment3.html">Assignment 3</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment3.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment4.html">Assignment 4</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment4.html#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment4.html#pass-4">Pass 4</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#literalnode">LiteralNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#indexnode">IndexNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#unaryoperatornode">UnaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#callnode">CallNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#castnode">CastNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#ifnode-fornode-whilenode">IfNode/ForNode/WhileNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#gotonode">GotoNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#returnnode">ReturnNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#parameternode-variablenode">ParameterNode/VariableNode</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment5.html">Assignment 5</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#pass-1-pre-pass">Pass 1 (Pre-Pass)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#interpreterfunctioncall">InterpreterFunctionCall</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#pass-2-interpretation">Pass 2 (Interpretation)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#variablenode">VariableNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#returnnode">ReturnNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#ifnode">IfNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#whilenode">WhileNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#castnode">CastNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#literalnode">LiteralNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#callnode">CallNode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#addsinfunction">AddSinFunction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#unhandled-nodes">Unhandled Nodes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AssignmentSubmission.html">Assignment Submission</a></li>
+<li class="toctree-l1"><a class="reference external" href="../CS375Assignments.1.html#://">Assignment Downloads</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Compilers and Interpreters</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Semantic Analysis</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/SemanticAnalysis.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="semantic-analysis">
+<h1>Semantic Analysis<a class="headerlink" href="SemanticAnalysis.html#semantic-analysis" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Once we have the Abstract Syntax Tree we must verify that the program is correct</li>
+<li>Common examples of checks to be made:<ul>
+<li>Type safety and implicit conversions</li>
+<li>Member resolution</li>
+<li>Overload resolution</li>
+<li>Calling with proper number of arguments</li>
+<li>Assigning types to literals</li>
+<li>Local variable resolution (out of scope errors)</li>
+<li>Variable and member hiding</li>
+</ul>
+</li>
+<li>These checks are performed by walking the AST using our Visitor</li>
+</ul>
+<div class="section" id="scope-resolution">
+<h2>Scope Resolution<a class="headerlink" href="SemanticAnalysis.html#scope-resolution" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Need a way of resolving identifiers to a type, variable, member, etc</li>
+<li>Inside a scoped statement (if, while, etc), a function, a class, or even globally scoped</li>
+<li>Can use a stack data structure to represent scope</li>
+<li>For variables, each entry on the stack is a list of variable names available</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
+
+<span class="c1">//** Which variables are available here? **//</span>
+
+<span class="k">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="s2">&quot;hello&quot;</span><span class="o">;</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nx">thingone</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="mi">9</span><span class="o">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">thingtwo</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="mf">3.3</span><span class="o">;</span>
+    <span class="k">var</span> <span class="nx">e</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span>
+  <span class="p">{</span>
+    <span class="k">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="mi">123</span><span class="o">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Excluding globals, the stack may look something like:</p>
+<object data="_images/graphviz-93bd99a424f61a80a11c22ea14f91218729154cd.svg" type="image/svg+xml">
+            <p class="warning">digraph
+{
+  node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+  &quot;...&quot; -&gt; &quot;var a&quot;;
+}</p></object>
+<ul class="simple">
+<li>Every time we visit a variable declaration, we add it to the list of variable names on the top of the stack</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
+<span class="k">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="s2">&quot;hello&quot;</span><span class="o">;</span>
+
+<span class="c1">//** Which variables are available here? **//</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nx">thingone</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="mi">9</span><span class="o">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">thingtwo</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="mf">3.3</span><span class="o">;</span>
+    <span class="k">var</span> <span class="nx">e</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span>
+  <span class="p">{</span>
+    <span class="k">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="mi">123</span><span class="o">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<object data="_images/graphviz-28654daa29729e654c32e1678a82aaf23fe36071.svg" type="image/svg+xml">
+            <p class="warning">digraph
+{
+  node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+  &quot;...&quot; -&gt; &quot;var a\nvar b&quot;;
+}</p></object>
+<ul class="simple">
+<li>Since we visited the VariableNode for <code class="docutils literal"><span class="pre">b</span></code> we added it to the latest scope (top of the stack / back of a vector)</li>
+<li>Every time we visit a scoped node (if, while, function, class, etc) we push a new entry onto the stack</li>
+<li>Every time we return from visiting the scope we pop the stack</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
+<span class="k">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="s2">&quot;hello&quot;</span><span class="o">;</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nx">thingone</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">//** Which variables are available here? **//</span>
+
+  <span class="k">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="mi">9</span><span class="o">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">thingtwo</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="mf">3.3</span><span class="o">;</span>
+    <span class="k">var</span> <span class="nx">e</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span>
+  <span class="p">{</span>
+    <span class="k">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="mi">123</span><span class="o">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<object data="_images/graphviz-5ea76f7354b25a1d9e9067e1a8e388a2ef162a05.svg" type="image/svg+xml">
+            <p class="warning">digraph
+{
+  node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+  &quot;...&quot; -&gt; &quot;var a\nvar b&quot;;
+  &quot;var a\nvar b&quot; -&gt; &quot;&quot;;
+}</p></object>
+<ul class="simple">
+<li>Notice that we visited the <code class="docutils literal"><span class="pre">if</span> <span class="pre">(thingone)</span></code> statement which has a scope</li>
+<li>This means we push a new entry onto the stack</li>
+<li>Empty since we have yet to visit any variables within that new stack</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
+<span class="k">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="s2">&quot;hello&quot;</span><span class="o">;</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nx">thingone</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="mi">9</span><span class="o">;</span>
+  <span class="c1">//** Which variables are available here? **//</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">thingtwo</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="mf">3.3</span><span class="o">;</span>
+    <span class="k">var</span> <span class="nx">e</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span>
+  <span class="p">{</span>
+    <span class="k">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="mi">123</span><span class="o">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<object data="_images/graphviz-1d6004ea3b1d3e5fa80d9918607e27b89eb4d246.svg" type="image/svg+xml">
+            <p class="warning">digraph
+{
+  node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+  &quot;...&quot; -&gt; &quot;var a\nvar b&quot;;
+  &quot;var a\nvar b&quot; -&gt; &quot;var c&quot;;
+}</p></object>
+<ul class="simple">
+<li>Agian we visited a VariableNode for <code class="docutils literal"><span class="pre">c</span></code> and therefore added <code class="docutils literal"><span class="pre">var</span> <span class="pre">c</span></code> to the top of the stack</li>
+<li>If we wanted to ask the compiler which variables are legal to reference, we simply just walk up the stack looking for an identifer</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
+<span class="k">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="s2">&quot;hello&quot;</span><span class="o">;</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nx">thingone</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="mi">9</span><span class="o">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">thingtwo</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="mf">3.3</span><span class="o">;</span>
+    <span class="k">var</span> <span class="nx">e</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="c1">//** Which variables are available here? **//</span>
+  <span class="p">}</span>
+  <span class="k">else</span>
+  <span class="p">{</span>
+    <span class="k">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="mi">123</span><span class="o">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<object data="_images/graphviz-761f369589a65370c6b6d0623c1ce77bcf9ec40f.svg" type="image/svg+xml">
+            <p class="warning">digraph
+{
+  node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+  &quot;...&quot; -&gt; &quot;var a\nvar b&quot;;
+  &quot;var a\nvar b&quot; -&gt; &quot;var c&quot;;
+  &quot;var c&quot; -&gt; &quot;var d\nvar e&quot;;
+}</p></object>
+<ul class="simple">
+<li>We entered the scope of <code class="docutils literal"><span class="pre">if</span> <span class="pre">(thingtwo)</span></code> and therefore added another entry to the scope stack</li>
+<li>Since we visited two variable declaration nodes for <code class="docutils literal"><span class="pre">d</span></code> and <code class="docutils literal"><span class="pre">e</span></code>, we added them to the available variable list on the top of the stack</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
+<span class="k">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="s2">&quot;hello&quot;</span><span class="o">;</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nx">thingone</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="mi">9</span><span class="o">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">thingtwo</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="mf">3.3</span><span class="o">;</span>
+    <span class="k">var</span> <span class="nx">e</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span>
+  <span class="p">{</span>
+    <span class="c1">//** Which variables are available here? **//</span>
+    <span class="k">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="mi">123</span><span class="o">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<object data="_images/graphviz-e84a3fb4885307950fb5f99874c67d175a40ffa6.svg" type="image/svg+xml">
+            <p class="warning">digraph
+{
+  node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+  &quot;...&quot; -&gt; &quot;var a\nvar b&quot;;
+  &quot;var a\nvar b&quot; -&gt; &quot;var c&quot;;
+  &quot;var c&quot; -&gt; &quot;&quot;;
+}</p></object>
+<ul class="simple">
+<li>As soon as our visitor left the scope of <code class="docutils literal"><span class="pre">if</span> <span class="pre">(thingtwo)</span></code> we popped the stack, thus removing <code class="docutils literal"><span class="pre">var</span> <span class="pre">d</span></code> and <code class="docutils literal"><span class="pre">var</span> <span class="pre">e</span></code> from available names</li>
+<li>We entered the scope of the <code class="docutils literal"><span class="pre">else</span></code> statement, so we pushed another empty scope onto the stack, and so on</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In many dynamic languages, variables are <em>function</em> scoped, meaning it does not matter where in the function you declare the variable. They still typically have to resolve between local and global scopes, however.</p>
+</div>
+<div class="section" id="name-hiding">
+<h3>Name Hiding<a class="headerlink" href="SemanticAnalysis.html#name-hiding" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Is the following code legal in your language?</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
+<span class="k">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>In this particular case of name hiding, it completely disables the ability for anyone to ever refer to the original &#8216;a&#8217;</li>
+<li>What about this case?</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nx">something</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>This would result in the following scope stack:</li>
+</ul>
+<object data="_images/graphviz-10021e3c953edc277ee63c381fb7a7583dc3ca21.svg" type="image/svg+xml">
+            <p class="warning">digraph
+{
+  node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+  &quot;...&quot; -&gt; &quot;var a&quot;;
+  &quot;var a&quot; -&gt; S;
+  S [label=&quot;var a&quot;];
+}</p></object>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="c1">// Error to reference &#39;a&#39; here</span>
+<span class="k">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
+<span class="c1">// Resolves to the &#39;a&#39; with value 5</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">something</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// Resolves to the &#39;a&#39; with value 5</span>
+  <span class="k">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+  <span class="c1">// Resolves to the &#39;a&#39; with value 10</span>
+<span class="p">}</span>
+<span class="c1">// Resolves to the &#39;a&#39; with value 5</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>In some static typed languages, name hiding is illegal</li>
+<li>Done simply by walking up the scope stack each time we visit a declaration to verify no duplicate names exist</li>
+</ul>
+</div>
+<div class="section" id="types-members-variables">
+<h3>Types, Members, Variables<a class="headerlink" href="SemanticAnalysis.html#types-members-variables" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>You can use the same stack of scopes to resolve type-names, class member names, or even goto labels</li>
+<li>Name hiding may be legal on case by case basis</li>
+<li>You may have designed your language so that it will always know the difference between a type vs a global</li>
+<li>Consider the code <code class="docutils literal"><span class="pre">player.lives</span></code>, the <code class="docutils literal"><span class="pre">player</span></code> portion could be:<ul>
+<li>A local variable</li>
+<li>A type-name (<code class="docutils literal"><span class="pre">lives</span></code> might be a static)</li>
+<li>A member variable where <code class="docutils literal"><span class="pre">this.player.lives</span></code> is implied</li>
+</ul>
+</li>
+<li>We can add any name to the scope stack</li>
+<li>May want to optimize not having to push every class member name in (special case just push the type itself)</li>
+</ul>
+</div>
+</div>
+<div class="section" id="symbol-table-aka-meta">
+<h2>Symbol Table aka Meta<a class="headerlink" href="SemanticAnalysis.html#symbol-table-aka-meta" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Data structure outside the AST</li>
+<li>Need to store all information about types</li>
+<li>Operators, members, base classes, size, constructors, destructors, etc.</li>
+<li>Not all types originate from an AST (built in types <code class="docutils literal"><span class="pre">Integer</span></code>, <code class="docutils literal"><span class="pre">Float</span></code>)</li>
+<li>May want to create types externally (binding to a language like C++)</li>
+<li>Many similarities to a Meta Reflection system</li>
+<li>Referred to as <strong>symbol table</strong> because it maps identifiers<ul>
+<li>Identifiers to types (e.g. <code class="docutils literal"><span class="pre">Player</span></code>)</li>
+<li>Identifiers to members (e.g. <code class="docutils literal"><span class="pre">Lives</span></code>)</li>
+<li>Identifiers to variables (e.g. <code class="docutils literal"><span class="pre">gCounter</span></code>)</li>
+</ul>
+</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SymbolTable</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="c1">// The stack always contains at least 1 entry for globals</span>
+  <span class="c1">// We push an new entry for each scope we enter (and pop when we exit)</span>
+  <span class="n">stack</span><span class="o">&lt;</span><span class="n">unordered_map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="n">Symbol</span><span class="o">*&gt;&gt;</span> <span class="n">mSymbols</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Symbol</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="k">virtual</span> <span class="o">~</span><span class="n">Symbol</span><span class="p">();</span>
+  <span class="n">Token</span> <span class="n">mName</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Variable</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Symbol</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="n">Type</span><span class="o">*</span> <span class="n">mType</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Function</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Symbol</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="c1">// This type is the functions signature (TypeMode will be Function)</span>
+  <span class="n">Type</span><span class="o">*</span> <span class="n">mType</span><span class="p">;</span>
+  <span class="n">unordered_map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="n">LocalVariable</span><span class="o">*&gt;</span> <span class="n">mLocalsByName</span><span class="p">;</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="n">LocalVariable</span><span class="o">*&gt;</span> <span class="n">mLocals</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">enum</span> <span class="n">TypeMode</span>
+<span class="p">{</span>
+  <span class="n">Value</span><span class="p">,</span>
+  <span class="n">Pointer</span><span class="p">,</span>
+  <span class="n">Function</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Type</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Symbol</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="n">TypeMode</span> <span class="n">mMode</span><span class="p">;</span>
+
+  <span class="c1">//** Only relevant if this mMode is Value **//</span>
+  <span class="n">Type</span><span class="o">*</span> <span class="n">mBaseType</span><span class="p">;</span>
+
+  <span class="c1">// Members only include Field and Function (and your language may also include Property)</span>
+  <span class="n">unordered_map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="n">Symbol</span><span class="o">*&gt;</span> <span class="n">mMembersByName</span><span class="p">;</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="n">Symbol</span><span class="o">*&gt;</span> <span class="n">mMembers</span><span class="p">;</span>
+
+  <span class="c1">//** Only relevant if this mMode is Pointer **//</span>
+  <span class="kt">size_t</span> <span class="n">mPointerCount</span><span class="p">;</span>
+
+  <span class="c1">//** Only relevant if this mMode is Function **//</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="n">Type</span><span class="o">*&gt;</span> <span class="n">mParameterTypes</span><span class="p">;</span>
+  <span class="n">Type</span><span class="o">*</span> <span class="n">mReturnType</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Library</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="c1">// All functions and types that were defined globally</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="n">Function</span><span class="o">*&gt;</span> <span class="n">mFunctions</span><span class="p">;</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="n">Type</span><span class="o">*&gt;</span> <span class="n">mTypes</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>When walking over the AST we create the above classes</li>
+<li>Link each relevant class up to the symbol table (respecting scope rules)</li>
+<li>If we visit a <code class="docutils literal"><span class="pre">ClassNode</span></code> we create a new <code class="docutils literal"><span class="pre">Type</span></code> and then push it onto the symbol table</li>
+<li>If we visit a <code class="docutils literal"><span class="pre">FunctionNode</span></code> within a class then we create a new <code class="docutils literal"><span class="pre">Function</span></code><ul>
+<li>Also push it onto the symbol table</li>
+<li>Store it as a member within the <code class="docutils literal"><span class="pre">Type</span></code></li>
+</ul>
+</li>
+<li>Most languages come with a <strong>core</strong> <code class="docutils literal"><span class="pre">Library</span></code> that supports all the built in types</li>
+<li>Libraries your code depends on automatically get pushed onto the symbol table (globals)</li>
+</ul>
+</div>
+<div class="section" id="computing-types">
+<h2>Computing Types<a class="headerlink" href="SemanticAnalysis.html#computing-types" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>All of type checking depends on many different phases resolving properly</li>
+<li>Start at the leaf nodes and work up</li>
+<li>Should always be able to directly compute the types of leafs</li>
+<li>Each node has its own behavior for how its type is computed</li>
+<li>Only concerned about computing types for expressions<ul>
+<li>Literals<ul>
+<li>5 (Integer)</li>
+<li>3.3 (Float or Double)</li>
+<li>&#8220;Hello&#8221; (String)</li>
+<li>true (Boolean)</li>
+<li>null (NullPtr)</li>
+</ul>
+</li>
+<li>Identifiers (variable references)<ul>
+<li>Walk up the scope stack, find the variable with the same name and get its type</li>
+<li>A variable should not be able to be referenced before it is declared</li>
+<li>Therefore a type for a variable should be fully computed (even if inferred)</li>
+<li>In C++ this is legal <code class="docutils literal"><span class="pre">int</span> <span class="pre">a</span> <span class="pre">=</span> <span class="pre">a;</span></code>, do not make this mistake! (Note: VS2010 allows this, 2013 does not, however both allow <code class="docutils literal"><span class="pre">int</span> <span class="pre">a</span> <span class="pre">=</span> <span class="pre">(a</span> <span class="pre">=</span> <span class="pre">5);</span></code>)</li>
+<li>What is <code class="docutils literal"><span class="pre">auto</span> <span class="pre">a</span> <span class="pre">=</span> <span class="pre">a;</span></code>?</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Consider that we will be attaching type information to our nodes: <strong>decorating the tree</strong></li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">VariableNode</span> <span class="o">:</span> <span class="k">public</span> <span class="n">MemberNode</span>
+<span class="p">{</span>
+  <span class="n">Token</span> <span class="n">mName</span><span class="p">;</span>
+  <span class="n">TypeNode</span><span class="o">*</span> <span class="n">mType</span><span class="p">;</span>
+  <span class="n">ExpressionNode</span><span class="o">*</span> <span class="n">mInitialValue</span><span class="p">;</span>
+
+  <span class="c1">// Filled out in Semantic Analysis</span>
+  <span class="n">Variable</span><span class="o">*</span> <span class="n">mVariable</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">TypeNode</span> <span class="o">:</span> <span class="k">public</span> <span class="n">AbstractNode</span>
+<span class="p">{</span>
+  <span class="n">Token</span> <span class="n">mName</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">mPointers</span><span class="p">;</span>
+
+  <span class="c1">// Filled out in Semantic Analysis</span>
+  <span class="n">Type</span><span class="o">*</span> <span class="n">mComputedType</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">ExpressionNode</span> <span class="o">:</span> <span class="k">public</span> <span class="n">StatementNode</span>
+<span class="p">{</span>
+  <span class="c1">// Filled out in Semantic Analysis</span>
+  <span class="n">Type</span><span class="o">*</span> <span class="n">mComputedType</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="c1">// Remember that these inherit from ExpressionNode,</span>
+<span class="c1">// therefore getting the mComputedType member</span>
+<span class="k">class</span> <span class="nc">LiteralNode</span> <span class="o">:</span> <span class="k">public</span> <span class="n">ExpressionNode</span>
+<span class="p">{</span>
+  <span class="n">Token</span> <span class="n">mValue</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">BinaryOperator</span> <span class="o">:</span> <span class="k">public</span> <span class="n">ExpressionNode</span>
+<span class="p">{</span>
+  <span class="n">Token</span> <span class="n">mOperator</span><span class="p">;</span>
+  <span class="n">ExpressionNode</span><span class="o">*</span> <span class="n">mLeft</span><span class="p">;</span>
+  <span class="n">ExpressionNode</span><span class="o">*</span> <span class="n">mRight</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">Test</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">var</span> <span class="nx">a</span> <span class="o">:</span> <span class="nx">Integer</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
+
+  <span class="nx">a</span> <span class="o">+=</span> <span class="mf">20.0f</span><span class="o">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <em>Abstract Syntax Tree</em> for the above code would look like:</p>
+<object data="_images/graphviz-befb4d4cc5b0366e00248469dac7f53f028873c2.svg" type="image/svg+xml">
+            <p class="warning">digraph
+{
+  node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+  &quot;[Function]\nTest&quot; -&gt; &quot;[Variable]\na&quot;;
+  &quot;[Function]\nTest&quot; -&gt; &quot;[BinaryOperator]\n+=&quot;;
+  &quot;[Variable]\na&quot; -&gt; &quot;[Type]\nInteger&quot;;
+  &quot;[Variable]\na&quot; -&gt; &quot;[Literal]\n100&quot;;
+  &quot;[BinaryOperator]\n+=&quot; -&gt; &quot;[NameReference]\na&quot;;
+  &quot;[BinaryOperator]\n+=&quot; -&gt; &quot;[Literal]\n20.0f&quot;;
+}</p></object>
+<ul class="simple">
+<li>Walk the tree from left to right order depth first (start at the leafs)</li>
+<li>All children types must be computed before computing a parent type</li>
+<li>Type checking errors typically reported on a parent node when children have incompatible types</li>
+</ul>
+<ol class="arabic simple">
+<li>When we start walking the tree, we start at the root (e.g. <code class="docutils literal"><span class="pre">FunctionNode</span></code>)</li>
+<li>Walk down to <code class="docutils literal"><span class="pre">[Variable]</span> <span class="pre">a</span></code> and don&#8217;t attempt to compute its type yet</li>
+<li>Walk down to <code class="docutils literal"><span class="pre">[Type]</span> <span class="pre">Integer</span></code> (leaf node, not an expression, trivial to resolve to <code class="docutils literal"><span class="pre">Integer</span></code>)<ul>
+<li>Using the <code class="docutils literal"><span class="pre">SymbolTable</span></code> to do the lookup on the type-name <code class="docutils literal"><span class="pre">Integer</span></code></li>
+<li>Remember, the type <code class="docutils literal"><span class="pre">Integer</span></code> is actually represented via our <code class="docutils literal"><span class="pre">Type</span></code> class</li>
+</ul>
+</li>
+<li>Walk over to <code class="docutils literal"><span class="pre">[Literal]</span> <span class="pre">100</span></code> which has token type <code class="docutils literal"><span class="pre">IntegerLiteral</span></code>, assign its type to <code class="docutils literal"><span class="pre">Integer</span></code></li>
+<li>Walk back up to <code class="docutils literal"><span class="pre">[Variable]</span> <span class="pre">a</span></code> (now all children have been computed)<ul>
+<li>Declared type <code class="docutils literal"><span class="pre">Integer</span></code> matches computed <code class="docutils literal"><span class="pre">Integer</span></code> type of initial value expression <code class="docutils literal"><span class="pre">100</span></code></li>
+</ul>
+</li>
+<li>Walk over to <code class="docutils literal"><span class="pre">[BinaryOperator]</span> <span class="pre">+=</span></code> and don&#8217;t attempt to compute its type yet</li>
+<li>Walk down to <code class="docutils literal"><span class="pre">[NameReference]</span> <span class="pre">a</span></code> and resolve it as a local variable using scope stack<ul>
+<li>Computed type becomes <code class="docutils literal"><span class="pre">Integer</span></code> because it adopts the same type as the variable</li>
+</ul>
+</li>
+<li>Walk over to <code class="docutils literal"><span class="pre">[Literal]</span> <span class="pre">20.0f</span></code> which has token type <code class="docutils literal"><span class="pre">FloatLiteral</span></code>, assign its type to <code class="docutils literal"><span class="pre">Float</span></code></li>
+<li>Walk back up to <code class="docutils literal"><span class="pre">[BinaryOperator]</span> <span class="pre">+=</span></code><ul>
+<li>Lookup operator <code class="docutils literal"><span class="pre">+=</span></code> between <code class="docutils literal"><span class="pre">Integer</span></code> and <code class="docutils literal"><span class="pre">Float</span></code></li>
+<li>Fail to find operator, report and error to the user</li>
+</ul>
+</li>
+</ol>
+<ul class="simple">
+<li>Some non-leaf nodes explicitly declare a type</li>
+<li>We always know the type of these nodes, regardless of computing their children<ul>
+<li>Variables declarations</li>
+<li>Type casts</li>
+<li>Constructors (eg <code class="docutils literal"><span class="pre">new</span> <span class="pre">Player</span></code>)</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="type-inference">
+<h2>Type Inference<a class="headerlink" href="SemanticAnalysis.html#type-inference" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Leaving an explicitly declared type off of a variable (or other declaration) and allowing it to be computed by the compiler</li>
+<li>Akin to C++ <code class="docutils literal"><span class="pre">auto</span></code> or C# <code class="docutils literal"><span class="pre">var</span></code></li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">+</span> <span class="mf">9.0f</span><span class="o">;</span>
+</pre></div>
+</div>
+<object data="_images/graphviz-60d8b97cfb3c07b9564f3614e2db1dbdbd9a1ccf.svg" type="image/svg+xml">
+            <p class="warning">digraph
+{
+  node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+  &quot;[Variable]\na&quot; -&gt; &quot;[BinaryOperator]\n+&quot;;
+  &quot;[BinaryOperator]\n+&quot; -&gt; &quot;[Literal]\n3&quot;;
+  &quot;[BinaryOperator]\n+&quot; -&gt; &quot;[Literal]\n9.0f&quot;;
+}</p></object>
+<ul class="simple">
+<li>We walk to the leafs and trivially compute the types of the two literals to be <code class="docutils literal"><span class="pre">Integer</span></code> and <code class="docutils literal"><span class="pre">Float</span></code></li>
+<li>Binary operator <code class="docutils literal"><span class="pre">+</span></code> is found which returns type <code class="docutils literal"><span class="pre">Float</span></code> (promotion)</li>
+<li>We visit the <code class="docutils literal"><span class="pre">[Variable]</span> <span class="pre">a</span></code> node and realize it has no declared type (null pointer to a TypeNode)</li>
+<li>The type of <code class="docutils literal"><span class="pre">a</span></code> becomes <code class="docutils literal"><span class="pre">Float</span></code> because it is inferred from the initial value expression</li>
+</ul>
+</div>
+<div class="section" id="l-r-values">
+<h2>L/R Values<a class="headerlink" href="SemanticAnalysis.html#l-r-values" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>We also need to keep track of L and R values on the nodes</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nx">a</span> <span class="o">:</span> <span class="nx">Integer</span><span class="o">;</span>
+<span class="c1">// Legal since &#39;a&#39; is an l-value</span>
+<span class="nx">a</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
+</pre></div>
+</div>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="c1">// Illegal since &#39;5&#39; is an r-value</span>
+<span class="mi">5</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
+</pre></div>
+</div>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nx">a</span> <span class="o">:</span> <span class="nx">Integer</span><span class="o">*;</span>
+<span class="c1">// Legal since the unary dereference operator results in an l-value</span>
+<span class="o">*</span><span class="p">(</span><span class="nx">a</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
+</pre></div>
+</div>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nx">a</span> <span class="o">:</span> <span class="nx">Integer</span><span class="o">*;</span>
+<span class="c1">// Illegal since the binary operator &#39;+&#39; results in an r-value</span>
+<span class="c1">// even though &#39;*a&#39; resulted in an l-value</span>
+<span class="p">(</span><span class="o">*</span><span class="nx">a</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Similar to how we compute types, each node needs its own behavior for how it computes l/r values</li>
+<li>Literals are always r-values</li>
+<li>Variable name references are l-values unless constant or immutable</li>
+<li>Unary operator <code class="docutils literal"><span class="pre">*</span></code> results in an l-value (but requires that the type must be a pointer type)</li>
+<li>Almost all other unary and binary operators result in r-values, except assignment operators (including compound)</li>
+<li>References (if your language supports them) are also considered l-values</li>
+</ul>
+</div>
+<div class="section" id="syntactic-sugar">
+<h2>Syntactic Sugar<a class="headerlink" href="SemanticAnalysis.html#syntactic-sugar" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Rearrange the tree in a more convenient form</li>
+<li><code class="docutils literal"><span class="pre">a[5]</span></code> results in <code class="docutils literal"><span class="pre">*(a</span> <span class="pre">+</span> <span class="pre">5)</span></code></li>
+</ul>
+<object data="_images/graphviz-a29765706fa70d3a9a0f8fbdd16c9fc8fa323b6b.svg" type="image/svg+xml">
+            <p class="warning">digraph
+{
+  node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+  &quot;[Indexer]&quot; -&gt; &quot;[NameReference]\na&quot;;
+  &quot;[Indexer]&quot; -&gt; &quot;[Literal]\n5&quot;;
+}</p></object>
+<ul class="simple">
+<li>Walk through our entire tree collecting <code class="docutils literal"><span class="pre">IndexerNodes</span></code> that must be transformed in a separate data structure</li>
+<li>Rewrite the tree by turning the indexer into a <code class="docutils literal"><span class="pre">BinaryOperatorNode</span></code> with operator <code class="docutils literal"><span class="pre">+</span></code></li>
+<li>The array or indexed expression becomes the left child, and the index becomes the right child</li>
+<li>Add a new <code class="docutils literal"><span class="pre">UnaryOperatorNode</span></code> parent above the <code class="docutils literal"><span class="pre">BinaryOperatorNode</span></code> with operator dereference <code class="docutils literal"><span class="pre">*</span></code></li>
+</ul>
+<object data="_images/graphviz-cf7512d268e1135201bf9e418f74ccb887a247a5.svg" type="image/svg+xml">
+            <p class="warning">digraph
+{
+  node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+  &quot;[UnaryOperator]\n*&quot; -&gt; &quot;[BinaryOperator]\n+&quot;;
+  &quot;[BinaryOperator]\n+&quot; -&gt; &quot;[NameReference]\na&quot;;
+  &quot;[BinaryOperator]\n+&quot; -&gt; &quot;[Literal]\n5&quot;;
+}</p></object>
+<ul class="simple">
+<li>Transforms should be applied <strong>before</strong> computing types</li>
+<li>Best to apply these operations <strong>outside</strong> of tree walking (in between visitor phases)</li>
+<li><em>Modification of a container while iterating through it is problematic</em><ul>
+<li>Especially when you delete nodes</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="control-flow">
+<h2>Control Flow<a class="headerlink" href="SemanticAnalysis.html#control-flow" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>It is important that a static language verifies that all paths return a value</li>
+<li>A dynamic language might get away with returning <em>null</em>, <em>undefined</em>, or another value</li>
+<li>Static languages that get compiled down to machine code would typically return garbage</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">GetMass</span><span class="p">()</span> <span class="o">:</span> <span class="nx">Double</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">Body</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">Body</span><span class="p">.</span><span class="nx">Mass</span><span class="o">;</span>
+
+  <span class="c1">// We returned nothing here, what is the resulting Double?</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Could make it an option in your language to return a zeroed value</li>
+<li>Still must analyse code to determine where</li>
+<li>Can be solved more in depth when it comes to code generation (generalized algorihtms)</li>
+<li>Still able to be performed on the AST with specialized knowledge</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">StatementNode</span> <span class="o">:</span> <span class="k">public</span> <span class="n">AbstractNode</span>
+<span class="p">{</span>
+  <span class="c1">//...</span>
+  <span class="kt">bool</span> <span class="n">mAllPathsReturn</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">DoSomething</span><span class="p">()</span> <span class="o">:</span> <span class="nx">Double</span>
+<span class="p">{</span>
+  <span class="c1">// Once we hit a return we mark the current scope as &#39;mAllPathsReturn&#39;</span>
+  <span class="c1">// The current scope is the function DoSomething</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+
+  <span class="c1">// Every time we visit a statement we check &#39;mAllPathsReturn&#39;</span>
+  <span class="c1">// before to emit a warning or error for abandoned code</span>
+  <span class="c1">// Note: You may annoy your users!</span>
+
+  <span class="k">this</span><span class="p">.</span><span class="nx">Mass</span> <span class="o">+=</span> <span class="mf">5.0</span><span class="o">;</span> <span class="c1">// Unreachable code</span>
+  <span class="k">return</span> <span class="mf">100.0</span><span class="o">;</span>  <span class="c1">// Unreachable code</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">DoSomething</span><span class="p">()</span> <span class="o">:</span> <span class="nx">Double</span>
+<span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">Mass</span> <span class="o">+=</span> <span class="mf">5.0</span><span class="o">;</span>
+
+  <span class="c1">// We get to the end of the function and we check &#39;mAllPathsReturn&#39;</span>
+  <span class="c1">// If not, emit an error (or generate an implicit return 0...)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">DoSomething</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">Mass</span> <span class="o">+=</span> <span class="mf">5.0</span><span class="o">;</span>
+
+  <span class="c1">// No return, but this is OK as we can</span>
+  <span class="c1">// infer an automatic &#39;return&#39; with no value</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Any statement that aborts control flow can also set &#8216;mAllPathsReturn&#8217;<ul>
+<li>Throwing an exception in language</li>
+<li>Calling an <em>abort</em> or similar <strong>no-return</strong> function</li>
+</ul>
+</li>
+<li>If statements must be handled with care</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">DoSomething</span><span class="p">()</span> <span class="o">:</span> <span class="nx">Double</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">Mass</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="c1">// This return marks the if statements ScopeNode as &#39;mAllPathsReturn&#39;</span>
+    <span class="c1">// Because the node has a condition and is optional then it must not</span>
+    <span class="c1">// mark all paths as returning in the parent function&#39;s ScopeNode</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="p">}</span>
+
+  <span class="k">this</span><span class="p">.</span><span class="nx">Mass</span> <span class="o">+=</span> <span class="mf">5.0</span><span class="o">;</span>
+
+  <span class="c1">// The &#39;mAllPathsReturn&#39; on the function&#39;s ScopeNode is still false... error!</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>As long as all parts of the <strong>if</strong> mark &#8216;mAllPathsReturn&#8217; and there is an <strong>else</strong> statement with no condition then we can mark the parent node as all paths return</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">DoSomething</span><span class="p">()</span> <span class="o">:</span> <span class="nx">Double</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">Mass</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="c1">// This return marks the if statements ScopeNode as &#39;mAllPathsReturn&#39;</span>
+    <span class="c1">// Because the node has a condition and is optional then it must not</span>
+    <span class="c1">// mark all paths as returning in the parent function&#39;s ScopeNode</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span>
+  <span class="p">{</span>
+    <span class="c1">// This return marks the else statements ScopeNode as &#39;mAllPathsReturn&#39;</span>
+    <span class="c1">// As the trailing final else, we walk up all parts of the if</span>
+    <span class="c1">// Since all of them mark &#39;mAllPathsReturn&#39;, then we can mark the parent</span>
+    <span class="c1">// function ScopeNode&#39;s &#39;mAllPathsReturn&#39; as true</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">Mass</span><span class="o">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Unreachable code</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">Mass</span> <span class="o">+=</span> <span class="mf">5.0</span><span class="o">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">DoSomething</span><span class="p">()</span> <span class="o">:</span> <span class="nx">Double</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">Mass</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="c1">// This return marks the if statements ScopeNode as &#39;mAllPathsReturn&#39;</span>
+    <span class="c1">// Because the node has a condition and is optional then it must not</span>
+    <span class="c1">// mark all paths as returning in the parent function&#39;s ScopeNode</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">Mass</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="c1">// Notice we do not return here</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">Mass</span> <span class="o">*=</span> <span class="mi">2</span><span class="o">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span>
+  <span class="p">{</span>
+    <span class="c1">// This return marks the else statements ScopeNode as &#39;mAllPathsReturn&#39;</span>
+    <span class="c1">// As the trailing final else, we walk up all parts of the if</span>
+    <span class="c1">// The second &#39;else if&#39; does not mark &#39;mAllPathsReturn&#39;, therefore we</span>
+    <span class="c1">// cannot mark our parent function&#39;s ScopeNode as &#39;mAllPathsReturn&#39;</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">Mass</span><span class="o">;</span>
+  <span class="p">}</span>
+
+  <span class="k">this</span><span class="p">.</span><span class="nx">Mass</span> <span class="o">+=</span> <span class="mf">5.0</span><span class="o">;</span>
+
+  <span class="c1">// The &#39;mAllPathsReturn&#39; on the function&#39;s ScopeNode is still false... error!</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>The <strong>else</strong> on an if statement guarantees that at least some part of the if code will be hit</li>
+<li>There are no guarantees for <strong>while</strong> and <strong>for</strong></li>
+<li>The <strong>do-while</strong> loop will be hit at least once, and must take care to mark its parent if a return exists within it</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">DoSomething</span><span class="p">()</span> <span class="o">:</span> <span class="nx">Double</span>
+<span class="p">{</span>
+  <span class="p">{</span>
+    <span class="c1">// This return marks its own ScopeNode as &#39;mAllPathsReturn&#39;</span>
+    <span class="c1">// A ScopeNode by itself should mark the parent ScopeNode as &#39;mAllPathsReturn&#39;</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Unreachable code</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">Mass</span> <span class="o">+=</span> <span class="mf">5.0</span><span class="o">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">DoSomething</span><span class="p">()</span> <span class="o">:</span> <span class="nx">Double</span>
+<span class="p">{</span>
+  <span class="k">do</span>
+  <span class="p">{</span>
+    <span class="k">this</span><span class="o">-&gt;</span><span class="nx">Mass</span> <span class="o">+=</span> <span class="mi">10</span><span class="o">;</span>
+
+    <span class="c1">// This return marks the &#39;do-while&#39; ScopeNode as &#39;mAllPathsReturn&#39;</span>
+    <span class="c1">// A DoWhileNode should mark the parent ScopeNode as &#39;mAllPathsReturn&#39;</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="p">}</span>
+  <span class="k">while</span> <span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="nx">Mass</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">);</span>
+
+  <span class="c1">// Unreachable code</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">Mass</span> <span class="o">+=</span> <span class="mf">5.0</span><span class="o">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>This process is much cleaner and more generic in code generation</li>
+<li>But we haven&#8217;t started generating code yet, and we don&#8217;t want semantic analysis to rely upon code generation to emit errors</li>
+</ul>
+</div>
+<div class="section" id="member-resolution">
+<h2>Member Resolution<a class="headerlink" href="SemanticAnalysis.html#member-resolution" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Need to resolve which member we are referring to when we use a member access operator <code class="docutils literal"><span class="pre">.</span></code> or <code class="docutils literal"><span class="pre">-&gt;</span></code></li>
+<li>Done when visiting a <code class="docutils literal"><span class="pre">MemberAccessNode</span></code></li>
+<li>May need to differentiate between <em>instance</em> and <em>static</em> members</li>
+<li>Using the symbol table, in particular the <code class="docutils literal"><span class="pre">Type</span></code> and its <code class="docutils literal"><span class="pre">vector&lt;Symbol*&gt;</span> <span class="pre">mMembers</span></code></li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">class</span> <span class="nx">Player</span>
+<span class="p">{</span>
+  <span class="k">var</span> <span class="nx">Health</span> <span class="o">:</span> <span class="nx">Float</span> <span class="o">=</span> <span class="mf">100.0f</span><span class="o">;</span>
+
+  <span class="kd">function</span> <span class="nx">ApplyDamage</span><span class="p">(</span><span class="nx">amount</span> <span class="o">:</span> <span class="nx">Float</span><span class="p">)</span> <span class="o">:</span> <span class="kc">Void</span>
+  <span class="p">{</span>
+    <span class="c1">// How do we resolve &#39;Health&#39;?</span>
+    <span class="k">this</span><span class="o">-&gt;</span><span class="nx">Health</span> <span class="o">-=</span> <span class="nx">amount</span><span class="o">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>The AST for the above code would look like:</li>
+</ul>
+<object data="_images/graphviz-6a376ab70f61d780fe2767b2240474fd3d9b5670.svg" type="image/svg+xml">
+            <p class="warning">digraph
+{
+  node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+  &quot;[Class]\nPlayer&quot; -&gt; &quot;[Variable]\nHealth&quot;;
+  &quot;[Variable]\nHealth&quot; -&gt; &quot;[Type]\nFloat&quot;;
+  &quot;[Variable]\nHealth&quot; -&gt; &quot;[Literal]\n100.0f&quot;;
+  &quot;[Class]\nPlayer&quot; -&gt; &quot;[Function]\nApplyDamage&quot;;
+  &quot;[Function]\nApplyDamage&quot; -&gt; &quot;[Parameter]\namount&quot;;
+  &quot;[Parameter]\namount&quot; -&gt; &quot;[Type]\nFloat &quot;;
+  &quot;[Function]\nApplyDamage&quot; -&gt; &quot;[BinaryOperator]\n-=&quot;;
+  &quot;[BinaryOperator]\n-=&quot; -&gt; &quot;[MemberAccess]\n.Health&quot;;
+  &quot;[MemberAccess]\n.Health&quot; -&gt; &quot;[NameReference]\nthis&quot;;
+  &quot;[BinaryOperator]\n-=&quot; -&gt; &quot;[NameReference]\namount&quot;;
+}</p></object>
+<ul class="simple">
+<li>Visit <code class="docutils literal"><span class="pre">ClassNode</span></code> for <code class="docutils literal"><span class="pre">Player</span></code>, create a new Type symbol, and register it with our <code class="docutils literal"><span class="pre">Library</span></code></li>
+<li>Visit <code class="docutils literal"><span class="pre">VariableNode</span></code> for <code class="docutils literal"><span class="pre">Health</span></code>, create a new Variable symbol, and register it with the <code class="docutils literal"><span class="pre">Type</span></code> <code class="docutils literal"><span class="pre">Player</span></code><ul>
+<li>Resolve its type as <code class="docutils literal"><span class="pre">Float</span></code> (a <code class="docutils literal"><span class="pre">Type</span></code> available in a core <code class="docutils literal"><span class="pre">Library</span></code>)</li>
+<li>Add it to <code class="docutils literal"><span class="pre">mMembers</span></code> and <code class="docutils literal"><span class="pre">mMembersByName</span></code> on <code class="docutils literal"><span class="pre">Player</span></code></li>
+</ul>
+</li>
+<li>Visit <code class="docutils literal"><span class="pre">FunctionNode</span></code> for <code class="docutils literal"><span class="pre">ApplyDamage</span></code>, create a new Function symbol, and register it with the <code class="docutils literal"><span class="pre">Type</span></code> <code class="docutils literal"><span class="pre">Player</span></code><ul>
+<li>Also resolve the parameter types and return type</li>
+<li>Add it to <code class="docutils literal"><span class="pre">mMembers</span></code> and <code class="docutils literal"><span class="pre">mMembersByName</span></code> on <code class="docutils literal"><span class="pre">Player</span></code></li>
+</ul>
+</li>
+<li>We must perform type computation on the <code class="docutils literal"><span class="pre">this</span></code> expression before we can resolve the member</li>
+<li>Visit the <code class="docutils literal"><span class="pre">NameReferenceNode</span></code> <code class="docutils literal"><span class="pre">this</span></code> and resolve the type as the special instance parameter of type <code class="docutils literal"><span class="pre">Player*</span></code></li>
+<li>Walk back up to <code class="docutils literal"><span class="pre">MemberAccessNode</span></code> and dereference left hand type because we use <code class="docutils literal"><span class="pre">-&gt;</span></code><ul>
+<li>Type <code class="docutils literal"><span class="pre">Player*</span></code> dereferences to <code class="docutils literal"><span class="pre">Player</span></code> (or <code class="docutils literal"><span class="pre">Player&amp;</span></code> if your language supports it)</li>
+<li><code class="docutils literal"><span class="pre">Player</span></code> is a symbol of type <code class="docutils literal"><span class="pre">Type</span></code> and therefore has <code class="docutils literal"><span class="pre">mMembers</span></code> and <code class="docutils literal"><span class="pre">mMembersByName</span></code></li>
+<li>Use <code class="docutils literal"><span class="pre">mMembersByName</span></code> to resolve <code class="docutils literal"><span class="pre">Health</span></code>, if no members are found error!</li>
+<li>We find the <code class="docutils literal"><span class="pre">Variable</span></code> symbol for <code class="docutils literal"><span class="pre">Health</span></code> and resolve the <code class="docutils literal"><span class="pre">MemberAccessNode</span></code> to type <code class="docutils literal"><span class="pre">Float</span></code></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="duplicate-members-overloads">
+<h2>Duplicate Members &amp; Overloads<a class="headerlink" href="SemanticAnalysis.html#duplicate-members-overloads" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Very easy to detect duplicate members by the same name</li>
+<li>When adding to <code class="docutils literal"><span class="pre">mMembersByName</span></code> check first for a symbol of the same name</li>
+<li>May want to allow this with function overloads</li>
+<li>To support overloads, use a multi-map or create a class that derives from <code class="docutils literal"><span class="pre">Symbol</span></code> such as <code class="docutils literal"><span class="pre">OverloadedFunctions</span></code> to store multiple functions</li>
+<li>If you wish to dis-allow base class member hiding, then need to walk up <code class="docutils literal"><span class="pre">mBaseType</span></code> and check</li>
+</ul>
+</div>
+<div class="section" id="overload-resolution">
+<h2>Overload Resolution<a class="headerlink" href="SemanticAnalysis.html#overload-resolution" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Complicated set of rules that users must learn for your language</li>
+<li>Can require multiple passes or a scoring system</li>
+<li>When resolving a member of type <code class="docutils literal"><span class="pre">OverloadedFunctions</span></code> we need a way to disambiguate<ul>
+<li>Many languages use a cast operator or a function call to determine which overload</li>
+<li>Walk each <code class="docutils literal"><span class="pre">Function</span></code> symbol in <code class="docutils literal"><span class="pre">OverloadedFunctions</span></code> and look for the best signature based on <code class="docutils literal"><span class="pre">CastNode</span></code> or <code class="docutils literal"><span class="pre">CallNode</span></code> arguments</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="module-based-compilation">
+<h2>Module Based Compilation<a class="headerlink" href="SemanticAnalysis.html#module-based-compilation" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Older languages would parse symbols as they went</li>
+<li>Only allowed to use symbols that were defined above you</li>
+<li>Required forward declarations</li>
+<li>Due to single translational units, it also requires the need for <code class="docutils literal"><span class="pre">#include</span></code> and other similar directives</li>
+<li>Scalable to larger code bases with parallel compilation (each unit uses less memory)</li>
+<li>Very slow due to recompiling symbols redundantly for each translational unit<ul>
+<li>Player.cpp includes String.hpp</li>
+<li>Engine.cpp also includes String.hpp</li>
+<li>Both recompile and manage separated symbol tables for the String.hpp include</li>
+<li>Precompiled header files help fix this</li>
+<li>Unity builds also help fix this</li>
+</ul>
+</li>
+<li>Module based compilation is the solution</li>
+<li>Group all translational units in a library together</li>
+<li>All classes and functions can see all other classes and functions, regardless of where the definitions is<ul>
+<li>Above, below, or in another file even (without including or importing)</li>
+</ul>
+</li>
+<li>Requires multiple passes over the code<ul>
+<li>Not slow because each pass is only touching certain parts of the tree (easily optimized)</li>
+<li>This is how members work when defined inside a class in C++ (can even see members below)</li>
+</ul>
+</li>
+<li><strong>Phase 1</strong> collects all type names and registers them with the global symbol table / <code class="docutils literal"><span class="pre">Library</span></code></li>
+<li><strong>Phase 2</strong> collects all base class names and members (does not visit expressions or statements)<ul>
+<li>All type names for members and base class names can be resolved because of <strong>Phase 1</strong></li>
+</ul>
+</li>
+<li><strong>Phase 3</strong> visits all statements and expressions and performs any extra checking needed for types and members<ul>
+<li>All members (member access, base classes) can be resolved at this time</li>
+</ul>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Operations such as <code class="docutils literal"><span class="pre">sizeof</span></code> or <code class="docutils literal"><span class="pre">decltype</span></code> can become difficult in a module based language, depending on where they are used.</p>
+</div>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">class</span> <span class="nx">Player</span>
+<span class="p">{</span>
+  <span class="c1">// We want our health to be in the same units/type as damage</span>
+  <span class="c1">// In Phase 2 where we collect members we cannot resolve the type of this yet until we&#39;ve collected</span>
+  <span class="c1">// the DamageAmount member on Damager (and built its Variably symbol / resolved its type)</span>
+  <span class="k">var</span> <span class="nx">Health</span> <span class="o">:</span> <span class="nx">decltype</span><span class="p">((</span><span class="kc">null</span> <span class="nx">as</span> <span class="nx">Damager</span><span class="o">*</span><span class="p">)</span><span class="o">-&gt;</span><span class="nx">DamageAmount</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nx">Damager</span>
+<span class="p">{</span>
+  <span class="k">var</span> <span class="nx">DamageAmount</span> <span class="o">:</span> <span class="nx">Float</span><span class="o">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>The above code would require extra passes after <strong>Phase 2</strong> to resolve members whose type used <code class="docutils literal"><span class="pre">decltype</span></code></li>
+<li>An alternative would be to use a dependency solving system (must detect cycles)</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">class</span> <span class="nx">Player</span>
+<span class="p">{</span>
+  <span class="c1">// We want our health to be in the same units/type as damage</span>
+  <span class="k">var</span> <span class="nx">Health</span> <span class="o">:</span> <span class="nx">decltype</span><span class="p">((</span><span class="kc">null</span> <span class="nx">as</span> <span class="nx">Damager</span><span class="o">*</span><span class="p">)</span><span class="o">-&gt;</span><span class="nx">DamageAmount</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nx">Damager</span>
+<span class="p">{</span>
+  <span class="c1">// We want our damage amount to be in the same units/type as health... uh oh</span>
+  <span class="k">var</span> <span class="nx">DamageAmount</span> <span class="o">:</span> <span class="nx">decltype</span><span class="p">((</span><span class="kc">null</span> <span class="nx">as</span> <span class="nx">Player</span><span class="o">*</span><span class="p">)</span><span class="o">-&gt;</span><span class="nx">Health</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ErrorRecovery.html" class="btn btn-neutral float-right" title="Error Recovery" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="StaticVsDynamic.html" class="btn btn-neutral" title="Static vs Dynamic" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, DigiPen Institute of Technology.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

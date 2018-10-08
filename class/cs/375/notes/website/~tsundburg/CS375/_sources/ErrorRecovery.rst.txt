@@ -1,0 +1,350 @@
+
+Error Recovery
+==============
+- In the early days, compiling a program took several hours or even days
+- Beneficial to get multiple **meaningful** errors so they could be all fixed
+- Typically involves skipping some input to finding a known valid spot
+- Can fail in any phase that can produce errors
+
+  - Tokenization (invalid token)
+  - Parsing (invalid rule)
+  - Semantic Analysis (invalid identifier / name, types don't match, etc)
+  
+- Modern *module* based compilers are incredibly fast
+- Single error reporting is now a viable option
+- Error recovery is more subjective and less of a rigid science
+- Continuing instead of throwing an exception and unrolling our stack
+- Very beneficial to auto-complete and IDE features
+
+Tokenization
+------------
+- Upon reaching an invalid token, what should we do?
+- Our first attempt at error handling will abort all tokenization
+- Need to continue reading tokens even if we hit invalid ones
+- Often good to make a 'best guess' at the token type to allow further compilation phases to keep running
+
+Panic Mode
+``````````
+- We either start from the root state and read something we don't understand
+- Or we get part way through reading a token but never hit an accepting state, and then encounter an error
+- Panic mode means skip inputs until we find something that makes sense
+- We could skip a single character and restart tokenization
+- Or skip as far as we read and continue from there
+
+For example, if we were to hit the invalid escape sequence ``\j``:
+
+.. code-block:: as
+
+  var message = "hello\jworld";
+  Print(message);
+
+- Our tokenizer started at the first ``"`` symbol in ``"hello\jworld"``
+- We got all the way to the ``\`` and upon reading the ``j`` we had no outgoing edge
+- The *string literal* never hit an accepting state
+- We could backup, eat a single character and restart tokenization at ``hello\jworld"``
+- Would result in the tokens:
+
+  - ``hello`` (Identifier)
+  - ``\`` would result in an error / be eaten
+  - ``jworld`` (Identifier)
+  - ``"`` would attempt to start another string again... not good
+
+- We could also eat as far as we read up to
+
+  - ``"hello \j`` would be eaten
+  - ``world`` (Identifier)
+  - ``"`` would attempt to start another string again... again this is not good
+
+- One reason why it may be good to not allow strings to extend multiple lines (without concatenation)
+- Prevents the entire file from being consumed by an invalid string literal
+
+Error Edges
+```````````
+- The best method of handling recovery is typically a case by case basis
+- Panic mode only used as a fallback
+
+.. graphviz::
+
+  digraph
+  {
+    nodesep=0.4;
+    ranksep=0.2;
+    node [fontsize=10, fontname=Verdana, shape=octagon, margin=0, width=0.35, height=0.35, label=""];
+    edge [fontsize=10, fontname=Verdana];
+
+    root -> s0 [label=" \" "];
+    s0 -> s1 [label=" \\ "];
+    s1 -> s0 [label=" [nrt\"] "];
+    s0 -> s0 [label=" default "];
+    s0 -> s2 [label=" \" "];
+    
+    root [shape=rectangle];
+    s2 [shape=doubleoctagon, label="StringLiteral"];
+  }
+
+- Can adjust this DFA so that all paths eventually get the ending ``"``
+- Produces an error via special **error edge**
+- Continues tokenization even after error occurs
+
+.. graphviz::
+
+  digraph
+  {
+    nodesep=0.5;
+    ranksep=0.7;
+    node [fontsize=10, fontname=Verdana, shape=octagon, margin=0, width=0.35, height=0.35, label=""];
+    edge [fontsize=10, fontname=Verdana];
+
+    root -> s0 [label=" \" "];
+    s0 -> s1 [label=" \\ "];
+    s1 -> s0 [label=" [nrt\"] "];
+    s1 -> s0 [label=" default (error) "];
+    s0 -> s0 [label=" default "];
+    s0 -> s2 [label=" \" "];
+    
+    root [shape=rectangle];
+    s2 [shape=doubleoctagon, label="StringLiteral"];
+  }
+
+- Common mistakes ``3DTileMap``, ``.5``, ``3.f``, ``0xAZ``
+- Our tokenization algorithm often automatically handles these cases, but not quite as we'd expect
+
+The input ``3DTileMap`` would be tokenized as:
+
+::
+
+  3 (IntegerLiteral)
+  DTileMap (Identifier)
+
+- Fixed by adding an **error edge** on all letters after the ``IntegerLiteral`` state
+- Must be careful, because some letters are valid ``uUlL`` etc
+- Determine if this should be treated as an ``IntegerLiteral`` or ``Indentifier``
+- Error still occurs when traversing error edges
+- Rather than aborting / rolling back, we let the DFA continue
+- Better feedback to the user, allows multiple error detection, and facilitates auto-complete features
+
+The input ``.5`` would be tokenized as:
+  
+::
+
+  . (MemberAccess)
+  5 (IntegerLiteral)
+
+- Solved by adding a custom **error edge** to the DFA for the ``.`` operator
+- Never valid in our language to have a number as the member name
+- Seems like the tokenizer has knowledge of the parser/grammar... is that ok?
+
+  - At the end of the day, you want the user experience to be the best
+  - *Unless you're writing a language to be used by unix users*
+
+The input ``3.f`` would be tokenized as:
+
+::
+
+  3 (IntegerLiteral)
+  . (MemberAccess)
+  f (Identifier)
+
+- Remember that our tokenization would walk down the ``.`` case but then backtrack after it hit ``f``
+- An extra **error edge** specifically after the ``.`` on character ``f`` could solve this
+- Or your language could decide this is legal (your choice)
+
+Parsing
+-------
+- A typically way of handling error recovery is to use **error productions**
+- Analogous to the **error edge** presented above
+- Custom rules that produce better error messages
+- Remember that a *production* is often another name for a *rule* in a grammar
+- Rule to capture known illegal behaviors
+- Often times error recovery can produce a cascade of incorrect errors
+
+  - A variable initialization fails because the user tried to add 
+
+.. code-block:: as
+
+  var player-lives = 9;
+
+- In this case, the user may have been thinking they could use ``-`` within an identifier
+- Again, this is a case by case basis (observe what your users do often)
+- Not easy to detect ``player-lives`` within an expression
+- However, as a variable declaration we know this is explicitly not legal
+
+The ``Var`` rule typically looks like:
+
+::
+
+  Var = <Var> <Identifier> SpecifiedType ...
+
+We can adjust it to account for this erroneous usage:
+
+::
+
+  Var = <Var> <Identifier> [<Minus> <Identifier>]* SpecifiedType ...
+
+- Brackets were used to denote that this is an error production, used like a group
+- No formal grammar for how to specify error cases (brackets were made up)
+- Within the *recursive descent* implementation we would handle this specially
+- Parsing can still continue
+
+.. warning:: Users will often try constructs from other languages within your language. It is best to provide a specific error message about this and recover from it. For example, C# has a customized error message for attempting multiple inheritance (which is not legal)
+
+Panic Mode
+``````````
+- Much more useful than in the tokenization phase
+- Once we encounter an error, we try and eat tokens until we find something that makes sense
+- Known as *synchronization tokens*
+- Most common is the statement end ``;``
+- Includes statement keywords such as ``var``, ``if``, ``while``, ``do``, etc
+- Also can look for end or beginning of scopes with ``}`` and ``{``
+- You may want your parser to count matching open close constructs such as ``()`` and ``{}``
+
+.. code-block:: as
+
+  var player-lives = 9;
+
+- Without the **error production** as described above, we would invoke *panic mode* when we tried to read the ``SpecifiedType`` rule or even an ``<Assignment>`` token
+- Still produce the error message, but then begin consuming tokens
+- Whose job is it to consume tokens?
+- Each rule could attempt to consume the rest of the input until ``;``
+- Easier to allow a single place to handle this behavior
+- Inside the ``Statement`` rule is a good place
+- Catch the parsing exception (but still let the user know an error occurred)
+- Scan until we find an *synchronization token*
+
+.. code-block:: as
+
+  var player-lives = 9;
+
+::
+
+  1. Statement parsing attempts 'Var' rule
+  2. Accept 'var'
+  3. Accept 'player'
+  4. '-' is neither an '=' or a ':' (throw parse error)
+  5. Exception is caught by Statement rule in parser
+  6. Eat tokens until we reach a synchronization token
+  7. Found ';'
+  8. Restart statement parsing *after* the ';'
+
+What about when the user misses a semi-colon?
+
+.. code-block:: as
+
+  var lives = 9
+  var health = 100;
+
+- Any statement rule that requires a semi-colon should be able to infer it
+
+  - Error recovery may decide to *insert*, *remove*, or *adjust* tokens
+
+- Upon ``Expect(TokenType::Semicolon)`` if it fails, we just exit out as if it didn't
+- Can also use panic mode to scan for the *synchronization token* of ``var``
+
+::
+
+  1. Statement parsing attempts 'Var' rule
+  2. Accept 'var'
+  3. Accept 'lives'
+  4. Accept '='
+  5. Expression rule parses literal '9'
+  6. Expected ';' (throw parse error)
+  7. Exception is caught by Statement rule in parser
+  8. Eat tokens until we reach a synchronization token
+  9. Found 'var' on the second line
+  10. Restart statement parsing *at* the 'var'
+
+- Panic mode works well in this case
+- What about if there is no immediate synchronization token?
+
+.. code-block:: as
+
+  var lives = 9
+  lives = 100;
+
+- In this case we end up skipping the entire second line until we hit ``;``
+- A mix of both error productions and panic mode works best
+
+Semantic Analysis
+-----------------
+- Crashes become common when you support error recovery
+- Invalid trees with invalid symbols (never resolved, left as null)
+- Initialize nodes with dummy symbols to avoid crashes on null
+
+  - A common one is an empty ``Type`` called **ErrorType**
+  - Many compilers often emit the name of this type in corner cases (MSVC uses ``<error-type>``)
+
+- Possibly even use dummy leaf nodes
+- For recovery, each node has its own behavior
+- Only need error recovery where a semantic error can occur
+
+  - ``LiteralNode``: The parser should only ever create this node when it encounters a proper literal token
+
+ClassNode
+`````````
+- Checking for symbol name collisions when creating ``Type``
+
+  - Don't bother inserting the ``Type`` into the symbol table, but parse internals
+  
+    - What about statements that use their own class by name?
+    - Could do a special symbol resolve based on locality / scope
+  
+  - Skip the class entirely (an option, but will hinder auto-complete)
+
+- Failing to resolve a base class type by identifier / symbol name
+
+  - Pretend you do not have a base class
+  - Or use a dummy base by making a new type symbol on the fly by the same name
+  - Or use a dummy base class such as **ErrorType**
+  
+    - Function ``override`` errors may occur falsely
+    - Attempts to access a base method results in false errors
+    - Can be explicitly ignored by the compiler in this case
+  
+  - Find the nearest similar name
+  
+    - Unintended *name-hiding* errors or warnings may occur
+    - Similar ``override`` or other errors as mentioned above
+    - Sealed class errors
+    - Can possibly give a better message (did you mean ``Character``?)
+
+BinaryOperatorNode
+``````````````````
+- Finding that the binary operator does not exist
+
+  - Pretend the result of the operator was the same as either the left or right type
+    
+    - Quite common that operators end up resulting in the same type
+    - May result in ``Boolean`` type for logical operators
+    - Might also examine if the *left* or *right* is an **ErrorType** and return the opposite
+  
+  - Alternately return a special **ErrorType** or **Void**
+
+MemberAccessNode
+````````````````
+- Failing to find the member by name
+
+  - Try to find the closest similar name and use its resulting type
+  
+    - Subsequent member accesses or uses may report incorrect errors if the wrong member is used
+  
+  - If none can be found then result in an **ErrorType**
+  - Again we can emit nice error messages to the user
+
+Poison
+``````
+- The ability to mark nodes as having some sort of recovery performed on them
+- Parent nodes that may emit errors based on child nodes instead ignore/suppress the errors
+- Poison propagates up until some stopping point
+
+  - Typically within the ``Statement`` rule
+  - Also within certain nodes that know their types (such as a ``CastNode``)
+
+- Can also use a strategy where we do not emit error messages until N number of tokens have been read again
+- Can also base multiple errors off line numbers (must skip one line or more before emitting more errors)
+- These techniques are crude, but prevent the programmer from being overwhelmed with cascading and incorrect errors
+
+Code Generation
+---------------
+- Generally you should NOT allow code generation to run after errors have occurred
+- Unless you are running a **safe** dynamic runtime under the hood
+- Will often cause crashes

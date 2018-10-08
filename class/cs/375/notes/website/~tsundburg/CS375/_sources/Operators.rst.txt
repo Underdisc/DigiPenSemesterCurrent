@@ -1,0 +1,178 @@
+.. |epsilon|  unicode:: U+03F5
+
+Operators
+=========
+- When defining operators within your language, you often need to define the associativity and precedence
+- Remember the C++ precedence chart also listed ``R->L`` and ``L->R``
+- Can be done entirely using the grammar
+- Some languages (like lua) leave the definition out of the grammar
+
+Associativity
+-------------
+- Assume in the following text that ``I`` stands for any identifier or integer
+- Given the following grammar:
+
+::
+
+  E = E '=' E | I
+
+- The grammar can parse multiple assignment expressions, however it is ambiguous
+- This results in multiple parse tree possibilities
+
+::
+
+  a = b = c
+
+- Could be interepreted as
+
+::
+
+  (a = b) = c
+
+Or
+
+::
+
+  a = (b = c)
+
+- Requires operator associativity rules to disambiguate this case
+- Substituting it for the leftmost ``E`` gives us ``R->L`` associativity
+
+::
+
+  E = I '=' E | I
+
+- We can also use left factoring to pull out the common ``I`` factors
+
+::
+
+  E = I ('=' E | )
+
+Or
+
+::
+
+  E = I ('=' E)?
+
+- Notice that the grammar forces the right hand side to be the deepest in the tree
+- This results in the following intepretation (which is what we want!)
+
+::
+
+  a = (b = c)
+
+- Lets look at the same thing for the ``-`` operator:
+
+::
+
+  E = E '-' E | I
+  
+- Substituting ``I`` for the leftmost ``E`` gives us ``L->R`` associativity
+
+::
+
+  E = E '-' I | I
+
+- We cannot apply left-factoring because there are no common left terms
+- We could apply right-factoring, however (not as useful for our parser implementation):
+
+::
+
+  E = (E '-')? I
+
+- Produces a left to right associative tree (forces the left to be the deepest / evaluated first)
+- Problem... *left recursion*!!!
+- Our parser will not work considering the the ``E`` is immediately recursively calling itself
+- We can use a dirty little trick here...
+- Substitute ``I`` in for both, and use a regular expression *Kleene Closure* to keep the tree flat
+
+::
+
+  E = I ('-' I)*
+
+- We could also at implementation time make everything ``R->L`` associative, then rebalance the tree afterward
+- Using the Kleene is much... cleaner
+
+Precedence
+----------
+- Consider the following grammar (ignoring left recursion for now):
+
+::
+
+  E = E '+' E | E '*' E | I
+
+- Applying associativity rules to eliminate one form of ambiguity:
+
+::
+
+  E = E '+' I | E '*' I | I
+
+Or
+
+::
+
+  E = E '+' I
+    | E '*' I
+    | I
+
+- Consider a parse for the following:
+
+::
+
+  a + b * c
+  a * b + c
+
+- Unambiguously parsed, but definately not the parse tree we wanted
+- ``a * b + c`` only works because of the left to right associativity
+- Separate out each level of precedence, starting with the lowest rule on top
+
+::
+
+  EP = EP '+' EM | EM
+  EM = EM '*' I  | I
+
+- Try the above grammar with the following examples:
+
+::
+
+  a + b * c
+  a * b + c
+  a + b 
+  a * b
+  a + b + c
+  a * b * c
+
+- The lower precedence references the higher precedence because it forces the higher precedence deeper into the tree
+- Now lets mix in a ``R->L`` with a ``L->R``
+- Assignment is the lowest precedence, so it comes on top
+
+::
+
+  EA = EP '=' EA | EP     R->L
+  EP = EP '+' EM | EM     L->R
+  EM = EM '*' I  | I      L->R
+
+- Try the above grammar with the following examples:
+
+::
+
+  a = 3 + 9 * 2
+  b = b * b * b
+  c = 9
+
+- We still have the left recursion problem with our ``L->R`` associative rules
+- Again, refactor them using the *Kleene Closure*
+- Also refactor the ``R->L`` using the *Optional* just for convenience
+
+::
+
+  EA = EP ('=' EA)?       R->L
+  EP = EM ('+' EM)*       L->R
+  EM = I  ('*' I )*       L->R
+
+- Try the above grammar with the following examples:
+
+::
+
+  a = 3 + 2 + 9 * 2
+  b = b * b * b

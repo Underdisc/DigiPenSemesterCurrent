@@ -1,0 +1,511 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Assignment Submission &mdash; Compilers and Interpreters 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Compilers and Interpreters 1.0 documentation" href="index.html"/>
+        <link rel="prev" title="Assignment 5" href="Assignment5.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="index.html" class="icon icon-home"> Compilers and Interpreters
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="PartsOfTheCompiler.html">Parts Of The Compiler</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#lexical-analysis-tokenizer">Lexical Analysis (Tokenizer)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#syntax-analysis-parser">Syntax Analysis (Parser)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#abstract-syntax-tree-ast">Abstract Syntax Tree (AST)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#semantic-analysis">Semantic Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#interpreter">Interpreter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DeterministicFiniteAutomata.html">Deterministic Finite Automata (DFA)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#traversal-algorithm">Traversal Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#backtracking-and-lookahead">Backtracking and Lookahead</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-1-examples">LA(1) Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-2-examples">LA(2) Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-examples">LA(*) Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#lookahead-implementation">Lookahead Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-integers">Parsing Integers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-floats">Parsing Floats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-keywords">Parsing Keywords</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-identifiers">Parsing Identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-operators">Parsing Operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#state-structure">State Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#hard-coded-dfa">Hard-coded DFA</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="RegularExpressions.html">Regular Expressions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#core-operators">Core Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#union">Union <strong>|</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#concatenation">Concatenation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#kleene-closure">Kleene Closure <strong>*</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#extended-operators">Extended Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#character-sets">Character Sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#positive-closure">Positive Closure <strong>+</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#optional">Optional <strong>?</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#interval-min-max-min-n">Interval <strong>{min,max}</strong> <strong>{min,}</strong> <strong>{n}</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#any-character">Any Character <strong>.</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#other-operators">Other Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#escape-character">Escape Character <strong>\</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#anchors-and">Anchors <strong>^</strong> and <strong>$</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#word-boundaries-b">Word Boundaries <strong>\b</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#capture-group">Capture Group <strong>()</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#passive-group">Passive Group <strong>(?:)</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#replacement-back-reference">Replacement Back Reference <strong>$</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#cheat-sheets">Cheat Sheets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Grammars.html">Grammars</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#similarity-to-regular-expressions">Similarity To Regular Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#derivations-and-parse-trees">Derivations and Parse Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#ambiguity">Ambiguity</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Grammars.html#classic-examples-of-ambiguity">Classic Examples of Ambiguity</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#elimination-of-ambiguity">Elimination of Ambiguity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#left-recursion">Left Recursion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Operators.html">Operators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Operators.html#associativity">Associativity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Operators.html#precedence">Precedence</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="RecursiveDescent.html">Recursive Descent Parsing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#predictive-parser">Predictive Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#guidelines">Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternations">Alternations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternation-and-concatenation">Alternation and Concatenation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#recursion">Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternation-empty-rule">Alternation Empty Rule</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-token">Optional Token</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-rule">Optional Rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-concatenation">Optional Concatenation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#kleene-and-positive-closures">Kleene and Positive Closures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AbstractSyntaxTree.html">Abstract Syntax Tree</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#heterogeneous-nodes">Heterogeneous Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#homogeneous-nodes">Homogeneous Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#heterogeneous-double-dispatch">Heterogeneous Double Dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#node-allocation-and-storage">Node Allocation And Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="StaticVsDynamic.html">Static vs Dynamic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="StaticVsDynamic.html#static-typing">Static Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="StaticVsDynamic.html#dynamic-typing">Dynamic Typing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#scalar-variables">Scalar Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#table-or-object">Table or Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#inheritance-and-polymorphism">Inheritance and Polymorphism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#operator-overloading">Operator Overloading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#reflection">Reflection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#templates">Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#overloads-function-templates">Overloads &amp; Function Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#monkey-patching">Monkey Patching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#implementation">Implementation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="SemanticAnalysis.html">Semantic Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#scope-resolution">Scope Resolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="SemanticAnalysis.html#name-hiding">Name Hiding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SemanticAnalysis.html#types-members-variables">Types, Members, Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#symbol-table-aka-meta">Symbol Table aka Meta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#computing-types">Computing Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#type-inference">Type Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#l-r-values">L/R Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#syntactic-sugar">Syntactic Sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#control-flow">Control Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#member-resolution">Member Resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#duplicate-members-overloads">Duplicate Members &amp; Overloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#overload-resolution">Overload Resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#module-based-compilation">Module Based Compilation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ErrorRecovery.html">Error Recovery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#tokenization">Tokenization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#panic-mode">Panic Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#error-edges">Error Edges</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#parsing">Parsing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#id1">Panic Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#semantic-analysis">Semantic Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#classnode">ClassNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#poison">Poison</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#code-generation">Code Generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AstInterpreter.html">AST Interpreter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#advantages">Advantages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#disadvantages">Disadvantages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#execution">Execution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="AstInterpreter.html#expressions">Expressions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#literals">Literals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#binary-operators">Binary Operators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#unary-operators">Unary Operators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#type-casting">Type Casting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#member-access">Member Access</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#if-statements">If Statements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#while-do-while-for-etc">While, Do-While, For, Etc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#return">Return</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#break-and-continue">Break and Continue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#exceptions">Exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#function-calls">Function Calls</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ModernLanguages.html">Modern Languages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#return-type-inference">Return Type Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#decltype">Decltype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#delegates">Delegates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#closures-anonymous-functions">Closures &amp; Anonymous Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#properties">Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#extension-functions-properties">Extension Functions &amp; Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#pure-functions">Pure Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#mixins">Mixins</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="IntermediateRepresentation.html">Intermediate Representation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#front-back-end">Front/Back End</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#three-address-code">Three Address Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="IntermediateRepresentation.html#code-generation-example">Code Generation Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#static-single-assignment">Static Single Assignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#basic-blocks">Basic Blocks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="VirtualMachine.html">Virtual Machine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#instructions">Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#reduced-instruction-set-computing">Reduced Instruction Set Computing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#complex-instruction-set-computing">Complex Instruction Set Computing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#stack-machine">Stack Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#advantages">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#disadvantages">Disadvantages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#random-access-machine">Random Access Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id1">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id2">Disadvantages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#register-machine">Register Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id3">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id4">Disadvantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#register-allocation">Register Allocation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="VirtualMachine.html#infinite-registers">Infinite Registers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="VirtualMachine.html#register-reuse">Register Reuse</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GarbageCollection.html">Garbage Collection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#why">Why?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#safety">Safety</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#misconceptions">Misconceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#garbage-collector-roots">Garbage Collector Roots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#common-issues">Common Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#mark-and-sweep">Mark and Sweep</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#mark-phase">Mark Phase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#sweep-phase">Sweep Phase</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#defragmentation">Defragmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#reference-counting">Reference Counting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#advantages">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#disadvantages">Disadvantages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ApplicationBinaryInterface.html">Application Binary Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#name-mangling">Name Mangling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#standardization">Standardization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#calling-convention">Calling Convention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#libraries">Libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ApplicationBinaryInterface.html#dynamic-linked-libraries">Dynamic Linked Libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#structures">Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#virtual-tables">Virtual Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#runtime-type-identification">Runtime Type Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CompilerAsAService.html">Compiler As A Service (IDE)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#minimal-rebuild">Minimal Rebuild</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#member-auto-complete">Member Auto Complete</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#call-tips-overloads">Call Tips / Overloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#local-expression-completion">Local / Expression Completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#cursor-hovering">Cursor Hovering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#go-to-definition">Go To Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#symbol-querying">Symbol Querying</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#typenode">TypeNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#variablenode">VariableNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#callnode">CallNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#classnode-functionnode">ClassNode/FunctionNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#expressionnode">ExpressionNode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#comments">Comments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#refactor-rename">Refactor Rename</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#debuggers">Debuggers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#formatting">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#statement-evaluation">Statement Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#read-eval-print-loop">Read Eval Print Loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#other-features">Other Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment1.html">Assignment 1</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment1.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment2.html">Assignment 2</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment2.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment3.html">Assignment 3</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment3.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment4.html">Assignment 4</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment4.html#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment4.html#pass-4">Pass 4</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#literalnode">LiteralNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#indexnode">IndexNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#unaryoperatornode">UnaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#callnode">CallNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#castnode">CastNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#ifnode-fornode-whilenode">IfNode/ForNode/WhileNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#gotonode">GotoNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#returnnode">ReturnNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#parameternode-variablenode">ParameterNode/VariableNode</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment5.html">Assignment 5</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#pass-1-pre-pass">Pass 1 (Pre-Pass)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#interpreterfunctioncall">InterpreterFunctionCall</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#pass-2-interpretation">Pass 2 (Interpretation)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#variablenode">VariableNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#returnnode">ReturnNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#ifnode">IfNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#whilenode">WhileNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#castnode">CastNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#literalnode">LiteralNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#callnode">CallNode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#addsinfunction">AddSinFunction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#unhandled-nodes">Unhandled Nodes</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="AssignmentSubmission.html#">Assignment Submission</a></li>
+<li class="toctree-l1"><a class="reference external" href="../CS375Assignments.1.html#://">Assignment Downloads</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Compilers and Interpreters</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Assignment Submission</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/AssignmentSubmission.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="assignment-submission">
+<span id="id1"></span><h1>Assignment Submission<a class="headerlink" href="AssignmentSubmission.html#assignment-submission" title="Permalink to this headline">¶</a></h1>
+<iframe src="https://zelus.digipen.edu/" style="border:0px;" width="100%" height="900px"></iframe></div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="Assignment5.html" class="btn btn-neutral" title="Assignment 5" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, DigiPen Institute of Technology.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

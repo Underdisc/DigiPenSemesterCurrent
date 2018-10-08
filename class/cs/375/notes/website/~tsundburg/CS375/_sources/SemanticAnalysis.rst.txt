@@ -1,0 +1,944 @@
+
+.. make an in class exercise for building ASTs
+.. - Print grammar rules (parse trees too, or maybe just enter/exit rule)
+
+.. Member resolution (functions, fields/variables, properties, etc)
+.. Overloading
+.. Conditionals (if, while, etc, require bool/pointer/int type)
+.. Control flow analysis (all paths return, is it safe?)
+.. Goto name resolution (stack? labels)
+
+Semantic Analysis
+=================
+- Once we have the Abstract Syntax Tree we must verify that the program is correct
+- Common examples of checks to be made:
+
+  - Type safety and implicit conversions
+  - Member resolution
+  - Overload resolution
+  - Calling with proper number of arguments
+  - Assigning types to literals
+  - Local variable resolution (out of scope errors)
+  - Variable and member hiding
+
+- These checks are performed by walking the AST using our Visitor
+
+
+Scope Resolution
+----------------
+- Need a way of resolving identifiers to a type, variable, member, etc
+- Inside a scoped statement (if, while, etc), a function, a class, or even globally scoped
+- Can use a stack data structure to represent scope
+- For variables, each entry on the stack is a list of variable names available
+
+.. code-block:: as
+
+  var a = 5;
+  
+  //** Which variables are available here? **//
+  
+  var b = "hello";
+  
+  if (thingone)
+  {
+    var c = 9;
+    
+    if (thingtwo)
+    {
+      var d = 3.3;
+      var e = false;
+    }
+    else
+    {
+      var f = 123;
+    }
+  }
+
+Excluding globals, the stack may look something like:
+
+.. graphviz::
+
+  digraph
+  {
+    node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+    "..." -> "var a";
+  }
+
+- Every time we visit a variable declaration, we add it to the list of variable names on the top of the stack
+
+.. code-block:: as
+
+  var a = 5;
+  var b = "hello";
+  
+  //** Which variables are available here? **//
+  
+  if (thingone)
+  {
+    var c = 9;
+    
+    if (thingtwo)
+    {
+      var d = 3.3;
+      var e = false;
+    }
+    else
+    {
+      var f = 123;
+    }
+  }
+
+.. graphviz::
+
+  digraph
+  {
+    node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+    "..." -> "var a\nvar b";
+  }
+
+- Since we visited the VariableNode for ``b`` we added it to the latest scope (top of the stack / back of a vector)
+- Every time we visit a scoped node (if, while, function, class, etc) we push a new entry onto the stack
+- Every time we return from visiting the scope we pop the stack
+
+.. code-block:: as
+
+  var a = 5;
+  var b = "hello";
+  
+  if (thingone)
+  {
+    //** Which variables are available here? **//
+    
+    var c = 9;
+    
+    if (thingtwo)
+    {
+      var d = 3.3;
+      var e = false;
+    }
+    else
+    {
+      var f = 123;
+    }
+  }
+
+.. graphviz::
+
+  digraph
+  {
+    node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+    "..." -> "var a\nvar b";
+    "var a\nvar b" -> "";
+  }
+
+- Notice that we visited the ``if (thingone)`` statement which has a scope
+- This means we push a new entry onto the stack
+- Empty since we have yet to visit any variables within that new stack
+
+.. code-block:: as
+
+  var a = 5;
+  var b = "hello";
+  
+  if (thingone)
+  {
+    var c = 9;
+    //** Which variables are available here? **//
+    
+    if (thingtwo)
+    {
+      var d = 3.3;
+      var e = false;
+    }
+    else
+    {
+      var f = 123;
+    }
+  }
+
+.. graphviz::
+
+  digraph
+  {
+    node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+    "..." -> "var a\nvar b";
+    "var a\nvar b" -> "var c";
+  }
+
+- Agian we visited a VariableNode for ``c`` and therefore added ``var c`` to the top of the stack
+- If we wanted to ask the compiler which variables are legal to reference, we simply just walk up the stack looking for an identifer
+
+.. code-block:: as
+
+  var a = 5;
+  var b = "hello";
+  
+  if (thingone)
+  {
+    var c = 9;
+    
+    if (thingtwo)
+    {
+      var d = 3.3;
+      var e = false;
+      //** Which variables are available here? **//
+    }
+    else
+    {
+      var f = 123;
+    }
+  }
+
+.. graphviz::
+
+  digraph
+  {
+    node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+    "..." -> "var a\nvar b";
+    "var a\nvar b" -> "var c";
+    "var c" -> "var d\nvar e";
+  }
+
+- We entered the scope of ``if (thingtwo)`` and therefore added another entry to the scope stack
+- Since we visited two variable declaration nodes for ``d`` and ``e``, we added them to the available variable list on the top of the stack
+
+.. code-block:: as
+
+  var a = 5;
+  var b = "hello";
+  
+  if (thingone)
+  {
+    var c = 9;
+    
+    if (thingtwo)
+    {
+      var d = 3.3;
+      var e = false;
+    }
+    else
+    {
+      //** Which variables are available here? **//
+      var f = 123;
+    }
+  }
+
+.. graphviz::
+
+  digraph
+  {
+    node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+    "..." -> "var a\nvar b";
+    "var a\nvar b" -> "var c";
+    "var c" -> "";
+  }
+
+- As soon as our visitor left the scope of ``if (thingtwo)`` we popped the stack, thus removing ``var d`` and ``var e`` from available names
+- We entered the scope of the ``else`` statement, so we pushed another empty scope onto the stack, and so on
+
+.. note:: In many dynamic languages, variables are *function* scoped, meaning it does not matter where in the function you declare the variable. They still typically have to resolve between local and global scopes, however.
+
+Name Hiding
+```````````
+- Is the following code legal in your language?
+
+.. code-block:: as
+
+  var a = 5;
+  var a = 10;
+
+- In this particular case of name hiding, it completely disables the ability for anyone to ever refer to the original 'a'
+- What about this case?
+
+.. code-block:: as
+
+  var a = 5;
+  
+  if (something)
+  {
+    var a = 10;
+  }
+
+- This would result in the following scope stack:
+
+.. graphviz::
+
+  digraph
+  {
+    node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+    "..." -> "var a";
+    "var a" -> S;
+    S [label="var a"];
+  }
+
+.. code-block:: as
+
+  // Error to reference 'a' here
+  var a = 5;
+  // Resolves to the 'a' with value 5
+  if (something)
+  {
+    // Resolves to the 'a' with value 5
+    var a = 10;
+    // Resolves to the 'a' with value 10
+  }
+  // Resolves to the 'a' with value 5
+
+- In some static typed languages, name hiding is illegal
+- Done simply by walking up the scope stack each time we visit a declaration to verify no duplicate names exist
+
+Types, Members, Variables
+`````````````````````````
+- You can use the same stack of scopes to resolve type-names, class member names, or even goto labels
+- Name hiding may be legal on case by case basis
+- You may have designed your language so that it will always know the difference between a type vs a global
+
+- Consider the code ``player.lives``, the ``player`` portion could be:
+
+  - A local variable
+  - A type-name (``lives`` might be a static)
+  - A member variable where ``this.player.lives`` is implied
+
+- We can add any name to the scope stack
+- May want to optimize not having to push every class member name in (special case just push the type itself)
+
+Symbol Table aka Meta
+---------------------
+- Data structure outside the AST
+- Need to store all information about types
+- Operators, members, base classes, size, constructors, destructors, etc.
+- Not all types originate from an AST (built in types ``Integer``, ``Float``)
+- May want to create types externally (binding to a language like C++)
+- Many similarities to a Meta Reflection system
+- Referred to as **symbol table** because it maps identifiers
+
+  - Identifiers to types (e.g. ``Player``)
+  - Identifiers to members (e.g. ``Lives``)
+  - Identifiers to variables (e.g. ``gCounter``)
+
+.. code-block:: cpp
+
+  class SymbolTable
+  {
+  public:
+    // The stack always contains at least 1 entry for globals
+    // We push an new entry for each scope we enter (and pop when we exit)
+    stack<unordered_map<string, Symbol*>> mSymbols;
+  };
+  
+  class Symbol
+  {
+  public:
+    virtual ~Symbol();
+    Token mName;
+  };
+  
+  class Variable : public Symbol
+  {
+  public:
+    Type* mType;
+  };
+  
+  class Function : public Symbol
+  {
+  public:
+    // This type is the functions signature (TypeMode will be Function)
+    Type* mType;
+    unordered_map<string, LocalVariable*> mLocalsByName;
+    vector<LocalVariable*> mLocals;
+  };
+  
+  enum TypeMode
+  {
+    Value,
+    Pointer,
+    Function
+  };
+
+  class Type : public Symbol
+  {
+  public:
+    TypeMode mMode;
+    
+    //** Only relevant if this mMode is Value **//
+    Type* mBaseType;
+    
+    // Members only include Field and Function (and your language may also include Property)
+    unordered_map<string, Symbol*> mMembersByName;
+    vector<Symbol*> mMembers;
+    
+    //** Only relevant if this mMode is Pointer **//
+    size_t mPointerCount;
+    
+    //** Only relevant if this mMode is Function **//
+    vector<Type*> mParameterTypes;
+    Type* mReturnType;
+  };
+  
+  class Library
+  {
+  public:
+    // All functions and types that were defined globally
+    vector<Function*> mFunctions;
+    vector<Type*> mTypes;
+  };
+
+- When walking over the AST we create the above classes
+- Link each relevant class up to the symbol table (respecting scope rules)
+- If we visit a ``ClassNode`` we create a new ``Type`` and then push it onto the symbol table
+- If we visit a ``FunctionNode`` within a class then we create a new ``Function``
+
+  - Also push it onto the symbol table
+  - Store it as a member within the ``Type``
+
+- Most languages come with a **core** ``Library`` that supports all the built in types
+- Libraries your code depends on automatically get pushed onto the symbol table (globals)
+
+Computing Types
+---------------
+- All of type checking depends on many different phases resolving properly
+- Start at the leaf nodes and work up
+- Should always be able to directly compute the types of leafs
+- Each node has its own behavior for how its type is computed
+- Only concerned about computing types for expressions
+
+  - Literals
+  
+    - 5 (Integer)
+    - 3.3 (Float or Double)
+    - "Hello" (String)
+    - true (Boolean)
+    - null (NullPtr)
+  
+  - Identifiers (variable references)
+
+    - Walk up the scope stack, find the variable with the same name and get its type
+    - A variable should not be able to be referenced before it is declared
+    - Therefore a type for a variable should be fully computed (even if inferred)
+    - In C++ this is legal ``int a = a;``, do not make this mistake! (Note: VS2010 allows this, 2013 does not, however both allow ``int a = (a = 5);``)
+    - What is ``auto a = a;``?
+
+- Consider that we will be attaching type information to our nodes: **decorating the tree**
+
+.. code-block:: cpp
+
+  class VariableNode : public MemberNode
+  {
+    Token mName;
+    TypeNode* mType;
+    ExpressionNode* mInitialValue;
+    
+    // Filled out in Semantic Analysis
+    Variable* mVariable;
+  };
+  
+  class TypeNode : public AbstractNode
+  {
+    Token mName;
+    int mPointers;
+    
+    // Filled out in Semantic Analysis
+    Type* mComputedType;
+  };
+  
+  class ExpressionNode : public StatementNode
+  {
+    // Filled out in Semantic Analysis
+    Type* mComputedType;
+  };
+  
+  // Remember that these inherit from ExpressionNode,
+  // therefore getting the mComputedType member
+  class LiteralNode : public ExpressionNode
+  {
+    Token mValue;
+  };
+  
+  class BinaryOperator : public ExpressionNode
+  {
+    Token mOperator;
+    ExpressionNode* mLeft;
+    ExpressionNode* mRight;
+  };
+
+.. code-block:: as
+
+  function Test()
+  {
+    var a : Integer = 100;
+    
+    a += 20.0f;
+  }
+
+The *Abstract Syntax Tree* for the above code would look like:
+
+.. graphviz::
+
+  digraph
+  {
+    node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+    "[Function]\nTest" -> "[Variable]\na";
+    "[Function]\nTest" -> "[BinaryOperator]\n+=";
+    "[Variable]\na" -> "[Type]\nInteger";
+    "[Variable]\na" -> "[Literal]\n100";
+    "[BinaryOperator]\n+=" -> "[NameReference]\na";
+    "[BinaryOperator]\n+=" -> "[Literal]\n20.0f";
+  }
+
+- Walk the tree from left to right order depth first (start at the leafs)
+- All children types must be computed before computing a parent type
+- Type checking errors typically reported on a parent node when children have incompatible types
+
+1. When we start walking the tree, we start at the root (e.g. ``FunctionNode``)
+2. Walk down to ``[Variable] a`` and don't attempt to compute its type yet
+3. Walk down to ``[Type] Integer`` (leaf node, not an expression, trivial to resolve to ``Integer``)
+
+   - Using the ``SymbolTable`` to do the lookup on the type-name ``Integer``
+   - Remember, the type ``Integer`` is actually represented via our ``Type`` class
+
+4. Walk over to ``[Literal] 100`` which has token type ``IntegerLiteral``, assign its type to ``Integer``
+5. Walk back up to ``[Variable] a`` (now all children have been computed)
+
+   - Declared type ``Integer`` matches computed ``Integer`` type of initial value expression ``100``
+
+6. Walk over to ``[BinaryOperator] +=`` and don't attempt to compute its type yet
+7. Walk down to ``[NameReference] a`` and resolve it as a local variable using scope stack
+
+   - Computed type becomes ``Integer`` because it adopts the same type as the variable
+
+8. Walk over to ``[Literal] 20.0f`` which has token type ``FloatLiteral``, assign its type to ``Float``
+9. Walk back up to ``[BinaryOperator] +=``
+
+   - Lookup operator ``+=`` between ``Integer`` and ``Float``
+   - Fail to find operator, report and error to the user
+
+- Some non-leaf nodes explicitly declare a type
+- We always know the type of these nodes, regardless of computing their children
+
+  - Variables declarations
+  - Type casts
+  - Constructors (eg ``new Player``)
+
+Type Inference
+--------------
+- Leaving an explicitly declared type off of a variable (or other declaration) and allowing it to be computed by the compiler
+- Akin to C++ ``auto`` or C# ``var``
+
+.. code-block:: as
+
+  var a = 3 + 9.0f;
+
+.. graphviz::
+
+  digraph
+  {
+    node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+    "[Variable]\na" -> "[BinaryOperator]\n+";
+    "[BinaryOperator]\n+" -> "[Literal]\n3";
+    "[BinaryOperator]\n+" -> "[Literal]\n9.0f";
+  }
+
+- We walk to the leafs and trivially compute the types of the two literals to be ``Integer`` and ``Float``
+- Binary operator ``+`` is found which returns type ``Float`` (promotion)
+- We visit the ``[Variable] a`` node and realize it has no declared type (null pointer to a TypeNode)
+- The type of ``a`` becomes ``Float`` because it is inferred from the initial value expression
+
+L/R Values
+----------
+- We also need to keep track of L and R values on the nodes
+
+.. code-block:: as
+
+  var a : Integer;
+  // Legal since 'a' is an l-value
+  a = 100;
+
+.. code-block:: as
+
+  // Illegal since '5' is an r-value
+  5 = 100;
+
+.. code-block:: as
+
+  var a : Integer*;
+  // Legal since the unary dereference operator results in an l-value
+  *(a + 1) = 100;
+
+.. code-block:: as
+
+  var a : Integer*;
+  // Illegal since the binary operator '+' results in an r-value
+  // even though '*a' resulted in an l-value
+  (*a + 1) = 100;
+
+- Similar to how we compute types, each node needs its own behavior for how it computes l/r values
+- Literals are always r-values
+- Variable name references are l-values unless constant or immutable
+- Unary operator ``*`` results in an l-value (but requires that the type must be a pointer type)
+- Almost all other unary and binary operators result in r-values, except assignment operators (including compound)
+- References (if your language supports them) are also considered l-values
+
+Syntactic Sugar
+---------------
+- Rearrange the tree in a more convenient form
+- ``a[5]`` results in ``*(a + 5)``
+
+.. graphviz::
+
+  digraph
+  {
+    node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+    "[Indexer]" -> "[NameReference]\na";
+    "[Indexer]" -> "[Literal]\n5";
+  }
+
+- Walk through our entire tree collecting ``IndexerNodes`` that must be transformed in a separate data structure
+- Rewrite the tree by turning the indexer into a ``BinaryOperatorNode`` with operator ``+``
+- The array or indexed expression becomes the left child, and the index becomes the right child
+- Add a new ``UnaryOperatorNode`` parent above the ``BinaryOperatorNode`` with operator dereference ``*``
+
+.. graphviz::
+
+  digraph
+  {
+    node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+    "[UnaryOperator]\n*" -> "[BinaryOperator]\n+";
+    "[BinaryOperator]\n+" -> "[NameReference]\na";
+    "[BinaryOperator]\n+" -> "[Literal]\n5";
+  }
+
+- Transforms should be applied **before** computing types
+- Best to apply these operations **outside** of tree walking (in between visitor phases)
+- *Modification of a container while iterating through it is problematic*
+
+  - Especially when you delete nodes
+
+Control Flow
+------------
+- It is important that a static language verifies that all paths return a value
+- A dynamic language might get away with returning *null*, *undefined*, or another value
+- Static languages that get compiled down to machine code would typically return garbage
+
+.. code-block:: as
+
+  function GetMass() : Double
+  {
+    if (this.Body != null)
+      return this.Body.Mass;
+    
+    // We returned nothing here, what is the resulting Double?
+  }
+
+- Could make it an option in your language to return a zeroed value
+- Still must analyse code to determine where
+- Can be solved more in depth when it comes to code generation (generalized algorihtms)
+- Still able to be performed on the AST with specialized knowledge
+
+.. code-block:: cpp
+
+  class StatementNode : public AbstractNode
+  {
+    //...
+    bool mAllPathsReturn;
+  };
+  
+.. code-block:: as
+
+  function DoSomething() : Double
+  {
+    // Once we hit a return we mark the current scope as 'mAllPathsReturn'
+    // The current scope is the function DoSomething
+    return 0;
+    
+    // Every time we visit a statement we check 'mAllPathsReturn'
+    // before to emit a warning or error for abandoned code
+    // Note: You may annoy your users!
+    
+    this.Mass += 5.0; // Unreachable code
+    return 100.0;  // Unreachable code
+  }
+
+.. code-block:: as
+
+  function DoSomething() : Double
+  {
+    this.Mass += 5.0;
+    
+    // We get to the end of the function and we check 'mAllPathsReturn'
+    // If not, emit an error (or generate an implicit return 0...)
+  }
+
+.. code-block:: as
+
+  function DoSomething()
+  {
+    this.Mass += 5.0;
+    
+    // No return, but this is OK as we can
+    // infer an automatic 'return' with no value
+  }
+
+- Any statement that aborts control flow can also set 'mAllPathsReturn'
+
+  - Throwing an exception in language
+  - Calling an *abort* or similar **no-return** function
+
+- If statements must be handled with care
+
+.. code-block:: as
+
+  function DoSomething() : Double
+  {
+    if (this.Mass < 0)
+    {
+      // This return marks the if statements ScopeNode as 'mAllPathsReturn'
+      // Because the node has a condition and is optional then it must not
+      // mark all paths as returning in the parent function's ScopeNode
+      return 0;
+    }
+    
+    this.Mass += 5.0;
+    
+    // The 'mAllPathsReturn' on the function's ScopeNode is still false... error!
+  }
+
+- As long as all parts of the **if** mark 'mAllPathsReturn' and there is an **else** statement with no condition then we can mark the parent node as all paths return
+
+.. code-block:: as
+
+  function DoSomething() : Double
+  {
+    if (this.Mass < 0)
+    {
+      // This return marks the if statements ScopeNode as 'mAllPathsReturn'
+      // Because the node has a condition and is optional then it must not
+      // mark all paths as returning in the parent function's ScopeNode
+      return 0;
+    }
+    else
+    {
+      // This return marks the else statements ScopeNode as 'mAllPathsReturn'
+      // As the trailing final else, we walk up all parts of the if
+      // Since all of them mark 'mAllPathsReturn', then we can mark the parent
+      // function ScopeNode's 'mAllPathsReturn' as true
+      return this.Mass;
+    }
+    
+    // Unreachable code
+    this.Mass += 5.0;
+  }
+
+.. code-block:: as
+
+  function DoSomething() : Double
+  {
+    if (this.Mass < 0)
+    {
+      // This return marks the if statements ScopeNode as 'mAllPathsReturn'
+      // Because the node has a condition and is optional then it must not
+      // mark all paths as returning in the parent function's ScopeNode
+      return 0;
+    }
+    else if (this.Mass > 100)
+    {
+      // Notice we do not return here
+      this.Mass *= 2;
+    }
+    else
+    {
+      // This return marks the else statements ScopeNode as 'mAllPathsReturn'
+      // As the trailing final else, we walk up all parts of the if
+      // The second 'else if' does not mark 'mAllPathsReturn', therefore we
+      // cannot mark our parent function's ScopeNode as 'mAllPathsReturn'
+      return this.Mass;
+    }
+    
+    this.Mass += 5.0;
+    
+    // The 'mAllPathsReturn' on the function's ScopeNode is still false... error!
+  }
+
+- The **else** on an if statement guarantees that at least some part of the if code will be hit
+- There are no guarantees for **while** and **for**
+- The **do-while** loop will be hit at least once, and must take care to mark its parent if a return exists within it
+
+.. code-block:: as
+
+  function DoSomething() : Double
+  {
+    {
+      // This return marks its own ScopeNode as 'mAllPathsReturn'
+      // A ScopeNode by itself should mark the parent ScopeNode as 'mAllPathsReturn'
+      return 0;
+    }
+    
+    // Unreachable code
+    this.Mass += 5.0;
+  }
+
+.. code-block:: as
+
+  function DoSomething() : Double
+  {
+    do
+    {
+      this->Mass += 10;
+      
+      // This return marks the 'do-while' ScopeNode as 'mAllPathsReturn'
+      // A DoWhileNode should mark the parent ScopeNode as 'mAllPathsReturn'
+      return 0;
+    }
+    while (this->Mass < 1000);
+    
+    // Unreachable code
+    this.Mass += 5.0;
+  }
+
+- This process is much cleaner and more generic in code generation
+- But we haven't started generating code yet, and we don't want semantic analysis to rely upon code generation to emit errors
+
+Member Resolution
+-----------------
+- Need to resolve which member we are referring to when we use a member access operator ``.`` or ``->``
+- Done when visiting a ``MemberAccessNode``
+- May need to differentiate between *instance* and *static* members
+- Using the symbol table, in particular the ``Type`` and its ``vector<Symbol*> mMembers``
+
+.. code-block:: as
+  
+  class Player
+  {
+    var Health : Float = 100.0f;
+    
+    function ApplyDamage(amount : Float) : Void
+    {
+      // How do we resolve 'Health'?
+      this->Health -= amount;
+    }
+  }
+
+- The AST for the above code would look like:
+
+.. graphviz::
+
+  digraph
+  {
+    node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+    "[Class]\nPlayer" -> "[Variable]\nHealth";
+    "[Variable]\nHealth" -> "[Type]\nFloat";
+    "[Variable]\nHealth" -> "[Literal]\n100.0f";
+    "[Class]\nPlayer" -> "[Function]\nApplyDamage";
+    "[Function]\nApplyDamage" -> "[Parameter]\namount";
+    "[Parameter]\namount" -> "[Type]\nFloat ";
+    "[Function]\nApplyDamage" -> "[BinaryOperator]\n-=";
+    "[BinaryOperator]\n-=" -> "[MemberAccess]\n.Health";
+    "[MemberAccess]\n.Health" -> "[NameReference]\nthis";
+    "[BinaryOperator]\n-=" -> "[NameReference]\namount";
+  }
+
+- Visit ``ClassNode`` for ``Player``, create a new Type symbol, and register it with our ``Library``
+- Visit ``VariableNode`` for ``Health``, create a new Variable symbol, and register it with the ``Type`` ``Player``
+
+  - Resolve its type as ``Float`` (a ``Type`` available in a core ``Library``)
+  - Add it to ``mMembers`` and ``mMembersByName`` on ``Player``
+
+- Visit ``FunctionNode`` for ``ApplyDamage``, create a new Function symbol, and register it with the ``Type`` ``Player``
+
+  - Also resolve the parameter types and return type
+  - Add it to ``mMembers`` and ``mMembersByName`` on ``Player``
+
+- We must perform type computation on the ``this`` expression before we can resolve the member
+- Visit the ``NameReferenceNode`` ``this`` and resolve the type as the special instance parameter of type ``Player*``
+- Walk back up to ``MemberAccessNode`` and dereference left hand type because we use ``->``
+
+  - Type ``Player*`` dereferences to ``Player`` (or ``Player&`` if your language supports it)
+  - ``Player`` is a symbol of type ``Type`` and therefore has ``mMembers`` and ``mMembersByName``
+  - Use ``mMembersByName`` to resolve ``Health``, if no members are found error!
+  - We find the ``Variable`` symbol for ``Health`` and resolve the ``MemberAccessNode`` to type ``Float``
+
+Duplicate Members & Overloads
+-----------------------------
+- Very easy to detect duplicate members by the same name
+- When adding to ``mMembersByName`` check first for a symbol of the same name
+- May want to allow this with function overloads
+- To support overloads, use a multi-map or create a class that derives from ``Symbol`` such as ``OverloadedFunctions`` to store multiple functions
+- If you wish to dis-allow base class member hiding, then need to walk up ``mBaseType`` and check
+
+Overload Resolution
+-------------------
+- Complicated set of rules that users must learn for your language
+- Can require multiple passes or a scoring system
+- When resolving a member of type ``OverloadedFunctions`` we need a way to disambiguate
+
+  - Many languages use a cast operator or a function call to determine which overload
+  - Walk each ``Function`` symbol in ``OverloadedFunctions`` and look for the best signature based on ``CastNode`` or ``CallNode`` arguments
+
+Module Based Compilation
+------------------------
+- Older languages would parse symbols as they went
+- Only allowed to use symbols that were defined above you
+- Required forward declarations
+- Due to single translational units, it also requires the need for ``#include`` and other similar directives
+- Scalable to larger code bases with parallel compilation (each unit uses less memory)
+- Very slow due to recompiling symbols redundantly for each translational unit
+
+  - Player.cpp includes String.hpp
+  - Engine.cpp also includes String.hpp
+  - Both recompile and manage separated symbol tables for the String.hpp include
+  - Precompiled header files help fix this
+  - Unity builds also help fix this
+
+- Module based compilation is the solution
+- Group all translational units in a library together
+- All classes and functions can see all other classes and functions, regardless of where the definitions is
+
+  - Above, below, or in another file even (without including or importing)
+
+- Requires multiple passes over the code
+
+  - Not slow because each pass is only touching certain parts of the tree (easily optimized)
+  - This is how members work when defined inside a class in C++ (can even see members below)
+
+- **Phase 1** collects all type names and registers them with the global symbol table / ``Library``
+
+- **Phase 2** collects all base class names and members (does not visit expressions or statements)
+
+  - All type names for members and base class names can be resolved because of **Phase 1**
+
+- **Phase 3** visits all statements and expressions and performs any extra checking needed for types and members
+
+  - All members (member access, base classes) can be resolved at this time
+
+.. warning:: Operations such as ``sizeof`` or ``decltype`` can become difficult in a module based language, depending on where they are used.
+
+.. code-block:: as
+  
+  class Player
+  {
+    // We want our health to be in the same units/type as damage
+    // In Phase 2 where we collect members we cannot resolve the type of this yet until we've collected
+    // the DamageAmount member on Damager (and built its Variably symbol / resolved its type)
+    var Health : decltype((null as Damager*)->DamageAmount);
+  }
+  
+  class Damager
+  {
+    var DamageAmount : Float;
+  }
+
+- The above code would require extra passes after **Phase 2** to resolve members whose type used ``decltype``
+- An alternative would be to use a dependency solving system (must detect cycles)
+
+.. code-block:: as
+  
+  class Player
+  {
+    // We want our health to be in the same units/type as damage
+    var Health : decltype((null as Damager*)->DamageAmount);
+  }
+  
+  class Damager
+  {
+    // We want our damage amount to be in the same units/type as health... uh oh
+    var DamageAmount : decltype((null as Player*)->Health);
+  }

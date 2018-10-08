@@ -1,0 +1,360 @@
+Abstract Syntax Tree
+====================
+- We build the AST during parsing
+- A representation of our code that is easy to traverse
+- Can do multiple passes over the same tree to collect data
+- Must be hierarchical and preserve order (a node with ordered children)
+- From the tree alone you can often recreate the original code
+
+  - Though the formatting and comments generally aren't preserved
+
+- You can create many types of different types of nodes
+
+Examples
+--------
+
+.. code-block:: as
+
+  class Animal
+  {
+    var Health : Real = 100.0;
+    
+    function TakeDamage(amount : Real)
+    {
+      this.Health -= amount * 10.0;
+    }
+  }
+
+Might look something like this in AST form:
+
+.. graphviz::
+
+  digraph
+  {
+    node [shape=rectangle, fontsize=10, height=0, fontname=Verdana];
+    "[Class]\nAnimal" -> "[Variable]\nHealth";
+    "[Variable]\nHealth" -> "[Type]\nReal";
+    "[Variable]\nHealth" -> "[Literal]\n100.0";
+    "[Class]\nAnimal" -> "[Function]\nTakeDamage";
+    "[Function]\nTakeDamage" -> "[Parameter]\namount";
+    "[Parameter]\namount" -> "[Type]\nReal ";
+    "[Function]\nTakeDamage" -> "[BinaryOperator]\n-=";
+    "[BinaryOperator]\n-=" -> "[MemberAccess]\n.Health";
+    "[MemberAccess]\n.Health" -> "[NamedReference]\nthis";
+    "[BinaryOperator]\n-=" -> "[BinaryOperator]\n*";
+    "[BinaryOperator]\n*" -> "[NamedReference]\namount";
+    "[BinaryOperator]\n*" -> "[Literal]\n10.0";
+  }
+
+And the nodes might be defined as follows (in C++ psuedo code):
+
+.. code-block:: cpp
+
+  class AbstractNode
+  {
+  };
+
+  class ClassNode : public AbstractNode
+  {
+    Token mName;
+    vector<MemberNode*> mMembers;
+  };
+  
+  class MemberNode : public AbstractNode
+  {
+  };
+  
+  class VariableNode : public MemberNode
+  {
+    Token mName;
+    TypeNode* mType;
+    ExpressionNode* mInitialValue;
+  };
+  
+  class TypeNode : public AbstractNode
+  {
+    Token mName;
+    int mPointers;
+  };
+  
+  class StatementNode : public AbstractNode
+  {
+  };
+  
+  class ExpressionNode : public StatementNode
+  {
+  };
+  
+  class LiteralNode : public ExpressionNode
+  {
+    Token mValue;
+  };
+  
+  class BinaryOperator : public ExpressionNode
+  {
+    Token mOperator;
+    ExpressionNode* mLeft;
+    ExpressionNode* mRight;
+  };
+  
+  class MemberAccess : public ExpressionNode
+  {
+    Token mOperator;
+    ExpressionNode* mLeft;
+    Token mName;
+  };
+  
+  class NamedReference : public ExpressionNode
+  {
+    Token mName;
+  };
+  
+  class FunctionNode : public MemberNode
+  {
+    vector<ParameterNode*> mParameters;
+    vector<StatementNode*> mStatements;
+    
+    // Null if there is no return (this is up to you!)
+    TypeNode* mReturnType;
+  };
+  
+  class ParameterNode : public AbstractNode
+  {
+    Token mName;
+    TypeNode* mType;
+  };
+
+Heterogeneous Nodes
+-------------------
+- Using a different type of node for each language concept
+- Each node has different members that are important to it
+
+  - A ``BinaryOperator`` has two expressions and an operator
+
+- Can use virtual functions to traverse node types
+
+Think about writing a visitor just to simply print out the names of the nodes:
+
+.. code-block:: cpp
+
+  class AbstractNode
+  {
+    virtual void Print() = 0;
+  };
+
+  class ClassNode : public AbstractNode
+  {
+    Token mName;
+    vector<MemberNode*> mMembers;
+    
+    virtual void Print()
+    {
+      printf("Class\n");
+      for (size_t i = 0; i < mMembers.size(); ++i)
+        mMembers[i]->Print();
+    }
+  };
+  
+  class VariableNode : public MemberNode
+  {
+    Token mName;
+    TypeNode* mType;
+    ExpressionNode* mInitialValue;
+    
+    virtual void Print()
+    {
+      printf("Variable\n");
+      mType->Print();
+      mInitialValue->Print();
+    }
+  };
+
+What if I forgot to implement BinaryOperator Print?
+
+- Often only need to visit certain nodes, and do nothing for many other node types
+- Virtual is not extensible if an outside user wants to add another pass
+- Not easy to traverse the entire tree with a new pass
+
+  - Must add a virtual function to every node, and not forget to visit a child
+
+Homogeneous Nodes
+-----------------
+- All nodes are the same type (just ``AbstractNode``)
+- Need a single common member that you can switch upon to determine type
+- Dynamic array of children, which supports any type of node
+
+.. code-block:: cpp
+
+  class AbstractNode
+  {
+    Token mToken;
+    vector<AbstractNode*> mChildren;
+  };
+  
+Generic traversal becomes easy:
+
+.. code-block:: cpp
+
+  void Print(AbstractNode* node)
+  {
+    printf("%s", node->mToken.mText);
+    for (size_t i = 0; i < node->mChildren.size(); ++i)
+      Print(node->mChildren[i]);
+  }
+
+Non-generic traversal becomes a nightmare!
+
+.. code-block:: cpp
+
+  void TypeChecking(AbstractNode* node)
+  {
+    switch (node->mToken.mType)
+    {
+      case ...:
+      case ...:
+      case TokenType::Var:
+        // What is the name of the var, is that a child node?
+        string name = node->mChildren[0]->mToken.mText;
+        // Where is the type of the var?
+        // The initial value of the var???
+        break;
+    }
+  }
+
+- Easily extended from the outside
+- Easy to add new passes
+- *Personal Preference*: I very much **dislike** this approach
+
+Heterogeneous Double Dispatch
+-----------------------------
+- *Personal Preference*: I like this approach!
+- New class called Visitor which has virtual functions overloaded to visit **every** node type
+
+  - Even abstract node types or base class nodes
+
+- The default implementation should call Visit for the base class type, or do nothing:
+
+.. code-block:: cpp
+
+  enum VisitResult
+  {
+    Continue,
+    Stop
+  };
+
+  class Visitor
+  {
+  public:
+    virtual VisitResult Visit(AbstractNode*   node) { return Continue; }
+    virtual VisitResult Visit(ClassNode*      node) { return this->Visit((AbstractNode*)   node); }
+    virtual VisitResult Visit(MemberNode*     node) { return this->Visit((AbstractNode*)   node); }
+    virtual VisitResult Visit(VariableNode*   node) { return this->Visit((MemberNode*)     node); }
+    virtual VisitResult Visit(TypeNode*       node) { return this->Visit((AbstractNode*)   node); }
+    virtual VisitResult Visit(StatementNode*  node) { return this->Visit((AbstractNode*)   node); }
+    virtual VisitResult Visit(ExpressionNode* node) { return this->Visit((StatementNode*)  node); }
+    virtual VisitResult Visit(LiteralNode*    node) { return this->Visit((ExpressionNode*) node); }
+    virtual VisitResult Visit(BinaryOperator* node) { return this->Visit((ExpressionNode*) node); }
+    virtual VisitResult Visit(MemberAccess*   node) { return this->Visit((ExpressionNode*) node); }
+    virtual VisitResult Visit(NamedReference* node) { return this->Visit((ExpressionNode*) node); }
+    virtual VisitResult Visit(FunctionNode*   node) { return this->Visit((MemberNode*)     node); }
+    virtual VisitResult Visit(ParameterNode*  node) { return this->Visit((AbstractNode*)   node); }
+  };
+
+  // This example will run the Visit function for
+  // BinaryOperator, ExpressionNode, StatementNode, AbstractNode
+  // By default, it also returns Continue because Visit(AbstractNode*) returns Continue
+  Visitor v;
+  v.Visit(binaryOp);
+
+- The user can now inherit from ``Visitor`` to make their own custom pass over the tree
+- On the nodes themselves, we add a virtual Walk function
+- We named it Walk to avoid confusion with the Visit function on Visitor
+- Walk is responsible for walking **ALL** of a heterogeneous node's children
+- Similar to the Print implementation above, except instead of ``printf`` we call ``Visit`` on passed in ``Visitor``
+
+.. code-block:: cpp
+
+  class AbstractNode
+  {
+  public:
+    virtual void Walk(Visitor* visitor, bool visit = true)
+    {
+    }
+  };
+
+  class ClassNode : public AbstractNode
+  {
+  public:
+    Token mName;
+    vector<MemberNode*> mMembers;
+    
+    void Walk(Visitor* visitor, bool visit = true) override
+    {
+      if (visit && visitor->Visit(this) == Stop)
+        return;
+      
+      // Technically we do not need to, but we should always invoke
+      // our base class walk just in case our base class has children
+      // Do not Visit the base node (Visitor takes care of this by invoking
+      // the base class Visit and this gives the user more control)
+      AbstractNode::Walk(visitor, false);
+      
+      for (size_t i = 0; i < mMembers.size(); ++i)
+        mMembers[i]->Walk(visitor);
+    }
+  };
+  
+  class VariableNode : public MemberNode
+  {
+  public:
+    Token mName;
+    TypeNode* mType;
+    ExpressionNode* mInitialValue;
+    
+    void Walk(Visitor* visitor, bool visit = true) override
+    {
+      if (visit && visitor->Visit(this) == Stop)
+        return;
+      
+      MemberNode::Walk(visitor, false);
+      
+      mType->Walk(visitor);
+      mInitialValue->Walk(visitor);
+    }
+  };
+
+- Users can store whatever data they want on their own Visitor
+- Example: A visitor that collects ONLY string literals from the tree (for string pooling)
+
+.. code-block:: cpp
+
+  class StringPoolVisitor : public Visitor
+  {
+    unordered_set<string> mPool;
+    
+    virtual VisitResult Visit(LiteralNode* node)
+    {
+      // No need to Visit the base class ExpressionNode
+      if (node->mToken.mType == TokenType::StringLiteral)
+        mPool.insert(node->mToken.mText);
+      return Continue;
+    }
+  };
+
+- Often times you will want to combine many passes together, for performance reasons
+- Iterating over the entire tree just to collect string literals is expensive (leaf nodes!)
+- New nodes can be added from the outside by extending Visitor
+
+Node Allocation And Storage
+---------------------------
+- You will be allocating nodes when you traverse into a rules in the parser
+- May want to avoid allocating the node until *after* you've determined that the rule applies
+
+  - For example, avoid allocation for a VariableNode until we actually read ``var``
+
+- In the parser, there are plenty of ways for a rule to fail
+- Using ``std::unique_ptr`` guarantees that the node will be deleted if it is not attached to the tree
+
+  - All code paths that can exit a parsing function (early returns, etc) will destruct the unqiue_ptr
+
+

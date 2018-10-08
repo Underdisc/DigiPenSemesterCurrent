@@ -1,0 +1,909 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Application Binary Interface &mdash; Compilers and Interpreters 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Compilers and Interpreters 1.0 documentation" href="index.html"/>
+        <link rel="next" title="Compiler As A Service (IDE)" href="CompilerAsAService.html"/>
+        <link rel="prev" title="Garbage Collection" href="GarbageCollection.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="index.html" class="icon icon-home"> Compilers and Interpreters
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="PartsOfTheCompiler.html">Parts Of The Compiler</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#lexical-analysis-tokenizer">Lexical Analysis (Tokenizer)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#syntax-analysis-parser">Syntax Analysis (Parser)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#abstract-syntax-tree-ast">Abstract Syntax Tree (AST)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#semantic-analysis">Semantic Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#interpreter">Interpreter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DeterministicFiniteAutomata.html">Deterministic Finite Automata (DFA)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#traversal-algorithm">Traversal Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#backtracking-and-lookahead">Backtracking and Lookahead</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-1-examples">LA(1) Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-2-examples">LA(2) Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-examples">LA(*) Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#lookahead-implementation">Lookahead Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-integers">Parsing Integers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-floats">Parsing Floats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-keywords">Parsing Keywords</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-identifiers">Parsing Identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-operators">Parsing Operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#state-structure">State Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#hard-coded-dfa">Hard-coded DFA</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="RegularExpressions.html">Regular Expressions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#core-operators">Core Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#union">Union <strong>|</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#concatenation">Concatenation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#kleene-closure">Kleene Closure <strong>*</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#extended-operators">Extended Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#character-sets">Character Sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#positive-closure">Positive Closure <strong>+</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#optional">Optional <strong>?</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#interval-min-max-min-n">Interval <strong>{min,max}</strong> <strong>{min,}</strong> <strong>{n}</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#any-character">Any Character <strong>.</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#other-operators">Other Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#escape-character">Escape Character <strong>\</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#anchors-and">Anchors <strong>^</strong> and <strong>$</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#word-boundaries-b">Word Boundaries <strong>\b</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#capture-group">Capture Group <strong>()</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#passive-group">Passive Group <strong>(?:)</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#replacement-back-reference">Replacement Back Reference <strong>$</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#cheat-sheets">Cheat Sheets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Grammars.html">Grammars</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#similarity-to-regular-expressions">Similarity To Regular Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#derivations-and-parse-trees">Derivations and Parse Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#ambiguity">Ambiguity</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Grammars.html#classic-examples-of-ambiguity">Classic Examples of Ambiguity</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#elimination-of-ambiguity">Elimination of Ambiguity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#left-recursion">Left Recursion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Operators.html">Operators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Operators.html#associativity">Associativity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Operators.html#precedence">Precedence</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="RecursiveDescent.html">Recursive Descent Parsing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#predictive-parser">Predictive Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#guidelines">Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternations">Alternations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternation-and-concatenation">Alternation and Concatenation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#recursion">Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternation-empty-rule">Alternation Empty Rule</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-token">Optional Token</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-rule">Optional Rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-concatenation">Optional Concatenation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#kleene-and-positive-closures">Kleene and Positive Closures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AbstractSyntaxTree.html">Abstract Syntax Tree</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#heterogeneous-nodes">Heterogeneous Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#homogeneous-nodes">Homogeneous Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#heterogeneous-double-dispatch">Heterogeneous Double Dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#node-allocation-and-storage">Node Allocation And Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="StaticVsDynamic.html">Static vs Dynamic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="StaticVsDynamic.html#static-typing">Static Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="StaticVsDynamic.html#dynamic-typing">Dynamic Typing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#scalar-variables">Scalar Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#table-or-object">Table or Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#inheritance-and-polymorphism">Inheritance and Polymorphism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#operator-overloading">Operator Overloading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#reflection">Reflection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#templates">Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#overloads-function-templates">Overloads &amp; Function Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#monkey-patching">Monkey Patching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#implementation">Implementation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="SemanticAnalysis.html">Semantic Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#scope-resolution">Scope Resolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="SemanticAnalysis.html#name-hiding">Name Hiding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SemanticAnalysis.html#types-members-variables">Types, Members, Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#symbol-table-aka-meta">Symbol Table aka Meta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#computing-types">Computing Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#type-inference">Type Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#l-r-values">L/R Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#syntactic-sugar">Syntactic Sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#control-flow">Control Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#member-resolution">Member Resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#duplicate-members-overloads">Duplicate Members &amp; Overloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#overload-resolution">Overload Resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#module-based-compilation">Module Based Compilation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ErrorRecovery.html">Error Recovery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#tokenization">Tokenization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#panic-mode">Panic Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#error-edges">Error Edges</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#parsing">Parsing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#id1">Panic Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#semantic-analysis">Semantic Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#classnode">ClassNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#poison">Poison</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#code-generation">Code Generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AstInterpreter.html">AST Interpreter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#advantages">Advantages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#disadvantages">Disadvantages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#execution">Execution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="AstInterpreter.html#expressions">Expressions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#literals">Literals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#binary-operators">Binary Operators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#unary-operators">Unary Operators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#type-casting">Type Casting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#member-access">Member Access</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#if-statements">If Statements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#while-do-while-for-etc">While, Do-While, For, Etc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#return">Return</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#break-and-continue">Break and Continue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#exceptions">Exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#function-calls">Function Calls</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ModernLanguages.html">Modern Languages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#return-type-inference">Return Type Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#decltype">Decltype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#delegates">Delegates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#closures-anonymous-functions">Closures &amp; Anonymous Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#properties">Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#extension-functions-properties">Extension Functions &amp; Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#pure-functions">Pure Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#mixins">Mixins</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="IntermediateRepresentation.html">Intermediate Representation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#front-back-end">Front/Back End</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#three-address-code">Three Address Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="IntermediateRepresentation.html#code-generation-example">Code Generation Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#static-single-assignment">Static Single Assignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#basic-blocks">Basic Blocks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="VirtualMachine.html">Virtual Machine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#instructions">Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#reduced-instruction-set-computing">Reduced Instruction Set Computing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#complex-instruction-set-computing">Complex Instruction Set Computing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#stack-machine">Stack Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#advantages">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#disadvantages">Disadvantages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#random-access-machine">Random Access Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id1">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id2">Disadvantages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#register-machine">Register Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id3">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id4">Disadvantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#register-allocation">Register Allocation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="VirtualMachine.html#infinite-registers">Infinite Registers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="VirtualMachine.html#register-reuse">Register Reuse</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GarbageCollection.html">Garbage Collection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#why">Why?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#safety">Safety</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#misconceptions">Misconceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#garbage-collector-roots">Garbage Collector Roots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#common-issues">Common Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#mark-and-sweep">Mark and Sweep</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#mark-phase">Mark Phase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#sweep-phase">Sweep Phase</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#defragmentation">Defragmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#reference-counting">Reference Counting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#advantages">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#disadvantages">Disadvantages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="ApplicationBinaryInterface.html#">Application Binary Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#name-mangling">Name Mangling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#standardization">Standardization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#calling-convention">Calling Convention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#libraries">Libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ApplicationBinaryInterface.html#dynamic-linked-libraries">Dynamic Linked Libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#structures">Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#virtual-tables">Virtual Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#runtime-type-identification">Runtime Type Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CompilerAsAService.html">Compiler As A Service (IDE)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#minimal-rebuild">Minimal Rebuild</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#member-auto-complete">Member Auto Complete</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#call-tips-overloads">Call Tips / Overloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#local-expression-completion">Local / Expression Completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#cursor-hovering">Cursor Hovering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#go-to-definition">Go To Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#symbol-querying">Symbol Querying</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#typenode">TypeNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#variablenode">VariableNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#callnode">CallNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#classnode-functionnode">ClassNode/FunctionNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#expressionnode">ExpressionNode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#comments">Comments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#refactor-rename">Refactor Rename</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#debuggers">Debuggers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#formatting">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#statement-evaluation">Statement Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#read-eval-print-loop">Read Eval Print Loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#other-features">Other Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment1.html">Assignment 1</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment1.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment2.html">Assignment 2</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment2.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment3.html">Assignment 3</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment3.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment4.html">Assignment 4</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment4.html#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment4.html#pass-4">Pass 4</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#literalnode">LiteralNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#indexnode">IndexNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#unaryoperatornode">UnaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#callnode">CallNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#castnode">CastNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#ifnode-fornode-whilenode">IfNode/ForNode/WhileNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#gotonode">GotoNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#returnnode">ReturnNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#parameternode-variablenode">ParameterNode/VariableNode</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment5.html">Assignment 5</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#pass-1-pre-pass">Pass 1 (Pre-Pass)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#interpreterfunctioncall">InterpreterFunctionCall</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#pass-2-interpretation">Pass 2 (Interpretation)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#variablenode">VariableNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#returnnode">ReturnNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#ifnode">IfNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#whilenode">WhileNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#castnode">CastNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#literalnode">LiteralNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#callnode">CallNode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#addsinfunction">AddSinFunction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#unhandled-nodes">Unhandled Nodes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AssignmentSubmission.html">Assignment Submission</a></li>
+<li class="toctree-l1"><a class="reference external" href="../CS375Assignments.1.html#://">Assignment Downloads</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Compilers and Interpreters</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Application Binary Interface</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/ApplicationBinaryInterface.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="application-binary-interface">
+<h1>Application Binary Interface<a class="headerlink" href="ApplicationBinaryInterface.html#application-binary-interface" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Important to decide how your language may interact with other languages</li>
+<li>Not a good idea to <strong>stand alone</strong> (no reuse of existing libraries)</li>
+<li>How does your language interface with existing operating system functionality?<ul>
+<li>Massive standard library that accounts for everything</li>
+<li>Or allow the programmers to extend your libraries by accessing others</li>
+</ul>
+</li>
+<li>Every time a language invents a feature that affects machine code, compatibility must be considered</li>
+</ul>
+<div class="section" id="name-mangling">
+<h2>Name Mangling<a class="headerlink" href="ApplicationBinaryInterface.html#name-mangling" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>One compilation unit exports the definition of a function and its symbolic name</li>
+<li>Another compilation unit links against it via a function declaration</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="kt">void</span> <span class="nf">HelloWorld</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello World!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>And elsewhere we have our declaration and call:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">HelloWorld</span><span class="p">();</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">HelloWorld</span><span class="p">();</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Quite common to have to link between <em>compilation units</em> in C/C++</li>
+<li>Even module based languages must link between their own libraries</li>
+<li>How do we safely link against a function within another unit?</li>
+<li>The above program correctly links in both C and C++</li>
+</ul>
+<p>What if we made the following modification?</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">HelloWorld</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="n">HelloWorld</span><span class="p">(</span><span class="mf">99.0f</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Without changing the definition of <code class="docutils literal"><span class="pre">HelloWorld</span></code>:<ul>
+<li>This program will <strong>not link</strong> in C++ due to <em>name mangling</em></li>
+<li>However it <strong>may link</strong> in C (under MSVC it does!)</li>
+</ul>
+</li>
+<li>In <em>Windows</em> a C function definition exports its name</li>
+<li>May have a leading <code class="docutils literal"><span class="pre">_</span></code> or trailing <code class="docutils literal"><span class="pre">&#64;</span></code> depending on <em>calling convention</em></li>
+<li>If the name is the only export, it becomes obvious why the above program <em>links</em></li>
+<li>Introducing <em>overloads</em>, <em>namespaces</em>, and <em>classes</em> necessitates mangling</li>
+</ul>
+<p>Consider that the following functions must not conflict when linking:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">HelloWorld</span><span class="p">();</span>
+
+<span class="kt">int</span> <span class="nf">HelloWorld</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+
+<span class="k">namespace</span> <span class="n">Foo</span>
+<span class="p">{</span>
+  <span class="kt">void</span> <span class="n">HelloWorld</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Bar</span>
+<span class="p">{</span>
+  <span class="k">static</span> <span class="kt">void</span> <span class="n">HelloWorld</span><span class="p">();</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Simplicity of C name mangling on <em>Windows</em> leads to many languages interoperating with it</li>
+<li>Technically a decision of the <em>compiler</em></li>
+<li>Mostly falls upon the <em>operating system</em> because of the libraries they provide<ul>
+<li>Even GCC/Clang on Windows conform to MSVC name mangling</li>
+</ul>
+</li>
+<li>Imagine you were to invent your own mangling of symbol names</li>
+<li>Cannot just be the declaration, eg <code class="docutils literal"><span class="pre">int</span> <span class="pre">HelloWorld(float)</span></code> due to whitespaces, e.g. <code class="docutils literal"><span class="pre">int</span>&#160;&#160; <span class="pre">HelloWorld</span> <span class="pre">(</span> <span class="pre">float</span>&#160; <span class="pre">)</span></code></li>
+<li>Must be normalized in some form</li>
+<li>Can use shorthand or other symbols for built in primitives</li>
+<li>May attempt to match language semantics for convenience</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// void_HelloWorld</span>
+<span class="kt">void</span> <span class="nf">HelloWorld</span><span class="p">();</span>
+
+<span class="c1">// int_HelloWorld_float</span>
+<span class="kt">int</span> <span class="nf">HelloWorld</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+
+<span class="k">namespace</span> <span class="n">Foo</span>
+<span class="p">{</span>
+  <span class="c1">// void_Foo::HelloWorld</span>
+  <span class="kt">void</span> <span class="n">HelloWorld</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Bar</span>
+<span class="p">{</span>
+  <span class="c1">// void_Bar::HelloWorld</span>
+  <span class="k">static</span> <span class="kt">void</span> <span class="n">HelloWorld</span><span class="p">();</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>What about types with underscores?</li>
+<li>May need to use symbols that aren&#8217;t available within the language</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">int_float</span><span class="p">;</span>
+
+<span class="c1">// How would the following functions get mangled?</span>
+
+<span class="kt">void</span> <span class="nf">HelloWorld</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">float</span><span class="p">);</span>
+
+<span class="kt">void</span> <span class="nf">HelloWorld</span><span class="p">(</span><span class="n">int_float</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="standardization">
+<h2>Standardization<a class="headerlink" href="ApplicationBinaryInterface.html#standardization" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Could encourage cross compiler and cross platform compatibility</li>
+<li>Many decisions made to leave other behaviors &#8216;undefined&#8217; for performance reasons</li>
+<li>Name mangling generally does not affect performance (though may increase memory / file sizes)</li>
+<li>Many other factors to compatibility than just linkage and symbol exports<ul>
+<li>Calling conventions (cdecl, fastcall, stdcall, etc)</li>
+<li>Static/dynamic linked library file formats</li>
+<li>Structure and stack frame padding</li>
+<li>Virtual table and RTTI memory layout</li>
+<li>Exception handling</li>
+</ul>
+</li>
+<li>Decided against standardization for C/C++ to not give a false impression of interoperability</li>
+<li>Other standards outside of languages: <em>Intel Binary Compatibility Standard (iBCS)</em></li>
+</ul>
+</div>
+<div class="section" id="calling-convention">
+<h2>Calling Convention<a class="headerlink" href="ApplicationBinaryInterface.html#calling-convention" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>How does a function caller and the callee (the function itself) agree on how parameters are passed?</li>
+<li>What about the return value?</li>
+<li>For speed, not all parameters are passed on the stack</li>
+<li>Many are passed within registers</li>
+<li>Must be chosen on an assembly level</li>
+<li>Many factors to making up a calling convention<ul>
+<li>Typical to target highest performance</li>
+<li>Many instructions may work only with specific registers<ul>
+<li><strong>div</strong> on x86 works only with the edx/eax registers</li>
+</ul>
+</li>
+<li>If we use those registers to pass parameters, we may need to shuffle if a div instruction is encountered</li>
+</ul>
+</li>
+<li>Not explicitly part of C/C++, but calling convention matters!</li>
+<li>Compilers often introduce keywords or extra syntax to change function calling conventions</li>
+<li>Often differs between operating systems</li>
+<li>Technically a choice of the compiler, but again relies upon the operating system</li>
+</ul>
+<p><strong>Windows x86</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">__cdecl</span>
+<span class="n">__clrcall</span>
+<span class="n">__stdcall</span>
+<span class="n">__fastcall</span>
+<span class="n">__thiscall</span>
+<span class="n">__vectorcall</span>
+</pre></div>
+</div>
+<p><strong>Windows x64</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">__fastcall</span>
+<span class="n">__vectorcall</span><span class="o">*</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The term <strong>cdecl</strong> has slightly different implementations between Linux and Windows, specifically when it comes to returning structs that are small enough to fit within a register</p>
+</div>
+<ul class="simple">
+<li>Decently easy to target x64 on both Linux and Windows:<ul>
+<li>On both we must align stack to 16 byte boundaries</li>
+<li>Parameters are pushed right to left</li>
+<li>On Windows our first 4 arguments: <code class="docutils literal"><span class="pre">RCX/XMM0,</span> <span class="pre">RDX/XMM1,</span> <span class="pre">R8/XMM2,</span> <span class="pre">R9/XMM3</span></code></li>
+<li>On Linux our first 6 arguments: <code class="docutils literal"><span class="pre">RDI,</span> <span class="pre">RSI,</span> <span class="pre">RDX,</span> <span class="pre">RCX,</span> <span class="pre">R8,</span> <span class="pre">R9,</span> <span class="pre">XMM0–7</span></code></li>
+<li>Rest pushed on the stack</li>
+<li><em>Read about the specifics for each platform</em></li>
+</ul>
+</li>
+<li>Many operating system functions boil down to C code</li>
+<li>Your language must understand both name-mangling and calling conventions</li>
+<li>On Windows, all operating system libraries use <code class="docutils literal"><span class="pre">__stdcall</span></code> on x86 and <code class="docutils literal"><span class="pre">__fastcall</span></code> on x64</li>
+<li>Support all calling conventions to maximize compatibility</li>
+<li>May also need to emit callee code for callbacks</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Languages such as Lua maintain portability by not allowing interoperability within language. However, because Lua binds directly with C/C++ then they leave it to the C portion to link in external libraries and work with operating system calls.</p>
+</div>
+</div>
+<div class="section" id="libraries">
+<h2>Libraries<a class="headerlink" href="ApplicationBinaryInterface.html#libraries" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Another consideration for <em>linking</em> is library format</li>
+<li>How does our language link against a compiled library from another language</li>
+<li>In Windows we have the .obj/.lib file format, Linux has the .a file format</li>
+<li>Must be able to read these formats to find symbols</li>
+<li>Must be able to load code into executable pages of memory</li>
+</ul>
+<p>On Windows:
+- There is no API for loading up a lib file / searching for symbols to link against
+- <strong>DUMPBIN</strong> is a useful tool for dumping information about dll/lib/exe
+- A .def file can be used to control the exported names of functions within a dll</p>
+<div class="section" id="dynamic-linked-libraries">
+<h3>Dynamic Linked Libraries<a class="headerlink" href="ApplicationBinaryInterface.html#dynamic-linked-libraries" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Most operating systems provide functions for loading/searching for symbols</li>
+<li>Many also export a <em>stub</em> static library file that automatically links functions</li>
+<li>If your language understands static libraries, it can just link against the <em>stub</em></li>
+</ul>
+<p>On Windows we use:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">LoadLibrary</span><span class="o">/</span><span class="n">LoadLibraryEx</span>
+<span class="n">GetProcAddress</span>
+<span class="n">FreeLibrary</span>
+<span class="n">GetLastError</span>
+</pre></div>
+</div>
+<p>On Linux we use:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dlopen</span>
+<span class="n">dlsym</span>
+<span class="n">dlclose</span>
+<span class="n">dlerror</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">GetProcAddress</span></code> and <code class="docutils literal"><span class="pre">dlsym</span></code> both return a <code class="docutils literal"><span class="pre">void*</span></code></li>
+<li>Either null or a pointer to the function that was found by name</li>
+<li>May need to respect name mangling (can be different because its never statically linked against)</li>
+<li>The <code class="docutils literal"><span class="pre">void*</span></code> must be cast into the correct function signature to be called</li>
+<li>Must also respect calling convention when casting</li>
+<li><em>Correct parameters with an incorrect calling convention will often result in a crash!</em></li>
+</ul>
+<p>On Windows lets examine how we would call the OS <code class="docutils literal"><span class="pre">MessageBox</span></code> function. The function has the following signature (extracted from the documentation/headers):</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">WINAPI</span> <span class="nf">MessageBox</span><span class="p">(</span>
+  <span class="n">_In_opt_</span> <span class="n">HWND</span>    <span class="n">hWnd</span><span class="p">,</span>
+  <span class="n">_In_opt_</span> <span class="n">LPCTSTR</span> <span class="n">lpText</span><span class="p">,</span>
+  <span class="n">_In_opt_</span> <span class="n">LPCTSTR</span> <span class="n">lpCaption</span><span class="p">,</span>
+  <span class="n">_In_</span>     <span class="n">UINT</span>    <span class="n">uType</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Defined within <code class="docutils literal"><span class="pre">User32.dll</span></code> with a stub library of <code class="docutils literal"><span class="pre">User32.lib</span></code></li>
+<li>Remember that we must consider on Windows unicode/ascii</li>
+<li>In ascii mode, <code class="docutils literal"><span class="pre">MessageBox</span></code> is really just a macro for <code class="docutils literal"><span class="pre">MessageBoxA</span></code></li>
+<li>The first parameter is simply just a pointer used as a handle</li>
+<li>The second and third parameters are string pointers (<code class="docutils literal"><span class="pre">const</span> <span class="pre">char*</span></code>)</li>
+<li>The fourth parameter is an <code class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span></code> enumeration</li>
+<li>To show an OK button we can pass the constant for MB_OK which is 0</li>
+<li><code class="docutils literal"><span class="pre">_In_opt_</span></code> and <code class="docutils literal"><span class="pre">_In_</span></code> are for documentation</li>
+<li>Notice that <code class="docutils literal"><span class="pre">WINAPI</span></code> is actually a define for <code class="docutils literal"><span class="pre">__stdcall</span></code></li>
+</ul>
+<p>Boiling it down, the function looks like:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="kr">__stdcall</span> <span class="nf">MessageBoxA</span><span class="p">(</span>
+  <span class="kt">void</span><span class="o">*</span> <span class="n">windowHandle</span><span class="p">,</span>
+  <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">text</span><span class="p">,</span>
+  <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">caption</span><span class="p">,</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">type</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>To call this function using only its dynamic linked library:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;Windows.h&gt;</span><span class="cp"></span>
+
+<span class="k">typedef</span> <span class="nf">int</span> <span class="p">(</span><span class="kr">__stdcall</span> <span class="o">*</span><span class="n">MessageBoxAFunc</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span> <span class="n">windowHandle</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">text</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">caption</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">type</span><span class="p">);</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">HMODULE</span> <span class="n">user32</span> <span class="o">=</span> <span class="n">LoadLibrary</span><span class="p">(</span><span class="s">&quot;User32.dll&quot;</span><span class="p">);</span>
+
+  <span class="c1">// If we try to find only &quot;MessageBox&quot; we won&#39;t find anything</span>
+  <span class="kt">void</span><span class="o">*</span> <span class="n">messageBoxAPointer</span> <span class="o">=</span> <span class="n">GetProcAddress</span><span class="p">(</span><span class="n">user32</span><span class="p">,</span> <span class="s">&quot;MessageBoxA&quot;</span><span class="p">);</span>
+
+  <span class="n">MessageBoxAFunc</span> <span class="n">messageBoxA</span> <span class="o">=</span> <span class="p">(</span><span class="n">MessageBoxAFunc</span><span class="p">)</span><span class="n">messageBoxAPointer</span><span class="p">;</span>
+
+  <span class="n">messageBoxA</span><span class="p">(</span><span class="k">nullptr</span><span class="p">,</span> <span class="s">&quot;Hello world!&quot;</span><span class="p">,</span> <span class="s">&quot;Hello&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+  <span class="n">FreeLibrary</span><span class="p">(</span><span class="n">user32</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="structures">
+<h2>Structures<a class="headerlink" href="ApplicationBinaryInterface.html#structures" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>When defining a structure a compiler must agree upon a standard for memory layout</li>
+<li>Including padding and alignment</li>
+<li>Extra information such as when a structure is <strong>packed</strong></li>
+<li>Typically alignment is based upon the largest primitive used:<ul>
+<li>char</li>
+<li>short</li>
+<li>int</li>
+<li>float</li>
+<li>long long</li>
+<li>double</li>
+</ul>
+</li>
+<li>SSE primitives for example require 16 byte alignment</li>
+<li>May need to include structure layout in name mangling for complete safety</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">MSVC only uses the name of a structure when mangling functions to ensure that the correct overload is chosen. Using only the name technically does not ensure binary compatibility.</p>
+</div>
+<p>To illustrate the issue, in one cpp we have:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+
+<span class="k">struct</span> <span class="n">Foo</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="n">lives</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">PrintFoo</span><span class="p">(</span><span class="n">Foo</span> <span class="n">f</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Foo: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">.</span><span class="n">lives</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>And in another we have:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">Foo</span>
+<span class="p">{</span>
+  <span class="kt">double</span> <span class="n">lives</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">PrintFoo</span><span class="p">(</span><span class="n">Foo</span> <span class="n">f</span><span class="p">);</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">Foo</span> <span class="n">bob</span><span class="p">;</span>
+  <span class="n">bob</span><span class="p">.</span><span class="n">lives</span> <span class="o">=</span> <span class="mf">999.0</span><span class="p">;</span>
+  <span class="n">PrintFoo</span><span class="p">(</span><span class="n">bob</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>The above program <strong>fully compiles and links with no warnings</strong></li>
+<li>Obviously this results in undefined behavior, and possibly even crashes (varies on x86/x64)</li>
+<li>To be entirely safe, structure layout would need to be exported and checked</li>
+<li>Or layouts would become part of name mangling:</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span>PrintFoo_Foo$int
+
+PrintFoo_int
+</pre></div>
+</div>
+</div>
+<div class="section" id="virtual-tables">
+<h2>Virtual Tables<a class="headerlink" href="ApplicationBinaryInterface.html#virtual-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Vtable layout is not standardized</li>
+<li>Not considered when interoperating with C only</li>
+<li>Only if we wish to extend exported C++ classes</li>
+<li>Must match rules on where v-table pointer goes within a class/struct</li>
+<li>Consider <em>structure layout</em> mentioned above</li>
+<li>Also must consider multiple-inheritance implementations</li>
+<li>V-table itself must also match (override functions by index)</li>
+</ul>
+</div>
+<div class="section" id="runtime-type-identification">
+<h2>Runtime Type Identification<a class="headerlink" href="ApplicationBinaryInterface.html#runtime-type-identification" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Related very closely to v-table layout</li>
+<li>On MSVC the RTTI information sits directly behind the v-table</li>
+<li>Used for dynamic casting and <code class="docutils literal"><span class="pre">typeid</span></code></li>
+<li>If your language extends a class written in C++, and then in C++ we use <code class="docutils literal"><span class="pre">typeid</span></code> on a polymorphic instance of your class, what does it return?</li>
+</ul>
+<p>The following article has a great description of reversing MSVC&#8217;s RTTI:</p>
+<p><a class="reference external" href="http://www.openrce.org/articles/full_view/23">http://www.openrce.org/articles/full_view/23</a></p>
+</div>
+<div class="section" id="exceptions">
+<h2>Exceptions<a class="headerlink" href="ApplicationBinaryInterface.html#exceptions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Another feature that was added that affects binary compatibility</li>
+<li>Must handle unrolling of exceptions the same way as the interoping language</li>
+<li>Or disable this feature when interoping</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Most languages never attempt to interop with C++ due to the complexities of name-mangling, matching v-table and RTTI implementation details, as well as matching how exception handling is performed. For this reason, most stick with the simplicity of C.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="CompilerAsAService.html" class="btn btn-neutral float-right" title="Compiler As A Service (IDE)" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="GarbageCollection.html" class="btn btn-neutral" title="Garbage Collection" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, DigiPen Institute of Technology.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

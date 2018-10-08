@@ -1,0 +1,72 @@
+Assignment 2
+============
+`Download The Assignment <../CS375Assignments/Assignment2.zip>`_
+
+The goal of the second assignment is to create a parser to *recognize* the provided grammar using the *Recursive Descent* technique.
+
+- All of the code must be implemented within ``User2.cpp`` inside the ``UserCode`` directory
+- This assignment requires ``User1.cpp`` from the previous assignment for driver tests part 2 and 3
+
+- The reference executable (sample driver) is provided in the ``Reference`` folder
+
+  - Run a particular test by passing in a number to the command line
+  - No arguments means run all tests
+
+- The score you get for the assignment is the number of passed tests out of the total number of tests
+- It is up to you to run *diff* or any similar differencing tool to verify that your code matches the reference executable
+
+- Requires Visual Studio 2015
+
+- The Visual Studio .sln is located within the ``CompilerClassAssignment2`` directory
+  
+- Please read all the comments above each of the driver functions that you must implement
+
+- Submit your assignment using the online server at: :ref:`assignment-submission`
+
+Implementation
+--------------
+
+The first task is to remove all white-space and comment tokens from the stream. The second task is to recognize the grammar provided in the ``Drivers\Grammars.txt`` file using the Recursive Descent algorithm. You must start by parsing the ``Block`` rule from the grammar. Note that the grammar has been refactored to require a look-ahead of 1 (no backtracking). This also means that once we begin accepting a rule we can expect the rest of the tokens for that rule to follow:
+
+- You must implement the following functions:
+
+  - ``RemoveWhitespaceAndComments``, ``Recognize``
+
+- If you read a token with an index outside of the token stream, it is a best practice to return an invalid or Eof token (similar to a sentenel node on a linked list) 
+- It is useful to implement your own helper functions for recursive descent, such as ``Accept`` and ``Expect``
+
+  - ``Accept`` only advanced the token stream if the next token matches the token type you pass in
+  - ``Expect`` simply calls ``Accept``, and throws a ParserException if it fails
+
+- Upon accepting a token you must call ``PrintRule::AcceptedToken(type);``
+- Upon entering any rule, you must use the ``PrintRule`` class which only prints upon accepting the rule
+
+Here are some examples to get you started (implemented within a custom ``Parser`` class that holds the token stream):
+
+.. code-block:: cpp
+
+  bool Type()
+  {
+    PrintRule rule("Type");
+    if (this->Accept(TokenType::Identifier) == false)
+      return false;
+
+    while (this->Accept(TokenType::Asterisk));
+    return rule.Accept();
+  }
+
+  bool Class()
+  {
+    PrintRule rule("Class");
+    if (this->Accept(TokenType::Class) == false)
+      return false;
+    
+    this->Expect(TokenType::Identifier);
+    this->Expect(TokenType::OpenCurley);
+
+    while ((this->Var() && this->Expect(TokenType::Semicolon)) || this->Function());
+
+    return rule.Accept(this->Expect(TokenType::CloseCurley));
+  }
+
+You may find it helpful to stub out all the rules first (with prints) before starting the implementations.

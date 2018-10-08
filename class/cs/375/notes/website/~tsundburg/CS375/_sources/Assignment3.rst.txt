@@ -1,0 +1,157 @@
+Assignment 3
+============
+`Download The Assignment <../CS375Assignments/Assignment3.zip>`_
+
+The goal of the third assignment is to augment your parser from assignment 2 to build an Abstract Syntax Tree.
+
+- All of the code must be implemented within ``User3.cpp`` inside the ``UserCode`` directory
+- You should start by copying your ``User2.cpp`` and renaming the copy to ``User3.cpp``
+- This assignment requires ``User1.cpp`` from the previous assignment for driver tests part 2 and 3
+
+.. warning:: New functions have been added to ``Driver1.hpp`` and ``Driver1.cpp`` (which is included from the 3rd driver). Be sure to use code from the latest download of assignment 3.
+
+- The reference executable (sample driver) is provided in the ``Reference`` folder
+
+  - Run a particular test by passing in a number to the command line
+  - No arguments means run all tests
+
+- The score you get for the assignment is the number of passed tests out of the total number of tests
+- It is up to you to run *diff* or any similar differencing tool to verify that your code matches the reference executable
+
+- Requires Visual Studio 2015
+
+- The Visual Studio .sln is located within the ``CompilerClassAssignment3`` directory
+  
+- Please read all the comments above each of the driver functions that you must implement
+
+- Submit your assignment using the online server at: :ref:`assignment-submission`
+
+Implementation
+--------------
+
+- Part 1 of the assignment is to build the expression portion of the AST (expression tree)
+- Part 2 of the assignment is to build the rest of the AST (including expressions)
+
+- The rules you implemented in assignment 2 which returned bools should now return ``unique_ptr``
+- Must allocate the node associated with each rule
+
+- Implement the ``Walk`` functions for all nodes listed in ``AstNodes.hpp`` that inherit from ``ExpressionNode``
+
+  - Must match the order that the driver prints out in (you will see when you get to each test)
+
+- Implement the base class ``Visitor`` as defined in the Abstract Syntax Tree notes
+
+  - Do not skip this step, as we will be using heavily it in the next two assignments
+
+- Implement the following driver functions:
+
+  - ``ParseExpression``, ``ParseBlock``, ``PrintTree``
+
+- ``ParseExpression`` should invoke the ``Expression`` rule defined within our grammar
+
+  - Generally only parses nodes that inherit from ``ExpressionNode`` (exceptions include ``TypeNode`` within a cast, etc)
+
+- ``ParseBlock`` should invoke the ``Block`` rule defined within our grammar (the root/starting rule)
+- ``PrintTree`` should use the derived visitor to print the tree, with the following requirements:
+
+  - Use the driver provided ``NodePrinter`` (inherits from ``std::stringstream`` to allow you to use ``<<``)
+  - The default behavior of each node should be to print its class name, e.g. ``ContinueNode``
+  - The following nodes must print using the given format:
+  
+::
+  
+  ClassNode(mName)
+  VariableNode(mName)
+  ParameterNode(mName)
+  FunctionNode(mName)
+  NamedTypeNode(mName)
+  LabelNode(mName)
+  GotoNode(mName)
+  LiteralNode(mToken)
+  NameReferenceNode(mName)
+  BinaryOperatorNode(mOperator)
+  UnaryOperatorNode(mOperator)
+  MemberAccessNode(mOperator, mName)
+
+- The print visitor implementations will most likely look like:
+
+.. code-block:: cpp
+
+  NodePrinter printer;
+  printer << "ClassNode(" << node->mName << ")";
+
+  // Node printer uses its destructor to know
+  // when the node ends / has no more children
+  // We must walk the children manually here
+  // We pass 'false' to make sure this function
+  // won't get called again immediately
+  node->Walk(this, false);
+
+  // Since we walked the children manually, we don't
+  // need the Visitor to automatically walk them
+  return VisitResult::Stop;
+
+.. note:: The above code can be heavily simplified with the use of macros
+
+- Must use ``unique_ptr`` and ``move`` from the standard template library
+- Highly recommended that you implement helper functions, macros, and templates to simplify your code
+- Stub out any code you need to make part 1 work (it will make the assignment easier to do it in increments)
+- Read the comments above ``unique_vector`` within ``AstNodes.hpp``
+
+Here are some example implementations of the grammar rules:
+
+.. code-block:: cpp
+
+  std::unique_ptr<VariableNode> Var()
+  {
+    PrintRule rule("Var");
+    if (this->Accept(TokenType::Var) == false)
+      return nullptr;
+
+    std::unique_ptr<VariableNode> node = std::make_unique<VariableNode>();
+    
+    // This version of Expect also outputs to a Token* if provided
+    this->Expect(TokenType::Identifier, &node->mName);
+    
+    // Templated Expect so that it will return the same type as its input
+    // You may need to respect move semantics depending on your implementation
+    node->mType = this->Expect(this->SpecifiedType());
+
+    this->Accept(TokenType::Assignment) && (node->mInitialValue = this->Expect(this->Expression()));
+    return rule.Accept(std::move(node));
+  }
+
+  std::unique_ptr<ScopeNode> Scope()
+  {
+    PrintRule rule("Scope");
+    if (this->Accept(TokenType::OpenCurley) == false)
+      return nullptr;
+    
+    std::unique_ptr<ScopeNode> node = std::make_unique<ScopeNode>();
+
+    // We use the push_back function defined within unique_vector in AstNodes.hpp
+    while (node->mStatements.push_back(this->Statement()));
+    
+    this->Expect(TokenType::CloseCurley);
+    return rule.Accept(std::move(node));
+  }
+
+Here is an example implementation for the Walk function:
+
+.. code-block:: cpp
+
+  void VariableNode::Walk(Visitor* visitor, bool visit)
+  {
+    // Recommended that you simplify all this boiler plate code
+    if (visit && visitor->Visit(this) == VisitResult::Stop)
+      return;
+    
+    StatementNode::Walk(visitor, false);
+    
+    // Check each node, just to be safe
+    // (also covers all bases for when we allow null nodes)
+    if (mType != nullptr)
+      mType->Walk(visitor);
+    if (mInitialValue != nullptr)
+      mInitialValue->Walk(visitor);
+  }

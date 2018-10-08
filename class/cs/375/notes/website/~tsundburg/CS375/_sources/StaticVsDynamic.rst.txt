@@ -1,0 +1,426 @@
+Static vs Dynamic
+=================
+- **Static** means types are checked at compile-time (before execution)
+- **Dynamic** means types are checked at run-time (during execution)
+- May combine both features as a hybrid
+- Garbage collection is **NOT** a feature of dynamic (exists in both)
+- Do **NOT** use the terms **strong** or **weak** typing
+
+  - Much confusion surrounding these terms
+  - **Strong** implies the type system has no leniency or loopholes
+  - **Weak** implies there are ways of subverting the type system (reinterpret_cast, void*, unions, etc.)
+  - No type system is perfect: almost all statically typed languages include weak features
+
+.. note:: Life Lesson: Always include a way to subvert any strong or aggressive system. Your advanced users will love you and you won't have to release patches to address missing functionality
+
+Static Typing
+-------------
+- Provides more errors ahead of time
+- More opportunities for auto-complete, automated refactoring, and go-to-definition like features
+- Visitor walks over the entire AST and computes types
+- Easier to optimize on the assembly level
+- ``a + b`` is a known operation with known types
+- C, C++, C#, ActionScript 3, etc.
+
+Dynamic Typing
+--------------
+- Refactoring is typically very difficult
+- Breaking changes are also problematic as you may not know until execution of that code
+- Typically not as concerned with performance
+- Easier to load and make code changes at run-time
+- Typically very tolerant
+- ``a + b`` we do not know the types of ``a`` and ``b`` until run-time (it can even change over different executions)
+
+Scalar Variables
+````````````````
+- Variables (local and global) have no compile-time type
+- They can store **any** kind of object or primitive at runtime
+
+.. code-block:: as
+
+  // Legal in a dynamic language
+  a = "hello";
+  a = 5;
+  a = new Player();
+
+- There is no need to declare type
+- This is implemented using what we call a **variant** or **any**
+- A class with one member for each of the primitive types plus an enum to define which type it is at runtime (in C++):
+
+.. code-block:: cpp
+
+  enum VariantType
+  {
+    Null,
+    Integer,
+    Float,
+    Pointer,
+    String
+    //...
+  };
+
+  class Variant
+  {
+  public:
+    // What type is this variant currently storing? (typically defaults to null or undefined)
+    VariantType mType;
+  
+    // We could use a union here to compact the Variant
+    // Careful! You cannot use unions on types that have constructors and destructors (must be POD)
+    int   mIntegerValue;
+    float mFloatValue;
+    void* mPointerValue;
+    string mStringValue;
+    //...
+  };
+
+- Every time we create a variable, we're really just creating one of these (plus a name that points at it via some map)
+- Many languages also do away with the declaration of a variable requirement
+
+::
+
+  function Foo()
+  {
+    a = 20;
+  }
+
+- Presents some interesting problems:
+
+.. code-block:: as
+
+  function Foo()
+  {
+    if (something)
+    {
+      a = "hello";
+    }
+    
+    // Is accessing 'a' here legal?
+    print(a);
+    
+    // What about accessing 'b' here?
+    print(b);
+    
+    b = 3.3;
+  }
+
+- Without declaration, there can be no scope!
+- This leads to function level scope, which many dynamic languages have
+- The value of a variable before use is typically a zeroed out form (0, null, etc), undefined (a constant value like null), or an error/exception
+- Like static languages, many dynamic languages will resort to treating an unfound local variable as a global
+
+  - This behavior is determined at **runtime** rather than at compile time, because a variable could or could not exist!
+
+- Worth noting that even Javascript originally had this scoping, but has recently introduced the ``let`` keyword to declare variables
+
+Table or Object
+```````````````
+- In many dynamic languages there is no compile-time way to define a type
+- Types are composed together at run-time
+- Functions, variables, and other members added or removed at any time
+- How is this achieved?
+
+.. code-block:: cpp
+
+  // This is typically what an object looks like in a dynamic language (can also use map)
+  std::unordered_map<Variant, Variant>
+
+- The ``Variant`` class must implement hash and equality operators
+- If the types are the same, then comparison is easy
+- If types are different, the language must decide which is correct (is 11 == "11"?)
+
+.. code-block:: cpp
+
+  bool Variant::operator==(const Variant& rhs)
+  {
+    if (this->mType != rhs.mType)
+      return false;
+    
+    switch (this->mType)
+    {
+      // If the type is null, we don't need to compare anything else
+      // We already know both variants are the same type due to the above check
+      case VariantType::Null:
+        return true;
+      
+      case VariantType::Integer:
+        return this->mIntegerValue == rhs.mIntegerValue;
+      
+      //...
+    }
+  }
+
+- Note that the ``Variant`` must also be able to contain an object or table:
+
+.. code-block:: cpp
+
+  enum VariantType
+  {
+    //...
+    Object
+  };
+
+  class Variant
+  {
+  public:
+    //...
+    std::unordered_map<Variant, Variant> mObject;
+  };
+
+- What happens when you copy the variant determines whether your language copies a type by value or by reference
+- For example, copying the above variant would result in an entire deep copy if it were an ``Object``
+- If you wrote ``a = b`` in language then both ``a`` would get its own copy of the object ``b`` stored
+
+.. code-block:: cpp
+
+  class Variant
+  {
+  public:
+    //...
+    std::shared_ptr<std::unordered_map<Variant, Variant>> mObject;
+  };
+
+- The above version would be reference counted when you copied an object around (therefore by reference)
+- If you wrote ``a = b`` in language then both ``a`` and ``b`` would have a reference to the same object (ref count 2)
+
+.. code-block:: cpp
+
+  class Variant
+  {
+  public:
+    //...
+    std::unordered_map<Variant, Variant>* mObject;
+  };
+
+- You may opt to not use reference counting and instead use a garbage collector (more on that later)
+- This definition of an Object is very powerful and flexible
+- Need a way to create an empty object at runtime (many different syntaxes)
+
+::
+
+  // Lua, Javascript, and Python syntax
+  a = {}
+
+.. note:: In Javascript their object's are actually only ``std::unordered_map<string, Variant>`` and cannot contain any value as a key
+
+- How does member access work in a dynamic language?
+- For example ``player.Lives``
+- Because ``player`` is a dynamic object (map of variants to variants) then we must use a lookup
+- Dynamic languages are clever and lookup the member as a string
+
+::
+
+  // In Lua, the statement:
+  player.Lives
+  
+  // Is the equivalent of:
+  player["Lives"]
+
+Inheritance and Polymorphism
+````````````````````````````
+- Dynamic languages do not need extra features such as ``virtual``
+- All member accesses are virtual because we are always doing a lookup in the hash map of variants
+
+The following code is written in a sample dynamic language:
+
+.. code-block:: as
+
+  function AnimalSpeak()
+  {
+    print("...");
+  }
+  
+  function CatSpeak()
+  {
+    print("Meow!");
+  }
+  
+  // This is the equivalent to an Animal class constructor
+  animal = {};
+  animal.Health = 100;
+  animal.Speak = AnimalSpeak;
+  
+  // Now we run a pretend Cat class constructor (no need to create the object again)
+  // We 'inherited' the base class members already, and now we add our own derived members
+  animal.Lives = 9;
+  
+  // We 'override' the base class function by literally overwriting it
+  // Any future attempt to call 'Speak' will result in 'CatSpeak'
+  // unless someone overwrites it in the future (its dynamic!)
+  animal.Speak = CatSpeak;
+
+
+Functions
+`````````
+- Functions are now objects that can be passed around (not strictly a dynamic language feature, also in some static languages)
+- Not just pointers (though they are shared)
+- Can often be compiled at run-time
+- Can get garbage collected if no one keeps a reference to it
+- Often the parameters of a function call are actually packed into the language's **array** type
+- Some dynamic languages are lenient and do not mind if the incorrect number of arguments are passed to a function
+
+  - Every function is 'variadic'
+  - Javascript and Lua both allow this, Python does not (variadic is explicit)
+
+.. code-block:: as
+
+  function Speak(name, text)
+  {
+    // Language may have a special way of getting arguments as array, such as 'args' keyword
+    print(args[0]); // Print the name
+    print(args[1]); // Print the text
+    print(args[2]); // Print an extra 3rd argument that was passed
+  }
+  
+  // 1 argument passed, 'text' just passes in null
+  bob.Speak("Ted");
+  
+  // 3 arguments passed (last one does not get mapped to a parameter name)
+  bob.Speak("Ned", "Hello world!", "What?");
+
+- Many dynamic languages also treat the locals as a table or object
+- You can grab local variables and index them by string
+
+.. code-block:: as
+
+  function Speak(name, text)
+  {
+    var i = 10;
+    
+    // Via the 'locals' keyword
+    print(locals["i"]);
+  }
+
+Operator Overloading
+````````````````````
+- A convenience in many static languages
+- A hugely powerful construct in dynamic languages
+- Primarily because the ``.`` operator can be overloaded unlike in most static languages
+- Example: Overload the ``.`` to look on a different table/object for members if a member is not found (inheritance)
+- Very helpful for *binding* between a scripting language and a native language like C++
+
+Reflection
+``````````
+- Also known as *Run Time Type Identification*
+- The ability to walk over all types defined within a library, all those types members, etc
+- Check for base classes, nested types, sizes, offsets, etc
+- The ability to get string names of types (typically virtual)
+- C++ only supports names of types (no iterating over type_infos or accessing members)
+- In a dynamic language, this comes entirely for free
+- Because the object/table class must have all its members dynamically added, then it becomes trivial to walk over all defined members
+- Typically a defined language way of getting the type of a variant (e.g. in Lua you use ``type(something)`` which returns "bool", "number", ...)
+- The name of the type might just be a member on the table/object called ``__type``
+
+.. code-block:: as
+
+  player = {};
+  player.Health = 100;
+  player.Ammo = 50;
+  player.Shoot = function() { /*...*/ };
+  for (var member in player)
+  {
+    print(member);
+  }
+
+Prints something like:  
+
+::
+
+  Health
+  Ammo
+  Shoot
+
+Templates
+`````````
+- A dynamic language container can store any type via the ``Variant``
+- There is no need for templated code
+- Moreover, containers can now have polymorphic members
+
+.. code-block:: as
+
+  array.PushBack(5);
+  array.PushBack("hello");
+  array.PushBack(null);
+
+- Dynamic languages don't need a bunch of features to circumvent or enhance the type system
+- Keeps the languages generally simple yet powerful
+
+Overloads & Function Templates
+``````````````````````````````
+- Overloads are more naturally expressed by user defined logic rather than pre-defined compiler rules
+- No way to overload because we don't pass typed arguments into functions (scalar parameters)
+- Cannot overload on different number of arguments because every function is variadic
+- Single name mapped to single function on ``unordered_map`` (multi-function object?)
+
+.. code-block:: cpp
+
+  template <typename T>
+  void Speak(T value)
+  {
+    // We assume that the value has a 'mName' member
+    print(value.mName);
+  }
+  
+  void Speak(bool value)
+  {
+    if (value)
+      print("true");
+    else
+      print("false");
+  }
+
+The same code written in a pseudo dynamic language:
+
+.. code-block:: as
+
+  function Speak(value)
+  {
+    if (type(value) == "bool")
+    {
+      if (value)
+        print("true");
+      else
+        print("false");
+    }
+    else
+    {
+      // We assume that the value has a 'mName' member
+      print(value.mName);
+    }
+  }
+
+Monkey Patching
+```````````````
+- Overwriting or adding a member on a type that is not your own
+- Often used to replace a function so that it does slightly different behavior (e.g. sends an event)
+- Very dangerous practice, but *desperate times call for desperate measures*
+- Many companies have the policy that monkey patches must be documented
+
+.. code-block:: as
+
+  var player = game.GetPlayer(0);
+  
+  var oldJump = player.Jump;
+  
+  function newJump()
+  {
+    // Invoke the original function
+    oldJump();
+    
+    // I needed to store some data about the player for how many times they have tried to jump
+    if (this.HasJumped == undefined)
+      this.HasJumped = 1;
+    else
+      ++this.HasJumped;
+  }
+  
+  // *Monkey Patch*
+  // Every time the player jumps we need to track how many times
+  player.Jump = newJump;
+
+Implementation
+``````````````
+- Dynamic languages are incredibly simple to implement and take much less time than static counterparts
+- Tokenizer -> Parser -> Semantic Analysis (very small phase!) -> Interpreter
+- Typically your stack is just a ``vector<Variant>``
+- Globals are often just another special table

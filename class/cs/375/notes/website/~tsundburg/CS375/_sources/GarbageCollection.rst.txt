@@ -1,0 +1,283 @@
+Garbage Collection
+==================
+- Commonly abbreviated as **GC**
+- Whether the user or the compiler is responsible for cleaning up memory
+- Can automatically defragment memory (good for long term applications / servers)
+- Only reclaims memory when the memory *cannot be reached*
+- Languages as old as LISP used garbage collectors
+- Popularized by Java
+- Many modern languages feature some form of garbage collection (D, C#, Swift)
+- Almost all dynamic languages feature garbage collection (Lua, Python, Javascript)
+- Even Rust has built in facilities for supporting garbage collection (but not inherent)
+- Garbage collection can be triggered
+
+  - When a memory allocation fails
+  - Every so many opcodes / time
+  - Manually by the user
+
+Why?
+----
+- Most situations can be resolved by a good programmer establishing an ownership tree
+- Game engine owns the game objects and is responsible for destroying them
+
+  - Game objects are responsible for destroying their components
+  
+    - Components are responsible for destroying their containers / allocations
+
+- On occasion there are situations where memory ownership is more ambiguous
+- Sending a collision event from the physics system event
+
+  - Does physics own the event?
+  - Is the event destroyed after everyone has processed it?
+  - What if someone wanted to hold on to the collision information until the next frame?
+  - Do they have to make their own local copy?
+  - Is the event's destruction delayed until the end of the frame (delayed destruction)?
+  - Is the event reference counted or garbage collected?
+
+- When no clear ownership chain is available, garbage collection is a good idea
+- Many languages provide some features - even C++ has ``shared_ptr``
+
+Safety
+------
+- A language must make the decision about whether it will be considered *safe*
+- No uninitialized memory
+- No undefined behavior
+- No accessing of memory outside of safe bounds
+
+  - Array indexing
+  - Pointer arithmetic
+
+- Typically limited reinterpretation of memory (pointer casting)
+- Only safe down casting allowed
+- Double deletes safely handled (exceptions, ignored, etc)
+- Cannot access an invalid pointer / pointer to a deleted object
+
+  - May use safe handles, or garbage collection
+
+- If your language is **unsafe**
+
+  - Garbage collection typically only acts as a convenience
+  - May help speed by defragmentation and automatic grouping of similar types
+
+- If your language is **safe**
+
+  - Garbage collection can offer one gain: **speed**
+  - Prevents dangling pointers from being a problem
+
+Misconceptions
+--------------
+- **Garbage collection only slows down my program**
+
+  - If the language is must guarantee safety, then the only other mechanisms include **reference counting** and **safe handles**
+  - *Reference counting* incurs a frequent increment/decrement cost to the opcode
+  - May be reduced by different optimization phases
+  - *Safe handles* incur a cost for every time their memory must be accessed
+  - Dereferencing a handle may be expensive (memory indirection, extra operations)
+  - *If your language is unsafe, then it probably does slow it down*
+
+- **You cannot leak memory with a garbage collector**
+
+  - Garbage collector can only release memory that is not in use
+  - User can artificially leak memory by holding on to it
+  - Most common when pushing into an array or other container
+  - Can even be through the use of delegates (e.g. C# events)
+
+- **Allocation is slow with a garbage collector**
+
+  - Depending on the garbage collection algorithm, allocations can be extremely fast
+  - As fast as the classic *paged allocator*
+  - Especially true with a generational garbage collector with *eden space*
+
+- **Garbage collectors are uncontrollable and unpredictable**
+
+  - True in many languages unfortunately
+  - Does not have to be this way! *You can make a difference*
+  - User may pass flags to code generation (garbage collectors may emit special opcodes)
+  - Garbage collectors can also have runtime options
+  - Language may even provide the ability to swap types of garbage collectors
+  - Can be made deterministic through defined rules, and allowing/forcing the user to invoke GC manually
+  - See *LuaJit*
+
+Garbage Collector Roots
+-----------------------
+- The possible places we must consider that can keep an object alive
+
+- Possible **gc roots** include:
+
+  - Global variables or constants
+  - Stacks (including those from different threads)
+  - Registers (though many machines will have the base pointer both in register and on the stack)
+  - External (when binding a language)
+
+- Think about when you write any program in any language
+
+  - Every expression starts by accessing a stack local
+  - Or a constant
+  - Or a global variable / function
+  - Even functions that return references will do the same
+
+- No other typical or safe way to 'reach' an object
+
+.. graphviz::
+
+  digraph
+  {
+    node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+    "Globals" -> "Engine";
+    "Engine" -> "Physics";
+    "Stack" -> "Player";
+    "Player" -> "Gun";
+    "Enemy" -> "Grenade";
+    "Particle" -> "Emitter";
+    "Emitter" -> "Particle";
+  }
+
+- Which of the above objects should be deleted automatically in a garbage collection pass?
+- We can reach ``Physics`` by going through the globally accessible ``Engine``
+- We can reach ``Gun`` by going through a stack local variable that points at the ``Player``
+- We could try and reach ``Grenade`` by going through ``Enemy``
+- However, ``Enemy`` is entirely unreachable (no pointer to it)
+- Therefore both ``Enemy`` and ``Grenade`` should be deleted automatically
+- ``Particle`` and ``Emitter`` is a tricky case, because they both point at each other
+
+  - Known a cycle, and is more common than you may think (doubly linked list!)
+  - Reference counting would keep these objects alive
+
+- Though they point at each other, they are not reachable from a **gc root**
+- No pointer to either of them from the **stack**
+- No pointer to either of them from a **global**
+- Both ``Particle`` and ``Emitter`` would be automatically deleted
+
+- Most languages with garbage collectors ensure that you only ever point at the base of an object
+
+.. note:: In Lua 5 you cannot keep a reference to an object within C or C++. You can only ever keep an object alive by keeping it on the Lua stack or within the *globals table*.
+
+.. note:: In the Javascript implementation V8 you can explicitly create scopes that act as **gc roots** within C/C++ to keep objects alive.
+
+Common Issues
+-------------
+- Any garbage collection technique may be invoked when we run out of memory
+- Our technique may also need to **allocate** for its own purposes
+- The amount of allocation needed may be unbounded (number of objects allocated in the program)
+- Can use pointer tricks similar to *paged allocator*
+
+  - If we have a free list for objects/blocks of memory
+  - Store the free list pointer within the header of the unused object's memory
+
+Mark and Sweep
+--------------
+- One of the first algorithms created for garbage collection
+- Expensive, but simple to implement
+- Can implement the entire memory manager (including free list / memory blocks / merging)
+
+Mark Phase
+``````````
+- Pause the execution of the program
+- Walk through all **gc roots** and mark every object that is reachable
+- If an object is reachable, we must also walk its members to mark all other reachable objects (recursive)
+- Walking **gc roots** implies
+
+  - Walking every pointer for every stack for every thread
+  - Walking every pointer in a global variable or constant
+  - Walking every member variable pointer if an object is marked
+  - Walking through any array or container to ensure we walk all pointers
+
+- Incredibly easy to perform with a *dynamic runtime*
+
+  - Walk the entire stack (array of ``Variants``)
+  - Walk any object / table (``unordered_map<Variant, Variant>``)
+  - Be sure to walk both keys and values
+
+- Static runtime requires *reflection information* such as structure and stack layout
+
+  - Heavily dependent on optimization passes
+  - LLVM and other IRs provide a mechanism for querying **gc roots**
+  - May need to detect if registers store pointers
+
+- Generically walking the stack and reinterpreting every 32/64bits as a pointer is *not* the best idea
+
+  - Random memory can **coincidentally** be interpreted as a pointer to an object
+  - Same with walking the heap or an allocated object
+
+- Difficult to do in an AST Interpreter if ``Variants`` are kept on the stack
+- Unless you can get a list of all ``Variants`` used in the program
+- May want to walk ``Variants`` that the a host language is storing (embedded scripting language)
+- Marking may be implemented as a bit flag on the object
+- You might think you can use a separate HashSet or similar container... **watch out for dynamic allocation!**
+- We already know not to traverse objects that have been *already marked*
+- Any recursive algorithm can be implemented iteratively
+- We need a stack, but we cannot allocate one to walk through the objects
+- *Pointer reversal* is a well known technique for simulating a stack
+- Use the pointers to the objects themselves as a linked list
+- Reverse them as we walk them, so we know how to get back (like a stack)
+
+  - Swap pointers to point back at the object that points at them (point to the member)
+  
+- Must 'reverse' them again back to their original state... otherwise **crash!**
+- Store the last object we traversed in a register / local
+
+.. graphviz::
+
+  digraph
+  {
+    node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+    "Stack" -> "Player";
+    "Player" -> "Gun";
+    "Player" -> "Armor";
+    "Gun" -> "Player";
+    "Gun" -> "Magazine";
+    "Magazine" -> "Bullet";
+    "Stack" -> "Enemy";
+    "Enemy" -> "Player";
+  }
+
+Sweep Phase
+```````````
+- Walk all allocated objects
+- If an object is not marked as reachable, then we delete / free the object
+- *Be sure to clear any marks here so that the next time we run GC it will work properly*
+
+Defragmentation
+---------------
+- Because we walk all pointers / **gc roots** we end up knowing where all pointers to an individual object lives
+- This means we can also remap pointers to new locations
+- Can utilize this phase to move reachable objects be next to each other in contiguous memory
+- May even utilize ideal cache coherency by placing similar types next to each other
+- Procedure:
+
+  - Find all reachable objects via **gc roots**
+  - Free memory for unreachable objects
+  - Allocate contiguous chunk of memory for all reachable objects (may be multiple chunks)
+  - Use ``memmove`` to move all objects together into contiguous block
+  - Remap all pointers to each object to their new location
+
+Reference Counting
+------------------
+- Technically a form of automatic garbage collection
+- Every object stores a count of how many objects are pointing at it
+- When the count reaches zero, it means no objects point at it
+
+  - Can be freed without trouble at this point in time
+
+Advantages
+``````````
+- Deterministic garbage collection
+- Can offer some of the same *scope destruction* features of C++
+- Does not need to stop the entire program to perform a heavy algorithm
+- Atomic operations can ensure thread safe garbage collection
+
+Disadvantages
+`````````````
+- Cycles can cause objects to never be freed (leaks)
+- Even though the objects are entirely unreachable
+
+  - A points at B
+  - B points at A
+  - No other roots or objects point at A or B
+  - These objects are not freed because they both have a reference count of **1**
+
+- Incrementing and decrementing is an overhead that is littered all throughout the program
+
+  - Can be partially mitigated by a smart optimizer
+  - Redundant increment / decrements can be removed or replaced with values other than 1
+  - Can take stack parameters by reference

@@ -1,0 +1,402 @@
+.. Calling conventions
+.. Operating system portability
+.. Dynamic linked libraries
+.. Structures
+.. x86, x64, Linux, Windows
+.. Virtual tables
+.. RTTI
+.. Name mangling
+.. Why mangling is not standardized (false impression)
+.. VTable layout/call conv/struct and frame padding/exceptions/obj&dll file formats standardization
+
+Application Binary Interface
+============================
+- Important to decide how your language may interact with other languages
+- Not a good idea to **stand alone** (no reuse of existing libraries)
+- How does your language interface with existing operating system functionality?
+
+  - Massive standard library that accounts for everything
+  - Or allow the programmers to extend your libraries by accessing others
+
+- Every time a language invents a feature that affects machine code, compatibility must be considered
+
+Name Mangling
+-------------
+- One compilation unit exports the definition of a function and its symbolic name
+- Another compilation unit links against it via a function declaration
+
+.. code-block:: cpp
+
+  #include <stdio.h>
+  void HelloWorld()
+  {
+    printf("Hello World!\n");
+  }
+
+And elsewhere we have our declaration and call:
+
+.. code-block:: cpp
+
+  void HelloWorld();
+
+  int main(void)
+  {
+    HelloWorld();
+    return 0;
+  }
+
+- Quite common to have to link between *compilation units* in C/C++
+- Even module based languages must link between their own libraries
+- How do we safely link against a function within another unit?
+- The above program correctly links in both C and C++
+
+What if we made the following modification?
+
+.. code-block:: cpp
+
+  int HelloWorld(float);
+
+  int main(void)
+  {
+    int x = HelloWorld(99.0f);
+    return 0;
+  }
+
+- Without changing the definition of ``HelloWorld``:
+
+  - This program will **not link** in C++ due to *name mangling*
+  - However it **may link** in C (under MSVC it does!)
+
+- In *Windows* a C function definition exports its name
+- May have a leading ``_`` or trailing ``@`` depending on *calling convention*
+- If the name is the only export, it becomes obvious why the above program *links*
+- Introducing *overloads*, *namespaces*, and *classes* necessitates mangling
+
+Consider that the following functions must not conflict when linking:
+
+.. code-block:: cpp
+
+  void HelloWorld();
+  
+  int HelloWorld(float);
+  
+  namespace Foo
+  {
+    void HelloWorld();
+  }
+  
+  class Bar
+  {
+    static void HelloWorld();
+  };
+
+- Simplicity of C name mangling on *Windows* leads to many languages interoperating with it
+- Technically a decision of the *compiler*
+- Mostly falls upon the *operating system* because of the libraries they provide
+
+  - Even GCC/Clang on Windows conform to MSVC name mangling
+
+- Imagine you were to invent your own mangling of symbol names
+- Cannot just be the declaration, eg ``int HelloWorld(float)`` due to whitespaces, e.g. ``int   HelloWorld ( float  )``
+- Must be normalized in some form
+- Can use shorthand or other symbols for built in primitives
+- May attempt to match language semantics for convenience
+
+.. code-block:: cpp
+
+  // void_HelloWorld
+  void HelloWorld();
+  
+  // int_HelloWorld_float
+  int HelloWorld(float);
+  
+  namespace Foo
+  {
+    // void_Foo::HelloWorld
+    void HelloWorld();
+  }
+  
+  class Bar
+  {
+    // void_Bar::HelloWorld
+    static void HelloWorld();
+  };
+
+- What about types with underscores?
+- May need to use symbols that aren't available within the language
+
+.. code-block:: cpp
+
+  class int_float;
+  
+  // How would the following functions get mangled?
+  
+  void HelloWorld(int, float);
+  
+  void HelloWorld(int_float);
+
+Standardization
+---------------
+- Could encourage cross compiler and cross platform compatibility
+- Many decisions made to leave other behaviors 'undefined' for performance reasons
+- Name mangling generally does not affect performance (though may increase memory / file sizes)
+- Many other factors to compatibility than just linkage and symbol exports
+
+  - Calling conventions (cdecl, fastcall, stdcall, etc)
+  - Static/dynamic linked library file formats
+  - Structure and stack frame padding
+  - Virtual table and RTTI memory layout
+  - Exception handling
+
+- Decided against standardization for C/C++ to not give a false impression of interoperability
+- Other standards outside of languages: *Intel Binary Compatibility Standard (iBCS)*
+
+Calling Convention
+------------------
+- How does a function caller and the callee (the function itself) agree on how parameters are passed?
+- What about the return value?
+- For speed, not all parameters are passed on the stack
+- Many are passed within registers
+- Must be chosen on an assembly level
+- Many factors to making up a calling convention
+
+  - Typical to target highest performance
+  - Many instructions may work only with specific registers
+  
+    - **div** on x86 works only with the edx/eax registers
+  
+  - If we use those registers to pass parameters, we may need to shuffle if a div instruction is encountered
+
+- Not explicitly part of C/C++, but calling convention matters!
+- Compilers often introduce keywords or extra syntax to change function calling conventions
+- Often differs between operating systems
+- Technically a choice of the compiler, but again relies upon the operating system
+
+**Windows x86**::
+
+  __cdecl
+  __clrcall
+  __stdcall
+  __fastcall
+  __thiscall
+  __vectorcall
+
+**Windows x64**::
+
+  __fastcall
+  __vectorcall*
+
+.. warning:: The term **cdecl** has slightly different implementations between Linux and Windows, specifically when it comes to returning structs that are small enough to fit within a register
+
+- Decently easy to target x64 on both Linux and Windows:
+
+  - On both we must align stack to 16 byte boundaries
+  - Parameters are pushed right to left
+  - On Windows our first 4 arguments: ``RCX/XMM0, RDX/XMM1, R8/XMM2, R9/XMM3``
+  - On Linux our first 6 arguments: ``RDI, RSI, RDX, RCX, R8, R9, XMM0–7``
+  - Rest pushed on the stack
+  - *Read about the specifics for each platform*
+
+- Many operating system functions boil down to C code
+- Your language must understand both name-mangling and calling conventions
+- On Windows, all operating system libraries use ``__stdcall`` on x86 and ``__fastcall`` on x64
+- Support all calling conventions to maximize compatibility
+- May also need to emit callee code for callbacks
+
+.. note::
+
+  Languages such as Lua maintain portability by not allowing interoperability within language. However, because Lua binds directly with C/C++ then they leave it to the C portion to link in external libraries and work with operating system calls.
+
+Libraries
+---------
+- Another consideration for *linking* is library format
+- How does our language link against a compiled library from another language
+- In Windows we have the .obj/.lib file format, Linux has the .a file format
+- Must be able to read these formats to find symbols
+- Must be able to load code into executable pages of memory
+
+On Windows:
+- There is no API for loading up a lib file / searching for symbols to link against
+- **DUMPBIN** is a useful tool for dumping information about dll/lib/exe
+- A .def file can be used to control the exported names of functions within a dll
+
+Dynamic Linked Libraries
+````````````````````````
+- Most operating systems provide functions for loading/searching for symbols
+- Many also export a *stub* static library file that automatically links functions
+- If your language understands static libraries, it can just link against the *stub*
+
+On Windows we use::
+
+  LoadLibrary/LoadLibraryEx
+  GetProcAddress
+  FreeLibrary
+  GetLastError
+
+On Linux we use::
+
+  dlopen
+  dlsym
+  dlclose
+  dlerror
+
+- ``GetProcAddress`` and ``dlsym`` both return a ``void*``
+- Either null or a pointer to the function that was found by name
+- May need to respect name mangling (can be different because its never statically linked against)
+- The ``void*`` must be cast into the correct function signature to be called
+- Must also respect calling convention when casting
+- *Correct parameters with an incorrect calling convention will often result in a crash!*
+
+On Windows lets examine how we would call the OS ``MessageBox`` function. The function has the following signature (extracted from the documentation/headers):
+
+.. code-block:: cpp
+
+  int WINAPI MessageBox(
+    _In_opt_ HWND    hWnd,
+    _In_opt_ LPCTSTR lpText,
+    _In_opt_ LPCTSTR lpCaption,
+    _In_     UINT    uType
+  );
+
+- Defined within ``User32.dll`` with a stub library of ``User32.lib``
+- Remember that we must consider on Windows unicode/ascii
+- In ascii mode, ``MessageBox`` is really just a macro for ``MessageBoxA``
+- The first parameter is simply just a pointer used as a handle
+- The second and third parameters are string pointers (``const char*``)
+- The fourth parameter is an ``unsigned int`` enumeration
+- To show an OK button we can pass the constant for MB_OK which is 0
+- ``_In_opt_`` and ``_In_`` are for documentation
+- Notice that ``WINAPI`` is actually a define for ``__stdcall``
+
+Boiling it down, the function looks like:
+
+.. code-block:: cpp
+
+  int __stdcall MessageBoxA(
+    void* windowHandle,
+    const char* text,
+    const char* caption,
+    unsigned int type
+  );
+
+To call this function using only its dynamic linked library:
+
+.. code-block:: cpp
+
+  #include <Windows.h>
+
+  typedef int (__stdcall *MessageBoxAFunc)(void* windowHandle, const char* text, const char* caption, unsigned int type);
+
+  int main(void)
+  {
+    HMODULE user32 = LoadLibrary("User32.dll");
+
+    // If we try to find only "MessageBox" we won't find anything
+    void* messageBoxAPointer = GetProcAddress(user32, "MessageBoxA");
+
+    MessageBoxAFunc messageBoxA = (MessageBoxAFunc)messageBoxAPointer;
+
+    messageBoxA(nullptr, "Hello world!", "Hello", 0);
+
+    FreeLibrary(user32);
+    return 0;
+  }
+
+Structures
+----------
+- When defining a structure a compiler must agree upon a standard for memory layout
+- Including padding and alignment
+- Extra information such as when a structure is **packed**
+- Typically alignment is based upon the largest primitive used:
+
+  - char
+  - short
+  - int
+  - float
+  - long long
+  - double
+
+- SSE primitives for example require 16 byte alignment
+
+- May need to include structure layout in name mangling for complete safety
+
+.. warning::
+
+  MSVC only uses the name of a structure when mangling functions to ensure that the correct overload is chosen. Using only the name technically does not ensure binary compatibility.
+
+To illustrate the issue, in one cpp we have:
+
+.. code-block:: cpp
+
+  #include <stdio.h>
+
+  struct Foo
+  {
+    int lives;
+  };
+
+  void PrintFoo(Foo f)
+  {
+    printf("Foo: %d\n", f.lives);
+  }
+
+And in another we have:
+
+.. code-block:: cpp
+
+  struct Foo
+  {
+    double lives;
+  };
+
+  void PrintFoo(Foo f);
+
+  int main(void)
+  {
+    Foo bob;
+    bob.lives = 999.0;
+    PrintFoo(bob);
+    return 0;
+  }
+
+- The above program **fully compiles and links with no warnings**
+- Obviously this results in undefined behavior, and possibly even crashes (varies on x86/x64)
+- To be entirely safe, structure layout would need to be exported and checked
+- Or layouts would become part of name mangling:
+
+.. code-block:: cpp
+
+  PrintFoo_Foo$int
+  
+  PrintFoo_int
+
+Virtual Tables
+--------------
+- Vtable layout is not standardized
+- Not considered when interoperating with C only
+- Only if we wish to extend exported C++ classes
+- Must match rules on where v-table pointer goes within a class/struct
+- Consider *structure layout* mentioned above
+- Also must consider multiple-inheritance implementations
+- V-table itself must also match (override functions by index)
+
+Runtime Type Identification
+---------------------------
+- Related very closely to v-table layout
+- On MSVC the RTTI information sits directly behind the v-table
+- Used for dynamic casting and ``typeid``
+- If your language extends a class written in C++, and then in C++ we use ``typeid`` on a polymorphic instance of your class, what does it return?
+
+The following article has a great description of reversing MSVC's RTTI:
+
+http://www.openrce.org/articles/full_view/23
+
+Exceptions
+----------
+- Another feature that was added that affects binary compatibility
+- Must handle unrolling of exceptions the same way as the interoping language
+- Or disable this feature when interoping
+
+.. warning::
+
+  Most languages never attempt to interop with C++ due to the complexities of name-mangling, matching v-table and RTTI implementation details, as well as matching how exception handling is performed. For this reason, most stick with the simplicity of C.

@@ -1,0 +1,546 @@
+.. Show linearized flattened version of the tree
+.. Code generation may just emit assembly directly
+.. Generation of temporary names
+.. Quadruples (generated names)
+.. Triples (fixed indices, hard for optimization)
+.. Names act as 'handles' - also useful for writing assembler
+.. If the IR does not have a text representation, you can just use direct pointers to the opcodes
+.. technically forms a tree again, but no nesting for scopes and such (still linearized)
+.. Load / store in llvm
+.. Use of labels (basic blocks)
+.. Talk about proper flow control analysis / dead code elimination
+.. RISC vs CISC
+.. Representation in memory (as a tree, as virtual classes, function pointers, switch)
+.. SSA
+.. Code generation
+.. Activation records
+
+Intermediate Representation
+===========================
+- Typically shortened to **IR**
+- Also known as *Intermediate Code*
+- Can be executed directly, like an AST interpreter
+- Typically faster than an AST interpreter due to cache coherency, direct jumping, etc
+- Independent of machine architecture
+- Many optimizations can be performed on the code in this form
+- Known as **machine independent optimizations**
+- Essentially the *linearized* or *flattened* version of the executable portions of the AST
+- Unoptimized is typically larger than the original source
+- Eventually translate the **IR** to a target machine's assembly (x86, x64, PPC, ARM, etc)
+
+Front/Back End
+--------------
+- The *tokenization*, *parsing*, and *semantic analysis* portion of the compiler
+- Ultimately every compiler's goal is to generate an executable
+- You can often use multiple different *front ends* with a single **IR** *back end*
+
+  - Java Virtual Machine / **JVM** (Java, Clojure, etc)
+  - Microsoft Intermediate Language / **MSIL** / **CIL** (C#, Visual Basic, F#, Managed C++, etc)
+  - Low Level Virtual Machine / **LLVM** (Rust, Clang, etc)
+
+- Backends can ensure some level of compatibility between languages that use the same backend
+- In *JVM* and *CIL* declaring classes is actually part of the opcode
+- A class declared in *Visual Basic* can be used in *C#*
+
+Three Address Code
+------------------
+- A common form of *Intermediate Representation*
+- Also abbreviated as **TAC**
+- Each opcode has an operation and up to 3 operands (addresses)
+- For most operations the instruction will always contain an assignment
+
+  - Only if there are temporary results
+  - Only if the output is not discarded intentionally
+
+An expression with the following form:
+
+.. code-block:: as
+
+  x = 3 + 9 * 2;
+
+Might be represented using the following *TAC*:
+
+::
+
+  t0 = 9 * 2
+  t1 = 3 + t0
+  x = t1
+
+- Can represent all binary operations with 3 addresses
+- Direct assignment only requires 2 addresses
+- ``t0`` and ``t1`` are generated temporaries
+- All binary operators typically take the form of:
+
+::
+
+  a = b <op> c
+
+- ``a`` is will store the temporary after the operation completes
+- ``a``, ``b``, and ``c`` all must be addresses to declared variables, generated temporaries, or constants
+- Intermediate representation may perform its own semantic analysis
+
+  - Ensuring ``result`` can be written to (not a constant)
+  - May also validate that types are all the same
+  - Typically **strict** (no syntactic sugar or implicit conversions)
+
+- Note that a temporary can live anywhere
+
+  - Especially after target machine optimization
+  - In registers
+  - On the stack
+
+Lets look at a another sample using unary operators:
+
+.. code-block:: as
+
+  x = -*ptr;
+
+::
+
+  t0 = *ptr
+  x = -t0
+
+- All unary operations can be represented with 2 addresses
+- Common to have 0, 1, and 2 address opcodes within a *TAC*
+- May be entirely stored in memory (structures with pointers)
+- May have a textual representation for an assembler
+
+  - Very convenient for debugging your own code generation
+  - Also nice to allow inline assembly that is still machine independent
+
+- Notice we use names to refer to results/temporaries or variables
+- Requires every operation to be given a name
+
+  - Lots of allocation and it makes the code generation slower
+  - Allows instructions to be easily re-ordered (huge win for optimization)
+
+- There are other forms of *TACs* that simply refer to results by index
+- Each instruction is placed into an array
+
+.. code-block:: as
+
+  x = 3 + 9 * 2;
+
+Might be represented using the following *TAC*:
+
+::
+
+  0) 9 * 2
+  1) 3 + $0
+  2) x = $1
+  
+- The ``+`` operation refers to ``$0`` meaning the result of instruction 0
+- Re-ordering instructions for requires updating all references to an instruction index
+- Names are also much more convenient to a user hand-writing your assembly
+- If the *IR* is being built entirely in memory (like a tree) users can often leave off names
+
+  - Unique names can be automatically generated
+
+- Often hear *TACs* that use names referred to as ``quads`` or ``quadruples``
+
+  - Because it has the ``a`` (result), ``b`` and ``c`` (operands) and the ``<op>``
+
+- *TACs* that do not use names referred to as ``triples``
+
+  - Because the result does not need a name
+
+Common instructions include:
+
+===================== ===========================================
+Instruction           Example
+===================== ===========================================
+Unconditional Branch  ``goto label``
+Conditional Branch    ``if condition goto label``
+""                    ``if condition false goto label``
+""                    ``if condition goto label else goto label``
+Unary Operation       ``a = <op> b``
+Binary Operation      ``a = b <op> c``
+Temporary Allocation  ``alloca <type>``
+Address Of            ``a = &b``
+Dereference           ``a = *b``
+Direct Copy           ``a = b``
+Dereferenced Copy     ``*a = b``
+Function Call         ``param b``
+""                    ``param c``
+""                    ``...``
+""                    ``a = call func, n``
+""                    ``a = call func(b, c, ...)``
+Return                ``return a``
+===================== ===========================================
+
+- Anything allocated on the stack is presumed to be temporary
+- Note that operators only now exist between primitives (int, float, etc)
+- Intermediate representation needs a form of **labels** for ``goto`` operations
+- May be represented in the form of *basic blocks*
+
+.. code-block:: as
+
+  while (*str != NULL)
+  {
+    // Print each character out
+    print(*str);
+    ++str;
+  }
+
+::
+
+  WHILE_CONDITION:
+    t0 = *str
+    t1 = t0 != 0
+    if t1 goto WHILE_BODY else goto WHILE_END
+    
+  WHILE_BODY:
+    t2 = *str
+    t3 = call print (t2)
+    str = str + 1
+    goto WHILE_END
+
+  WHILE_END:
+    //...
+
+What would this look like in **LLVM**? (Modified slightly for clarity)
+
+.. code-block:: llvm
+
+  define void @Test(i8* %str) #0 {
+  entry:
+    %str.addr = alloca i8*, align 8
+    store i8* %str, i8** %str.addr, align 8
+    br label %while.cond
+
+  while.cond:                                       ; preds = %while.body, %entry
+    %0 = load i8*, i8** %str.addr, align 8
+    %1 = load i8, i8* %0, align 1
+    %conv = sext i8 %1 to i32
+    %cmp = icmp ne i32 %conv, 0
+    br i1 %cmp, label %while.body, label %while.end
+
+  while.body:                                       ; preds = %while.cond
+    %2 = load i8*, i8** %str.addr, align 8
+    %3 = load i8, i8* %2, align 1
+    %call = call i32 @print(i8 signext %3)
+    %4 = load i8*, i8** %str.addr, align 8
+    %incdec.ptr = getelementptr inbounds i8, i8* %4, i32 1
+    store i8* %incdec.ptr, i8** %str.addr, align 8
+    br label %while.cond
+
+  while.end:                                        ; preds = %while.cond
+    ret void
+  }
+
+Code Generation Example
+```````````````````````
+
+.. code-block:: as
+
+  function Fibonacci(n : Integer) : Integer
+  {
+    var a = 0;
+    var b = 1;
+    
+    for (var i = 0; i < n; ++i)
+    {
+      var c = a + b;
+      a = b;
+      b = c;
+    }
+    return a;
+  }
+
+.. graphviz::
+
+  digraph
+  {
+    node [shape=rectangle, fontsize=10, height=0, fontname=Verdana];
+    "[Function]\nFibonacci" -> "[Parameter]\nn";
+    "[Parameter]\nn" -> "[Type]\nInteger";
+    "[Function]\nFibonacci" -> "[Type]\nInteger ";
+    
+    "[Function]\nFibonacci" -> "[Variable]\na";
+    "[Variable]\na" -> "[Literal]\n0";
+    
+    "[Function]\nFibonacci" -> "[Variable]\nb";
+    "[Variable]\nb" -> "[Literal]\n1";
+    
+    "[Function]\nFibonacci" -> "[For]";
+    
+    "[For]" -> "[Variable]\ni";
+    "[Variable]\ni" -> "[Literal]\n0 ";
+    
+    "[For]" -> "[Binary]\n<";
+    "[Binary]\n<" -> "[Name]\ni";
+    "[Binary]\n<" -> "[Name]\nn";
+    
+    "[For]" -> "[Unary]\n++";
+    "[Unary]\n++" -> "[Name]\ni ";
+    
+    "[For]" -> "[Variable]\nc";
+    "[Variable]\nc" -> "[Binary]\n+";
+    "[Binary]\n+" -> "[Name]\na";
+    "[Binary]\n+" -> "[Name]\nb";
+    
+    "[For]" -> "[Binary]\n=";
+    "[Binary]\n=" -> "[Name]\na "
+    "[Binary]\n=" -> "[Name]\nb "
+    
+    "[For]" -> "[Binary]\n= ";
+    "[Binary]\n= " -> "[Name]\n b "
+    "[Binary]\n= " -> "[Name]\nc"
+    
+    "[Function]\nFibonacci" -> "[Return]";
+    "[Return]" -> "[Name]\n a ";
+  }
+
+::
+
+  // This assumes that n is an available symbol
+  FIBONACCI:
+    a = 0
+    b = 1
+    i = 0
+    goto FOR_CONDITION
+    
+  FOR_CONDITION:
+    t0 = i < n
+    if t0 goto FOR_BODY else goto FOR_END
+    
+  FOR_BODY:
+    c = a + b
+    a = b
+    b = c
+    i = i + 1
+    goto FOR_CONDITION
+  
+  FOR_END:
+    return a
+
+Static Single Assignment
+------------------------
+- Abbreviated commonly as **SSA**
+- A special form of **TAC** that is more well-suited for optimizers
+- Never assign to the same name more than once
+- We are not caring or considering looping constructs that will *run* a line of code more than once
+- Just that the opcode never explicitly assigns to the same name
+
+The following code illustrates this example:
+
+.. code-block:: as
+
+  i = z / 10 + 1;
+  ++i;
+  i = 2;
+  z = i;
+
+In a non *SSA* intermediate code:
+
+::
+
+  t0 = z / 10
+  i = t0 + 1
+  i = i + 1
+  i = 2
+  z = i
+
+And now in *SSA* form:
+
+::
+
+  t0 = z / 10
+  i_0 = t0 + 1
+  i_1 = i_0 + 1
+  i_2 = 2
+  z = i_2
+
+- Every reference to a variable refers to its last assignment e.g. ``z = i_2``
+- As a basic optimization, it should now be clear that ``i_0`` and ``i_1`` never get used
+
+This may result in the following optimized code:
+
+::
+
+  i_2 = 2
+  z = i_2
+
+.. note:: Even though we give a different name to each assignment of ``i``, when we execute we will still always treat the variable ``i`` as if it has one location, and therefore all assignments to ``i_0``, ``i_1``, etc will still assign to the same place
+
+- What about if ``i`` is assigned to within a conditional?
+
+.. code-block:: as
+
+  if (countByFives)
+    i = 5;
+  else
+    i = 10;
+  ++i;
+
+- If the first and second assignments gives ``i`` a unique name, what will ``++i`` result in?
+
+::
+
+  if countByFives goto IF_BODY else goto ELSE_BODY
+
+  IF_BODY:
+    i_0 = 5
+    goto END
+    
+  ELSE_BODY:
+    i_1 = 10
+    goto END
+
+  END:
+    i_2 = phi i_0 i_1
+    i_3 = i_2 + 1;
+    //...
+
+.. note:: If we execute the SSA form the ``phi`` instruction should be skipped (no-opped/NOP). This works because all other assignments to ``i`` should have happened as mentioned above
+
+Basic Blocks
+------------
+- Actual assembly is typically stored in memory pages marked for execution
+- Stream of opcodes of varying sized read by the CPU
+- For optimization purposes we use a slightly form known as a **basic block**
+- One or more instructions starting first with a label (branch target) and ending with a branch / jump / return or other redirection of control flow
+
+The following is an example of a well formed *basic block*:
+
+::
+
+  DOUBLE:
+    t0 = z * 2
+    return t0
+
+- A function typically defines a branch target or a start label
+- If block ``A`` branches to block ``B`` then ``A`` is known as a **predecessor** to ``B``
+
+::
+
+  DOUBLE:
+    t0 = z * 2
+    goto DOUBLE_END
+  
+  // DOUBLE is a predecessor
+  DOUBLE_END:
+    return t0
+
+- From well formed *basic blocks* it becomes easy to perform optimizations such as dead code elimination
+
+.. code-block:: as
+
+  function Test() : Integer
+  {
+    var a = 10;
+    return a;
+    a += 100;
+    return a;
+  }
+
+::
+
+  TEST:
+    a_0 = 10
+    return a_0
+  
+  BLOCK1:
+    a_1 = a_0 + 100
+    return a_1
+
+- The block ``TEST`` is implicitly reachable because it is the start block for the function ``Test``
+- There are no predecessors to ``BLOCK1`` therefore it is not reachable
+- This may occur in more complex optimizations:
+
+.. code-block:: as
+
+  if (Engine.SupportsControllers)
+  {
+    while (valid)
+    {
+      //...
+    }
+  }
+
+::
+
+  START:
+    if Engine_SupportsControllers goto IF_BODY else goto END
+  
+  // START is the only predecessor
+  IF_BODY:
+    goto WHILE_CONDITION
+  
+  // IF_BODY and WHILE_BODY are the predecessors
+  WHILE_CONDITION:
+    if valid goto WHILE_BODY else goto WHILE_END
+    
+  // WHILE_CONDITION is the only predecessor
+  WHILE_BODY:
+    //...
+    goto WHILE_CONDITION
+  
+  // WHILE_CONDITION is the only predecessor
+  WHILE_END:
+    goto IF_END
+  
+  // WHILE_END is the only predecessor
+  IF_END:
+    //...
+
+- Using an optimization we can remove trivial *basic blocks* that only jump to another (inlining the jump)
+
+::
+
+  START:
+    if Engine_SupportsControllers goto WHILE_CONDITION else goto END
+  
+  // START and WHILE_BODY are the predecessors
+  WHILE_CONDITION:
+    if valid goto WHILE_BODY else goto IF_END
+    
+  // WHILE_CONDITION is the only predecessor
+  WHILE_BODY:
+    //...
+    goto WHILE_CONDITION
+  
+  // WHILE_CONDITION is the only predecessor
+  IF_END:
+    //...
+
+- If ``Engine.SupportsControllers`` was determined to be a constant on a particular platform
+- Constant folding optimizations would kick in, as well as an optimization to branching on a constant
+- For example, if the symbol ``Engine_SupportsControllers`` resolved to be a constant ``true``
+
+::
+
+  START:
+    // Optimized down to a direct jump (now this block is trivial)
+    goto WHILE_CONDITION
+  
+  // START and WHILE_BODY are the predecessors
+  WHILE_CONDITION:
+    if valid goto WHILE_BODY else goto IF_END
+    
+  // WHILE_CONDITION is the only predecessor
+  WHILE_BODY:
+    //...
+    goto WHILE_CONDITION
+  
+  // WHILE_CONDITION is the only predecessor
+  IF_END:
+    //...
+
+- Another pass where we remove trivial basic blocks
+
+::
+
+  // This has implicitly become the start
+  // WHILE_CONDITION is the only predecessor
+  WHILE_CONDITION:
+    if valid goto WHILE_BODY else goto IF_END
+    
+  // WHILE_CONDITION is the only predecessor
+  WHILE_BODY:
+    //...
+    goto WHILE_CONDITION
+  
+  // WHILE_CONDITION is the only predecessor
+  IF_END:
+    //...

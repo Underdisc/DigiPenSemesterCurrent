@@ -1,0 +1,958 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Static vs Dynamic &mdash; Compilers and Interpreters 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Compilers and Interpreters 1.0 documentation" href="index.html"/>
+        <link rel="next" title="Semantic Analysis" href="SemanticAnalysis.html"/>
+        <link rel="prev" title="Abstract Syntax Tree" href="AbstractSyntaxTree.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="index.html" class="icon icon-home"> Compilers and Interpreters
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="PartsOfTheCompiler.html">Parts Of The Compiler</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#lexical-analysis-tokenizer">Lexical Analysis (Tokenizer)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#syntax-analysis-parser">Syntax Analysis (Parser)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#abstract-syntax-tree-ast">Abstract Syntax Tree (AST)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#semantic-analysis">Semantic Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#interpreter">Interpreter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DeterministicFiniteAutomata.html">Deterministic Finite Automata (DFA)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#traversal-algorithm">Traversal Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#backtracking-and-lookahead">Backtracking and Lookahead</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-1-examples">LA(1) Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-2-examples">LA(2) Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-examples">LA(*) Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#lookahead-implementation">Lookahead Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-integers">Parsing Integers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-floats">Parsing Floats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-keywords">Parsing Keywords</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-identifiers">Parsing Identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-operators">Parsing Operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#state-structure">State Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#hard-coded-dfa">Hard-coded DFA</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="RegularExpressions.html">Regular Expressions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#core-operators">Core Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#union">Union <strong>|</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#concatenation">Concatenation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#kleene-closure">Kleene Closure <strong>*</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#extended-operators">Extended Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#character-sets">Character Sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#positive-closure">Positive Closure <strong>+</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#optional">Optional <strong>?</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#interval-min-max-min-n">Interval <strong>{min,max}</strong> <strong>{min,}</strong> <strong>{n}</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#any-character">Any Character <strong>.</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#other-operators">Other Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#escape-character">Escape Character <strong>\</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#anchors-and">Anchors <strong>^</strong> and <strong>$</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#word-boundaries-b">Word Boundaries <strong>\b</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#capture-group">Capture Group <strong>()</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#passive-group">Passive Group <strong>(?:)</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#replacement-back-reference">Replacement Back Reference <strong>$</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#cheat-sheets">Cheat Sheets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Grammars.html">Grammars</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#similarity-to-regular-expressions">Similarity To Regular Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#derivations-and-parse-trees">Derivations and Parse Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#ambiguity">Ambiguity</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Grammars.html#classic-examples-of-ambiguity">Classic Examples of Ambiguity</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#elimination-of-ambiguity">Elimination of Ambiguity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#left-recursion">Left Recursion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Operators.html">Operators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Operators.html#associativity">Associativity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Operators.html#precedence">Precedence</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="RecursiveDescent.html">Recursive Descent Parsing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#predictive-parser">Predictive Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#guidelines">Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternations">Alternations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternation-and-concatenation">Alternation and Concatenation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#recursion">Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternation-empty-rule">Alternation Empty Rule</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-token">Optional Token</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-rule">Optional Rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-concatenation">Optional Concatenation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#kleene-and-positive-closures">Kleene and Positive Closures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AbstractSyntaxTree.html">Abstract Syntax Tree</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#heterogeneous-nodes">Heterogeneous Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#homogeneous-nodes">Homogeneous Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#heterogeneous-double-dispatch">Heterogeneous Double Dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#node-allocation-and-storage">Node Allocation And Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="StaticVsDynamic.html#">Static vs Dynamic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="StaticVsDynamic.html#static-typing">Static Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="StaticVsDynamic.html#dynamic-typing">Dynamic Typing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#scalar-variables">Scalar Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#table-or-object">Table or Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#inheritance-and-polymorphism">Inheritance and Polymorphism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#operator-overloading">Operator Overloading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#reflection">Reflection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#templates">Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#overloads-function-templates">Overloads &amp; Function Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#monkey-patching">Monkey Patching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#implementation">Implementation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="SemanticAnalysis.html">Semantic Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#scope-resolution">Scope Resolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="SemanticAnalysis.html#name-hiding">Name Hiding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SemanticAnalysis.html#types-members-variables">Types, Members, Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#symbol-table-aka-meta">Symbol Table aka Meta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#computing-types">Computing Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#type-inference">Type Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#l-r-values">L/R Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#syntactic-sugar">Syntactic Sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#control-flow">Control Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#member-resolution">Member Resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#duplicate-members-overloads">Duplicate Members &amp; Overloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#overload-resolution">Overload Resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#module-based-compilation">Module Based Compilation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ErrorRecovery.html">Error Recovery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#tokenization">Tokenization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#panic-mode">Panic Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#error-edges">Error Edges</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#parsing">Parsing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#id1">Panic Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#semantic-analysis">Semantic Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#classnode">ClassNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#poison">Poison</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#code-generation">Code Generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AstInterpreter.html">AST Interpreter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#advantages">Advantages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#disadvantages">Disadvantages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#execution">Execution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="AstInterpreter.html#expressions">Expressions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#literals">Literals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#binary-operators">Binary Operators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#unary-operators">Unary Operators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#type-casting">Type Casting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#member-access">Member Access</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#if-statements">If Statements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#while-do-while-for-etc">While, Do-While, For, Etc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#return">Return</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#break-and-continue">Break and Continue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#exceptions">Exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#function-calls">Function Calls</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ModernLanguages.html">Modern Languages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#return-type-inference">Return Type Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#decltype">Decltype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#delegates">Delegates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#closures-anonymous-functions">Closures &amp; Anonymous Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#properties">Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#extension-functions-properties">Extension Functions &amp; Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#pure-functions">Pure Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#mixins">Mixins</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="IntermediateRepresentation.html">Intermediate Representation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#front-back-end">Front/Back End</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#three-address-code">Three Address Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="IntermediateRepresentation.html#code-generation-example">Code Generation Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#static-single-assignment">Static Single Assignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#basic-blocks">Basic Blocks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="VirtualMachine.html">Virtual Machine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#instructions">Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#reduced-instruction-set-computing">Reduced Instruction Set Computing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#complex-instruction-set-computing">Complex Instruction Set Computing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#stack-machine">Stack Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#advantages">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#disadvantages">Disadvantages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#random-access-machine">Random Access Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id1">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id2">Disadvantages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#register-machine">Register Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id3">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id4">Disadvantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#register-allocation">Register Allocation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="VirtualMachine.html#infinite-registers">Infinite Registers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="VirtualMachine.html#register-reuse">Register Reuse</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GarbageCollection.html">Garbage Collection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#why">Why?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#safety">Safety</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#misconceptions">Misconceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#garbage-collector-roots">Garbage Collector Roots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#common-issues">Common Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#mark-and-sweep">Mark and Sweep</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#mark-phase">Mark Phase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#sweep-phase">Sweep Phase</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#defragmentation">Defragmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#reference-counting">Reference Counting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#advantages">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#disadvantages">Disadvantages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ApplicationBinaryInterface.html">Application Binary Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#name-mangling">Name Mangling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#standardization">Standardization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#calling-convention">Calling Convention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#libraries">Libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ApplicationBinaryInterface.html#dynamic-linked-libraries">Dynamic Linked Libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#structures">Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#virtual-tables">Virtual Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#runtime-type-identification">Runtime Type Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CompilerAsAService.html">Compiler As A Service (IDE)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#minimal-rebuild">Minimal Rebuild</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#member-auto-complete">Member Auto Complete</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#call-tips-overloads">Call Tips / Overloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#local-expression-completion">Local / Expression Completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#cursor-hovering">Cursor Hovering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#go-to-definition">Go To Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#symbol-querying">Symbol Querying</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#typenode">TypeNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#variablenode">VariableNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#callnode">CallNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#classnode-functionnode">ClassNode/FunctionNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#expressionnode">ExpressionNode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#comments">Comments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#refactor-rename">Refactor Rename</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#debuggers">Debuggers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#formatting">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#statement-evaluation">Statement Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#read-eval-print-loop">Read Eval Print Loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#other-features">Other Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment1.html">Assignment 1</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment1.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment2.html">Assignment 2</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment2.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment3.html">Assignment 3</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment3.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment4.html">Assignment 4</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment4.html#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment4.html#pass-4">Pass 4</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#literalnode">LiteralNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#indexnode">IndexNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#unaryoperatornode">UnaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#callnode">CallNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#castnode">CastNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#ifnode-fornode-whilenode">IfNode/ForNode/WhileNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#gotonode">GotoNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#returnnode">ReturnNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#parameternode-variablenode">ParameterNode/VariableNode</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment5.html">Assignment 5</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#pass-1-pre-pass">Pass 1 (Pre-Pass)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#interpreterfunctioncall">InterpreterFunctionCall</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#pass-2-interpretation">Pass 2 (Interpretation)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#variablenode">VariableNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#returnnode">ReturnNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#ifnode">IfNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#whilenode">WhileNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#castnode">CastNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#literalnode">LiteralNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#callnode">CallNode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#addsinfunction">AddSinFunction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#unhandled-nodes">Unhandled Nodes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AssignmentSubmission.html">Assignment Submission</a></li>
+<li class="toctree-l1"><a class="reference external" href="../CS375Assignments.1.html#://">Assignment Downloads</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Compilers and Interpreters</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Static vs Dynamic</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/StaticVsDynamic.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="static-vs-dynamic">
+<h1>Static vs Dynamic<a class="headerlink" href="StaticVsDynamic.html#static-vs-dynamic" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><strong>Static</strong> means types are checked at compile-time (before execution)</li>
+<li><strong>Dynamic</strong> means types are checked at run-time (during execution)</li>
+<li>May combine both features as a hybrid</li>
+<li>Garbage collection is <strong>NOT</strong> a feature of dynamic (exists in both)</li>
+<li>Do <strong>NOT</strong> use the terms <strong>strong</strong> or <strong>weak</strong> typing<ul>
+<li>Much confusion surrounding these terms</li>
+<li><strong>Strong</strong> implies the type system has no leniency or loopholes</li>
+<li><strong>Weak</strong> implies there are ways of subverting the type system (reinterpret_cast, void*, unions, etc.)</li>
+<li>No type system is perfect: almost all statically typed languages include weak features</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Life Lesson: Always include a way to subvert any strong or aggressive system. Your advanced users will love you and you won&#8217;t have to release patches to address missing functionality</p>
+</div>
+<div class="section" id="static-typing">
+<h2>Static Typing<a class="headerlink" href="StaticVsDynamic.html#static-typing" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Provides more errors ahead of time</li>
+<li>More opportunities for auto-complete, automated refactoring, and go-to-definition like features</li>
+<li>Visitor walks over the entire AST and computes types</li>
+<li>Easier to optimize on the assembly level</li>
+<li><code class="docutils literal"><span class="pre">a</span> <span class="pre">+</span> <span class="pre">b</span></code> is a known operation with known types</li>
+<li>C, C++, C#, ActionScript 3, etc.</li>
+</ul>
+</div>
+<div class="section" id="dynamic-typing">
+<h2>Dynamic Typing<a class="headerlink" href="StaticVsDynamic.html#dynamic-typing" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Refactoring is typically very difficult</li>
+<li>Breaking changes are also problematic as you may not know until execution of that code</li>
+<li>Typically not as concerned with performance</li>
+<li>Easier to load and make code changes at run-time</li>
+<li>Typically very tolerant</li>
+<li><code class="docutils literal"><span class="pre">a</span> <span class="pre">+</span> <span class="pre">b</span></code> we do not know the types of <code class="docutils literal"><span class="pre">a</span></code> and <code class="docutils literal"><span class="pre">b</span></code> until run-time (it can even change over different executions)</li>
+</ul>
+<div class="section" id="scalar-variables">
+<h3>Scalar Variables<a class="headerlink" href="StaticVsDynamic.html#scalar-variables" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Variables (local and global) have no compile-time type</li>
+<li>They can store <strong>any</strong> kind of object or primitive at runtime</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="c1">// Legal in a dynamic language</span>
+<span class="nx">a</span> <span class="o">=</span> <span class="s2">&quot;hello&quot;</span><span class="o">;</span>
+<span class="nx">a</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
+<span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Player</span><span class="p">();</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>There is no need to declare type</li>
+<li>This is implemented using what we call a <strong>variant</strong> or <strong>any</strong></li>
+<li>A class with one member for each of the primitive types plus an enum to define which type it is at runtime (in C++):</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="n">VariantType</span>
+<span class="p">{</span>
+  <span class="n">Null</span><span class="p">,</span>
+  <span class="n">Integer</span><span class="p">,</span>
+  <span class="n">Float</span><span class="p">,</span>
+  <span class="n">Pointer</span><span class="p">,</span>
+  <span class="n">String</span>
+  <span class="c1">//...</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Variant</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="c1">// What type is this variant currently storing? (typically defaults to null or undefined)</span>
+  <span class="n">VariantType</span> <span class="n">mType</span><span class="p">;</span>
+
+  <span class="c1">// We could use a union here to compact the Variant</span>
+  <span class="c1">// Careful! You cannot use unions on types that have constructors and destructors (must be POD)</span>
+  <span class="kt">int</span>   <span class="n">mIntegerValue</span><span class="p">;</span>
+  <span class="kt">float</span> <span class="n">mFloatValue</span><span class="p">;</span>
+  <span class="kt">void</span><span class="o">*</span> <span class="n">mPointerValue</span><span class="p">;</span>
+  <span class="n">string</span> <span class="n">mStringValue</span><span class="p">;</span>
+  <span class="c1">//...</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Every time we create a variable, we&#8217;re really just creating one of these (plus a name that points at it via some map)</li>
+<li>Many languages also do away with the declaration of a variable requirement</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">function</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="n">a</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Presents some interesting problems:</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">Foo</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">something</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="nx">a</span> <span class="o">=</span> <span class="s2">&quot;hello&quot;</span><span class="o">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Is accessing &#39;a&#39; here legal?</span>
+  <span class="nx">print</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+
+  <span class="c1">// What about accessing &#39;b&#39; here?</span>
+  <span class="nx">print</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>
+
+  <span class="nx">b</span> <span class="o">=</span> <span class="mf">3.3</span><span class="o">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Without declaration, there can be no scope!</li>
+<li>This leads to function level scope, which many dynamic languages have</li>
+<li>The value of a variable before use is typically a zeroed out form (0, null, etc), undefined (a constant value like null), or an error/exception</li>
+<li>Like static languages, many dynamic languages will resort to treating an unfound local variable as a global<ul>
+<li>This behavior is determined at <strong>runtime</strong> rather than at compile time, because a variable could or could not exist!</li>
+</ul>
+</li>
+<li>Worth noting that even Javascript originally had this scoping, but has recently introduced the <code class="docutils literal"><span class="pre">let</span></code> keyword to declare variables</li>
+</ul>
+</div>
+<div class="section" id="table-or-object">
+<h3>Table or Object<a class="headerlink" href="StaticVsDynamic.html#table-or-object" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>In many dynamic languages there is no compile-time way to define a type</li>
+<li>Types are composed together at run-time</li>
+<li>Functions, variables, and other members added or removed at any time</li>
+<li>How is this achieved?</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// This is typically what an object looks like in a dynamic language (can also use map)</span>
+<span class="n">std</span><span class="o">::</span><span class="n">unordered_map</span><span class="o">&lt;</span><span class="n">Variant</span><span class="p">,</span> <span class="n">Variant</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>The <code class="docutils literal"><span class="pre">Variant</span></code> class must implement hash and equality operators</li>
+<li>If the types are the same, then comparison is easy</li>
+<li>If types are different, the language must decide which is correct (is 11 == &#8220;11&#8221;?)</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">Variant</span><span class="o">::</span><span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">Variant</span><span class="o">&amp;</span> <span class="n">rhs</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">mType</span> <span class="o">!=</span> <span class="n">rhs</span><span class="p">.</span><span class="n">mType</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+
+  <span class="k">switch</span> <span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">mType</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="c1">// If the type is null, we don&#39;t need to compare anything else</span>
+    <span class="c1">// We already know both variants are the same type due to the above check</span>
+    <span class="k">case</span> <span class="n">VariantType</span><span class="o">::</span><span class="nl">Null</span><span class="p">:</span>
+      <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+
+    <span class="k">case</span> <span class="n">VariantType</span><span class="o">::</span><span class="nl">Integer</span><span class="p">:</span>
+      <span class="k">return</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">mIntegerValue</span> <span class="o">==</span> <span class="n">rhs</span><span class="p">.</span><span class="n">mIntegerValue</span><span class="p">;</span>
+
+    <span class="c1">//...</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Note that the <code class="docutils literal"><span class="pre">Variant</span></code> must also be able to contain an object or table:</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="n">VariantType</span>
+<span class="p">{</span>
+  <span class="c1">//...</span>
+  <span class="n">Object</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Variant</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="c1">//...</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">unordered_map</span><span class="o">&lt;</span><span class="n">Variant</span><span class="p">,</span> <span class="n">Variant</span><span class="o">&gt;</span> <span class="n">mObject</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>What happens when you copy the variant determines whether your language copies a type by value or by reference</li>
+<li>For example, copying the above variant would result in an entire deep copy if it were an <code class="docutils literal"><span class="pre">Object</span></code></li>
+<li>If you wrote <code class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">b</span></code> in language then both <code class="docutils literal"><span class="pre">a</span></code> would get its own copy of the object <code class="docutils literal"><span class="pre">b</span></code> stored</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Variant</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="c1">//...</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">unordered_map</span><span class="o">&lt;</span><span class="n">Variant</span><span class="p">,</span> <span class="n">Variant</span><span class="o">&gt;&gt;</span> <span class="n">mObject</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>The above version would be reference counted when you copied an object around (therefore by reference)</li>
+<li>If you wrote <code class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">b</span></code> in language then both <code class="docutils literal"><span class="pre">a</span></code> and <code class="docutils literal"><span class="pre">b</span></code> would have a reference to the same object (ref count 2)</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Variant</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="c1">//...</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">unordered_map</span><span class="o">&lt;</span><span class="n">Variant</span><span class="p">,</span> <span class="n">Variant</span><span class="o">&gt;*</span> <span class="n">mObject</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>You may opt to not use reference counting and instead use a garbage collector (more on that later)</li>
+<li>This definition of an Object is very powerful and flexible</li>
+<li>Need a way to create an empty object at runtime (many different syntaxes)</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">//</span> <span class="n">Lua</span><span class="p">,</span> <span class="n">Javascript</span><span class="p">,</span> <span class="ow">and</span> <span class="n">Python</span> <span class="n">syntax</span>
+<span class="n">a</span> <span class="o">=</span> <span class="p">{}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In Javascript their object&#8217;s are actually only <code class="docutils literal"><span class="pre">std::unordered_map&lt;string,</span> <span class="pre">Variant&gt;</span></code> and cannot contain any value as a key</p>
+</div>
+<ul class="simple">
+<li>How does member access work in a dynamic language?</li>
+<li>For example <code class="docutils literal"><span class="pre">player.Lives</span></code></li>
+<li>Because <code class="docutils literal"><span class="pre">player</span></code> is a dynamic object (map of variants to variants) then we must use a lookup</li>
+<li>Dynamic languages are clever and lookup the member as a string</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">//</span> <span class="n">In</span> <span class="n">Lua</span><span class="p">,</span> <span class="n">the</span> <span class="n">statement</span><span class="p">:</span>
+<span class="n">player</span><span class="o">.</span><span class="n">Lives</span>
+
+<span class="o">//</span> <span class="n">Is</span> <span class="n">the</span> <span class="n">equivalent</span> <span class="n">of</span><span class="p">:</span>
+<span class="n">player</span><span class="p">[</span><span class="s2">&quot;Lives&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inheritance-and-polymorphism">
+<h3>Inheritance and Polymorphism<a class="headerlink" href="StaticVsDynamic.html#inheritance-and-polymorphism" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Dynamic languages do not need extra features such as <code class="docutils literal"><span class="pre">virtual</span></code></li>
+<li>All member accesses are virtual because we are always doing a lookup in the hash map of variants</li>
+</ul>
+<p>The following code is written in a sample dynamic language:</p>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">AnimalSpeak</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="nx">print</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">CatSpeak</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="nx">print</span><span class="p">(</span><span class="s2">&quot;Meow!&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// This is the equivalent to an Animal class constructor</span>
+<span class="nx">animal</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="nx">animal</span><span class="p">.</span><span class="nx">Health</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
+<span class="nx">animal</span><span class="p">.</span><span class="nx">Speak</span> <span class="o">=</span> <span class="nx">AnimalSpeak</span><span class="o">;</span>
+
+<span class="c1">// Now we run a pretend Cat class constructor (no need to create the object again)</span>
+<span class="c1">// We &#39;inherited&#39; the base class members already, and now we add our own derived members</span>
+<span class="nx">animal</span><span class="p">.</span><span class="nx">Lives</span> <span class="o">=</span> <span class="mi">9</span><span class="o">;</span>
+
+<span class="c1">// We &#39;override&#39; the base class function by literally overwriting it</span>
+<span class="c1">// Any future attempt to call &#39;Speak&#39; will result in &#39;CatSpeak&#39;</span>
+<span class="c1">// unless someone overwrites it in the future (its dynamic!)</span>
+<span class="nx">animal</span><span class="p">.</span><span class="nx">Speak</span> <span class="o">=</span> <span class="nx">CatSpeak</span><span class="o">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="StaticVsDynamic.html#functions" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Functions are now objects that can be passed around (not strictly a dynamic language feature, also in some static languages)</li>
+<li>Not just pointers (though they are shared)</li>
+<li>Can often be compiled at run-time</li>
+<li>Can get garbage collected if no one keeps a reference to it</li>
+<li>Often the parameters of a function call are actually packed into the language&#8217;s <strong>array</strong> type</li>
+<li>Some dynamic languages are lenient and do not mind if the incorrect number of arguments are passed to a function<ul>
+<li>Every function is &#8216;variadic&#8217;</li>
+<li>Javascript and Lua both allow this, Python does not (variadic is explicit)</li>
+</ul>
+</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">Speak</span><span class="p">(</span><span class="nx">name</span><span class="o">,</span> <span class="nx">text</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// Language may have a special way of getting arguments as array, such as &#39;args&#39; keyword</span>
+  <span class="nx">print</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// Print the name</span>
+  <span class="nx">print</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span> <span class="c1">// Print the text</span>
+  <span class="nx">print</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span> <span class="c1">// Print an extra 3rd argument that was passed</span>
+<span class="p">}</span>
+
+<span class="c1">// 1 argument passed, &#39;text&#39; just passes in null</span>
+<span class="nx">bob</span><span class="p">.</span><span class="nx">Speak</span><span class="p">(</span><span class="s2">&quot;Ted&quot;</span><span class="p">);</span>
+
+<span class="c1">// 3 arguments passed (last one does not get mapped to a parameter name)</span>
+<span class="nx">bob</span><span class="p">.</span><span class="nx">Speak</span><span class="p">(</span><span class="s2">&quot;Ned&quot;</span><span class="o">,</span> <span class="s2">&quot;Hello world!&quot;</span><span class="o">,</span> <span class="s2">&quot;What?&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Many dynamic languages also treat the locals as a table or object</li>
+<li>You can grab local variables and index them by string</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">Speak</span><span class="p">(</span><span class="nx">name</span><span class="o">,</span> <span class="nx">text</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+
+  <span class="c1">// Via the &#39;locals&#39; keyword</span>
+  <span class="nx">print</span><span class="p">(</span><span class="nx">locals</span><span class="p">[</span><span class="s2">&quot;i&quot;</span><span class="p">]);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="operator-overloading">
+<h3>Operator Overloading<a class="headerlink" href="StaticVsDynamic.html#operator-overloading" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>A convenience in many static languages</li>
+<li>A hugely powerful construct in dynamic languages</li>
+<li>Primarily because the <code class="docutils literal"><span class="pre">.</span></code> operator can be overloaded unlike in most static languages</li>
+<li>Example: Overload the <code class="docutils literal"><span class="pre">.</span></code> to look on a different table/object for members if a member is not found (inheritance)</li>
+<li>Very helpful for <em>binding</em> between a scripting language and a native language like C++</li>
+</ul>
+</div>
+<div class="section" id="reflection">
+<h3>Reflection<a class="headerlink" href="StaticVsDynamic.html#reflection" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Also known as <em>Run Time Type Identification</em></li>
+<li>The ability to walk over all types defined within a library, all those types members, etc</li>
+<li>Check for base classes, nested types, sizes, offsets, etc</li>
+<li>The ability to get string names of types (typically virtual)</li>
+<li>C++ only supports names of types (no iterating over type_infos or accessing members)</li>
+<li>In a dynamic language, this comes entirely for free</li>
+<li>Because the object/table class must have all its members dynamically added, then it becomes trivial to walk over all defined members</li>
+<li>Typically a defined language way of getting the type of a variant (e.g. in Lua you use <code class="docutils literal"><span class="pre">type(something)</span></code> which returns &#8220;bool&#8221;, &#8220;number&#8221;, ...)</li>
+<li>The name of the type might just be a member on the table/object called <code class="docutils literal"><span class="pre">__type</span></code></li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="nx">player</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="nx">player</span><span class="p">.</span><span class="nx">Health</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
+<span class="nx">player</span><span class="p">.</span><span class="nx">Ammo</span> <span class="o">=</span> <span class="mi">50</span><span class="o">;</span>
+<span class="nx">player</span><span class="p">.</span><span class="nx">Shoot</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="cm">/*...*/</span> <span class="p">};</span>
+<span class="k">for</span> <span class="p">(</span><span class="k">var</span> <span class="nx">member</span> <span class="k">in</span> <span class="nx">player</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="nx">print</span><span class="p">(</span><span class="nx">member</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Prints something like:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Health</span>
+<span class="n">Ammo</span>
+<span class="n">Shoot</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="templates">
+<h3>Templates<a class="headerlink" href="StaticVsDynamic.html#templates" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>A dynamic language container can store any type via the <code class="docutils literal"><span class="pre">Variant</span></code></li>
+<li>There is no need for templated code</li>
+<li>Moreover, containers can now have polymorphic members</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="nx">array</span><span class="p">.</span><span class="nx">PushBack</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="nx">array</span><span class="p">.</span><span class="nx">PushBack</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">);</span>
+<span class="nx">array</span><span class="p">.</span><span class="nx">PushBack</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Dynamic languages don&#8217;t need a bunch of features to circumvent or enhance the type system</li>
+<li>Keeps the languages generally simple yet powerful</li>
+</ul>
+</div>
+<div class="section" id="overloads-function-templates">
+<h3>Overloads &amp; Function Templates<a class="headerlink" href="StaticVsDynamic.html#overloads-function-templates" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Overloads are more naturally expressed by user defined logic rather than pre-defined compiler rules</li>
+<li>No way to overload because we don&#8217;t pass typed arguments into functions (scalar parameters)</li>
+<li>Cannot overload on different number of arguments because every function is variadic</li>
+<li>Single name mapped to single function on <code class="docutils literal"><span class="pre">unordered_map</span></code> (multi-function object?)</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">Speak</span><span class="p">(</span><span class="n">T</span> <span class="n">value</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// We assume that the value has a &#39;mName&#39; member</span>
+  <span class="n">print</span><span class="p">(</span><span class="n">value</span><span class="p">.</span><span class="n">mName</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">Speak</span><span class="p">(</span><span class="kt">bool</span> <span class="n">value</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="n">print</span><span class="p">(</span><span class="s">&quot;true&quot;</span><span class="p">);</span>
+  <span class="k">else</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">&quot;false&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The same code written in a pseudo dynamic language:</p>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">Speak</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">type</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;bool&quot;</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">value</span><span class="p">)</span>
+      <span class="nx">print</span><span class="p">(</span><span class="s2">&quot;true&quot;</span><span class="p">);</span>
+    <span class="k">else</span>
+      <span class="nx">print</span><span class="p">(</span><span class="s2">&quot;false&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">else</span>
+  <span class="p">{</span>
+    <span class="c1">// We assume that the value has a &#39;mName&#39; member</span>
+    <span class="nx">print</span><span class="p">(</span><span class="nx">value</span><span class="p">.</span><span class="nx">mName</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="monkey-patching">
+<h3>Monkey Patching<a class="headerlink" href="StaticVsDynamic.html#monkey-patching" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Overwriting or adding a member on a type that is not your own</li>
+<li>Often used to replace a function so that it does slightly different behavior (e.g. sends an event)</li>
+<li>Very dangerous practice, but <em>desperate times call for desperate measures</em></li>
+<li>Many companies have the policy that monkey patches must be documented</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nx">player</span> <span class="o">=</span> <span class="nx">game</span><span class="p">.</span><span class="nx">GetPlayer</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+<span class="k">var</span> <span class="nx">oldJump</span> <span class="o">=</span> <span class="nx">player</span><span class="p">.</span><span class="nx">Jump</span><span class="o">;</span>
+
+<span class="kd">function</span> <span class="nx">newJump</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="c1">// Invoke the original function</span>
+  <span class="nx">oldJump</span><span class="p">();</span>
+
+  <span class="c1">// I needed to store some data about the player for how many times they have tried to jump</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">HasJumped</span> <span class="o">==</span> <span class="kc">undefined</span><span class="p">)</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">HasJumped</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+  <span class="k">else</span>
+    <span class="o">++</span><span class="k">this</span><span class="p">.</span><span class="nx">HasJumped</span><span class="o">;</span>
+<span class="p">}</span>
+
+<span class="c1">// *Monkey Patch*</span>
+<span class="c1">// Every time the player jumps we need to track how many times</span>
+<span class="nx">player</span><span class="p">.</span><span class="nx">Jump</span> <span class="o">=</span> <span class="nx">newJump</span><span class="o">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="implementation">
+<h3>Implementation<a class="headerlink" href="StaticVsDynamic.html#implementation" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Dynamic languages are incredibly simple to implement and take much less time than static counterparts</li>
+<li>Tokenizer -&gt; Parser -&gt; Semantic Analysis (very small phase!) -&gt; Interpreter</li>
+<li>Typically your stack is just a <code class="docutils literal"><span class="pre">vector&lt;Variant&gt;</span></code></li>
+<li>Globals are often just another special table</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="SemanticAnalysis.html" class="btn btn-neutral float-right" title="Semantic Analysis" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="AbstractSyntaxTree.html" class="btn btn-neutral" title="Abstract Syntax Tree" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, DigiPen Institute of Technology.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

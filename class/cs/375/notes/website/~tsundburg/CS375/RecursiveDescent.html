@@ -1,0 +1,1075 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Recursive Descent Parsing &mdash; Compilers and Interpreters 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Compilers and Interpreters 1.0 documentation" href="index.html"/>
+        <link rel="next" title="Abstract Syntax Tree" href="AbstractSyntaxTree.html"/>
+        <link rel="prev" title="Operators" href="Operators.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="index.html" class="icon icon-home"> Compilers and Interpreters
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="PartsOfTheCompiler.html">Parts Of The Compiler</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#lexical-analysis-tokenizer">Lexical Analysis (Tokenizer)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#syntax-analysis-parser">Syntax Analysis (Parser)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#abstract-syntax-tree-ast">Abstract Syntax Tree (AST)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#semantic-analysis">Semantic Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#interpreter">Interpreter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DeterministicFiniteAutomata.html">Deterministic Finite Automata (DFA)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#traversal-algorithm">Traversal Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#backtracking-and-lookahead">Backtracking and Lookahead</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-1-examples">LA(1) Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-2-examples">LA(2) Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-examples">LA(*) Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#lookahead-implementation">Lookahead Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-integers">Parsing Integers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-floats">Parsing Floats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-keywords">Parsing Keywords</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-identifiers">Parsing Identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-operators">Parsing Operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#state-structure">State Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#hard-coded-dfa">Hard-coded DFA</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="RegularExpressions.html">Regular Expressions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#core-operators">Core Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#union">Union <strong>|</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#concatenation">Concatenation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#kleene-closure">Kleene Closure <strong>*</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#extended-operators">Extended Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#character-sets">Character Sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#positive-closure">Positive Closure <strong>+</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#optional">Optional <strong>?</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#interval-min-max-min-n">Interval <strong>{min,max}</strong> <strong>{min,}</strong> <strong>{n}</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#any-character">Any Character <strong>.</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#other-operators">Other Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#escape-character">Escape Character <strong>\</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#anchors-and">Anchors <strong>^</strong> and <strong>$</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#word-boundaries-b">Word Boundaries <strong>\b</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#capture-group">Capture Group <strong>()</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#passive-group">Passive Group <strong>(?:)</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#replacement-back-reference">Replacement Back Reference <strong>$</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#cheat-sheets">Cheat Sheets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Grammars.html">Grammars</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#similarity-to-regular-expressions">Similarity To Regular Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#derivations-and-parse-trees">Derivations and Parse Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#ambiguity">Ambiguity</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Grammars.html#classic-examples-of-ambiguity">Classic Examples of Ambiguity</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#elimination-of-ambiguity">Elimination of Ambiguity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#left-recursion">Left Recursion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Operators.html">Operators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Operators.html#associativity">Associativity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Operators.html#precedence">Precedence</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="RecursiveDescent.html#">Recursive Descent Parsing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#predictive-parser">Predictive Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#guidelines">Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternations">Alternations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternation-and-concatenation">Alternation and Concatenation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#recursion">Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternation-empty-rule">Alternation Empty Rule</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-token">Optional Token</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-rule">Optional Rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-concatenation">Optional Concatenation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#kleene-and-positive-closures">Kleene and Positive Closures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AbstractSyntaxTree.html">Abstract Syntax Tree</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#heterogeneous-nodes">Heterogeneous Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#homogeneous-nodes">Homogeneous Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#heterogeneous-double-dispatch">Heterogeneous Double Dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#node-allocation-and-storage">Node Allocation And Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="StaticVsDynamic.html">Static vs Dynamic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="StaticVsDynamic.html#static-typing">Static Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="StaticVsDynamic.html#dynamic-typing">Dynamic Typing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#scalar-variables">Scalar Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#table-or-object">Table or Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#inheritance-and-polymorphism">Inheritance and Polymorphism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#operator-overloading">Operator Overloading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#reflection">Reflection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#templates">Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#overloads-function-templates">Overloads &amp; Function Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#monkey-patching">Monkey Patching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#implementation">Implementation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="SemanticAnalysis.html">Semantic Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#scope-resolution">Scope Resolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="SemanticAnalysis.html#name-hiding">Name Hiding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SemanticAnalysis.html#types-members-variables">Types, Members, Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#symbol-table-aka-meta">Symbol Table aka Meta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#computing-types">Computing Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#type-inference">Type Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#l-r-values">L/R Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#syntactic-sugar">Syntactic Sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#control-flow">Control Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#member-resolution">Member Resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#duplicate-members-overloads">Duplicate Members &amp; Overloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#overload-resolution">Overload Resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#module-based-compilation">Module Based Compilation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ErrorRecovery.html">Error Recovery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#tokenization">Tokenization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#panic-mode">Panic Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#error-edges">Error Edges</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#parsing">Parsing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#id1">Panic Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#semantic-analysis">Semantic Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#classnode">ClassNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#poison">Poison</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#code-generation">Code Generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AstInterpreter.html">AST Interpreter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#advantages">Advantages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#disadvantages">Disadvantages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#execution">Execution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="AstInterpreter.html#expressions">Expressions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#literals">Literals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#binary-operators">Binary Operators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#unary-operators">Unary Operators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#type-casting">Type Casting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#member-access">Member Access</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#if-statements">If Statements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#while-do-while-for-etc">While, Do-While, For, Etc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#return">Return</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#break-and-continue">Break and Continue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#exceptions">Exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#function-calls">Function Calls</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ModernLanguages.html">Modern Languages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#return-type-inference">Return Type Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#decltype">Decltype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#delegates">Delegates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#closures-anonymous-functions">Closures &amp; Anonymous Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#properties">Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#extension-functions-properties">Extension Functions &amp; Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#pure-functions">Pure Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#mixins">Mixins</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="IntermediateRepresentation.html">Intermediate Representation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#front-back-end">Front/Back End</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#three-address-code">Three Address Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="IntermediateRepresentation.html#code-generation-example">Code Generation Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#static-single-assignment">Static Single Assignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#basic-blocks">Basic Blocks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="VirtualMachine.html">Virtual Machine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#instructions">Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#reduced-instruction-set-computing">Reduced Instruction Set Computing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#complex-instruction-set-computing">Complex Instruction Set Computing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#stack-machine">Stack Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#advantages">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#disadvantages">Disadvantages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#random-access-machine">Random Access Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id1">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id2">Disadvantages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#register-machine">Register Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id3">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id4">Disadvantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#register-allocation">Register Allocation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="VirtualMachine.html#infinite-registers">Infinite Registers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="VirtualMachine.html#register-reuse">Register Reuse</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GarbageCollection.html">Garbage Collection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#why">Why?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#safety">Safety</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#misconceptions">Misconceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#garbage-collector-roots">Garbage Collector Roots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#common-issues">Common Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#mark-and-sweep">Mark and Sweep</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#mark-phase">Mark Phase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#sweep-phase">Sweep Phase</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#defragmentation">Defragmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#reference-counting">Reference Counting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#advantages">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#disadvantages">Disadvantages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ApplicationBinaryInterface.html">Application Binary Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#name-mangling">Name Mangling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#standardization">Standardization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#calling-convention">Calling Convention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#libraries">Libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ApplicationBinaryInterface.html#dynamic-linked-libraries">Dynamic Linked Libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#structures">Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#virtual-tables">Virtual Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#runtime-type-identification">Runtime Type Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CompilerAsAService.html">Compiler As A Service (IDE)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#minimal-rebuild">Minimal Rebuild</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#member-auto-complete">Member Auto Complete</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#call-tips-overloads">Call Tips / Overloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#local-expression-completion">Local / Expression Completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#cursor-hovering">Cursor Hovering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#go-to-definition">Go To Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#symbol-querying">Symbol Querying</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#typenode">TypeNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#variablenode">VariableNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#callnode">CallNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#classnode-functionnode">ClassNode/FunctionNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#expressionnode">ExpressionNode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#comments">Comments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#refactor-rename">Refactor Rename</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#debuggers">Debuggers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#formatting">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#statement-evaluation">Statement Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#read-eval-print-loop">Read Eval Print Loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#other-features">Other Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment1.html">Assignment 1</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment1.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment2.html">Assignment 2</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment2.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment3.html">Assignment 3</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment3.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment4.html">Assignment 4</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment4.html#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment4.html#pass-4">Pass 4</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#literalnode">LiteralNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#indexnode">IndexNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#unaryoperatornode">UnaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#callnode">CallNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#castnode">CastNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#ifnode-fornode-whilenode">IfNode/ForNode/WhileNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#gotonode">GotoNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#returnnode">ReturnNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#parameternode-variablenode">ParameterNode/VariableNode</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment5.html">Assignment 5</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#pass-1-pre-pass">Pass 1 (Pre-Pass)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#interpreterfunctioncall">InterpreterFunctionCall</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#pass-2-interpretation">Pass 2 (Interpretation)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#variablenode">VariableNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#returnnode">ReturnNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#ifnode">IfNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#whilenode">WhileNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#castnode">CastNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#literalnode">LiteralNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#callnode">CallNode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#addsinfunction">AddSinFunction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#unhandled-nodes">Unhandled Nodes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AssignmentSubmission.html">Assignment Submission</a></li>
+<li class="toctree-l1"><a class="reference external" href="../CS375Assignments.1.html#://">Assignment Downloads</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Compilers and Interpreters</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Recursive Descent Parsing</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/RecursiveDescent.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Random Quote: Highways are like hash-tables, you really don&#8217;t want them full</p>
+</div>
+<div class="section" id="recursive-descent-parsing">
+<h1>Recursive Descent Parsing<a class="headerlink" href="RecursiveDescent.html#recursive-descent-parsing" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>The easiest form of parser to write</li>
+<li>From grammar directly to hand written code</li>
+<li>Starts from the beginning of the input and consumes tokens while <em>recognizing</em> rules</li>
+<li>Can be generated with tools</li>
+<li>Grammar must NOT include left-recursion (not to be confused with left-factoring)</li>
+<li>Recognition is the process of validating whether a language parses correctly or not</li>
+<li>First get your parser to &#8216;recognize&#8217;, then build an AST afterwards</li>
+</ul>
+<div class="section" id="predictive-parser">
+<h2>Predictive Parser<a class="headerlink" href="RecursiveDescent.html#predictive-parser" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Like the DFA tokenizer, a recursive descent parser should be deterministic</li>
+<li>Looks at a single token and should know the rule to follow based on that token</li>
+<li>Grammars need to be factored to avoid backtracking (no rules that start with the same terminals)<ul>
+<li>And by the same logic, no rules that start with the same non-terminals</li>
+</ul>
+</li>
+<li>Predictive means the performance is linear</li>
+<li>Non-predictive with back-tracking can become polynomial in time</li>
+<li>Recursive descent can easily be adapted to support back-tracking, which can be useful</li>
+</ul>
+</div>
+<div class="section" id="guidelines">
+<h2>Guidelines<a class="headerlink" href="RecursiveDescent.html#guidelines" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Every rule becomes the name of a function</li>
+<li>Accept is a function that peeks at the next token and compares it to the one passed in (returns true/false)</li>
+<li>Expect is the same as Accept, but terminates the entire parser usually with an exception</li>
+<li>We could use Accept everywhere we use Expect, but Expect can give the user better errors</li>
+</ul>
+</div>
+<div class="section" id="alternations">
+<h2>Alternations<a class="headerlink" href="RecursiveDescent.html#alternations" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>A recursive descent implementation for alternation (the or operator) would look like the following:</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Expression</span> <span class="o">=</span> <span class="o">&lt;</span><span class="kc">True</span><span class="o">&gt;</span> <span class="o">|</span> <span class="o">&lt;</span><span class="kc">False</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">Expression</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">True</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">False</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>This can also be rewritten in the simpler form:</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">Expression</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">return</span> <span class="n">Accept</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">True</span><span class="p">)</span> <span class="o">||</span> <span class="n">Accept</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">False</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Alternation between more than one rule is also simple:</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Expression</span> <span class="o">=</span> <span class="n">Boolean</span> <span class="o">|</span> <span class="o">&lt;</span><span class="n">Identifier</span><span class="o">&gt;</span>
+<span class="n">Boolean</span> <span class="o">=</span> <span class="o">&lt;</span><span class="kc">True</span><span class="o">&gt;</span> <span class="o">|</span> <span class="o">&lt;</span><span class="kc">False</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">Expression</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">return</span> <span class="n">Boolean</span><span class="p">()</span> <span class="o">||</span> <span class="n">Accept</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">Identifier</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="nf">Boolean</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">return</span> <span class="n">Accept</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">True</span><span class="p">)</span> <span class="o">||</span> <span class="n">Accept</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">False</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>In both of the above cases, the grammar was simple and entirely left factored</li>
+<li>Is the below grammar entirely left factored?</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Dangerous</span> <span class="o">=</span> <span class="n">Explosion</span> <span class="o">|</span> <span class="s2">&quot;boom&quot;</span> <span class="s2">&quot;kablewie&quot;</span>
+<span class="n">Explosion</span> <span class="o">=</span> <span class="s2">&quot;boom&quot;</span> <span class="o">|</span> <span class="s2">&quot;kablamo&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><strong>No</strong>, because two of the rules share the same left terminal/token</li>
+<li>Perform the substation of the <code class="docutils literal"><span class="pre">Explosion</span></code> rule into <code class="docutils literal"><span class="pre">Dangerous</span></code></li>
+</ul>
+</div>
+<div class="section" id="alternation-and-concatenation">
+<h2>Alternation and Concatenation<a class="headerlink" href="RecursiveDescent.html#alternation-and-concatenation" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Concatenation translates directly to the and &amp;&amp; operator</li>
+<li>Lets look at an example where the grammar is not left factored:</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Select</span> <span class="o">=</span> <span class="s2">&quot;select&quot;</span> <span class="s2">&quot;from&quot;</span> <span class="s2">&quot;table&quot;</span>
+       <span class="o">|</span> <span class="s2">&quot;select&quot;</span> <span class="s2">&quot;from&quot;</span> <span class="s2">&quot;row&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Notice &#8220;select&#8221; and &#8220;from&#8221; appear in two alternatives of the <code class="docutils literal"><span class="pre">Select</span></code> rule</li>
+<li>This would require a look-ahead of 3</li>
+<li>Can be implemented with recursive descent, but not recommended:</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">Select</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="kt">size_t</span> <span class="n">lastTokenPosition</span> <span class="o">=</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">TokenPosition</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="s">&quot;select&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;from&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;table&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+
+  <span class="c1">// We need to reset the token position here!</span>
+  <span class="k">this</span><span class="o">-&gt;</span><span class="n">TokenPosition</span> <span class="o">=</span> <span class="n">lastTokenPosition</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="s">&quot;select&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;from&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;row&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Manually resetting the token position is tedious</li>
+<li>Can use a special stack object to roll the token position back on failure</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">StackSaver</span>
+<span class="p">{</span>
+  <span class="kt">size_t</span> <span class="n">mLastTokenPosition</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="n">mAccepted</span><span class="p">;</span>
+
+  <span class="n">StackSaver</span><span class="p">(</span><span class="n">Parser</span><span class="o">*</span> <span class="n">parser</span><span class="p">)</span> <span class="o">:</span>
+    <span class="n">mLastTokenPosition</span><span class="p">(</span><span class="n">parser</span><span class="o">-&gt;</span><span class="n">TokenPosition</span><span class="p">),</span>
+    <span class="n">mAccepted</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span>
+  <span class="p">{</span>
+  <span class="p">}</span>
+
+  <span class="o">~</span><span class="n">StackSaver</span><span class="p">()</span>
+  <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">mAccepted</span> <span class="o">==</span> <span class="nb">false</span><span class="p">)</span>
+      <span class="n">parser</span><span class="o">-&gt;</span><span class="n">TokenPosition</span> <span class="o">=</span> <span class="n">mLastTokenPosition</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>In order to use StackSaver in this case we must either use separate scopes</li>
+<li>Or implement alternatives as separate functions (many prefer this):</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">Select</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">return</span> <span class="n">Select1</span><span class="p">()</span> <span class="o">||</span> <span class="n">Select2</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="nf">Select1</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="n">StackSaver</span> <span class="n">saver</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="s">&quot;select&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;from&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;table&quot;</span><span class="p">))</span>
+  <span class="p">{</span>
+    <span class="n">saver</span><span class="p">.</span><span class="n">mAccepted</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="nf">Select2</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="n">StackSaver</span> <span class="n">saver</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="s">&quot;select&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;from&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;row&quot;</span><span class="p">))</span>
+  <span class="p">{</span>
+    <span class="n">saver</span><span class="p">.</span><span class="n">mAccepted</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Technically the StackSaver is not needed in Select2, because we call it second</li>
+<li>Becomes difficult to know when its needed (any time there could be acceptable backtracking)</li>
+<li>Can add helper functions like <code class="docutils literal"><span class="pre">bool</span> <span class="pre">StackSaver::Accept(bool</span> <span class="pre">input)</span></code> to simplify code (returns the same input)</li>
+<li>Left factor your grammars and avoid all of this!</li>
+<li>What if the user was to attempt to parse the following:</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">select</span> <span class="k">with</span> <span class="n">table</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>At what point does the compiler know this was an error?</li>
+<li>Both <code class="docutils literal"><span class="pre">Select1</span></code> and <code class="docutils literal"><span class="pre">Select2</span></code> fail, therefore <code class="docutils literal"><span class="pre">Select</span></code> fails</li>
+<li>Compiler does not explain to the user why <code class="docutils literal"><span class="pre">Select</span></code> fails</li>
+<li>Lets take a look at a <strong>left factored</strong> version of the above grammar:</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Select</span> <span class="o">=</span> <span class="s2">&quot;select&quot;</span> <span class="s2">&quot;from&quot;</span> <span class="p">(</span><span class="s2">&quot;table&quot;</span> <span class="o">|</span> <span class="s2">&quot;row&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">Select</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">return</span> <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;select&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;from&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="s">&quot;table&quot;</span><span class="p">)</span> <span class="o">||</span> <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;row&quot;</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Much less code to parse left-factored grammars</li>
+<li>Compiler still does not explain to the user why <code class="docutils literal"><span class="pre">Select</span></code> fails</li>
+<li>If the grammar was entirely left factored, we know that after the <code class="docutils literal"><span class="pre">select</span></code> keyword we <strong>expect</strong> the <code class="docutils literal"><span class="pre">from</span></code> keyword</li>
+<li>Technically we can expect the <code class="docutils literal"><span class="pre">select</span></code> keyword too, but imagine there are other grammar rules</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">Select</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">return</span> <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;select&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">Expect</span><span class="p">(</span><span class="s">&quot;from&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">Expect</span><span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="s">&quot;table&quot;</span><span class="p">)</span> <span class="o">||</span> <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;row&quot;</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Now the compiler will fail on the exact token and will ideally report line and file numbers</li>
+<li>Two versions of the <code class="docutils literal"><span class="pre">Expect</span></code> function:</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">Expect</span><span class="p">(</span><span class="kt">bool</span> <span class="n">succeeded</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">succeeded</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+
+  <span class="k">throw</span> <span class="n">ParserException</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="c1">// Most likely this will actually take an enum, but for this example we take a string</span>
+<span class="kt">bool</span> <span class="nf">Expect</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">token</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// Calls the above version of Expect</span>
+  <span class="k">return</span> <span class="n">Expect</span><span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="n">token</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>We can also be really nice to the user and add error messages to our Expect function:</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">Select</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">return</span>
+    <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;select&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+    <span class="n">Expect</span><span class="p">(</span><span class="s">&quot;from&quot;</span><span class="p">,</span> <span class="s">&quot;The &#39;from&#39; keyword must follow the &#39;select&#39; keyword&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+    <span class="n">Expect</span><span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="s">&quot;table&quot;</span><span class="p">)</span> <span class="o">||</span> <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;row&quot;</span><span class="p">),</span> <span class="s">&quot;You can only select from a &#39;table&#39; or a &#39;row&#39;&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="recursion">
+<h2>Recursion<a class="headerlink" href="RecursiveDescent.html#recursion" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Statement</span> <span class="o">=</span> <span class="n">If</span> <span class="o">|</span> <span class="n">Assignment</span>
+<span class="n">Assignment</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">Identifier</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">Assignment</span><span class="o">&gt;</span> <span class="n">Expression</span> <span class="o">&lt;</span><span class="n">Semicolon</span><span class="o">&gt;</span>
+<span class="n">If</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">If</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">OpenParenthesis</span><span class="o">&gt;</span> <span class="n">Expression</span> <span class="o">&lt;</span><span class="n">CloseParenthesis</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">OpenCurley</span><span class="o">&gt;</span> <span class="n">Statement</span> <span class="o">&lt;</span><span class="n">CloseCurley</span><span class="o">&gt;</span>
+<span class="n">Expression</span> <span class="o">=</span> <span class="o">&lt;</span><span class="kc">True</span><span class="o">&gt;</span> <span class="o">|</span> <span class="o">&lt;</span><span class="kc">False</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>This grammar is entirely friendly to a recursive descent parser</li>
+<li>Statement is our starting rule</li>
+<li>Assignment is our base case for the recursion of the If statement</li>
+<li>No <strong>left recursion</strong></li>
+<li>No <strong>ambiguity</strong></li>
+<li>Every alternative can be predicted with a single non-terminal</li>
+<li>From Statement, there are two possible options, If and Assignment</li>
+<li>The first terminal token in If is literally &#8220;if&#8221;</li>
+<li>The first terminal token in Statement is an Identifier</li>
+<li>If we were to write this as a DFA, there would be two deterministic edges on &#8220;if&#8221; and Identifier</li>
+<li>The only other rule with alternation is Expression, which is also predictive on &#8220;true&#8221; and &#8220;false&#8221;</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">Expression</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">return</span> <span class="n">Accept</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">True</span><span class="p">)</span> <span class="o">||</span> <span class="n">Accept</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">False</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="nf">Assignment</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">Identifier</span><span class="p">)</span> <span class="o">==</span> <span class="nb">false</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+
+  <span class="c1">// At this point in time we can use Expect, because the grammar has been</span>
+  <span class="c1">// entirely left-factored and we know there are no other options</span>
+  <span class="c1">// Note: We also do not need to check the result of Expect because its either true, or throws!</span>
+  <span class="n">Expect</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">Assignment</span><span class="p">);</span>
+  <span class="n">Expect</span><span class="p">(</span><span class="n">Expression</span><span class="p">());</span>
+  <span class="n">Expect</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">StatementEnd</span><span class="p">);</span>
+
+  <span class="c1">// We could simplify our code by just returning the last Expect call</span>
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="nf">If</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="c1">// An if statement must start with &quot;if&quot; as per the grammar</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">If</span><span class="p">)</span> <span class="o">==</span> <span class="nb">false</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+
+  <span class="c1">// We know that there is only one valid form of If so we can use Expect instead of Accept</span>
+  <span class="n">Expect</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">OpenParenthesis</span><span class="p">);</span>
+  <span class="n">Expect</span><span class="p">(</span><span class="n">Expression</span><span class="p">());</span>
+  <span class="n">Expect</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">CloseParenthesis</span><span class="p">);</span>
+  <span class="n">Expect</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">OpenCurley</span><span class="p">);</span>
+  <span class="n">Expect</span><span class="p">(</span><span class="n">Statements</span><span class="p">());</span>
+  <span class="k">return</span> <span class="n">Expect</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">CloseCurley</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="nf">Statement</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">return</span> <span class="n">If</span><span class="p">()</span> <span class="o">||</span> <span class="n">Assignment</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>You generally can shorten the code using short-circuit evaluation</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">Expression</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">return</span> <span class="n">Accept</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">True</span><span class="p">)</span> <span class="o">||</span> <span class="n">Accept</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">False</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="nf">Assignment</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">return</span>
+    <span class="n">Accept</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">Identifier</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+    <span class="n">Expect</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">Assignment</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+    <span class="n">Expression</span><span class="p">()</span> <span class="o">&amp;&amp;</span>
+    <span class="n">Expect</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">StatementEnd</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="nf">If</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">return</span>
+    <span class="n">Accept</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">If</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+    <span class="n">Expect</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">OpenParenthesis</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+    <span class="n">Expression</span><span class="p">()</span> <span class="o">&amp;&amp;</span>
+    <span class="n">Expect</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">CloseParenthesis</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+    <span class="n">Expect</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">OpenCurley</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+    <span class="n">Statements</span><span class="p">()</span> <span class="o">&amp;&amp;</span>
+    <span class="n">Expect</span><span class="p">(</span><span class="n">Token</span><span class="o">::</span><span class="n">CloseCurley</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="nf">Statement</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">return</span> <span class="n">If</span><span class="p">()</span> <span class="o">||</span> <span class="n">Assignment</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="alternation-empty-rule">
+<h2>Alternation Empty Rule<a class="headerlink" href="RecursiveDescent.html#alternation-empty-rule" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="optional-token">
+<h3>Optional Token<a class="headerlink" href="RecursiveDescent.html#optional-token" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The following grammar has an optional construct:</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Start</span> <span class="o">=</span> <span class="s2">&quot;start&quot;</span> <span class="p">(</span><span class="s2">&quot;immediately&quot;</span><span class="o">|</span><span class="p">)</span> <span class="s2">&quot;;&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>This is the equivalent of using the regular expression <code class="docutils literal"><span class="pre">?</span></code> operator:</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span>Start = &quot;start&quot; &quot;immediately&quot;? &quot;;&quot;
+</pre></div>
+</div>
+<ul class="simple">
+<li>To implement this, we simply <code class="docutils literal"><span class="pre">Accept</span></code> the token <code class="docutils literal"><span class="pre">task</span></code>, but ignore whether it returns true or false</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">Start</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="s">&quot;start&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">false</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+
+  <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;immediately&quot;</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="n">Expect</span><span class="p">(</span><span class="s">&quot;;&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="optional-rule">
+<h3>Optional Rule<a class="headerlink" href="RecursiveDescent.html#optional-rule" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The same technique works for an optional rule, again we just disregard the return value</li>
+<li>Note this will fail if the rule uses <code class="docutils literal"><span class="pre">Expect</span></code>, however the first token is always parsed with <code class="docutils literal"><span class="pre">Accept</span></code></li>
+<li>The user expects this! <em>pun intended</em></li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span>Start = &quot;start&quot; Task? &quot;immediately&quot;? &quot;;&quot;
+Task = &quot;server&quot; | &quot;dumb&quot; &quot;terminal&quot;
+</pre></div>
+</div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">Start</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="s">&quot;start&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">false</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+
+  <span class="n">Task</span><span class="p">();</span>
+  <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;immediately&quot;</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="n">Expect</span><span class="p">(</span><span class="s">&quot;;&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="nf">Task</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">return</span>
+    <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;server&quot;</span><span class="p">)</span> <span class="o">||</span>
+    <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;dumb&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">Expect</span><span class="p">(</span><span class="s">&quot;terminal&quot;</span><span class="p">,</span> <span class="s">&quot;Right now we only support starting a dumb terminal&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>The following would all be valid lines of input:</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">start</span><span class="p">;</span>
+<span class="n">start</span> <span class="n">server</span><span class="p">;</span>
+<span class="n">start</span> <span class="n">dumb</span> <span class="n">terminal</span> <span class="n">immediately</span><span class="p">;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>What if the user wrote:</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">start</span> <span class="n">dumb</span> <span class="n">server</span> <span class="n">immediately</span><span class="p">;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>The grammar specifies that the entire <code class="docutils literal"><span class="pre">Task</span></code> rule is optional, so why does this fail?</li>
+<li>Because <code class="docutils literal"><span class="pre">dumb</span> <span class="pre">server</span></code> is not a valid <code class="docutils literal"><span class="pre">Task</span></code></li>
+<li>Even if we backtracked, we&#8217;d still be stuck at the <code class="docutils literal"><span class="pre">dumb</span></code> token and would fail on <code class="docutils literal"><span class="pre">Expect(&quot;;&quot;)</span></code></li>
+<li>The user would have less information:</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">start</span> <span class="n">dumb</span> <span class="n">server</span> <span class="n">immediately</span><span class="p">;</span>
+      <span class="o">^</span>
+      <span class="n">The</span> <span class="n">compiler</span> <span class="n">expected</span> <span class="n">a</span> <span class="s1">&#39;;&#39;</span> <span class="n">but</span> <span class="n">instead</span> <span class="n">got</span> <span class="s1">&#39;dumb&#39;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Instead of:</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">start</span> <span class="n">dumb</span> <span class="n">server</span> <span class="n">immediately</span><span class="p">;</span>
+           <span class="o">^</span>
+           <span class="n">Right</span> <span class="n">now</span> <span class="n">we</span> <span class="n">only</span> <span class="n">support</span> <span class="n">starting</span> <span class="n">a</span> <span class="n">dumb</span> <span class="n">terminal</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="optional-concatenation">
+<h3>Optional Concatenation<a class="headerlink" href="RecursiveDescent.html#optional-concatenation" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>In the following grammar, the two tokens <code class="docutils literal"><span class="pre">dumb</span> <span class="pre">terminal</span></code> are concatenated and are entirely optional:</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span>Start = &quot;start&quot; (&quot;dumb&quot; &quot;terminal&quot;)? &quot;;&quot;
+</pre></div>
+</div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">Start</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="s">&quot;start&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">false</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+
+  <span class="c1">// The following is NOT valid, because it would allow just &quot;dumb&quot; or just &quot;terminal&quot;</span>
+  <span class="c1">// Accept(&quot;dumb&quot;);</span>
+  <span class="c1">// Accept(&quot;terminal&quot;);</span>
+
+  <span class="c1">// We must use &amp;&amp; to ensure they either both happen, neither</span>
+  <span class="c1">// We still ignore the result of the entire expression</span>
+  <span class="c1">// We could use Accept or Expect here, it depends on if we want the errors or not</span>
+  <span class="n">Accept</span><span class="p">(</span><span class="s">&quot;dumb&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">Expect</span><span class="p">(</span><span class="s">&quot;terminal&quot;</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="n">Expect</span><span class="p">(</span><span class="s">&quot;;&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="kleene-and-positive-closures">
+<h2>Kleene and Positive Closures<a class="headerlink" href="RecursiveDescent.html#kleene-and-positive-closures" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>The following grammar would allow for input such as <code class="docutils literal"><span class="pre">call</span> <span class="pre">foo</span> <span class="pre">bar</span> <span class="pre">baz</span></code></li>
+<li>We&#8217;ve left off the <code class="docutils literal"><span class="pre">Identifier</span></code> rule</li>
+<li>Remember, the <em>Kleene closure</em> * means we can have <em>zero or more</em> of the previous</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Call</span> <span class="o">=</span> <span class="s2">&quot;call&quot;</span> <span class="n">Identifier</span><span class="o">*</span>
+</pre></div>
+</div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">Call</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="s">&quot;call&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">false</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+
+  <span class="c1">// Because the * is similar to an optional, we don&#39;t let its return value</span>
+  <span class="c1">// affect our return in this function</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">Identifier</span><span class="p">());</span>
+
+  <span class="c1">// If this was using our tokenizer, it would be similar to</span>
+  <span class="c1">// while (Accept(TokenType::Identifier));</span>
+
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>If we were to use a <em>positive closure</em> + we could use a do-while, or call it once before</li>
+<li>Note that the first one is <strong>no longer optional</strong></li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Call</span> <span class="o">=</span> <span class="s2">&quot;call&quot;</span> <span class="n">Identifier</span><span class="o">+</span>
+</pre></div>
+</div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">Call</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="s">&quot;call&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">false</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+
+  <span class="n">Expect</span><span class="p">(</span><span class="n">Identifier</span><span class="p">(),</span> <span class="s">&quot;Call requires at least one argument&quot;</span><span class="p">);</span>
+
+  <span class="k">while</span> <span class="p">(</span><span class="n">Identifier</span><span class="p">());</span>
+
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Lets take a look at a more realistic and &#8220;complicated&#8221; example:</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span>Call = &quot;call&quot; (Identifier (&quot;,&quot; Identifier)*)?
+</pre></div>
+</div>
+<ul class="simple">
+<li>Call may accept no arguments, one argument, or a comma delimited list of arguments</li>
+<li>This is really the only way to implement this logic</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">Call</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="s">&quot;call&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">false</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+
+  <span class="c1">// We know that we can only have the comma</span>
+  <span class="c1">// delimited list if we have at least one argument</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">Identifier</span><span class="p">())</span>
+  <span class="p">{</span>
+    <span class="c1">// Every successive comma is optional due to the Kleene star, we must use accept</span>
+    <span class="c1">// After the comma, the Identifier is definitely expected (there are no other options)</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">Accept</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">Expect</span><span class="p">(</span><span class="n">Identifier</span><span class="p">()));</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Note that the above &#39;if&#39; still did not affect our return value</span>
+  <span class="c1">// (unless it threw an exception on the Expect call)</span>
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Recommended reading:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Section 2.4 of <em>Compilers: Principles, Techniques, and Tools</em> describes grammars in more detail</li>
+<li>Section 4.3 of <em>Compilers: Principles, Techniques, and Tools</em> describes elimination of ambiguity, left recursion, and left factoring</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="AbstractSyntaxTree.html" class="btn btn-neutral float-right" title="Abstract Syntax Tree" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Operators.html" class="btn btn-neutral" title="Operators" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, DigiPen Institute of Technology.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,1049 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>AST Interpreter &mdash; Compilers and Interpreters 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Compilers and Interpreters 1.0 documentation" href="index.html"/>
+        <link rel="next" title="Modern Languages" href="ModernLanguages.html"/>
+        <link rel="prev" title="Error Recovery" href="ErrorRecovery.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="index.html" class="icon icon-home"> Compilers and Interpreters
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="PartsOfTheCompiler.html">Parts Of The Compiler</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#lexical-analysis-tokenizer">Lexical Analysis (Tokenizer)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#syntax-analysis-parser">Syntax Analysis (Parser)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#abstract-syntax-tree-ast">Abstract Syntax Tree (AST)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#semantic-analysis">Semantic Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PartsOfTheCompiler.html#interpreter">Interpreter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DeterministicFiniteAutomata.html">Deterministic Finite Automata (DFA)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#traversal-algorithm">Traversal Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#backtracking-and-lookahead">Backtracking and Lookahead</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-1-examples">LA(1) Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-2-examples">LA(2) Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DeterministicFiniteAutomata.html#la-examples">LA(*) Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#lookahead-implementation">Lookahead Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-integers">Parsing Integers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-floats">Parsing Floats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-keywords">Parsing Keywords</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-identifiers">Parsing Identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#parsing-operators">Parsing Operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#state-structure">State Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeterministicFiniteAutomata.html#hard-coded-dfa">Hard-coded DFA</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="RegularExpressions.html">Regular Expressions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#core-operators">Core Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#union">Union <strong>|</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#concatenation">Concatenation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#kleene-closure">Kleene Closure <strong>*</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#extended-operators">Extended Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#character-sets">Character Sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#positive-closure">Positive Closure <strong>+</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#optional">Optional <strong>?</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#interval-min-max-min-n">Interval <strong>{min,max}</strong> <strong>{min,}</strong> <strong>{n}</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#any-character">Any Character <strong>.</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#other-operators">Other Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#escape-character">Escape Character <strong>\</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#anchors-and">Anchors <strong>^</strong> and <strong>$</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#word-boundaries-b">Word Boundaries <strong>\b</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#capture-group">Capture Group <strong>()</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#passive-group">Passive Group <strong>(?:)</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="RegularExpressions.html#replacement-back-reference">Replacement Back Reference <strong>$</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RegularExpressions.html#cheat-sheets">Cheat Sheets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Grammars.html">Grammars</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#similarity-to-regular-expressions">Similarity To Regular Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#derivations-and-parse-trees">Derivations and Parse Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#ambiguity">Ambiguity</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Grammars.html#classic-examples-of-ambiguity">Classic Examples of Ambiguity</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#elimination-of-ambiguity">Elimination of Ambiguity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Grammars.html#left-recursion">Left Recursion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Operators.html">Operators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Operators.html#associativity">Associativity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Operators.html#precedence">Precedence</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="RecursiveDescent.html">Recursive Descent Parsing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#predictive-parser">Predictive Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#guidelines">Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternations">Alternations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternation-and-concatenation">Alternation and Concatenation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#recursion">Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#alternation-empty-rule">Alternation Empty Rule</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-token">Optional Token</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-rule">Optional Rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RecursiveDescent.html#optional-concatenation">Optional Concatenation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="RecursiveDescent.html#kleene-and-positive-closures">Kleene and Positive Closures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AbstractSyntaxTree.html">Abstract Syntax Tree</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#heterogeneous-nodes">Heterogeneous Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#homogeneous-nodes">Homogeneous Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#heterogeneous-double-dispatch">Heterogeneous Double Dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AbstractSyntaxTree.html#node-allocation-and-storage">Node Allocation And Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="StaticVsDynamic.html">Static vs Dynamic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="StaticVsDynamic.html#static-typing">Static Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="StaticVsDynamic.html#dynamic-typing">Dynamic Typing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#scalar-variables">Scalar Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#table-or-object">Table or Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#inheritance-and-polymorphism">Inheritance and Polymorphism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#operator-overloading">Operator Overloading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#reflection">Reflection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#templates">Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#overloads-function-templates">Overloads &amp; Function Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#monkey-patching">Monkey Patching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaticVsDynamic.html#implementation">Implementation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="SemanticAnalysis.html">Semantic Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#scope-resolution">Scope Resolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="SemanticAnalysis.html#name-hiding">Name Hiding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SemanticAnalysis.html#types-members-variables">Types, Members, Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#symbol-table-aka-meta">Symbol Table aka Meta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#computing-types">Computing Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#type-inference">Type Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#l-r-values">L/R Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#syntactic-sugar">Syntactic Sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#control-flow">Control Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#member-resolution">Member Resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#duplicate-members-overloads">Duplicate Members &amp; Overloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#overload-resolution">Overload Resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SemanticAnalysis.html#module-based-compilation">Module Based Compilation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ErrorRecovery.html">Error Recovery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#tokenization">Tokenization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#panic-mode">Panic Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#error-edges">Error Edges</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#parsing">Parsing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#id1">Panic Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#semantic-analysis">Semantic Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#classnode">ClassNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ErrorRecovery.html#poison">Poison</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ErrorRecovery.html#code-generation">Code Generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="AstInterpreter.html#">AST Interpreter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#advantages">Advantages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#disadvantages">Disadvantages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#execution">Execution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="AstInterpreter.html#expressions">Expressions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#literals">Literals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#binary-operators">Binary Operators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#unary-operators">Unary Operators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#type-casting">Type Casting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#member-access">Member Access</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#if-statements">If Statements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#while-do-while-for-etc">While, Do-While, For, Etc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#return">Return</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#break-and-continue">Break and Continue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#exceptions">Exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="AstInterpreter.html#function-calls">Function Calls</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="AstInterpreter.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ModernLanguages.html">Modern Languages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#return-type-inference">Return Type Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#decltype">Decltype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#delegates">Delegates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#closures-anonymous-functions">Closures &amp; Anonymous Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#properties">Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#extension-functions-properties">Extension Functions &amp; Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#pure-functions">Pure Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ModernLanguages.html#mixins">Mixins</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="IntermediateRepresentation.html">Intermediate Representation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#front-back-end">Front/Back End</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#three-address-code">Three Address Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="IntermediateRepresentation.html#code-generation-example">Code Generation Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#static-single-assignment">Static Single Assignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IntermediateRepresentation.html#basic-blocks">Basic Blocks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="VirtualMachine.html">Virtual Machine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#instructions">Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#reduced-instruction-set-computing">Reduced Instruction Set Computing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#complex-instruction-set-computing">Complex Instruction Set Computing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#stack-machine">Stack Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#advantages">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#disadvantages">Disadvantages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#random-access-machine">Random Access Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id1">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id2">Disadvantages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="VirtualMachine.html#register-machine">Register Machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id3">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#id4">Disadvantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="VirtualMachine.html#register-allocation">Register Allocation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="VirtualMachine.html#infinite-registers">Infinite Registers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="VirtualMachine.html#register-reuse">Register Reuse</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GarbageCollection.html">Garbage Collection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#why">Why?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#safety">Safety</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#misconceptions">Misconceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#garbage-collector-roots">Garbage Collector Roots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#common-issues">Common Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#mark-and-sweep">Mark and Sweep</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#mark-phase">Mark Phase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#sweep-phase">Sweep Phase</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#defragmentation">Defragmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GarbageCollection.html#reference-counting">Reference Counting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#advantages">Advantages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="GarbageCollection.html#disadvantages">Disadvantages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ApplicationBinaryInterface.html">Application Binary Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#name-mangling">Name Mangling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#standardization">Standardization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#calling-convention">Calling Convention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#libraries">Libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ApplicationBinaryInterface.html#dynamic-linked-libraries">Dynamic Linked Libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#structures">Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#virtual-tables">Virtual Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#runtime-type-identification">Runtime Type Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationBinaryInterface.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CompilerAsAService.html">Compiler As A Service (IDE)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#minimal-rebuild">Minimal Rebuild</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#member-auto-complete">Member Auto Complete</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#call-tips-overloads">Call Tips / Overloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#local-expression-completion">Local / Expression Completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#cursor-hovering">Cursor Hovering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#go-to-definition">Go To Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#symbol-querying">Symbol Querying</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#typenode">TypeNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#variablenode">VariableNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#callnode">CallNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#classnode-functionnode">ClassNode/FunctionNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CompilerAsAService.html#expressionnode">ExpressionNode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#comments">Comments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#refactor-rename">Refactor Rename</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#debuggers">Debuggers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#formatting">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#statement-evaluation">Statement Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#read-eval-print-loop">Read Eval Print Loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CompilerAsAService.html#other-features">Other Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment1.html">Assignment 1</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment1.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment2.html">Assignment 2</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment2.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment3.html">Assignment 3</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment3.html#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment4.html">Assignment 4</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment4.html#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment4.html#pass-4">Pass 4</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#literalnode">LiteralNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#indexnode">IndexNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#memberaccessnode">MemberAccessNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#unaryoperatornode">UnaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#callnode">CallNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#castnode">CastNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#ifnode-fornode-whilenode">IfNode/ForNode/WhileNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#gotonode">GotoNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#returnnode">ReturnNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment4.html#parameternode-variablenode">ParameterNode/VariableNode</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Assignment5.html">Assignment 5</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#pass-1-pre-pass">Pass 1 (Pre-Pass)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#interpreterfunctioncall">InterpreterFunctionCall</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#pass-2-interpretation">Pass 2 (Interpretation)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#variablenode">VariableNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#returnnode">ReturnNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#ifnode">IfNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#whilenode">WhileNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#castnode">CastNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#literalnode">LiteralNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#namereferencenode">NameReferenceNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#binaryoperatornode">BinaryOperatorNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Assignment5.html#callnode">CallNode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#addsinfunction">AddSinFunction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Assignment5.html#unhandled-nodes">Unhandled Nodes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AssignmentSubmission.html">Assignment Submission</a></li>
+<li class="toctree-l1"><a class="reference external" href="../CS375Assignments.1.html#://">Assignment Downloads</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Compilers and Interpreters</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>AST Interpreter</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/AstInterpreter.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="ast-interpreter">
+<h1>AST Interpreter<a class="headerlink" href="AstInterpreter.html#ast-interpreter" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>After the Semantic Analysis phase</li>
+<li>The most basic and easiest form of code execution</li>
+<li>In a static language all symbols have been collected prior (via Semantic Analysis)<ul>
+<li>All the variables and name references have been linked up</li>
+<li>Goto statements should know where their target label is</li>
+</ul>
+</li>
+<li>Use the visitor to walk the tree and compute results</li>
+<li>Most visit functions will return <strong>Stop</strong> because we manually walk the children</li>
+<li>Can use an entirely dynamic runtime (variants, tables/objects)<ul>
+<li>To some extent, this is encouraged with a scripting language</li>
+<li>Easy to patch, redefine objects, reload code</li>
+</ul>
+</li>
+<li>More difficult to use a static runtime (memory stack, registers, global addresses)</li>
+<li>Never performed any code generation or pre-computing<ul>
+<li>Jump locations</li>
+<li>Register usage</li>
+<li>Stack sizes</li>
+<li>Struct layouts</li>
+</ul>
+</li>
+<li>May perform a <strong>pre-pass</strong> over the tree to simplify execution</li>
+</ul>
+<div class="section" id="advantages">
+<h2>Advantages<a class="headerlink" href="AstInterpreter.html#advantages" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Easy to implement</li>
+<li>Faster to &#8216;fully compile&#8217; due to no code generation</li>
+<li>Portable: All machines that can compile C++ can run your interpreter</li>
+</ul>
+</div>
+<div class="section" id="disadvantages">
+<h2>Disadvantages<a class="headerlink" href="AstInterpreter.html#disadvantages" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Orders of magnitude slower than machine code</li>
+<li>Not many opportunities for optimization</li>
+<li>Can be larger in memory than machine code if the full tree is stored</li>
+<li>Recursive visitors become a problem (recursion depth)<ul>
+<li>Every function called increases recursion depth for the Visitor</li>
+</ul>
+</li>
+<li>Arbitrary jumps (such as gotos) are difficult to implement</li>
+</ul>
+</div>
+<div class="section" id="execution">
+<h2>Execution<a class="headerlink" href="AstInterpreter.html#execution" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Each node has its own behavior for what it does</li>
+<li>Interpreter is mostly just executing functions</li>
+<li>A &#8216;function&#8217; is really just a <code class="docutils literal"><span class="pre">FunctionNode</span></code> (Walk and execute the child statements)</li>
+</ul>
+<div class="section" id="expressions">
+<h3>Expressions<a class="headerlink" href="AstInterpreter.html#expressions" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>A static runtime would have each expression place arguments at a computed position on a stack (or within registers)</li>
+<li>When using a dynamic runtime, each expression results in a <code class="docutils literal"><span class="pre">Variant</span></code></li>
+<li>Can push results to a <code class="docutils literal"><span class="pre">Variant</span></code> stack: <code class="docutils literal"><span class="pre">std::vector&lt;Variant&gt;</span></code><ul>
+<li>At the end of visiting an expression node it will push a single variant to the stack</li>
+<li>Nodes pop their arguments from the stack (<code class="docutils literal"><span class="pre">BinaryNode</span></code> would pop 2, <code class="docutils literal"><span class="pre">UnaryNode</span></code> would pop 1)</li>
+</ul>
+</li>
+<li>Because we are using a Visitor we can just store <code class="docutils literal"><span class="pre">Variant</span></code> results on our own C++ stack</li>
+<li>Expression results can just be returned through a single member on the visitor <code class="docutils literal"><span class="pre">Variant</span> <span class="pre">mResult;</span></code></li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">InterpreterVisitor</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Visitor</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="c1">// The resulting value from any expression (a literal, function call return, etc)</span>
+  <span class="c1">// Before we visit another child expression we should store this on our C++ stack</span>
+  <span class="c1">// Variant result = mResult;</span>
+  <span class="n">Variant</span> <span class="n">mResult</span><span class="p">;</span>
+
+  <span class="c1">//...</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>The variant must be able represent all primitive types</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="n">VariantType</span>
+<span class="p">{</span>
+  <span class="n">Pointer</span><span class="p">,</span>
+  <span class="n">Boolean</span><span class="p">,</span>
+  <span class="n">Integer</span><span class="p">,</span>
+  <span class="n">Float</span><span class="p">,</span>
+  <span class="n">String</span><span class="p">,</span>
+  <span class="n">Table</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Variant</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="c1">// What type is this variant currently storing? (typically defaults to null or undefined)</span>
+  <span class="n">VariantType</span> <span class="n">mType</span><span class="p">;</span>
+
+  <span class="n">Variant</span><span class="o">*</span> <span class="n">mPointer</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="n">mBoolean</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">mInteger</span><span class="p">;</span>
+  <span class="kt">float</span> <span class="n">mFloat</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">mString</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">unordered_map</span><span class="o">&lt;</span><span class="n">Variant</span><span class="p">,</span> <span class="n">Variant</span><span class="o">&gt;</span> <span class="n">mTable</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="section" id="literals">
+<h4>Literals<a class="headerlink" href="AstInterpreter.html#literals" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>Construct a <code class="docutils literal"><span class="pre">Variant</span></code> to represent the value stored</li>
+<li>Typically requires conversion from original input string format to numerical values</li>
+<li>String literals escapes should be converted to their real ASCII or Unicode values</li>
+<li>May want to perform all theses steps on the Literal or Value node in Semantic Analysis<ul>
+<li>Or as a one time pre-pass (cache <code class="docutils literal"><span class="pre">Variant</span></code> on the <code class="docutils literal"><span class="pre">LiteralNode</span></code> itself)</li>
+<li>Avoids extra computation when using an AST Interpreter</li>
+<li>Typically done within a code generator visitor for other styles of execution (byte / machine code, etc)</li>
+</ul>
+</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">VisitResult</span> <span class="nf">Visit</span><span class="p">(</span><span class="n">LiteralNode</span><span class="o">*</span> <span class="n">node</span><span class="p">)</span> <span class="k">override</span>
+<span class="p">{</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">mToken</span><span class="p">.</span><span class="n">mType</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">case</span> <span class="n">TokenType</span><span class="o">::</span><span class="n">IntegerLiteral</span>
+      <span class="n">mResult</span><span class="p">.</span><span class="n">mType</span> <span class="o">=</span> <span class="n">Integer</span><span class="p">;</span>
+      <span class="n">mResult</span><span class="p">.</span><span class="n">mInteger</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">mToken</span><span class="p">.</span><span class="n">mText</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+    <span class="k">case</span> <span class="n">TokenType</span><span class="o">::</span><span class="n">StringLiteral</span>
+      <span class="n">mResult</span><span class="p">.</span><span class="n">mType</span> <span class="o">=</span> <span class="n">String</span><span class="p">;</span>
+
+      <span class="c1">// This function may strip the quotes from</span>
+      <span class="c1">// the ends as well as process escape codes</span>
+      <span class="n">mResult</span><span class="p">.</span><span class="n">mString</span> <span class="o">=</span> <span class="n">StringEscape</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">mToken</span><span class="p">.</span><span class="n">mText</span><span class="p">,</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">mToken</span><span class="p">.</span><span class="n">mLength</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+    <span class="c1">//...</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">Stop</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="binary-operators">
+<h4>Binary Operators<a class="headerlink" href="AstInterpreter.html#binary-operators" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>Walk the left child: the result will be stored in <code class="docutils literal"><span class="pre">mResult</span></code></li>
+<li>Copy the result to your local C++ stack: <code class="docutils literal"><span class="pre">Variant</span> <span class="pre">left</span> <span class="pre">=</span> <span class="pre">mResult</span></code></li>
+<li>Walk the right child: the result will be stored in <code class="docutils literal"><span class="pre">mResult</span></code></li>
+<li>Copy the result to your local C++ stack: <code class="docutils literal"><span class="pre">Variant</span> <span class="pre">right</span> <span class="pre">=</span> <span class="pre">mResult</span></code><ul>
+<li>We don&#8217;t technically need to copy because <code class="docutils literal"><span class="pre">BinaryNode</span></code> has no other children to visit</li>
+<li>It just looks nice</li>
+</ul>
+</li>
+<li>Switch upon the operation you are supposed to perform</li>
+<li>Should have been determined by Semantic Analysis</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">VisitResult</span> <span class="nf">Visit</span><span class="p">(</span><span class="n">BinaryNode</span><span class="o">*</span> <span class="n">node</span><span class="p">)</span> <span class="k">override</span>
+<span class="p">{</span>
+  <span class="n">node</span><span class="o">-&gt;</span><span class="n">mLeft</span><span class="o">-&gt;</span><span class="n">Walk</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+  <span class="n">Variant</span> <span class="n">lhs</span> <span class="o">=</span> <span class="n">mResult</span><span class="p">;</span>
+
+  <span class="n">node</span><span class="o">-&gt;</span><span class="n">mRight</span><span class="o">-&gt;</span><span class="n">Walk</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+  <span class="n">Variant</span> <span class="n">rhs</span> <span class="o">=</span> <span class="n">mResult</span><span class="p">;</span>
+
+  <span class="c1">// A clever Semantic Analysis phase could have picked out a function</span>
+  <span class="c1">// pointer to resolve this operator, for example &#39;int + int&#39; would be:</span>
+  <span class="c1">// Variant IntegerAdd(Variant&amp; lhs, Variant&amp; rhs);</span>
+  <span class="c1">// We could simply invoke that function pointer here</span>
+
+  <span class="c1">// We may also want to make the guarantee that we&#39;ll only ever perform operations</span>
+  <span class="c1">// between the same types, and that it is either illegal or implicit casting would occur</span>
+  <span class="c1">// to prevent operations between dissimilar types</span>
+
+  <span class="k">switch</span> <span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">mOperator</span><span class="p">.</span><span class="n">mType</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">case</span> <span class="n">TokenType</span><span class="o">::</span><span class="nl">Plus</span><span class="p">:</span>
+
+      <span class="c1">// Assume both lhs and rhs are the same type</span>
+      <span class="k">switch</span> <span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">mType</span><span class="p">)</span>
+      <span class="p">{</span>
+        <span class="k">case</span> <span class="n">VariantType</span><span class="o">::</span><span class="nl">Integer</span><span class="p">:</span>
+          <span class="n">mResult</span><span class="p">.</span><span class="n">mType</span> <span class="o">=</span> <span class="n">VariantType</span><span class="o">::</span><span class="n">Integer</span><span class="p">;</span>
+          <span class="n">mResult</span><span class="p">.</span><span class="n">mInteger</span> <span class="o">=</span> <span class="n">lhs</span><span class="p">.</span><span class="n">mInteger</span> <span class="o">+</span> <span class="n">rhs</span><span class="p">.</span><span class="n">mInteger</span><span class="p">;</span>
+          <span class="k">break</span><span class="p">;</span>
+
+        <span class="c1">//...</span>
+      <span class="p">}</span>
+      <span class="k">break</span><span class="p">;</span>
+
+      <span class="c1">//...</span>
+  <span class="p">}</span>
+
+  <span class="c1">// It is very important that we return STOP here because</span>
+  <span class="c1">// we already visited our own children and we</span>
+  <span class="c1">// do not want to automatically visit children</span>
+  <span class="k">return</span> <span class="n">Stop</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="unary-operators">
+<h4>Unary Operators<a class="headerlink" href="AstInterpreter.html#unary-operators" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>Same as the binary node case but with only one argument</li>
+<li>Don&#8217;t need to store any locals technically</li>
+</ul>
+</div>
+<div class="section" id="type-casting">
+<h4>Type Casting<a class="headerlink" href="AstInterpreter.html#type-casting" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>Walk the operand expression node</li>
+<li>Switch first on the type stored within <code class="docutils literal"><span class="pre">mResult</span></code></li>
+<li>Switch second on the type we&#8217;re casting to</li>
+<li>Can also be optimized by pre-computing function pointers in a pre-pass or Semantic Analysis</li>
+</ul>
+</div>
+<div class="section" id="member-access">
+<h4>Member Access<a class="headerlink" href="AstInterpreter.html#member-access" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>Walk the left expression node</li>
+<li>The left expression must either be a dynamic table or a pointer<ul>
+<li>Verified by the Semantic Analysis phase</li>
+<li>Good practice to use asserts to double verify</li>
+</ul>
+</li>
+<li>Index the left expression by name via <code class="docutils literal"><span class="pre">std::unordered_map&lt;Variant,</span> <span class="pre">Variant&gt;</span></code></li>
+<li>The <code class="docutils literal"><span class="pre">mResult</span></code> becomes the value <code class="docutils literal"><span class="pre">Variant</span></code> from the <code class="docutils literal"><span class="pre">unordered_map</span></code></li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="c1">// At a high level, we assume CreatePlayer is allocating a structure</span>
+<span class="c1">// Using a dynamic runtime, CreatePlayer will most likely allocate a Variant</span>
+<span class="c1">// and then return a Variant pointer to it</span>
+<span class="k">var</span> <span class="nx">player</span> <span class="o">:</span> <span class="nx">Player</span><span class="o">*</span> <span class="o">=</span> <span class="nx">CreatePlayer</span><span class="p">();</span>
+
+<span class="c1">// &#39;player&#39; is a name reference node which resolves to the above variable (Variant of type Pointer)</span>
+<span class="c1">// &#39;-&gt;Lives&#39; is a member access node</span>
+<span class="c1">// The -&gt; means the left hand side must be a pointer (verified by SemanticAnalysis)</span>
+<span class="c1">// Therefore, the runtime can always *assume* that the left &#39;player&#39; is a Variant of type Pointer</span>
+<span class="c1">// In particular, we know its pointing at another Variant of type Table</span>
+<span class="c1">// Dereference the pointer and then index the table with string &#39;Lives&#39;</span>
+<span class="nx">player</span><span class="o">-&gt;</span><span class="nx">Lives</span> <span class="o">=</span> <span class="mi">9</span><span class="o">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="if-statements">
+<h4>If Statements<a class="headerlink" href="AstInterpreter.html#if-statements" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>Directly utilizes an if statement within the implementing language (C++)</li>
+<li>If we have a <em>conditional expression</em> then walk it</li>
+<li>Boolean result should be stored in <code class="docutils literal"><span class="pre">mResult</span></code></li>
+<li>If <strong>true</strong> then visit the <code class="docutils literal"><span class="pre">ScopeNode</span></code> for that if</li>
+<li>If <strong>false</strong> then visit the <code class="docutils literal"><span class="pre">Else</span></code> node recursively</li>
+<li>No <em>conditional expression</em> means that we&#8217;re a final <code class="docutils literal"><span class="pre">Else</span></code> node<ul>
+<li>Just walk our <code class="docutils literal"><span class="pre">ScopeNode</span></code> statements instead</li>
+</ul>
+</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="nx">A</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">//...</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">B</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">//...</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="c1">// C</span>
+<span class="p">{</span>
+  <span class="c1">//...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">VisitResult</span> <span class="nf">Visit</span><span class="p">(</span><span class="n">IfNode</span><span class="o">*</span> <span class="n">node</span><span class="p">)</span> <span class="k">override</span>
+<span class="p">{</span>
+  <span class="c1">// Do we have a condition?</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">mCondition</span> <span class="o">!=</span> <span class="k">nullptr</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="c1">// Walk the condition which should result in a bool</span>
+    <span class="c1">// (or pointer value if your language allows this)</span>
+    <span class="n">node</span><span class="o">-&gt;</span><span class="n">mCondition</span><span class="o">-&gt;</span><span class="n">Walk</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+
+    <span class="c1">// Should we run our statements?</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">mResult</span><span class="p">.</span><span class="n">mBoolean</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="n">node</span><span class="o">-&gt;</span><span class="n">mScope</span><span class="o">-&gt;</span><span class="n">Walk</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+      <span class="c1">// Run the &#39;else&#39; recursively which may have its own condition...</span>
+      <span class="n">node</span><span class="o">-&gt;</span><span class="n">mElse</span><span class="o">-&gt;</span><span class="n">Walk</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">else</span>
+  <span class="p">{</span>
+    <span class="c1">// This is a final else statement, just run all our scopes</span>
+    <span class="n">node</span><span class="o">-&gt;</span><span class="n">mScope</span><span class="o">-&gt;</span><span class="n">Walk</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="c1">// We visited our children manually, no need to auto walk them</span>
+  <span class="k">return</span> <span class="n">Stop</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<object data="_images/graphviz-0872dde491fee2cab515df5cf448a739f3e603cf.svg" type="image/svg+xml">
+            <p class="warning">digraph
+{
+  node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+  &quot;[If]\nA&quot; -&gt; &quot;[Name]\nA&quot;;
+  &quot;[If]\nA&quot; -&gt; &quot;[ScopeNode]\nA...&quot;;
+  &quot;[If]\nA&quot; -&gt; &quot;[If]\nB&quot;;
+
+  &quot;[If]\nB&quot; -&gt; &quot;[Name]\nB&quot;;
+  &quot;[If]\nB&quot; -&gt; &quot;[ScopeNode]\nB...&quot;;
+  &quot;[If]\nB&quot; -&gt; &quot;[If]\nC&quot;;
+
+  &quot;[If]\nC&quot; -&gt; &quot;[ScopeNode]\nC...&quot;;
+}</p></object>
+</div>
+<div class="section" id="while-do-while-for-etc">
+<h4>While, Do-While, For, Etc<a class="headerlink" href="AstInterpreter.html#while-do-while-for-etc" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>Similar to the above if statement</li>
+<li>Typically uses each C++ construct to emulate loops in your language</li>
+<li>Must handle <strong>break</strong> and <strong>continue</strong> specially (see below)</li>
+</ul>
+</div>
+<div class="section" id="return">
+<h4>Return<a class="headerlink" href="AstInterpreter.html#return" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>More difficult to implement</li>
+<li>Typically use flow control flags on the Visitor to let statement execution know it must return</li>
+<li>Has to return up all levels of execution</li>
+</ul>
+<p>For a simple bit of code such as the following:</p>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">Main</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">var</span> <span class="nx">counter</span> <span class="o">:</span> <span class="nx">Integer</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">counter</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">counter</span> <span class="o">==</span> <span class="mi">5</span><span class="p">)</span>
+      <span class="p">{</span>
+        <span class="k">return</span><span class="o">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="o">++</span><span class="nx">counter</span><span class="o">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Our call stack could look something like:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Walk</span><span class="p">(</span><span class="n">FunctionNode</span><span class="p">)</span>
+<span class="n">Walk</span><span class="p">(</span><span class="n">ScopeNode</span><span class="p">)</span>
+<span class="n">Walk</span><span class="p">(</span><span class="n">WhileNode</span><span class="p">)</span>
+<span class="n">Walk</span><span class="p">(</span><span class="n">ScopeNode</span><span class="p">)</span>
+<span class="n">Walk</span><span class="p">(</span><span class="n">IfNode</span><span class="p">)</span>
+<span class="n">Walk</span><span class="p">(</span><span class="n">ScopeNode</span><span class="p">)</span>
+<span class="n">Walk</span><span class="p">(</span><span class="n">IfNode</span><span class="p">)</span>
+<span class="n">Walk</span><span class="p">(</span><span class="n">ScopeNode</span><span class="p">)</span>
+<span class="n">Walk</span><span class="p">(</span><span class="n">ReturnNode</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>We need to let every node know that it needs to exit without running any more statements</li>
+<li>We could always... <strong>throw an exception</strong> and catch it in our Visit for <code class="docutils literal"><span class="pre">FunctionNode</span></code></li>
+<li>Order upon orders of magnitude slower</li>
+<li>Instead write a custom visitor for <code class="docutils literal"><span class="pre">ScopeNode</span></code></li>
+<li>After visiting each statement we check for a <code class="docutils literal"><span class="pre">mReturn</span></code> flag on the Visitor and early out</li>
+</ul>
+</div>
+<div class="section" id="break-and-continue">
+<h4>Break and Continue<a class="headerlink" href="AstInterpreter.html#break-and-continue" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>Implemented the same as the above return control flow<ul>
+<li>Doesn&#8217;t return beyond a looping constructor (or switch statement)</li>
+<li><strong>Break</strong> will exit <code class="docutils literal"><span class="pre">ScopeNode</span></code> statements and then exit the <code class="docutils literal"><span class="pre">WhileNode</span></code></li>
+<li><strong>Continue</strong> will exit <code class="docutils literal"><span class="pre">ScopeNode</span></code> statements and then restart the <code class="docutils literal"><span class="pre">WhileNode</span></code> condition / statements</li>
+</ul>
+</li>
+<li>Can also be implemented via exceptions</li>
+</ul>
+</div>
+<div class="section" id="exceptions">
+<h4>Exceptions<a class="headerlink" href="AstInterpreter.html#exceptions" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>Throwing an exception in language typically just throws an actual C++ exception<ul>
+<li>C++ exception type typically just stores the Variant object</li>
+</ul>
+</li>
+<li>Must be caught and re-thrown by function calls to ensure they properly pop the stack</li>
+</ul>
+</div>
+<div class="section" id="function-calls">
+<h4>Function Calls<a class="headerlink" href="AstInterpreter.html#function-calls" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>Via the <code class="docutils literal"><span class="pre">CallNode</span></code></li>
+<li>All expression nodes bubble values up</li>
+<li>One of the more difficult aspects to handle because it passes values to its children (down)</li>
+<li>Need a way to pass <code class="docutils literal"><span class="pre">Variants</span></code> in as the parameters</li>
+<li>Could pre-compute zero based indices for all the parameters and local variables<ul>
+<li>Relative to the base of the current stack frame</li>
+</ul>
+</li>
+<li>Could also use more dynamic runtime and use a <strong>table</strong></li>
+<li>Parameters and local variable <em>names</em> are mapped to their <em>values</em></li>
+<li>The <em>table</em> represents a single stack frame</li>
+<li>Need a stack of tables on our visitor</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// Before we call a function, we always push a new stack frame</span>
+<span class="c1">// Each Variant stored here is of type Table</span>
+<span class="c1">// The key is always a String and the value is anything</span>
+<span class="c1">// We could also store it in another format, but this allows for nice dynamic language features</span>
+<span class="n">std</span><span class="o">::</span><span class="n">stack</span><span class="o">&lt;</span><span class="n">Variant</span><span class="o">&gt;</span> <span class="n">mVariableStack</span><span class="p">;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Calling a function is as simple as walking it (must have arguments on the stack first)</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="n">VisitResult</span> <span class="nf">Visit</span><span class="p">(</span><span class="n">CallNode</span><span class="o">*</span> <span class="n">node</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// First walk the left of the call operation</span>
+  <span class="n">node</span><span class="o">-&gt;</span><span class="n">mLeft</span><span class="o">-&gt;</span><span class="n">Walk</span><span class="p">();</span>
+
+  <span class="c1">// Build a new stack frame for the function we&#39;re about to call (also pushes it onto the stack)</span>
+  <span class="n">Variant</span><span class="o">&amp;</span> <span class="n">mLocals</span> <span class="o">=</span> <span class="n">mVariableStack</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">();</span>
+  <span class="n">mLocals</span><span class="p">.</span><span class="n">mType</span> <span class="o">=</span> <span class="n">VariantType</span><span class="o">::</span><span class="n">Table</span><span class="p">;</span>
+
+  <span class="c1">// Look up the FunctionNode on the CallNode (resolved at Semantic Analysis phase)</span>
+  <span class="n">FunctionNode</span><span class="o">*</span> <span class="n">functionNode</span> <span class="o">=</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">mFunctionNode</span><span class="p">;</span>
+
+  <span class="c1">// Gather the results of all the call arguments</span>
+  <span class="kt">size_t</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">ExpressionNode</span><span class="o">*</span> <span class="nl">expressionChild</span> <span class="p">:</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">mArguments</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="c1">// Make a string Variant from the parameter name</span>
+    <span class="n">Variant</span> <span class="n">parameterName</span><span class="p">;</span>
+    <span class="n">parameterName</span><span class="p">.</span><span class="n">mType</span> <span class="o">=</span> <span class="n">VariantType</span><span class="o">::</span><span class="n">String</span><span class="p">;</span>
+
+    <span class="c1">// We can get the name of the parameters for the function off the FunctionNode</span>
+    <span class="c1">// Note: We don&#39;t even need to check if this index is valid!</span>
+    <span class="n">parameterName</span><span class="p">.</span><span class="n">mString</span> <span class="o">=</span> <span class="n">functionNode</span><span class="o">-&gt;</span><span class="n">mParameters</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">mName</span><span class="p">.</span><span class="n">str</span><span class="p">();</span>
+
+    <span class="c1">// Every time we walk an expression, it sets its result into mResult</span>
+    <span class="n">expressionChild</span><span class="o">-&gt;</span><span class="n">Walk</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+
+    <span class="c1">// We then store that result locally by name</span>
+    <span class="n">mLocals</span><span class="p">.</span><span class="n">mTable</span><span class="p">[</span><span class="n">parameterName</span><span class="p">]</span> <span class="o">=</span> <span class="n">mResult</span><span class="p">;</span>
+    <span class="o">++</span><span class="n">index</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Depending on the implementation, we may want to catch exceptions here</span>
+  <span class="c1">// We could catch control flow exceptions for return, break, or continue (not recommended)</span>
+  <span class="c1">// We could also catch actual exceptions thrown in language (we must pop our stack and rethrow)</span>
+
+  <span class="c1">// Now walk the function node that we&#39;re going to call (generally only the statements)</span>
+  <span class="c1">// The return value should be stored within ``mResult``</span>
+  <span class="n">functionNode</span><span class="o">-&gt;</span><span class="n">mScope</span><span class="o">-&gt;</span><span class="n">Walk</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+
+  <span class="c1">// Since we walked the function and its scope, we can pop the stack variables</span>
+  <span class="n">mVariableStack</span><span class="p">.</span><span class="n">pop_back</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>May want to augment the <code class="docutils literal"><span class="pre">Variant</span></code> so that it may point at functions</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="n">VariantType</span>
+<span class="p">{</span>
+  <span class="n">Function</span><span class="p">,</span>
+  <span class="c1">//...</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Variant</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="n">FunctionNode</span><span class="o">*</span> <span class="n">mFunction</span><span class="p">;</span>
+  <span class="c1">//...</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>May need to handle <strong>constructor calls</strong> specially</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="AstInterpreter.html#examples" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Perform semantic analysis on the following parsed AST</li>
+<li>Simulate running an interpreter (and stack) with the input 5</li>
+<li>The interpreter should contain our result after running in <code class="docutils literal"><span class="pre">mResult</span></code></li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">Double</span><span class="p">(</span><span class="nx">value</span> <span class="o">:</span> <span class="nx">Integer</span><span class="p">)</span> <span class="o">:</span> <span class="nx">Integer</span>
+<span class="p">{</span>
+  <span class="k">return</span> <span class="nx">value</span> <span class="o">*</span> <span class="mi">2</span><span class="o">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<object data="_images/graphviz-606b437e6bbf3b8b1bf82ed1affc38c8d62ebcfc.svg" type="image/svg+xml">
+            <p class="warning">digraph
+{
+  node [shape=rectangle, fontsize=10, height=0.2, fontname=Verdana];
+  &quot;[Function]\nDouble&quot; -&gt; &quot;[Parameter]\namount&quot;;
+  &quot;[Parameter]\namount&quot; -&gt; &quot;[Type]\nInteger&quot;;
+  &quot;[Function]\nDouble&quot; -&gt; &quot;[Type]\nInteger &quot;;
+  &quot;[Function]\nDouble&quot; -&gt; &quot;[Return]&quot;;
+  &quot;[Return]&quot; -&gt; &quot;[Binary]\n*&quot;;
+  &quot;[Binary]\n*&quot; -&gt; &quot;[Name]\nvalue&quot;;
+  &quot;[Binary]\n*&quot; -&gt; &quot;[Literal]\n2&quot;;
+}</p></object>
+<ul class="simple">
+<li>For the following code, build an AST and follow the same instructions above:</li>
+</ul>
+<div class="highlight-as"><div class="highlight"><pre><span></span><span class="kd">class</span> <span class="nx">Planet</span>
+<span class="p">{</span>
+  <span class="k">var</span> <span class="nx">Mass</span> <span class="o">:</span> <span class="nx">Double</span><span class="o">;</span>
+
+  <span class="kd">function</span> <span class="nx">ComputeMass</span><span class="p">(</span><span class="nx">density</span> <span class="o">:</span> <span class="nx">Double</span><span class="o">,</span> <span class="nx">volume</span> <span class="o">:</span> <span class="nx">Double</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">Mass</span> <span class="o">=</span> <span class="nx">density</span> <span class="o">*</span> <span class="nx">volume</span><span class="o">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nx">Program</span>
+<span class="p">{</span>
+  <span class="kd">static</span> <span class="kd">function</span> <span class="nx">Main</span><span class="p">()</span> <span class="o">:</span> <span class="nx">Integer</span>
+  <span class="p">{</span>
+    <span class="k">var</span> <span class="nx">earth</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Planet</span><span class="p">();</span>
+    <span class="nx">earth</span><span class="o">-&gt;</span><span class="nx">ComputeMass</span><span class="p">(</span><span class="mi">10</span><span class="o">,</span> <span class="mf">20.0</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ModernLanguages.html" class="btn btn-neutral float-right" title="Modern Languages" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ErrorRecovery.html" class="btn btn-neutral" title="Error Recovery" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, DigiPen Institute of Technology.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

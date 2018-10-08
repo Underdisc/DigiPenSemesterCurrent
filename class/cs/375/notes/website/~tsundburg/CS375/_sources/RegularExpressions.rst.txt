@@ -1,0 +1,267 @@
+
+.. Mention that this syntax can be applied to grammars!
+.. Also tie in how if we don't refer to rules above our rule, we can't have recursion in grammars, and therefore it becomes 'regular'
+.. Maybe mention how, like states, these are NOT recursive
+
+.. |union|  unicode:: U+222A
+.. |e|      unicode:: U+03F5
+
+Regular Expressions
+===================
+- Concise syntax to describe tokens
+- Cryptic to the untrained eye, but very powerful
+- Useful in many applications (anything with text parsing, Find/Replace in many editors, etc)
+- Abbreviated as 'regex'
+- The term *flavor* means that there is many implementations of regex that chose different operators and syntax
+
+Core Operators
+--------------
+- Regex describe an algebra and therefore have the classic grouping operators to clarify precedence
+- Expressed as mathematical sets
+- Set operators don't exist on a keyboard, new ones were used
+
+Union **\|**
+````````````
+- In set theory it can be written as A |union| B (also called 'or' or 'alternatives')
+- Literally means choosing between characters in sets A or B
+- Example: a\|b -> {a, b}
+- Example: a\|b\|c -> {a, b, c}
+- Example: (a\|b)\|c -> {a, b, c}
+- Find First: (a\|b) -> "hello baba" -> "hello **b**\ aba"
+
+  - Think of the first as the set {a, b} and the second as the set {c}
+  - {a, b} |union| {c} is just {a, b, c}
+- Therefore, the union operator is *associative*
+- A special case is the empty string denoted as |e| (not to be confused with the empty set)
+- Because |e| is a special character, we can instead just write () or nothing
+- Example: a\| -> {a, } also sometimes written as {a, ""} for clarity
+
+Concatenation
+`````````````
+- Sequential characters or groups are concatenated together
+- Higher precedence than the union operator
+- Example: else -> {else}
+- Example: (c\|b\|r)at -> {cat, bat, rat}
+- Example: this\|that -> {this, that}
+- Example: (s\|b)(a\|i)t -> {sat, sit, bat, bit}
+- Find First: world -> "hello world!" -> "hello **world**!"
+- Find First: (sp\|c)ot -> "best spot in the cot" -> "best **spot** in the cot"
+
+Kleene Closure **\***
+`````````````````````
+- Higher precedence than the union and concatenation
+- Zero or more of the previous (concatenated together)
+- Because it can be zero, then the |e| is part of the set
+- Example: a\* -> {|e|, a, aa, aaa, aaaa, ...}
+- Example: ab\* -> {a, ab, abb, abbb, abbbb, ...}
+
+  - Notice the * only applies to the b (grouping is required due to precedence)
+
+- Example: (a\|b)\* -> (a\|b)(a\|b)(a\|b)... -> {|e|, a, b, aa, ab, bb, ba, ...}
+- Find First: KHAA*N -> "Buried alive... KHAAAAAAN!" -> "Buried alive... **KHAAAAAAN**!"
+
+Extended Operators
+------------------
+- Syntactic sugar (combinations of core operators)
+
+Character Sets
+``````````````
+- To describe a set of lower-case letters, you could do
+
+  - (a\|b\|c\|d\|e\|f\|g\|h\|i\|j\|k\|l\|m\|n\|o\|p\|q\|r\|s\|t\|u\|v\|w\|x\|y\|z)
+- A shorthand notation was created to describe this: [a-z]
+- All the characters from a to z in Unicode order
+- The - is a special operator that means a range
+- Character sets can also describe individual letters
+- Instead of (n|r|t|b|f) we can write [nrtbf]
+- You can also match all characters NOT within a character set by adding ^ at the beginning
+
+  - Remember, regular expressions are by default *greedy* (this will match a lot)
+
+- You can mix ranges and individual characters: [a-zS] (all lower-case letters and the upper-case S)
+- The symbols - and ^ must be escaped to use it inside a character set
+- The symbol [ must be escaped to use it as a literal in a regex
+- Often the regex flavor will have many built in sets accessed with an escape
+
+  - \s is White-space, \S is everything that is NOT white-space, etc.
+- Example: [a5\-0-39] -> {a, 5, -, 0, 1, 2, 3, 9}
+- Example: [0-9] -> {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+- Example: [a-zA-Z][a-zA-Z0-9\_]* -> Identifiers in C!
+- Example: [^a-c] -> Every character that isn't a, b, or c
+
+Positive Closure **+**
+``````````````````````
+- One or more of the previous (concatenated together)
+- Can be expressed as a Concatenation and Kleene Closure
+- Example: a+ -> aa\* -> {a, aa, aaa, aaaa, ...}
+- Example: (a\|b)+ -> (a\|b)(a\|b)\* -> {a, b, aa, ab, bb, ba, ...)
+
+Optional **?**
+``````````````
+- The previous set is optional
+- Can be expressed as a grouped Union of empty and the previous
+- Example: a? -> (\|a) -> {|e|, a}
+- Example: ab? -> a(\|b) -> {a, ab}
+- Example: wh?at -> {wat, what}
+
+Interval **{min,max}** **{min,}** **{n}**
+`````````````````````````````````````````
+- From *min* to *max* of the previous
+- Note that there is **no space** between the commas, this may be required by the regex flavor
+- If *max* is not provided and a comma is specified, then it is assumed to be infinite (some flavors use ? instead)
+- If *max* is not provided and **NO** comma is specified, then it means search for the previous element *n* times
+- Can be expressed as grouped Concatenations and Unions, and a Kleene Closure if *max* is infinite
+- Example: a{1, 4} -> (a\|aa\|aaa\|aaaa) -> {a, aa, aaa, aaaa}
+- Example: ab{2,3} -> a(bb\|bbb) -> {abb, abbb}
+- Example: ab{3,} -> a(bbbb\*) -> {abbb, abbbb, abbbbb, ...}
+- Example: (ab){3} -> (ab)(ab)(ab) -> {ababab}
+- You can also think of this syntax as a more generic way of describing Positive/Kleense Closures and the Optional operator
+
+  - \*  is the same as  {0,}
+  - \+  is the same as  {1,}
+  - \?  is the same as  {0,1}
+
+Any Character **.**
+```````````````````
+- Matches any character (though in many flavors newline is excluded)
+- Often newline is an option that you can pass in, or be explicit with ``(.|\\n)``
+- Very common to see patterns such as .* (any characters) or .+ (one or more character)
+
+Other Operators
+---------------
+- These operators may not directly relate to DFAs, but they included in almost every regular expression implementation
+
+Escape Character **\\**
+```````````````````````
+- Regular expressions consist of many symbols
+- There are many different flavors of regular expressions
+- Because of this, most accept escapes even on symbols that do not need to be escaped
+- *When in doubt, use an escape \ on any symbol* (and test your regular expression)
+- Example: a\+ -> {a+}
+- Example: how\? -> {how?}
+- Example: \.\.\. -> {...}
+
+Anchors **^** and **$**
+```````````````````````
+- These do not actually match a character themselves (zero width match)
+- Perform checks prior to the first character and after the last character
+- ^ means beginning of a line (or beginning of the input)
+- $ means end of a line (or end of the input / eof)
+- Options to specify that ^ and $ only match beginning/end of input (not line)
+- Example: ^#include -> Only matches #include if its at the beginning of a line
+
+Word Boundaries **\\b**
+```````````````````````
+- In many flavors \\w is a special character set that means [a-zA-Z0-9\_]
+- \\b matches any boundary (a change from \\w to *not* \\w or visa vera)
+- Like the anchors, \\b is also a zero width match
+- Can also include the beginning and end of the input (if it starts or ends with a word)
+- Used commonly for *Whole World Only* type searches
+- The previous and next characters (before or after the \\b) are not included in a match
+- Find First: \\bcat\\b -> "catastrophy copycat cat" -> "catastrophy copycat **cat**"
+
+Capture Group **()**
+````````````````````
+- Grouping also has a second use in many regular expression engines
+- First it acts as an algebraic grouping (precedence clarification)
+- Second, it captures the matched text inside of the group
+- Also known as a *back reference*
+- Many regex searches will return an object, internally stores an array of group strings
+- Example: namespace ([_a-zA-Z][_a-zA-Z0-9]*)
+
+  - Match: "using namespace Foo;" -> "using **namespace Foo**;"
+  - In most regex engines, the 0th group is always the entire matched string
+  - Groups[0] -> "namespace Foo"
+  - From there, groups are indexed in the order of the opening parentheses (
+  - Groups[1] -> "Foo"
+  - Very useful for collecting string information via regex
+
+- Example: if \((.*)\) (.*);
+
+  - The first ( is escaped, because we want a literal (
+  - The second () is a capture group
+  - After that, we have a closing ) that is escaped
+  - Finally, one more capture group around a statement
+  - Match: "else if (!player) break;" -> "else **if (!player) break;**"
+  - Group[0] -> "if (!player) break;"
+  - Group[1] -> "!player"
+  - Group[2] -> "break"
+  - Be careful in using regex to parse code: most regex is not recursive and cannot describe matching ()
+
+Passive Group **(?:)**
+``````````````````````
+- Truthfully, () should have been non capturing, and there should have been a special syntax for capture groups
+- This is the way it is!
+- A classic algebraic grouping operator, which does not capture or create a *back reference*
+- Mainly used to conserve memory or not increment the capture index
+- Example: (?:a|b) -> {a, b}
+
+Replacement Back Reference **$**
+````````````````````````````````
+- In many text editors you will use regex to perform quick replacements / swaps
+- In the find you enter a regex often with capture groups
+- In the replace with you are *not* writing a regular expression (mostly just plain text)
+- However, there are some operators in most regex replacements
+- $0 through $99 typically refer to a capture group
+- As mentioned above, $0 is the equivalent of Group[0], and so on
+- Note: In some regex replacement flavors, parentheses must be escaped
+
+- Find: (Player[0-9])\.(Weapon|Lives)
+- Replace With: $1->State.$2
+
+  - Match: "this->Player1.Lives += 10;" -> "this->**Player1.Lives** += 10;"
+  - Group[0] -> "Player1.Lives"
+  - Group[1] -> "Player1"
+  - Group[2] -> "Lives"
+  - Replaced: "this->Player1->State.Lives += 10;"
+
+Cheat Sheets
+------------
+The following table is sorted from highest to lowest precedence
+
+====================== ==========  ==================================
+Operator               Symbols     Meaning
+====================== ==========  ==================================
+Capture Grouping       \(A\)       Disambiguate precedence / capture
+Passing Grouping       (?:A)       Disambiguate precedence
+Kleene Closure         A\*         0 or more of A
+Positive Closure       A+          1 or more of A
+Optional               A?          0 or 1 of A
+Interval               A{n}        A repeated *n* times
+Interval               A{min,}     *min* to *max* of A
+Bounded Interval       A{min,max}  *min* or more of A
+Concatenation          AB          A and then B
+Union                  A\|B        A or B
+====================== ==========  ==================================
+
+Operators that don't require precedence:
+
+====================== ==========  ==================================
+Operator               Symbols     Meaning
+====================== ==========  ==================================
+Begin Anchor           ^           Beginning of a line or file
+End Anchor             $           End of a line or file
+Escape                 \\          Following symbol is a character
+Word Boundary          \\b         Beginning or end of a full word
+Back Reference         \\\ *int*   The result of a capture group
+Character Set          [ABC]       A or B or C
+Character Set Range    [A-Z]       A through Z
+Character Set Not      [^A-Z]      Everything but A through Z
+Any Character          .           All characters (optionally \r\n)
+Replace With Group     $\ *int*    The result of a capture group
+====================== ==========  ==================================
+
+From *Compilers: Principles, Techniques, & Tools (Second Edition)* Figure 3.7:
+
+========================== ==========================================
+Law                        Description
+========================== ==========================================
+r|s = s|r                  \| is commutative
+r|(s|t) = (r|s)|t          \| is associative
+r(st) = (rs)t              Concatenation is associative
+r(s|t) = rs|rt             Concatenation distributes over \|
+(s|t)r = sr|tr             Concatenation distributes over \|
+|e| r = r |e| = r          |e| is the identity for concatenation
+r* = (r\| |e|)* = (r|)*    |e| is guaranteed in a closure
+r** = r*                   \* is idempotent
+========================== ==========================================
