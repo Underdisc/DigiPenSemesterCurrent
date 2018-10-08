@@ -1,8 +1,0 @@
-
-.. _assignment-submission:
-
-Assignment Submission
-=====================
-.. raw:: html
-
-   <iframe src="https://zelus.digipen.edu/" style="border:0px;" width="100%" height="900px"></iframe>
