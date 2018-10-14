@@ -24,11 +24,15 @@
 
 #define PI 3.14159265358979323846
 
+// Utility Functions ///////////////////////////////////////////////////////////
+
 bool read_file(std::vector<std::string> * content, std::string filename)
 {
     std::ifstream file(filename.c_str());
     if(!file.is_open())
     {
+        std::cout << "Error: File \"" << filename << "\" not found." 
+                  << std::endl;
         return false;
     }
     std::string new_line;
@@ -60,36 +64,152 @@ std::string strip_whitespace(const std::string & string)
 bool string_to_complex(Complex * complex_value, 
                        const std::string & string_value)
 {
-    unsigned split_index = 0;
-    unsigned end_index = 0;
-    unsigned char complete = 0;
-    std::string stripped_string = strip_whitespace(string_value);
-    for(unsigned i = 0; i < stripped_string.size(); ++i)
-    {
-        int c = (int)stripped_string[i];
-        if(c == '+' || c == '-')
+    std::vector<double> reals;
+    std::vector<double> imags;
+    std::string number;
+    double unary = 1.0;
+    unsigned state = 0;
+    for(int i = 0; i < string_value.size(); ++i)
+    { 
+        char c = string_value[i];
+        switch(state)
         {
-            split_index = i; 
-            complete |= 1;
-        }
-        if(c == 'i')
-        {
-            end_index = i;
-            complete |= 2;
+        case 0:
+            number.clear();
+            unary = 1.0;
+            if(c == '-')
+            {
+                unary *= -1.0;
+                state = 1;
+            }
+            else if(c == '+')
+            {
+                state = 1;
+            }
+            else if(c >= '0' && c <= '9')
+            {
+                number.push_back(c);
+                state = 2;
+            }
+            else if(c == 'i')
+            {
+                state = 3;
+            }
+            else
+            {
+                state = 0;
+            }
+            break;
+
+        case 1:
+            if(c == ' ')
+            {
+                state = 1;
+            }
+            else if(c == '-')
+            {
+                unary *= -1.0;
+                state = 1;
+            }
+            else if(c == '+')
+            {
+                state = 1;
+            }
+            else if(c == 'i')
+            {
+                state = 3;
+            }
+            else if(c >= '0' && c <= '9')
+            {
+                number.push_back(c);
+                state = 2;
+            }
+            else
+            {
+                --i;
+                state = 0;
+            }
+            break;
+
+        case 2:
+            if(c >= '0' && c <= '9')
+            {
+                number.push_back(c);
+                state = 2;
+            }
+            else if(c == 'i')
+            {
+                state = 4;
+            }
+            else
+            {
+                reals.push_back(unary * std::stod(number));
+                --i;
+                state = 0;
+            }
+            break;
+
+        case 3:
+            if(c >= '0' && c <= '9')
+            {
+                number.push_back(c);
+                state = 5;
+            }
+            else
+            {
+                number.push_back('1');
+                imags.push_back(unary * std::stod(number));
+                --i;
+                state = 0;
+            }
+            break;
+
+        case 4:
+            imags.push_back(unary * std::stod(number));
+            --i;
+            state = 0;
+            break;
+
+        case 5:
+            if(c >= '0' && c <= '9')
+            {
+                number.push_back(c);
+                state = 5;
+            }
+            else
+            {
+                imags.push_back(unary * std::stod(number));
+                --i;
+                state = 0;
+            }
+            break;
         }
     }
-    if(complete != 3)
+
+    if(state == 2)
     {
-        return false;
+        reals.push_back(unary * std::stod(number));
+    }
+    else if(state == 4 || state == 5)
+    {
+        imags.push_back(unary * std::stod(number));
+    }
+    else if(state == 3)
+    {
+        number.push_back('1');
+        imags.push_back(unary * std::stod(number));
     }
 
-    std::string r_string = stripped_string.substr(0, split_index);
-    std::string i_string = stripped_string.substr(split_index, 
-                                                  end_index - split_index);
-
-    complex_value->m_Real = std::stod(r_string);
-    complex_value->m_Imaginary = std::stod(i_string);
-
+    complex_value->m_Real = 0;
+    for(double value : reals)
+    {
+        complex_value->m_Real += value;
+    }
+    complex_value->m_Imaginary = 0;
+    for(double value : imags)
+    {
+        complex_value->m_Imaginary += value;
+    }
     return true;
 }
 
@@ -114,21 +234,17 @@ bool read_complex_values(std::vector<Complex> * complex_values,
     bool success = read_file(&string_values, filename);
     if(!success)
     {
-        std::cout << "Error: " << filename << " not found." << std::endl;
         return false;
     }
     parse_complex_values(complex_values, string_values);
     return true;
 }
 
+// Project Functions ///////////////////////////////////////////////////////////
+
 void Part1(const std::vector<std::string> & args)
 {
-    if(args.size() != 4)
-    {
-        std::cout << "Incorrect number of arguments provided." << std::endl;
-        return;
-    }
-    const std::string & filename = args[3];
+    const std::string & filename = args[2];
     std::vector<Complex> complex_values;
     bool success = read_complex_values(&complex_values, filename);
     if(!success)
@@ -137,10 +253,10 @@ void Part1(const std::vector<std::string> & args)
     }
 
     Complex rotation;
-    double x = std::stod(args[2]);
+    double x = std::stod(args[1]);
     rotation.Polar(1.0, 2.0 * PI * x); 
 
-    unsigned n = (unsigned)std::stoul(args[1]);
+    unsigned n = (unsigned)std::stoul(args[0]);
     for(unsigned i = 0; i < n; ++i)
     {
         Complex new_complex;
@@ -151,14 +267,8 @@ void Part1(const std::vector<std::string> & args)
 
 void Part2(const std::vector<std::string> & args)
 {
-    if(args.size() != 3)
-    {
-        std::cout << "Incorrect number of arguments provided." << std::endl;
-        return;
-    }
-
-    double n = std::stod(args[1]);
-    int k = std::stoi(args[2]);
+    double n = std::stod(args[0]);
+    int k = std::stoi(args[1]);
 
     Complex output(0.0, 0.0);
     for(int i = 0; i < k; ++i)
@@ -174,15 +284,9 @@ void Part2(const std::vector<std::string> & args)
 
 void Part3(const std::vector<std::string> & args)
 {
-    if(args.size() != 4)
-    {
-        std::cout << "Incorrect number of arguments provided." << std::endl;
-        return;
-    }
-
-    unsigned n = (unsigned)std::stol(args[1]);
-    const std::string & lhs_filename = args[2];
-    const std::string & rhs_filename = args[3];
+    unsigned n = (unsigned)std::stol(args[0]);
+    const std::string & lhs_filename = args[1];
+    const std::string & rhs_filename = args[2];
 
     std::vector<Complex> lhs_complex_values;
     std::vector<Complex> rhs_complex_values;
@@ -208,8 +312,8 @@ void Part3(const std::vector<std::string> & args)
 
 void Part4(const std::vector<std::string> & args)
 {
-    unsigned n = std::stol(args[1]);
-    const std::string & filename = args[2];
+    unsigned n = std::stol(args[0]);
+    const std::string & filename = args[1];
 
     std::vector<Complex> lhs_complex_values;
     std::vector<Complex> rhs_complex_values;
@@ -236,36 +340,62 @@ void Part4(const std::vector<std::string> & args)
     std::cout << output << std::endl;
 }
 
+// Main ////////////////////////////////////////////////////////////////////////
+
 int main(int argc, char ** argv)
 {
     if(argc < 2)
     {
-        std::cout << "A test number [1-4] must be specified as the second "
-                     "argument."
+        std::cout << "Error: A test number [1-4] must be specified as the "
+                     "second argument."
                   << std::endl;
         return 0;
     }
 
     std::vector<std::string> arguments;
-    for(int i = 1; i < argc; ++i)
+    for(int i = 2; i < argc; ++i)
     {
         arguments.push_back(argv[i]);
     }
 
     if(argv[1][0] == (char)'1')
     {
+        if(arguments.size() != 3)
+        {
+            std::cout << "Error: Part 1 takes 3 arguments." << std::endl 
+                      << "./prog.exe 1 N x filename" << std::endl;
+            return 0;
+        }
         Part1(arguments);
     }
     else if(argv[1][0] == (char)'2')
     {
+        if(arguments.size() != 2)
+        {
+            std::cout << "Error: Part 2 takes 2 arguments." << std::endl 
+                      << "./prog.exe 2 N k" << std::endl;
+            return 0;
+        }
         Part2(arguments);
     }
     else if(argv[1][0] == (char)'3')
     {
+        if(arguments.size() != 3)
+        {
+            std::cout << "Error: Part 3 takes 3 arguments." << std::endl 
+                      << "./prog.exe 3 N filename filename" << std::endl;
+            return 0;
+        }
         Part3(arguments);
     }
     else if(argv[1][0] == (char)'4')
     {
+        if(arguments.size() != 2)
+        {
+            std::cout << "Error: Part 4 takes 2 arguments." << std::endl 
+                      << "./prog.exe 4 N filename" << std::endl;
+            return 0;
+        }
         Part4(arguments);
     }
 }

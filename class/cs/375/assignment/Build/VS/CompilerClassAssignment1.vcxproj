@@ -12,11 +12,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Drivers\Driver1.cpp" />
+    <ClCompile Include="..\..\Drivers\Driver2.cpp" />
     <ClCompile Include="..\..\Drivers\DriverShared.cpp" />
     <ClCompile Include="..\..\UserCode\User1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Drivers\Driver1.hpp" />
+    <ClInclude Include="..\..\Drivers\Driver2.hpp" />
     <ClInclude Include="..\..\Drivers\DriverShared.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -24,10 +26,14 @@
     <None Include="..\..\Drivers\Tokens.inl" />
     <None Include="..\..\Drivers\TokenSymbols.inl" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\Drivers\Grammar.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{404361BE-C426-4D1C-B604-0B9E532765E9}</ProjectGuid>
     <RootNamespace>CompilerClassAssignment1</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <ProjectName>CompilerClassAssignment</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

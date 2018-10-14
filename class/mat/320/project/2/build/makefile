@@ -23,18 +23,23 @@ BOLD=@tput bold
 UNDERLINE=@tput smul
 RESET=@tput sgr0
 
-cc=g++ -std=c++11
+cc=g++
 
-all : prog.exe
+all : fft.exe dft.exe
 
-prog.exe : ../src/Complex.cc ../src/main.cc
+dft.exe : ../src/Complex.cc ../src/utility.cc ../src/main_dft.cc
 	$(BT)
 	$(BOLD)
-	$(cc) ../src/Complex.cc ../src/main.cc -o prog.exe
+	$(cc) ../src/Complex.cc ../src/utility.cc ../src/main_dft.cc -o dft.exe
+	$(RESET)
+
+fft.exe : ../src/Complex.cc ../src/utility.cc ../src/main_fft.cc
+	$(BT)
+	$(BOLD)
+	$(cc) ../src/Complex.cc ../src/utility.cc ../src/main_fft.cc -o fft.exe
 	$(RESET)
 
 clean :
 	$(RT)
 	rm *.exe 
 	$(RESET)
-

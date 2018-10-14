@@ -13,12 +13,18 @@
       <Filter>Driver</Filter>
     </ClCompile>
     <ClCompile Include="..\..\UserCode\User1.cpp" />
+    <ClCompile Include="..\..\Drivers\Driver2.cpp">
+      <Filter>Driver</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Drivers\Driver1.hpp">
       <Filter>Driver</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Drivers\DriverShared.hpp">
+      <Filter>Driver</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Drivers\Driver2.hpp">
       <Filter>Driver</Filter>
     </ClInclude>
   </ItemGroup>
@@ -32,5 +38,10 @@
     <None Include="..\..\Drivers\TokenSymbols.inl">
       <Filter>Driver</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\Drivers\Grammar.txt">
+      <Filter>Driver</Filter>
+    </Text>
   </ItemGroup>
 </Project>
