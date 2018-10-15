@@ -19,8 +19,7 @@ int main(int argc, char* argv[])
     Driver1Part2Test3,
     Driver1Part2Test4,
     Driver1Part2Test5,
-    Driver1Part2Test6,
-    Driver1Part3Test7
+    Driver1Part2Test6
   };
 
   return DriverMain(argc, argv, tests, DriverArraySize(tests));
@@ -43,8 +42,21 @@ Token::Token(const char* text, size_t length, int type) :
 {
 }
 
-// This is a helper macro we use for testing string literals within a C++ string literal (because they are extermely annoying to escape!)
-#define STRINGIZE(...) #__VA_ARGS__
+std::ostream& operator<<(std::ostream& out, const Token& token)
+{
+  out << token.str();
+  return out;
+}
+
+std::string Token::str() const
+{
+  return std::string(mText, mLength);
+}
+
+Token::operator bool() const
+{
+  return this->mTokenType != TokenType::Invalid;
+}
 
 const char* TokenNames[] =
 {
@@ -303,7 +315,3 @@ void Driver1Part2Test6()
   DfaState* root = CreateLanguageDfa();
   RunTest(2, 6, root, stream, TokenNames);
 }
-
-#if !defined(DRIVER_EXTRA_TESTS)
-  void Driver1Part3Test7() {}
-#endif

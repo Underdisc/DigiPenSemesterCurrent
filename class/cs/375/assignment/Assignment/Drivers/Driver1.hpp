@@ -38,6 +38,16 @@ public:
   const char* mText;
   size_t mLength;
 
+  // Allow streams to output our token
+  friend std::ostream& operator<<(std::ostream& out, const Token& token);
+
+  // A convenience function to get a sliced version of the string
+  std::string str() const;
+
+  // A conversion to bool (only true if the token type is not Invalid)
+  // This is useful for shorthanding some 'Expect' operations
+  operator bool() const;
+
   // We use a union because for Part 1 of the assignment the driver will be making up fake token types
   // that don't belong in the TokenType enumeration. Having the enumeration there makes it easier to debug and visualize
   union
@@ -152,11 +162,10 @@ void Driver1Part2Test5();
 //}
 void Driver1Part2Test6();
 
-// When submitting your assignment, we will run extra tests outside the ones presented here
-// Take your time and make sure your code is correct! The following are unknown tests...
-void Driver1Part3Test7();
-
 /***************************** INTERNAL *****************************/
+// This is a helper macro we use for testing string literals within a C++ string literal (because they are extermely annoying to escape!)
+#define STRINGIZE(...) #__VA_ARGS__
+
 // These are for usage by the other drivers
 typedef void (*TokenReaderFn)(DfaState* startingState, const char* stream, Token& outToken);
 void TokenizeAndDeleteRoot(DfaState* root, const char* stream, const char* tokenNames[], std::vector<Token>* tokensOut, TokenReaderFn reader);
