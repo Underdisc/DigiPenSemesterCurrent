@@ -46,7 +46,8 @@ class Acceptor
 public:
     static void Initialize(std::vector<Token> & token_stream);
     static bool Accept(TokenType::Enum next_token);
-    static void Expect(TokenType::Enum next_token);
+    static bool Expect(TokenType::Enum next_token);
+    static bool Expect(bool found);
     static unsigned _index;
     static std::vector<Token> * _token_stream;
 };
@@ -77,24 +78,79 @@ bool Acceptor::Accept(TokenType::Enum accepted_token)
     return false;
 }
 
-void Acceptor::Expect(TokenType::Enum accepted_token)
+bool Acceptor::Expect(TokenType::Enum accepted_token)
 {
 
     if(Accept(accepted_token))
     {
-        return;
+        return true;
     }
     throw ParsingException();
 }
 
-bool Var()
+bool Acceptor::Expect(bool found)
+{
+    if (found)
+    {
+        return true;
+    }
+    throw ParsingException();
+}
+
+bool FunctionType()
 {
     return false;
+}
+
+bool NamedType()
+{
+    return false;
+}
+
+bool Type()
+{
+    return NamedType() || FunctionType();
+}
+
+bool SpecifiedType()
+{
+    PrintRule print_rule("SpecifiedType");
+    if (Acceptor::Accept(TokenType::Colon))
+    {
+        Acceptor::Expect(Type());
+    }
+    print_rule.Accept();
+    return true;
+}
+
+bool Parameter()
+{
+  return false;
 }
 
 bool Function()
 {
     return false;
+}
+
+bool Var()
+{
+    PrintRule print_rule("Var");
+    if (!Acceptor::Accept(TokenType::Var))
+    {
+      return false;
+    }
+
+    Acceptor::Expect(TokenType::Identifier);
+    Acceptor::Expect(SpecifiedType);
+
+    if (Acceptor::Accept(TokenType::Assignment))
+    {
+      Acceptor::Expect(Expression());
+    }
+
+    print_rule.Accept();
+    return true;
 }
 
 bool Class()
@@ -122,6 +178,7 @@ bool Class()
 
     Acceptor::Expect(TokenType::CloseCurley);
 
+    print_rule.Accept();
     return true;
 }
 
@@ -130,14 +187,10 @@ bool Block()
 {
     PrintRule print_rule("Block");
 
-    if(Class() || Function())
+    if(Class() || Function() || (Var() && Acceptor::Expect(TokenType::Semicolon)))
     {
+        print_rule.Accept();
         return true;
-    }
-    
-    if(Var())
-    {
-        Acceptor::Expect(TokenType::Semicolon);
     }
     return false;
 }
@@ -146,7 +199,7 @@ void RemoveWhitespaceAndComments(std::vector<Token>& tokens)
 {
     // Create new vector for all non whitespace and non comment tokens.
     std::vector<Token> stripped;
-    stripped.resize(tokens.size());
+    stripped.reserve(tokens.size());
 
     // Add acceptable tokens to the stripped vector.
     for(const Token & token : tokens)
@@ -170,4 +223,6 @@ void Recognize(std::vector<Token>& tokens)
     {
         throw ParsingException();
     }
+
+   
 }
