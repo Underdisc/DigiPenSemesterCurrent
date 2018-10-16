@@ -1,5 +1,8 @@
 ************** PART 1 TEST 0 **************
-Parsing Failed (Exception)
+Block
+EndBlock
+
+Parsing Successful
 *******************************************
 
 ************** PART 1 TEST 1 **************
@@ -21,10 +24,24 @@ Block
 | | Accepted: 'class' (Class)
 | | Accepted: 'Enemy' (Identifier)
 | | Accepted: '{' (OpenCurley)
-| EndClass*
-EndBlock*
+| | Var
+| | | Accepted: 'var' (Var)
+| | | Accepted: 'Lives' (Identifier)
+| | | SpecifiedType
+| | | | Accepted: ':' (Colon)
+| | | | Type
+| | | | | NamedType
+| | | | | | Accepted: 'Integer' (Identifier)
+| | | | | EndNamedType
+| | | | EndType
+| | | EndSpecifiedType
+| | EndVar
+| | Accepted: ';' (Semicolon)
+| | Accepted: '}' (CloseCurley)
+| EndClass
+EndBlock
 
-Parsing Failed (Exception)
+Parsing Successful
 *******************************************
 
 ************** PART 1 TEST 3 **************
@@ -33,10 +50,66 @@ Block
 | | Accepted: 'class' (Class)
 | | Accepted: 'Frog' (Identifier)
 | | Accepted: '{' (OpenCurley)
-| EndClass*
-EndBlock*
+| | Function
+| | | Accepted: 'function' (Function)
+| | | Accepted: 'EatFly' (Identifier)
+| | | Accepted: '(' (OpenParentheses)
+| | | Parameter
+| | | | Accepted: 'target' (Identifier)
+| | | | SpecifiedType
+| | | | | Accepted: ':' (Colon)
+| | | | | Type
+| | | | | | NamedType
+| | | | | | | Accepted: 'Fly' (Identifier)
+| | | | | | | Accepted: '*' (Asterisk)
+| | | | | | EndNamedType
+| | | | | EndType
+| | | | EndSpecifiedType
+| | | EndParameter
+| | | Accepted: ',' (Comma)
+| | | Parameter
+| | | | Accepted: 'speed' (Identifier)
+| | | | SpecifiedType
+| | | | | Accepted: ':' (Colon)
+| | | | | Type
+| | | | | | NamedType
+| | | | | | | Accepted: 'Float' (Identifier)
+| | | | | | EndNamedType
+| | | | | EndType
+| | | | EndSpecifiedType
+| | | EndParameter
+| | | Accepted: ')' (CloseParentheses)
+| | | SpecifiedType
+| | | | Accepted: ':' (Colon)
+| | | | Type
+| | | | | NamedType
+| | | | | | Accepted: 'Boolean' (Identifier)
+| | | | | EndNamedType
+| | | | EndType
+| | | EndSpecifiedType
+| | | Scope
+| | | | Accepted: '{' (OpenCurley)
+| | | | Accepted: '}' (CloseCurley)
+| | | EndScope
+| | EndFunction
+| | Var
+| | | Accepted: 'var' (Var)
+| | | Accepted: 'FliesEaten' (Identifier)
+| | | SpecifiedType
+| | | | Accepted: ':' (Colon)
+| | | | Type
+| | | | | NamedType
+| | | | | | Accepted: 'Integer' (Identifier)
+| | | | | EndNamedType
+| | | | EndType
+| | | EndSpecifiedType
+| | EndVar
+| | Accepted: ';' (Semicolon)
+| | Accepted: '}' (CloseCurley)
+| EndClass
+EndBlock
 
-Parsing Failed (Exception)
+Parsing Successful
 *******************************************
 
 ************** PART 2 TEST 4 **************
@@ -137,10 +210,143 @@ Block
 | | Accepted: 'class' (Class)
 | | Accepted: 'Player' (Identifier)
 | | Accepted: '{' (OpenCurley)
-| EndClass*
-EndBlock*
+| | Var
+| | | Accepted: 'var' (Var)
+| | | Accepted: 'Lives' (Identifier)
+| | | SpecifiedType
+| | | | Accepted: ':' (Colon)
+| | | | Type
+| | | | | NamedType
+| | | | | | Accepted: 'Integer' (Identifier)
+| | | | | EndNamedType
+| | | | EndType
+| | | EndSpecifiedType
+| | EndVar
+| | Accepted: ';' (Semicolon)
+| | Function
+| | | Accepted: 'function' (Function)
+| | | Accepted: 'Jump' (Identifier)
+| | | Accepted: '(' (OpenParentheses)
+| | | Parameter
+| | | | Accepted: 'height' (Identifier)
+| | | | SpecifiedType
+| | | | | Accepted: ':' (Colon)
+| | | | | Type
+| | | | | | NamedType
+| | | | | | | Accepted: 'Float' (Identifier)
+| | | | | | EndNamedType
+| | | | | EndType
+| | | | EndSpecifiedType
+| | | EndParameter
+| | | Accepted: ',' (Comma)
+| | | Parameter
+| | | | Accepted: 'doubleJump' (Identifier)
+| | | | SpecifiedType
+| | | | | Accepted: ':' (Colon)
+| | | | | Type
+| | | | | | NamedType
+| | | | | | | Accepted: 'Boolean' (Identifier)
+| | | | | | EndNamedType
+| | | | | EndType
+| | | | EndSpecifiedType
+| | | EndParameter
+| | | Accepted: ')' (CloseParentheses)
+| | | SpecifiedType
+| | | | Accepted: ':' (Colon)
+| | | | Type
+| | | | | NamedType
+| | | | | | Accepted: 'Void' (Identifier)
+| | | | | EndNamedType
+| | | | EndType
+| | | EndSpecifiedType
+| | | Scope
+| | | | Accepted: '{' (OpenCurley)
+| | | | Statement
+| | | | | FreeStatement
+| | | | | | If
+| | | | | | | Accepted: 'if' (If)
+| | | | | | | GroupedExpression
+| | | | | | | | Accepted: '(' (OpenParentheses)
+| | | | | | | | Expression
+| | | | | | | | | Expression1
+| | | | | | | | | | Expression2
+| | | | | | | | | | | Expression3
+| | | | | | | | | | | | Expression4
+| | | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | | Accepted: 'true' (True)
+| | | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | EndExpression4
+| | | | | | | | | | | EndExpression3
+| | | | | | | | | | EndExpression2
+| | | | | | | | | EndExpression1
+| | | | | | | | EndExpression
+| | | | | | | | Accepted: ')' (CloseParentheses)
+| | | | | | | EndGroupedExpression
+| | | | | | | Scope
+| | | | | | | | Accepted: '{' (OpenCurley)
+| | | | | | | | Accepted: '}' (CloseCurley)
+| | | | | | | EndScope
+| | | | | | | Else
+| | | | | | | | Accepted: 'else' (Else)
+| | | | | | | | If
+| | | | | | | | | Accepted: 'if' (If)
+| | | | | | | | | GroupedExpression
+| | | | | | | | | | Accepted: '(' (OpenParentheses)
+| | | | | | | | | | Expression
+| | | | | | | | | | | Expression1
+| | | | | | | | | | | | Expression2
+| | | | | | | | | | | | | Expression3
+| | | | | | | | | | | | | | Expression4
+| | | | | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | | | | Accepted: 'true' (True)
+| | | | | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | | | EndExpression4
+| | | | | | | | | | | | | EndExpression3
+| | | | | | | | | | | | EndExpression2
+| | | | | | | | | | | EndExpression1
+| | | | | | | | | | EndExpression
+| | | | | | | | | | Accepted: ')' (CloseParentheses)
+| | | | | | | | | EndGroupedExpression
+| | | | | | | | | Scope
+| | | | | | | | | | Accepted: '{' (OpenCurley)
+| | | | | | | | | | Accepted: '}' (CloseCurley)
+| | | | | | | | | EndScope
+| | | | | | | | | Else
+| | | | | | | | | | Accepted: 'else' (Else)
+| | | | | | | | | | Scope
+| | | | | | | | | | | Accepted: '{' (OpenCurley)
+| | | | | | | | | | | Accepted: '}' (CloseCurley)
+| | | | | | | | | | EndScope
+| | | | | | | | | EndElse
+| | | | | | | | EndIf
+| | | | | | | EndElse
+| | | | | | EndIf
+| | | | | EndFreeStatement
+| | | | EndStatement
+| | | | Accepted: '}' (CloseCurley)
+| | | EndScope
+| | EndFunction
+| | Accepted: '}' (CloseCurley)
+| EndClass
+EndBlock
 
-Parsing Failed (Exception)
+Parsing Successful
 *******************************************
 
 ************** PART 2 TEST 6 **************
@@ -234,10 +440,247 @@ Block
 | | Accepted: 'class' (Class)
 | | Accepted: 'Player' (Identifier)
 | | Accepted: '{' (OpenCurley)
-| EndClass*
-EndBlock*
+| | Function
+| | | Accepted: 'function' (Function)
+| | | Accepted: 'Test' (Identifier)
+| | | Accepted: '(' (OpenParentheses)
+| | | Accepted: ')' (CloseParentheses)
+| | | Scope
+| | | | Accepted: '{' (OpenCurley)
+| | | | Statement
+| | | | | DelimitedStatement
+| | | | | | Var
+| | | | | | | Accepted: 'var' (Var)
+| | | | | | | Accepted: 'test' (Identifier)
+| | | | | | | SpecifiedType
+| | | | | | | | Accepted: ':' (Colon)
+| | | | | | | | Type
+| | | | | | | | | NamedType
+| | | | | | | | | | Accepted: 'Integer' (Identifier)
+| | | | | | | | | EndNamedType
+| | | | | | | | EndType
+| | | | | | | EndSpecifiedType
+| | | | | | EndVar
+| | | | | EndDelimitedStatement
+| | | | | Accepted: ';' (Semicolon)
+| | | | EndStatement
+| | | | Statement
+| | | | | DelimitedStatement
+| | | | | | Expression
+| | | | | | | Expression1
+| | | | | | | | Expression2
+| | | | | | | | | Expression3
+| | | | | | | | | | Expression4
+| | | | | | | | | | | Expression5
+| | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | NameReference
+| | | | | | | | | | | | | | | | Accepted: 'test' (Identifier)
+| | | | | | | | | | | | | | | EndNameReference
+| | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | EndExpression5
+| | | | | | | | | | EndExpression4
+| | | | | | | | | EndExpression3
+| | | | | | | | EndExpression2
+| | | | | | | EndExpression1
+| | | | | | | Accepted: '=' (Assignment)
+| | | | | | | Expression
+| | | | | | | | Expression1
+| | | | | | | | | Expression2
+| | | | | | | | | | Expression3
+| | | | | | | | | | | Expression4
+| | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | Accepted: '5' (IntegerLiteral)
+| | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | Accepted: '+' (Plus)
+| | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | Accepted: '9' (IntegerLiteral)
+| | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | Accepted: '*' (Asterisk)
+| | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | GroupedExpression
+| | | | | | | | | | | | | | | | | Accepted: '(' (OpenParentheses)
+| | | | | | | | | | | | | | | | | Expression
+| | | | | | | | | | | | | | | | | | Expression1
+| | | | | | | | | | | | | | | | | | | Expression2
+| | | | | | | | | | | | | | | | | | | | Expression3
+| | | | | | | | | | | | | | | | | | | | | Expression4
+| | | | | | | | | | | | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | | | | | | | | | | | Accepted: '3' (IntegerLiteral)
+| | | | | | | | | | | | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | | | | | | | | | | | Accepted: '-' (Minus)
+| | | | | | | | | | | | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | | | | | | | | | | | Accepted: '1' (IntegerLiteral)
+| | | | | | | | | | | | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | | | | | | | | | | EndExpression4
+| | | | | | | | | | | | | | | | | | | | EndExpression3
+| | | | | | | | | | | | | | | | | | | EndExpression2
+| | | | | | | | | | | | | | | | | | EndExpression1
+| | | | | | | | | | | | | | | | | EndExpression
+| | | | | | | | | | | | | | | | | Accepted: ')' (CloseParentheses)
+| | | | | | | | | | | | | | | | EndGroupedExpression
+| | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | EndExpression4
+| | | | | | | | | | EndExpression3
+| | | | | | | | | EndExpression2
+| | | | | | | | EndExpression1
+| | | | | | | EndExpression
+| | | | | | EndExpression
+| | | | | EndDelimitedStatement
+| | | | | Accepted: ';' (Semicolon)
+| | | | EndStatement
+| | | | Statement
+| | | | | DelimitedStatement
+| | | | | | Expression
+| | | | | | | Expression1
+| | | | | | | | Expression2
+| | | | | | | | | Expression3
+| | | | | | | | | | Expression4
+| | | | | | | | | | | Expression5
+| | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | NameReference
+| | | | | | | | | | | | | | | | Accepted: 'this' (Identifier)
+| | | | | | | | | | | | | | | EndNameReference
+| | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | MemberAccess
+| | | | | | | | | | | | | | | Accepted: '.' (Dot)
+| | | | | | | | | | | | | | | Accepted: 'Test' (Identifier)
+| | | | | | | | | | | | | | EndMemberAccess
+| | | | | | | | | | | | | | Call
+| | | | | | | | | | | | | | | Accepted: '(' (OpenParentheses)
+| | | | | | | | | | | | | | | Accepted: ')' (CloseParentheses)
+| | | | | | | | | | | | | | EndCall
+| | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | EndExpression5
+| | | | | | | | | | EndExpression4
+| | | | | | | | | EndExpression3
+| | | | | | | | EndExpression2
+| | | | | | | EndExpression1
+| | | | | | EndExpression
+| | | | | EndDelimitedStatement
+| | | | | Accepted: ';' (Semicolon)
+| | | | EndStatement
+| | | | Statement
+| | | | | DelimitedStatement
+| | | | | | Var
+| | | | | | | Accepted: 'var' (Var)
+| | | | | | | Accepted: 'callback' (Identifier)
+| | | | | | | SpecifiedType
+| | | | | | | | Accepted: ':' (Colon)
+| | | | | | | | Type
+| | | | | | | | | FunctionType
+| | | | | | | | | | Accepted: 'function' (Function)
+| | | | | | | | | | Accepted: '*' (Asterisk)
+| | | | | | | | | | Accepted: '(' (OpenParentheses)
+| | | | | | | | | | Type
+| | | | | | | | | | | NamedType
+| | | | | | | | | | | | Accepted: 'Integer' (Identifier)
+| | | | | | | | | | | EndNamedType
+| | | | | | | | | | EndType
+| | | | | | | | | | Accepted: ',' (Comma)
+| | | | | | | | | | Type
+| | | | | | | | | | | NamedType
+| | | | | | | | | | | | Accepted: 'Float' (Identifier)
+| | | | | | | | | | | EndNamedType
+| | | | | | | | | | EndType
+| | | | | | | | | | Accepted: ')' (CloseParentheses)
+| | | | | | | | | EndFunctionType
+| | | | | | | | EndType
+| | | | | | | EndSpecifiedType
+| | | | | | EndVar
+| | | | | EndDelimitedStatement
+| | | | | Accepted: ';' (Semicolon)
+| | | | EndStatement
+| | | | Statement
+| | | | | DelimitedStatement
+| | | | | | Var
+| | | | | | | Accepted: 'var' (Var)
+| | | | | | | Accepted: 'testReference' (Identifier)
+| | | | | | | SpecifiedType
+| | | | | | | | Accepted: ':' (Colon)
+| | | | | | | | Type
+| | | | | | | | | NamedType
+| | | | | | | | | | Accepted: 'Integer' (Identifier)
+| | | | | | | | | | Accepted: '&' (Ampersand)
+| | | | | | | | | EndNamedType
+| | | | | | | | EndType
+| | | | | | | EndSpecifiedType
+| | | | | | | Accepted: '=' (Assignment)
+| | | | | | | Expression
+| | | | | | | | Expression1
+| | | | | | | | | Expression2
+| | | | | | | | | | Expression3
+| | | | | | | | | | | Expression4
+| | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | NameReference
+| | | | | | | | | | | | | | | | | Accepted: 'test' (Identifier)
+| | | | | | | | | | | | | | | | EndNameReference
+| | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | EndExpression4
+| | | | | | | | | | EndExpression3
+| | | | | | | | | EndExpression2
+| | | | | | | | EndExpression1
+| | | | | | | EndExpression
+| | | | | | EndVar
+| | | | | EndDelimitedStatement
+| | | | | Accepted: ';' (Semicolon)
+| | | | EndStatement
+| | | | Accepted: '}' (CloseCurley)
+| | | EndScope
+| | EndFunction
+| | Accepted: '}' (CloseCurley)
+| EndClass
+EndBlock
 
-Parsing Failed (Exception)
+Parsing Successful
 *******************************************
 
 ************** PART 2 TEST 7 **************
@@ -374,7 +817,571 @@ Token: ';' of type 16 (Semicolon)
 Token: ' ' of type 6 (Whitespace)
 Token: '}' of type 11 (CloseCurley)
 
-Parsing Failed (Exception)
+Block
+| Function
+| | Accepted: 'function' (Function)
+| | Accepted: 'X' (Identifier)
+| | Accepted: '(' (OpenParentheses)
+| | Accepted: ')' (CloseParentheses)
+| | SpecifiedType
+| | | Accepted: ':' (Colon)
+| | | Type
+| | | | NamedType
+| | | | | Accepted: 'Integer' (Identifier)
+| | | | EndNamedType
+| | | EndType
+| | EndSpecifiedType
+| | Scope
+| | | Accepted: '{' (OpenCurley)
+| | | Statement
+| | | | DelimitedStatement
+| | | | | Label
+| | | | | | Accepted: 'label' (Label)
+| | | | | | Accepted: 'X' (Identifier)
+| | | | | EndLabel
+| | | | EndDelimitedStatement
+| | | | Accepted: ';' (Semicolon)
+| | | EndStatement
+| | | Statement
+| | | | DelimitedStatement
+| | | | | Goto
+| | | | | | Accepted: 'goto' (Goto)
+| | | | | | Accepted: 'X' (Identifier)
+| | | | | EndGoto
+| | | | EndDelimitedStatement
+| | | | Accepted: ';' (Semicolon)
+| | | EndStatement
+| | | Statement
+| | | | FreeStatement
+| | | | | While
+| | | | | | Accepted: 'while' (While)
+| | | | | | GroupedExpression
+| | | | | | | Accepted: '(' (OpenParentheses)
+| | | | | | | Expression
+| | | | | | | | Expression1
+| | | | | | | | | Expression2
+| | | | | | | | | | Expression3
+| | | | | | | | | | | Expression4
+| | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | Accepted: 'true' (True)
+| | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | EndExpression4
+| | | | | | | | | | EndExpression3
+| | | | | | | | | EndExpression2
+| | | | | | | | EndExpression1
+| | | | | | | EndExpression
+| | | | | | | Accepted: ')' (CloseParentheses)
+| | | | | | EndGroupedExpression
+| | | | | | Scope
+| | | | | | | Accepted: '{' (OpenCurley)
+| | | | | | | Statement
+| | | | | | | | DelimitedStatement
+| | | | | | | | | Accepted: 'continue' (Continue)
+| | | | | | | | EndDelimitedStatement
+| | | | | | | | Accepted: ';' (Semicolon)
+| | | | | | | EndStatement
+| | | | | | | Accepted: '}' (CloseCurley)
+| | | | | | EndScope
+| | | | | EndWhile
+| | | | EndFreeStatement
+| | | EndStatement
+| | | Statement
+| | | | FreeStatement
+| | | | | For
+| | | | | | Accepted: 'for' (For)
+| | | | | | Accepted: '(' (OpenParentheses)
+| | | | | | Var
+| | | | | | | Accepted: 'var' (Var)
+| | | | | | | Accepted: 'i' (Identifier)
+| | | | | | | SpecifiedType
+| | | | | | | | Accepted: ':' (Colon)
+| | | | | | | | Type
+| | | | | | | | | NamedType
+| | | | | | | | | | Accepted: 'Integer' (Identifier)
+| | | | | | | | | EndNamedType
+| | | | | | | | EndType
+| | | | | | | EndSpecifiedType
+| | | | | | | Accepted: '=' (Assignment)
+| | | | | | | Expression
+| | | | | | | | Expression1
+| | | | | | | | | Expression2
+| | | | | | | | | | Expression3
+| | | | | | | | | | | Expression4
+| | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | Accepted: '0' (IntegerLiteral)
+| | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | EndExpression4
+| | | | | | | | | | EndExpression3
+| | | | | | | | | EndExpression2
+| | | | | | | | EndExpression1
+| | | | | | | EndExpression
+| | | | | | EndVar
+| | | | | | Accepted: ';' (Semicolon)
+| | | | | | Expression
+| | | | | | | Expression1
+| | | | | | | | Expression2
+| | | | | | | | | Expression3
+| | | | | | | | | | Expression4
+| | | | | | | | | | | Expression5
+| | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | NameReference
+| | | | | | | | | | | | | | | | Accepted: 'i' (Identifier)
+| | | | | | | | | | | | | | | EndNameReference
+| | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | EndExpression5
+| | | | | | | | | | EndExpression4
+| | | | | | | | | | Accepted: '<' (LessThan)
+| | | | | | | | | | Expression4
+| | | | | | | | | | | Expression5
+| | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | Accepted: '10' (IntegerLiteral)
+| | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | EndExpression5
+| | | | | | | | | | EndExpression4
+| | | | | | | | | EndExpression3
+| | | | | | | | | Accepted: '&&' (LogicalAnd)
+| | | | | | | | | Expression3
+| | | | | | | | | | Expression4
+| | | | | | | | | | | Expression5
+| | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | Accepted: '!' (LogicalNot)
+| | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | GroupedExpression
+| | | | | | | | | | | | | | | | Accepted: '(' (OpenParentheses)
+| | | | | | | | | | | | | | | | Expression
+| | | | | | | | | | | | | | | | | Expression1
+| | | | | | | | | | | | | | | | | | Expression2
+| | | | | | | | | | | | | | | | | | | Expression3
+| | | | | | | | | | | | | | | | | | | | Expression4
+| | | | | | | | | | | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | | | | | | | | | | NameReference
+| | | | | | | | | | | | | | | | | | | | | | | | | | Accepted: 'i' (Identifier)
+| | | | | | | | | | | | | | | | | | | | | | | | | EndNameReference
+| | | | | | | | | | | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | | | | | | | | | EndExpression4
+| | | | | | | | | | | | | | | | | | | | Accepted: '==' (Equality)
+| | | | | | | | | | | | | | | | | | | | Expression4
+| | | | | | | | | | | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | | | | | | | | | | Accepted: '5' (IntegerLiteral)
+| | | | | | | | | | | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | | | | | | | | | EndExpression4
+| | | | | | | | | | | | | | | | | | | EndExpression3
+| | | | | | | | | | | | | | | | | | EndExpression2
+| | | | | | | | | | | | | | | | | | Accepted: '||' (LogicalOr)
+| | | | | | | | | | | | | | | | | | Expression2
+| | | | | | | | | | | | | | | | | | | Expression3
+| | | | | | | | | | | | | | | | | | | | Expression4
+| | | | | | | | | | | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | | | | | | | | | | NameReference
+| | | | | | | | | | | | | | | | | | | | | | | | | | Accepted: 'i' (Identifier)
+| | | | | | | | | | | | | | | | | | | | | | | | | EndNameReference
+| | | | | | | | | | | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | | | | | | | | | EndExpression4
+| | | | | | | | | | | | | | | | | | | | Accepted: '!=' (Inequality)
+| | | | | | | | | | | | | | | | | | | | Expression4
+| | | | | | | | | | | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | | | | | | | | | | Accepted: '12' (IntegerLiteral)
+| | | | | | | | | | | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | | | | | | | | | EndExpression4
+| | | | | | | | | | | | | | | | | | | EndExpression3
+| | | | | | | | | | | | | | | | | | EndExpression2
+| | | | | | | | | | | | | | | | | EndExpression1
+| | | | | | | | | | | | | | | | EndExpression
+| | | | | | | | | | | | | | | | Accepted: ')' (CloseParentheses)
+| | | | | | | | | | | | | | | EndGroupedExpression
+| | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | EndExpression5
+| | | | | | | | | | EndExpression4
+| | | | | | | | | EndExpression3
+| | | | | | | | EndExpression2
+| | | | | | | EndExpression1
+| | | | | | EndExpression
+| | | | | | Accepted: ';' (Semicolon)
+| | | | | | Expression
+| | | | | | | Expression1
+| | | | | | | | Expression2
+| | | | | | | | | Expression3
+| | | | | | | | | | Expression4
+| | | | | | | | | | | Expression5
+| | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | NameReference
+| | | | | | | | | | | | | | | | Accepted: 'i' (Identifier)
+| | | | | | | | | | | | | | | EndNameReference
+| | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | EndExpression5
+| | | | | | | | | | EndExpression4
+| | | | | | | | | EndExpression3
+| | | | | | | | EndExpression2
+| | | | | | | EndExpression1
+| | | | | | | Accepted: '=' (Assignment)
+| | | | | | | Expression
+| | | | | | | | Expression1
+| | | | | | | | | Expression2
+| | | | | | | | | | Expression3
+| | | | | | | | | | | Expression4
+| | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | NameReference
+| | | | | | | | | | | | | | | | | Accepted: 'i' (Identifier)
+| | | | | | | | | | | | | | | | EndNameReference
+| | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | Accepted: '+' (Plus)
+| | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | Accepted: '1' (IntegerLiteral)
+| | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | EndExpression4
+| | | | | | | | | | EndExpression3
+| | | | | | | | | EndExpression2
+| | | | | | | | EndExpression1
+| | | | | | | EndExpression
+| | | | | | EndExpression
+| | | | | | Accepted: ')' (CloseParentheses)
+| | | | | | Scope
+| | | | | | | Accepted: '{' (OpenCurley)
+| | | | | | | Statement
+| | | | | | | | DelimitedStatement
+| | | | | | | | | Expression
+| | | | | | | | | | Expression1
+| | | | | | | | | | | Expression2
+| | | | | | | | | | | | Expression3
+| | | | | | | | | | | | | Expression4
+| | | | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | | | NameReference
+| | | | | | | | | | | | | | | | | | | Accepted: 'i' (Identifier)
+| | | | | | | | | | | | | | | | | | EndNameReference
+| | | | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | | EndExpression4
+| | | | | | | | | | | | EndExpression3
+| | | | | | | | | | | EndExpression2
+| | | | | | | | | | EndExpression1
+| | | | | | | | | | Accepted: '=' (Assignment)
+| | | | | | | | | | Expression
+| | | | | | | | | | | Expression1
+| | | | | | | | | | | | Expression2
+| | | | | | | | | | | | | Expression3
+| | | | | | | | | | | | | | Expression4
+| | | | | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | | | | Accepted: '3.0' (FloatLiteral)
+| | | | | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | | | | | Cast
+| | | | | | | | | | | | | | | | | | | Accepted: 'as' (As)
+| | | | | | | | | | | | | | | | | | | Type
+| | | | | | | | | | | | | | | | | | | | NamedType
+| | | | | | | | | | | | | | | | | | | | | Accepted: 'Integer' (Identifier)
+| | | | | | | | | | | | | | | | | | | | EndNamedType
+| | | | | | | | | | | | | | | | | | | EndType
+| | | | | | | | | | | | | | | | | | EndCast
+| | | | | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | | | EndExpression4
+| | | | | | | | | | | | | EndExpression3
+| | | | | | | | | | | | EndExpression2
+| | | | | | | | | | | EndExpression1
+| | | | | | | | | | EndExpression
+| | | | | | | | | EndExpression
+| | | | | | | | EndDelimitedStatement
+| | | | | | | | Accepted: ';' (Semicolon)
+| | | | | | | EndStatement
+| | | | | | | Statement
+| | | | | | | | DelimitedStatement
+| | | | | | | | | Accepted: 'break' (Break)
+| | | | | | | | EndDelimitedStatement
+| | | | | | | | Accepted: ';' (Semicolon)
+| | | | | | | EndStatement
+| | | | | | | Accepted: '}' (CloseCurley)
+| | | | | | EndScope
+| | | | | EndFor
+| | | | EndFreeStatement
+| | | EndStatement
+| | | Statement
+| | | | DelimitedStatement
+| | | | | Expression
+| | | | | | Expression1
+| | | | | | | Expression2
+| | | | | | | | Expression3
+| | | | | | | | | Expression4
+| | | | | | | | | | Expression5
+| | | | | | | | | | | Expression6
+| | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | NameReference
+| | | | | | | | | | | | | | | Accepted: 'X' (Identifier)
+| | | | | | | | | | | | | | EndNameReference
+| | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | Call
+| | | | | | | | | | | | | | Accepted: '(' (OpenParentheses)
+| | | | | | | | | | | | | | Expression
+| | | | | | | | | | | | | | | Expression1
+| | | | | | | | | | | | | | | | Expression2
+| | | | | | | | | | | | | | | | | Expression3
+| | | | | | | | | | | | | | | | | | Expression4
+| | | | | | | | | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | | | | | | | | Accepted: '"hello"' (StringLiteral)
+| | | | | | | | | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | | | | | | | EndExpression4
+| | | | | | | | | | | | | | | | | EndExpression3
+| | | | | | | | | | | | | | | | EndExpression2
+| | | | | | | | | | | | | | | EndExpression1
+| | | | | | | | | | | | | | EndExpression
+| | | | | | | | | | | | | | Accepted: ',' (Comma)
+| | | | | | | | | | | | | | Expression
+| | | | | | | | | | | | | | | Expression1
+| | | | | | | | | | | | | | | | Expression2
+| | | | | | | | | | | | | | | | | Expression3
+| | | | | | | | | | | | | | | | | | Expression4
+| | | | | | | | | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | | | | | | | | Accepted: '3.0' (FloatLiteral)
+| | | | | | | | | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | | | | | | | EndExpression4
+| | | | | | | | | | | | | | | | | EndExpression3
+| | | | | | | | | | | | | | | | EndExpression2
+| | | | | | | | | | | | | | | EndExpression1
+| | | | | | | | | | | | | | EndExpression
+| | | | | | | | | | | | | | Accepted: ',' (Comma)
+| | | | | | | | | | | | | | Expression
+| | | | | | | | | | | | | | | Expression1
+| | | | | | | | | | | | | | | | Expression2
+| | | | | | | | | | | | | | | | | Expression3
+| | | | | | | | | | | | | | | | | | Expression4
+| | | | | | | | | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | | | | | | | | Accepted: 'null' (Null)
+| | | | | | | | | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | | | | | | | EndExpression4
+| | | | | | | | | | | | | | | | | EndExpression3
+| | | | | | | | | | | | | | | | EndExpression2
+| | | | | | | | | | | | | | | EndExpression1
+| | | | | | | | | | | | | | EndExpression
+| | | | | | | | | | | | | | Accepted: ')' (CloseParentheses)
+| | | | | | | | | | | | | EndCall
+| | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | EndExpression6
+| | | | | | | | | | EndExpression5
+| | | | | | | | | EndExpression4
+| | | | | | | | EndExpression3
+| | | | | | | EndExpression2
+| | | | | | EndExpression1
+| | | | | EndExpression
+| | | | EndDelimitedStatement
+| | | | Accepted: ';' (Semicolon)
+| | | EndStatement
+| | | Statement
+| | | | DelimitedStatement
+| | | | | Expression
+| | | | | | Expression1
+| | | | | | | Expression2
+| | | | | | | | Expression3
+| | | | | | | | | Expression4
+| | | | | | | | | | Expression5
+| | | | | | | | | | | Expression6
+| | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | NameReference
+| | | | | | | | | | | | | | | Accepted: 'array' (Identifier)
+| | | | | | | | | | | | | | EndNameReference
+| | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | Index
+| | | | | | | | | | | | | | Accepted: '[' (OpenBracket)
+| | | | | | | | | | | | | | Expression
+| | | | | | | | | | | | | | | Expression1
+| | | | | | | | | | | | | | | | Expression2
+| | | | | | | | | | | | | | | | | Expression3
+| | | | | | | | | | | | | | | | | | Expression4
+| | | | | | | | | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | | | | | | | | Accepted: '0' (IntegerLiteral)
+| | | | | | | | | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | | | | | | | EndExpression4
+| | | | | | | | | | | | | | | | | EndExpression3
+| | | | | | | | | | | | | | | | EndExpression2
+| | | | | | | | | | | | | | | EndExpression1
+| | | | | | | | | | | | | | EndExpression
+| | | | | | | | | | | | | | Accepted: ']' (CloseBracket)
+| | | | | | | | | | | | | EndIndex
+| | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | EndExpression6
+| | | | | | | | | | EndExpression5
+| | | | | | | | | EndExpression4
+| | | | | | | | EndExpression3
+| | | | | | | EndExpression2
+| | | | | | EndExpression1
+| | | | | | Accepted: '=' (Assignment)
+| | | | | | Expression
+| | | | | | | Expression1
+| | | | | | | | Expression2
+| | | | | | | | | Expression3
+| | | | | | | | | | Expression4
+| | | | | | | | | | | Expression5
+| | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | Accepted: '5' (IntegerLiteral)
+| | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | EndExpression5
+| | | | | | | | | | EndExpression4
+| | | | | | | | | EndExpression3
+| | | | | | | | EndExpression2
+| | | | | | | EndExpression1
+| | | | | | EndExpression
+| | | | | EndExpression
+| | | | EndDelimitedStatement
+| | | | Accepted: ';' (Semicolon)
+| | | EndStatement
+| | | Statement
+| | | | DelimitedStatement
+| | | | | Return
+| | | | | | Accepted: 'return' (Return)
+| | | | | | Expression
+| | | | | | | Expression1
+| | | | | | | | Expression2
+| | | | | | | | | Expression3
+| | | | | | | | | | Expression4
+| | | | | | | | | | | Expression5
+| | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | Accepted: '0' (IntegerLiteral)
+| | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | EndExpression5
+| | | | | | | | | | EndExpression4
+| | | | | | | | | EndExpression3
+| | | | | | | | EndExpression2
+| | | | | | | EndExpression1
+| | | | | | EndExpression
+| | | | | EndReturn
+| | | | EndDelimitedStatement
+| | | | Accepted: ';' (Semicolon)
+| | | EndStatement
+| | | Accepted: '}' (CloseCurley)
+| | EndScope
+| EndFunction
+EndBlock
+
+Parsing Successful
 *******************************************
 
 ************** PART 3 TEST 8 **************
@@ -391,6 +1398,9 @@ Block
 | | Accepted: 'class' (Class)
 | | Accepted: 'Player' (Identifier)
 | | Accepted: '{' (OpenCurley)
+| | Function
+| | | Accepted: 'function' (Function)
+| | EndFunction*
 | EndClass*
 EndBlock*
 
@@ -427,6 +1437,23 @@ Block
 | | Accepted: 'class' (Class)
 | | Accepted: 'Player' (Identifier)
 | | Accepted: '{' (OpenCurley)
+| | Function
+| | | Accepted: 'function' (Function)
+| | | Accepted: 'Test' (Identifier)
+| | | Accepted: '(' (OpenParentheses)
+| | | Parameter
+| | | | Accepted: 'hello' (Identifier)
+| | | | SpecifiedType
+| | | | | Accepted: ':' (Colon)
+| | | | | Type
+| | | | | | NamedType
+| | | | | | | Accepted: 'Integer' (Identifier)
+| | | | | | EndNamedType
+| | | | | EndType
+| | | | EndSpecifiedType
+| | | EndParameter
+| | | Accepted: ',' (Comma)
+| | EndFunction*
 | EndClass*
 EndBlock*
 
@@ -482,6 +1509,114 @@ Block
 | | Accepted: 'class' (Class)
 | | Accepted: 'Player' (Identifier)
 | | Accepted: '{' (OpenCurley)
+| | Function
+| | | Accepted: 'function' (Function)
+| | | Accepted: 'Test' (Identifier)
+| | | Accepted: '(' (OpenParentheses)
+| | | Accepted: ')' (CloseParentheses)
+| | | Scope
+| | | | Accepted: '{' (OpenCurley)
+| | | | Statement
+| | | | | DelimitedStatement
+| | | | | | Expression
+| | | | | | | Expression1
+| | | | | | | | Expression2
+| | | | | | | | | Expression3
+| | | | | | | | | | Expression4
+| | | | | | | | | | | Expression5
+| | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | Accepted: '"hello"' (StringLiteral)
+| | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | MemberAccess
+| | | | | | | | | | | | | | | Accepted: '.' (Dot)
+| | | | | | | | | | | | | | | Accepted: 'Print' (Identifier)
+| | | | | | | | | | | | | | EndMemberAccess
+| | | | | | | | | | | | | | Call
+| | | | | | | | | | | | | | | Accepted: '(' (OpenParentheses)
+| | | | | | | | | | | | | | | Accepted: ')' (CloseParentheses)
+| | | | | | | | | | | | | | EndCall
+| | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | EndExpression5
+| | | | | | | | | | EndExpression4
+| | | | | | | | | EndExpression3
+| | | | | | | | EndExpression2
+| | | | | | | EndExpression1
+| | | | | | EndExpression
+| | | | | EndDelimitedStatement
+| | | | | Accepted: ';' (Semicolon)
+| | | | EndStatement
+| | | | Statement
+| | | | | DelimitedStatement
+| | | | | | Var
+| | | | | | | Accepted: 'var' (Var)
+| | | | | | | Accepted: 'i' (Identifier)
+| | | | | | | SpecifiedType
+| | | | | | | | Accepted: ':' (Colon)
+| | | | | | | | Type
+| | | | | | | | | NamedType
+| | | | | | | | | | Accepted: 'Integer' (Identifier)
+| | | | | | | | | EndNamedType
+| | | | | | | | EndType
+| | | | | | | EndSpecifiedType
+| | | | | | EndVar
+| | | | | EndDelimitedStatement
+| | | | | Accepted: ';' (Semicolon)
+| | | | EndStatement
+| | | | Statement
+| | | | | DelimitedStatement
+| | | | | | Expression
+| | | | | | | Expression1
+| | | | | | | | Expression2
+| | | | | | | | | Expression3
+| | | | | | | | | | Expression4
+| | | | | | | | | | | Expression5
+| | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | NameReference
+| | | | | | | | | | | | | | | | Accepted: 'i' (Identifier)
+| | | | | | | | | | | | | | | EndNameReference
+| | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | EndExpression5
+| | | | | | | | | | EndExpression4
+| | | | | | | | | EndExpression3
+| | | | | | | | EndExpression2
+| | | | | | | EndExpression1
+| | | | | | | Accepted: '=' (Assignment)
+| | | | | | | Expression
+| | | | | | | | Expression1
+| | | | | | | | | Expression2
+| | | | | | | | | | Expression3
+| | | | | | | | | | | Expression4
+| | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | Accepted: '5' (IntegerLiteral)
+| | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | Accepted: '+' (Plus)
+| | | | | | | | | | | EndExpression4*
+| | | | | | | | | | EndExpression3*
+| | | | | | | | | EndExpression2*
+| | | | | | | | EndExpression1*
+| | | | | | | EndExpression*
+| | | | | | EndExpression*
+| | | | | EndDelimitedStatement*
+| | | | EndStatement*
+| | | EndScope*
+| | EndFunction*
 | EndClass*
 EndBlock*
 
@@ -514,8 +1649,19 @@ Block
 | | Accepted: 'class' (Class)
 | | Accepted: 'Player' (Identifier)
 | | Accepted: '{' (OpenCurley)
-| EndClass*
-EndBlock*
+| | Function
+| | | Accepted: 'function' (Function)
+| | | Accepted: 'Test' (Identifier)
+| | | Accepted: '(' (OpenParentheses)
+| | | Accepted: ')' (CloseParentheses)
+| | | Scope
+| | | | Accepted: '{' (OpenCurley)
+| | | | Accepted: '}' (CloseCurley)
+| | | EndScope
+| | EndFunction
+| | Accepted: '}' (CloseCurley)
+| EndClass
+EndBlock
 
 Parsing Failed (Exception)
 *******************************************
@@ -549,6 +1695,19 @@ Block
 | | Accepted: 'class' (Class)
 | | Accepted: 'Player' (Identifier)
 | | Accepted: '{' (OpenCurley)
+| | Var
+| | | Accepted: 'var' (Var)
+| | | Accepted: 'Lives' (Identifier)
+| | | SpecifiedType
+| | | | Accepted: ':' (Colon)
+| | | | Type
+| | | | | NamedType
+| | | | | | Accepted: 'Integer' (Identifier)
+| | | | | EndNamedType
+| | | | EndType
+| | | EndSpecifiedType
+| | | Accepted: '=' (Assignment)
+| | EndVar*
 | EndClass*
 EndBlock*
 
@@ -588,6 +1747,115 @@ Token: ' ' of type 6 (Whitespace)
 Token: '}' of type 11 (CloseCurley)
 Token: ' ' of type 6 (Whitespace)
 Token: '}' of type 11 (CloseCurley)
+
+Block
+| Function
+| | Accepted: 'function' (Function)
+| | Accepted: 'Test' (Identifier)
+| | Accepted: '(' (OpenParentheses)
+| | Accepted: ')' (CloseParentheses)
+| | Scope
+| | | Accepted: '{' (OpenCurley)
+| | | Statement
+| | | | FreeStatement
+| | | | | For
+| | | | | | Accepted: 'for' (For)
+| | | | | | Accepted: '(' (OpenParentheses)
+| | | | | | Accepted: ';' (Semicolon)
+| | | | | | Accepted: ';' (Semicolon)
+| | | | | | Accepted: ')' (CloseParentheses)
+| | | | | | Scope
+| | | | | | | Accepted: '{' (OpenCurley)
+| | | | | | | Statement
+| | | | | | | | DelimitedStatement
+| | | | | | | | | Expression
+| | | | | | | | | | Expression1
+| | | | | | | | | | | Expression2
+| | | | | | | | | | | | Expression3
+| | | | | | | | | | | | | Expression4
+| | | | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | | | NameReference
+| | | | | | | | | | | | | | | | | | | Accepted: 'this' (Identifier)
+| | | | | | | | | | | | | | | | | | EndNameReference
+| | | | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | | | | MemberAccess
+| | | | | | | | | | | | | | | | | | Accepted: '.' (Dot)
+| | | | | | | | | | | | | | | | | | Accepted: 'Test' (Identifier)
+| | | | | | | | | | | | | | | | | EndMemberAccess
+| | | | | | | | | | | | | | | | | Call
+| | | | | | | | | | | | | | | | | | Accepted: '(' (OpenParentheses)
+| | | | | | | | | | | | | | | | | | Expression
+| | | | | | | | | | | | | | | | | | | Expression1
+| | | | | | | | | | | | | | | | | | | | Expression2
+| | | | | | | | | | | | | | | | | | | | | Expression3
+| | | | | | | | | | | | | | | | | | | | | | Expression4
+| | | | | | | | | | | | | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | | | | | | | | | | | | NameReference
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | Accepted: 'this' (Identifier)
+| | | | | | | | | | | | | | | | | | | | | | | | | | | EndNameReference
+| | | | | | | | | | | | | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | | | | | | | | | | | | | MemberAccess
+| | | | | | | | | | | | | | | | | | | | | | | | | | | Accepted: '.' (Dot)
+| | | | | | | | | | | | | | | | | | | | | | | | | | | Accepted: 'Test' (Identifier)
+| | | | | | | | | | | | | | | | | | | | | | | | | | EndMemberAccess
+| | | | | | | | | | | | | | | | | | | | | | | | | | Index
+| | | | | | | | | | | | | | | | | | | | | | | | | | | Accepted: '[' (OpenBracket)
+| | | | | | | | | | | | | | | | | | | | | | | | | | | Expression
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | Expression1
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | Expression2
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | Expression3
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | Expression4
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | Expression5
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | Expression6
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | Expression7
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | Value
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | Literal
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | Accepted: '0' (IntegerLiteral)
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | EndLiteral
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | EndValue
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | EndExpression4
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | EndExpression3
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | EndExpression2
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | EndExpression1
+| | | | | | | | | | | | | | | | | | | | | | | | | | | EndExpression
+| | | | | | | | | | | | | | | | | | | | | | | | | | | Accepted: ']' (CloseBracket)
+| | | | | | | | | | | | | | | | | | | | | | | | | | EndIndex
+| | | | | | | | | | | | | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | | | | | | | | | | | EndExpression4
+| | | | | | | | | | | | | | | | | | | | | EndExpression3
+| | | | | | | | | | | | | | | | | | | | EndExpression2
+| | | | | | | | | | | | | | | | | | | EndExpression1
+| | | | | | | | | | | | | | | | | | EndExpression
+| | | | | | | | | | | | | | | | | | Accepted: ')' (CloseParentheses)
+| | | | | | | | | | | | | | | | | EndCall
+| | | | | | | | | | | | | | | | EndExpression7
+| | | | | | | | | | | | | | | EndExpression6
+| | | | | | | | | | | | | | EndExpression5
+| | | | | | | | | | | | | EndExpression4
+| | | | | | | | | | | | EndExpression3
+| | | | | | | | | | | EndExpression2
+| | | | | | | | | | EndExpression1
+| | | | | | | | | EndExpression
+| | | | | | | | EndDelimitedStatement
+| | | | | | | EndStatement*
+| | | | | | EndScope*
+| | | | | EndFor*
+| | | | EndFreeStatement*
+| | | EndStatement*
+| | EndScope*
+| EndFunction*
+EndBlock*
 
 Parsing Failed (Exception)
 *******************************************
