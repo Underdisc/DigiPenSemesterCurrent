@@ -1,5 +1,5 @@
 
-Block               = (Class | Function | Var <Semicolon>)*
+Block               = (Class | Function | Var <Semicolon>)
 
 Class               = <Class> <Identifier> <OpenCurley> (Var <Semicolon> | Function)* <CloseCurley>
 
