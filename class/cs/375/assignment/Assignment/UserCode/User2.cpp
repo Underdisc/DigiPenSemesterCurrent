@@ -670,11 +670,11 @@ bool Class()
 bool Block()
 {
     PrintRule print_rule("Block");
-    bool result = Class() || 
-                  Function() || 
-                  (Var() && Acceptor::Expect(TokenType::Semicolon));
+    while(Class() || 
+          Function() || 
+          (Var() && Acceptor::Expect(TokenType::Semicolon)));
     print_rule.Accept();
-    return result;
+    return false;
 }
 
 void RemoveWhitespaceAndComments(std::vector<Token>& tokens)
