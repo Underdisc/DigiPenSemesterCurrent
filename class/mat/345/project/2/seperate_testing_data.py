@@ -1,3 +1,8 @@
+# Author: Connor Deakin
+# Class: MAT 345
+# Assignment: Project 2
+# Email: connor.deakin@digipen.edu 
+
 import os
 
 # Create all of the full directory names that emails are and will be located in.
