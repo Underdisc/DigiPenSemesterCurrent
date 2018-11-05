@@ -8,6 +8,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmath>
+#include <cstdlib>
 #include <iostream>
 
 #include "utility.h"
@@ -33,6 +34,13 @@ void Complex::Polar(double magnitude, double angle)
 {
     m_Real = magnitude * std::cos(angle);
     m_Imaginary = magnitude * std::sin(angle);
+}
+
+void Complex::Random(int min, int max)
+{
+    int range = max - min;
+    m_Real = double(rand() % range + min);
+    m_Imaginary = rand() % range + min;
 }
 
 double Complex::Real()

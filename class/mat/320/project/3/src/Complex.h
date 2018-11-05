@@ -20,6 +20,7 @@ public:
     Complex(double real, double imaginary);
     Complex(const Complex & other);
     void Polar(double magnitude, double angle);
+    void Random(int min, int max);
     double Real();
     double Imaginary();
     Complex Conjugate();

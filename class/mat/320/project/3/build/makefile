@@ -39,6 +39,12 @@ fft2.exe : ../src/Complex.cc ../src/utility.cc ../src/main_fft2.cc
 	$(cc) ../src/Complex.cc ../src/utility.cc ../src/main_fft2.cc -o fft2.exe
 	$(RESET)
 
+genrandoms.exe : ../src/Complex.cc ../src/utility.cc ../src/main_genrandoms.cc
+	$(BT)
+	$(BOLD)
+	$(cc) ../src/Complex.cc ../src/utility.cc ../src/main_genrandoms.cc -o genrandoms.exe
+	$(RESET)
+
 clean :
 	$(RT)
 	rm *.exe 

@@ -114,20 +114,14 @@ void FFTBitReversal(std::vector<Complex> * v_output,
         prev_e_vals = &e_vals;
     }
 
-    // Create two vectors for reading and writing complex values for each stage.
-    std::vector<Complex> v_output_a;
-    std::vector<Complex> v_output_b;
-    v_output_a.resize(samples);
-    v_output_b.resize(samples);
-    std::vector<Complex> * write = &v_output_a;
-    std::vector<Complex> * read = &v_output_b;
-
     // Switch the indicies of complex inputs using the values in the bit
     // reversed array.
+    std::vector<Complex> * out = v_output;
+    out->resize(samples);
     for(unsigned i = 0; i < samples; ++i)
     {
         unsigned input_index = bit_reversals[i];
-        (*read)[i] = v_input[input_index];
+        (*out)[i] = v_input[input_index];
     }
 
     // Since each stage uses some base angle for w, we can precompute these
@@ -146,6 +140,8 @@ void FFTBitReversal(std::vector<Complex> * v_output,
 
     unsigned index_distance = 1;
     unsigned merge_size = 2;
+
+    // Go through every stage of the fft. O(log(N))
     for(unsigned stage = 0; stage < branches; ++stage)
     {
         // Precompute all of the w values needed for this stage.
@@ -160,35 +156,28 @@ void FFTBitReversal(std::vector<Complex> * v_output,
             w_values.push_back(w_value);
         }
 
-        for(unsigned i = 0; i < samples; ++i)
+        // Got through every butterfly for this stage. O(N)
+        for(unsigned i = 0; i < samples; i += merge_size)
         {
-            float k_val = k_values[i][stage];
-            float e_val = e_values[i][stage];
-            Complex w = w_values[k_val];
-
-            unsigned top_i = i;
-            unsigned bot_i = i;
-
-            if(i % merge_size >= merge_size / 2)
+            for(unsigned j = 0; j < index_distance; ++j)
             {
-                top_i -= index_distance;
-            }
-            else
-            {
-                bot_i += index_distance;
-            }
+                unsigned top_i = i + j;
+                unsigned bot_i = top_i + index_distance;
+                float top_e_val = e_values[top_i][stage];
+                float bot_e_val = e_values[bot_i][stage];
+                Complex w = w_values[j];
 
-            (*write)[i] = (*read)[top_i] + w * (*read)[bot_i] * e_val;
+                Complex top = (*out)[top_i] + w * (*out)[bot_i] * top_e_val;
+                Complex bot = (*out)[top_i] + w * (*out)[bot_i] * bot_e_val;
+
+                (*out)[top_i] = top; 
+                (*out)[bot_i] = bot;
+            }
         }
         index_distance *= 2;
         merge_size *= 2;
-
-        std::vector<Complex> * temp = write;
-        write = read;
-        read = temp;
     }
 
-    (*v_output) = (*read);
 }
 
 // Main ////////////////////////////////////////////////////////////////////////
