@@ -25,7 +25,7 @@ RESET=@tput sgr0
 
 cc=g++
 
-all : bitrev.exe fft2.exe
+all : bitrev.exe genrandoms.exe dft.exe fft.exe fft2.exe 
 
 bitrev.exe : ../src/Complex.cc ../src/utility.cc ../src/main_bitrev.cc
 	$(BT)
@@ -33,16 +33,29 @@ bitrev.exe : ../src/Complex.cc ../src/utility.cc ../src/main_bitrev.cc
 	$(cc) ../src/Complex.cc ../src/utility.cc ../src/main_bitrev.cc -o bitrev.exe
 	$(RESET)
 
-fft2.exe : ../src/Complex.cc ../src/utility.cc ../src/main_fft2.cc
-	$(BT)
-	$(BOLD)
-	$(cc) ../src/Complex.cc ../src/utility.cc ../src/main_fft2.cc -o fft2.exe
-	$(RESET)
 
 genrandoms.exe : ../src/Complex.cc ../src/utility.cc ../src/main_genrandoms.cc
 	$(BT)
 	$(BOLD)
 	$(cc) ../src/Complex.cc ../src/utility.cc ../src/main_genrandoms.cc -o genrandoms.exe
+	$(RESET)
+
+dft.exe : ../src/Complex.cc ../src/utility.cc ../src/main_dft.cc
+	$(BT)
+	$(BOLD)
+	$(cc) ../src/Complex.cc ../src/utility.cc ../src/main_dft.cc -o dft.exe
+	$(RESET)
+
+fft.exe : ../src/Complex.cc ../src/utility.cc ../src/main_fft.cc
+	$(BT)
+	$(BOLD)
+	$(cc) ../src/Complex.cc ../src/utility.cc ../src/main_fft.cc -o fft.exe
+	$(RESET)
+
+fft2.exe : ../src/Complex.cc ../src/utility.cc ../src/main_fft2.cc
+	$(BT)
+	$(BOLD)
+	$(cc) ../src/Complex.cc ../src/utility.cc ../src/main_fft2.cc -o fft2.exe
 	$(RESET)
 
 clean :

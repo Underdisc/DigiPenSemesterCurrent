@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File:        main_fft.cc
 // Class:       MAT320
-// Asssignment: Project 2
+// Asssignment: Project 3
 // Author:      Connor Deakin
 // Email:       connor.deakin@digipen.edu
-// Date:        2018-10-12
+// Date:        2018-11-04
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
@@ -156,7 +156,7 @@ void FFTBitReversal(std::vector<Complex> * v_output,
             w_values.push_back(w_value);
         }
 
-        // Got through every butterfly for this stage. O(N)
+        // Go through every butterfly for this stage. O(N)
         for(unsigned i = 0; i < samples; i += merge_size)
         {
             for(unsigned j = 0; j < index_distance; ++j)
