@@ -5,12 +5,11 @@
 #include "../Drivers/AstNodes.hpp"
 #include "../Drivers/Driver3.hpp"
 
-namespace RecursiveDecentParse
-{
+#include <iostream>
 
-// Acceptor ///////////////////////////////////////////////////////////////////
+// Parser ///////////////////////////////////////////////////////////////////
 
-class Acceptor
+class Parser
 {
 public:
     static void Initialize(std::vector<Token> & token_stream);
@@ -21,19 +20,56 @@ public:
     static Token PreviousToken();
     static unsigned _index;
     static std::vector<Token> * _token_stream;
+
+    static bool Block();
+    static bool Class();
+    static bool Var();
+    static bool Function();
+    static bool Parameter();
+    static bool SpecifiedType();
+    static bool Type();
+    static bool NamedType();
+    static bool FunctionType();
+    static bool Scope();
+    static bool Statement();
+    static bool DelimitedStatement();
+    static bool FreeStatement();
+    static bool Label();
+    static bool Goto();
+    static bool Return();
+    static bool If();
+    static bool Else();
+    static bool While();
+    static bool For();
+    static std::unique_ptr<ExpressionNode> GroupedExpression();
+    static std::unique_ptr<LiteralNode> Literal();
+    static std::unique_ptr<NameReferenceNode> NameReference();
+    static bool Value();
+    static std::unique_ptr<ExpressionNode> Expression();
+    static bool Expression1();
+    static bool Expression2();
+    static bool Expression3();
+    static bool Expression4();
+    static bool Expression5();
+    static bool Expression6();
+    static bool Expression7();
+    static bool MemberAccess();
+    static bool Call();
+    static bool Cast();
+    static bool Index();
     
 };
 
-unsigned Acceptor::_index = 0;
-std::vector<Token> * Acceptor::_token_stream = nullptr;
+unsigned Parser::_index = 0;
+std::vector<Token> * Parser::_token_stream = nullptr;
 
-void Acceptor::Initialize(std::vector<Token> & token_stream)
+void Parser::Initialize(std::vector<Token> & token_stream)
 {
     _index = 0;
     _token_stream = &token_stream;
 }
 
-bool Acceptor::AllTokensCovered()
+bool Parser::AllTokensCovered()
 {
     if (_index == _token_stream->size())
     {
@@ -42,7 +78,7 @@ bool Acceptor::AllTokensCovered()
     return false;
 }
 
-bool Acceptor::Accept(TokenType::Enum accepted_token)
+bool Parser::Accept(TokenType::Enum accepted_token)
 {
     if (_index >= _token_stream->size())
     {
@@ -59,7 +95,7 @@ bool Acceptor::Accept(TokenType::Enum accepted_token)
     return false;
 }
 
-bool Acceptor::Expect(TokenType::Enum accepted_token)
+bool Parser::Expect(TokenType::Enum accepted_token)
 {
 
     if(Accept(accepted_token))
@@ -69,7 +105,7 @@ bool Acceptor::Expect(TokenType::Enum accepted_token)
     throw ParsingException();
 }
 
-bool Acceptor::Expect(bool check)
+bool Parser::Expect(bool check)
 {
     if (check)
     {
@@ -78,120 +114,87 @@ bool Acceptor::Expect(bool check)
     throw ParsingException();
 }
 
-Token Acceptor::PreviousToken()
+Token Parser::PreviousToken()
 {
     unsigned previous_index = _index - 1;
     return (*_token_stream)[previous_index];
 }
 
-#define Acc(TokenType) Acceptor::Accept(TokenType)
-#define Exp(TokenType) Acceptor::Expect(TokenType)
+#define Acc(TokenType) Accept(TokenType)
+#define Exp(TokenType) Expect(TokenType)
 
 
-// Recursive Decent Parser Function Declarations //////////////////////////////
+// Recursive Decent Parser Function Declarations /////////////////////////////
 
-bool Block();
-bool Class();
-bool Var();
-bool Function();
-bool Parameter();
-bool SpecifiedType();
-bool Type();
-bool NamedType();
-bool FunctionType();
-bool Scope();
-bool Statement();
-bool DelimitedStatement();
-bool FreeStatement();
-bool Label();
-bool Goto();
-bool Return();
-bool If();
-bool Else();
-bool While();
-bool For();
-bool GroupedExpression();
-std::unique_ptr<LiteralNode> Literal();
-bool NameReference();
-bool Value();
-bool Expression();
-bool Expression1();
-bool Expression2();
-bool Expression3();
-bool Expression4();
-bool Expression5();
-bool Expression6();
-bool Expression7();
-bool MemberAccess();
-bool Call();
-bool Cast();
-bool Index();
+#define ReturnNullNode(node_type)                       \
+    std::unique_ptr<node_type> new_node(new node_type); \
+    return std::move(new_node);                         \
 
 // Recursive Decent Parser Function Definitions ///////////////////////////////
 
-bool Index()
+bool Parser::Index()
 {
     PrintRule print_rule("Index");
-    if(!Acceptor::Accept(TokenType::OpenBracket))
+    if(!Acc(TokenType::OpenBracket))
     {
         return false;
     }
-    Acceptor::Expect(Expression());
-    Acceptor::Expect(TokenType::CloseBracket);
+    Exp(Expression());
+    Exp(TokenType::CloseBracket);
     print_rule.Accept();
     return true;
 }
 
-bool Cast()
+bool Parser::Cast()
 {
     PrintRule print_rule("Cast");
-    if (!Acceptor::Accept(TokenType::As))
+    if (!Acc(TokenType::As))
     {
         return false;
     }
-    Acceptor::Expect(Type());
+    Exp(Type());
     print_rule.Accept();
     return true;
 }
 
-bool Call()
+bool Parser::Call()
 {
     PrintRule print_rule("Call");
-    if (!Acceptor::Accept(TokenType::OpenParentheses))
+    if (!Acc(TokenType::OpenParentheses))
     {
         return false;
     }
 
     if (Expression())
     {
-        while (Acceptor::Accept(TokenType::Comma))
+        while (Acc(TokenType::Comma))
         {
-            Acceptor::Expect(Expression());
+            Exp(Expression());
         }
     }
 
-    Acceptor::Expect(TokenType::CloseParentheses);
+    Exp(TokenType::CloseParentheses);
     print_rule.Accept();
     return true;
 
 }
 
-bool MemberAccess()
+bool Parser::MemberAccess()
 {
     PrintRule print_rule("MemberAccess");
-    if (!(Acceptor::Accept(TokenType::Dot) ||
-          Acceptor::Accept(TokenType::Arrow)))
+    if (!(Acc(TokenType::Dot) ||
+          Acc(TokenType::Arrow)))
     {
         return false;
     }
 
-    Acceptor::Expect(TokenType::Identifier);
+    Exp(TokenType::Identifier);
     print_rule.Accept();
     return true;
 
 }
 
-bool Expression7()
+bool Parser::Expression7()
 {
     PrintRule print_rule("Expression7");
     if (!Value())
@@ -206,17 +209,17 @@ bool Expression7()
 
 }
 
-bool Expression6()
+bool Parser::Expression6()
 {
     PrintRule print_rule("Expression6");
     
-    while(Acceptor::Accept(TokenType::Asterisk) ||
-          Acceptor::Accept(TokenType::Ampersand) ||
-          Acceptor::Accept(TokenType::Plus) || 
-          Acceptor::Accept(TokenType::Minus) || 
-          Acceptor::Accept(TokenType::LogicalNot) || 
-          Acceptor::Accept(TokenType::Increment) || 
-          Acceptor::Accept(TokenType::Decrement));
+    while(Acc(TokenType::Asterisk) ||
+          Acc(TokenType::Ampersand) ||
+          Acc(TokenType::Plus) || 
+          Acc(TokenType::Minus) || 
+          Acc(TokenType::LogicalNot) || 
+          Acc(TokenType::Increment) || 
+          Acc(TokenType::Decrement));
 
     bool result = Expression7();
     if (result)
@@ -226,7 +229,7 @@ bool Expression6()
     return result;
 }
 
-bool Expression5()
+bool Parser::Expression5()
 {
     PrintRule print_rule("Expression5");
     if (!Expression6())
@@ -234,18 +237,18 @@ bool Expression5()
         return false;
     }
 
-    while (Acceptor::Accept(TokenType::Asterisk) ||
-           Acceptor::Accept(TokenType::Divide) || 
-           Acceptor::Accept(TokenType::Modulo))
+    while (Acc(TokenType::Asterisk) ||
+           Acc(TokenType::Divide) || 
+           Acc(TokenType::Modulo))
     {
-        Acceptor::Expect(Expression6());
+        Exp(Expression6());
     }
 
     print_rule.Accept();
     return true;
 }
 
-bool Expression4()
+bool Parser::Expression4()
 {
     PrintRule print_rule("Expression4");
     if (!Expression5())
@@ -253,17 +256,17 @@ bool Expression4()
         return false;
     }
 
-    while (Acceptor::Accept(TokenType::Plus) ||
-           Acceptor::Accept(TokenType::Minus))
+    while (Acc(TokenType::Plus) ||
+           Acc(TokenType::Minus))
     {
-        Acceptor::Expect(Expression5());
+        Exp(Expression5());
     }
 
     print_rule.Accept();
     return true;
 }
 
-bool Expression3()
+bool Parser::Expression3()
 {
     PrintRule print_rule("Expression3");
     if (!Expression4())
@@ -271,53 +274,53 @@ bool Expression3()
         return false;
     }
 
-    while (Acceptor::Accept(TokenType::LessThan) ||
-           Acceptor::Accept(TokenType::GreaterThan) ||
-           Acceptor::Accept(TokenType::LessThanOrEqualTo) ||
-           Acceptor::Accept(TokenType::GreaterThanOrEqualTo) ||
-           Acceptor::Accept(TokenType::Equality) ||
-           Acceptor::Accept(TokenType::Inequality))
+    while (Acc(TokenType::LessThan) ||
+           Acc(TokenType::GreaterThan) ||
+           Acc(TokenType::LessThanOrEqualTo) ||
+           Acc(TokenType::GreaterThanOrEqualTo) ||
+           Acc(TokenType::Equality) ||
+           Acc(TokenType::Inequality))
     {
-        Acceptor::Expect(Expression4());
+        Exp(Expression4());
     }
 
     print_rule.Accept();
     return true;
 }
 
-bool Expression2()
+bool Parser::Expression2()
 {
     PrintRule print_rule("Expression2");
     if (!Expression3())
     {
         return false;
     }
-    while (Acceptor::Accept(TokenType::LogicalAnd))
+    while (Acc(TokenType::LogicalAnd))
     {
-        Acceptor::Expect(Expression3());
+        Exp(Expression3());
     }
 
     print_rule.Accept();
     return true;
 }
 
-bool Expression1()
+bool Parser::Expression1()
 {
     PrintRule print_rule("Expression1");
     if (!Expression2())
     {
         return false;
     }
-    while (Acceptor::Accept(TokenType::LogicalOr))
+    while (Acc(TokenType::LogicalOr))
     {
-        Acceptor::Expect(Expression2());
+        Exp(Expression2());
     }
 
     print_rule.Accept();
     return true;
 }
 
-bool Expression()
+std::unique_ptr<ExpressionNode> Parser::Expression()
 {
     PrintRule print_rule("Expression");
     if (!Expression1())
@@ -325,21 +328,21 @@ bool Expression()
         return false;
     }
 
-    if(Acceptor::Accept(TokenType::Assignment) ||
-       Acceptor::Accept(TokenType::AssignmentPlus) ||
-       Acceptor::Accept(TokenType::AssignmentMinus) ||
-       Acceptor::Accept(TokenType::AssignmentMultiply) ||
-       Acceptor::Accept(TokenType::AssignmentDivide) ||
-       Acceptor::Accept(TokenType::AssignmentModulo))
+    if(Acc(TokenType::Assignment) ||
+       Acc(TokenType::AssignmentPlus) ||
+       Acc(TokenType::AssignmentMinus) ||
+       Acc(TokenType::AssignmentMultiply) ||
+       Acc(TokenType::AssignmentDivide) ||
+       Acc(TokenType::AssignmentModulo))
     {
-        Acceptor::Expect(Expression());
+        Exp(Expression());
     }
 
     print_rule.Accept();
     return true;
 }
 
-bool Value()
+bool Parser::Value()
 {
     PrintRule print_rule("Value");
     bool result = Literal() || NameReference() || GroupedExpression();
@@ -350,18 +353,21 @@ bool Value()
     return result;
 }
 
-bool NameReference()
+std::unique_ptr<NameReferenceNode> Parser::NameReference()
 {
     PrintRule print_rule("NameReference");
-    if (!Acceptor::Accept(TokenType::Identifier))
+    if (!Acc(TokenType::Identifier))
     {
-        return false;
+        ReturnNullNode(NameReferenceNode)
     }
+
     print_rule.Accept();
-    return true;
+    std::unique_ptr<NameReferenceNode> new_node(new NameReferenceNode);
+    new_node->mName = PreviousToken();
+    return std::move(new_node);
 }
 
-std::unique_ptr<LiteralNode> Literal()
+std::unique_ptr<LiteralNode> Parser::Literal()
 {
     PrintRule print_rule("Literal");
     bool result = Acc(TokenType::True) ||
@@ -374,90 +380,93 @@ std::unique_ptr<LiteralNode> Literal()
     if (result)
     {
         print_rule.Accept();
+        std::unique_ptr<LiteralNode> new_node(new LiteralNode);
+        new_node->mToken = Parser::PreviousToken();
+        return std::move(new_node);
     }
-    std::unique_ptr<LiteralNode> new_node;
-    new_node->mToken = Acceptor::PreviousToken();
-    return new_node;
+
+    std::unique_ptr<LiteralNode> new_node(nullptr);
+    return std::move(new_node);
 }
 
-bool GroupedExpression()
+std::unique_ptr<ExpressionNode> Parser::GroupedExpression()
 {
     PrintRule print_rule("GroupedExpression");
-    if (!Acceptor::Accept(TokenType::OpenParentheses))
+    if (!Acc(TokenType::OpenParentheses))
     {
-        return false;
+        ReturnNullNode(ExpressionNode);
     }
-    Acceptor::Expect(Expression());
-    Acceptor::Expect(TokenType::CloseParentheses);
+    Exp(Expression());
+    Exp(TokenType::CloseParentheses);
     print_rule.Accept();
     return true;
 }
 
-bool For()
+bool Parser::For()
 {
     PrintRule print_rule("For");
-    if (!Acceptor::Accept(TokenType::For))
+    if (!Acc(TokenType::For))
     {
         return false;
     }
-    Acceptor::Expect(TokenType::OpenParentheses);
+    Exp(TokenType::OpenParentheses);
     Var() || Expression();
-    Acceptor::Expect(TokenType::Semicolon);
+    Exp(TokenType::Semicolon);
     Expression();
-    Acceptor::Expect(TokenType::Semicolon);
+    Exp(TokenType::Semicolon);
     Expression();
-    Acceptor::Expect(TokenType::CloseParentheses);
-    Acceptor::Expect(Scope());
+    Exp(TokenType::CloseParentheses);
+    Exp(Scope());
 
     print_rule.Accept();
     return true;
 }
 
-bool While()
+bool Parser::While()
 {
     PrintRule print_rule("While");
-    if (!Acceptor::Accept(TokenType::While))
+    if (!Acc(TokenType::While))
     {
         return false;
     }
-    Acceptor::Expect(GroupedExpression());
-    Acceptor::Expect(Scope());
+    Exp(GroupedExpression());
+    Exp(Scope());
     print_rule.Accept();
     return true;
 
 }
 
-bool Else()
+bool Parser::Else()
 {
     PrintRule print_rule("Else");
-    if (!Acceptor::Accept(TokenType::Else))
+    if (!Acc(TokenType::Else))
     {
         return false;
     }
-    Acceptor::Expect(If() || Scope());
+    Exp(If() || Scope());
     print_rule.Accept();
     return true;
 }
 
-bool If()
+bool Parser::If()
 {
     PrintRule print_rule("If");
-    if (!Acceptor::Accept(TokenType::If))
+    if (!Acc(TokenType::If))
     {
         return false;
     }
-    Acceptor::Expect(GroupedExpression());
-    Acceptor::Expect(Scope());
+    Exp(GroupedExpression());
+    Exp(Scope());
     Else();
 
     print_rule.Accept();
     return true;
 }
 
-bool Return()
+bool Parser::Return()
 {
     PrintRule print_rule("Return");
-    if (Acceptor::Accept(TokenType::Return))
+    if (Acc(TokenType::Return))
     {
         Expression();
         print_rule.Accept();
@@ -466,11 +475,11 @@ bool Return()
     return false;
 }
 
-bool Goto()
+bool Parser::Goto()
 {
     PrintRule print_rule("Goto");
-    bool result = Acceptor::Accept(TokenType::Goto) &&
-        Acceptor::Expect(TokenType::Identifier);
+    bool result = Acc(TokenType::Goto) &&
+        Exp(TokenType::Identifier);
     if (result)
     {
         print_rule.Accept();
@@ -478,11 +487,11 @@ bool Goto()
     return result;
 }
 
-bool Label()
+bool Parser::Label()
 {
     PrintRule print_rule("Label");
-    bool result = Acceptor::Accept(TokenType::Label) && 
-                  Acceptor::Expect(TokenType::Identifier);
+    bool result = Acc(TokenType::Label) && 
+                  Exp(TokenType::Identifier);
     if (result)
     {
         print_rule.Accept();
@@ -490,7 +499,7 @@ bool Label()
     return result;
 }
 
-bool FreeStatement()
+bool Parser::FreeStatement()
 {
     PrintRule print_rule("FreeStatement");
     bool result = If() || While() || For();
@@ -501,14 +510,14 @@ bool FreeStatement()
     return result;
 }
 
-bool DelimitedStatement()
+bool Parser::DelimitedStatement()
 {
     PrintRule print_rule("DelimitedStatement");
     bool result = Label() || 
                   Goto() || 
                   Return() || 
-                  Acceptor::Accept(TokenType::Break) ||
-                  Acceptor::Accept(TokenType::Continue) ||
+                  Acc(TokenType::Break) ||
+                  Acc(TokenType::Continue) ||
                   Var() ||
                   Expression();
     if (result)
@@ -519,11 +528,11 @@ bool DelimitedStatement()
         
 }
 
-bool Statement()
+bool Parser::Statement()
 {
     PrintRule print_rule("Statement");
     bool result =  FreeStatement() || (DelimitedStatement() && 
-                                       Acceptor::Expect(TokenType::Semicolon));
+                                       Exp(TokenType::Semicolon));
     if(result)
     {
         print_rule.Accept();
@@ -531,55 +540,55 @@ bool Statement()
     return result;
 }
 
-bool Scope()
+bool Parser::Scope()
 {
     PrintRule print_rule("Scope");
-    if (!Acceptor::Accept(TokenType::OpenCurley))
+    if (!Acc(TokenType::OpenCurley))
     {
         return false;
     }
     while(Statement());
-    Acceptor::Expect(TokenType::CloseCurley);
+    Exp(TokenType::CloseCurley);
     print_rule.Accept();
     return true;
 }
 
-bool FunctionType()
+bool Parser::FunctionType()
 {
     PrintRule print_rule("FunctionType");
-    if (!Acceptor::Accept(TokenType::Function))
+    if (!Acc(TokenType::Function))
     {
         return false;
     }
 
-    Acceptor::Expect(TokenType::Asterisk);
-    Acceptor::Accept(TokenType::Ampersand);
+    Exp(TokenType::Asterisk);
+    Acc(TokenType::Ampersand);
 
-    Acceptor::Expect(TokenType::OpenParentheses);
-    Acceptor::Expect(Type());
+    Exp(TokenType::OpenParentheses);
+    Exp(Type());
 
-    while(Acceptor::Accept(TokenType::Comma) && Acceptor::Expect(Type()));
-    Acceptor::Expect(TokenType::CloseParentheses);
+    while(Acc(TokenType::Comma) && Exp(Type()));
+    Exp(TokenType::CloseParentheses);
     SpecifiedType();
     print_rule.Accept();
 
     return true;
 }
 
-bool NamedType()
+bool Parser::NamedType()
 {
     PrintRule print_rule("NamedType");
-    if (!Acceptor::Accept(TokenType::Identifier))
+    if (!Acc(TokenType::Identifier))
     {
         return false;
     }
-    while(Acceptor::Accept(TokenType::Asterisk));
-    Acceptor::Accept(TokenType::Ampersand);
+    while(Acc(TokenType::Asterisk));
+    Acc(TokenType::Ampersand);
     print_rule.Accept();
     return true;
 }
 
-bool Type()
+bool Parser::Type()
 {
     PrintRule print_rule("Type");
     bool result = NamedType() || FunctionType();
@@ -591,93 +600,93 @@ bool Type()
     return result;
 }
 
-bool SpecifiedType()
+bool Parser::SpecifiedType()
 {
     PrintRule print_rule("SpecifiedType");
-    if (!Acceptor::Accept(TokenType::Colon))
+    if (!Acc(TokenType::Colon))
     {
         return false;
     }
-    Acceptor::Expect(Type());
+    Exp(Type());
     print_rule.Accept();
     return true;
 }
 
-bool Parameter()
+bool Parser::Parameter()
 {
     PrintRule print_rule("Parameter");
-    if (!Acceptor::Accept(TokenType::Identifier))
+    if (!Acc(TokenType::Identifier))
     {
         return false;
     }
-    Acceptor::Expect(SpecifiedType());
+    Exp(SpecifiedType());
     print_rule.Accept();
     return true;
 }
 
-bool Function()
+bool Parser::Function()
 {
     PrintRule print_rule("Function");
-    if (!Acceptor::Accept(TokenType::Function))
+    if (!Acc(TokenType::Function))
     {
         return false;
     }
 
-    Acceptor::Expect(TokenType::Identifier);
-    Acceptor::Expect(TokenType::OpenParentheses);
+    Exp(TokenType::Identifier);
+    Exp(TokenType::OpenParentheses);
 
     if (Parameter())
     {
-        while(Acceptor::Accept(TokenType::Comma))
+        while(Acc(TokenType::Comma))
         {
-            Acceptor::Expect(Parameter());
+            Exp(Parameter());
         }
     }
 
-    Acceptor::Expect(TokenType::CloseParentheses);
+    Exp(TokenType::CloseParentheses);
     SpecifiedType();
-    Acceptor::Expect(Scope());
+    Exp(Scope());
     
     print_rule.Accept();
     return true;
 }
 
-bool Var()
+bool Parser::Var()
 {
     PrintRule print_rule("Var");
-    if (!Acceptor::Accept(TokenType::Var))
+    if (!Acc(TokenType::Var))
     {
       return false;
     }
 
-    Acceptor::Expect(TokenType::Identifier);
-    Acceptor::Expect(SpecifiedType());
+    Exp(TokenType::Identifier);
+    Exp(SpecifiedType());
 
-    if (Acceptor::Accept(TokenType::Assignment))
+    if (Acc(TokenType::Assignment))
     {
-        Acceptor::Expect(Expression());
+        Exp(Expression());
     }
 
     print_rule.Accept();
     return true;
 }
 
-bool Class()
+bool Parser::Class()
 {
     PrintRule print_rule("Class");
-    if(!Acceptor::Accept(TokenType::Class))
+    if(!Acc(TokenType::Class))
     {
         return false;
     }
 
-    Acceptor::Expect(TokenType::Identifier);
-    Acceptor::Expect(TokenType::OpenCurley);
+    Exp(TokenType::Identifier);
+    Exp(TokenType::OpenCurley);
 
     while(true)
     {
         if(Var())
         {
-            Acceptor::Expect(TokenType::Semicolon);
+            Exp(TokenType::Semicolon);
         }
         else if(!Function())
         {
@@ -685,63 +694,164 @@ bool Class()
         }
     }
 
-    Acceptor::Expect(TokenType::CloseCurley);
+    Exp(TokenType::CloseCurley);
 
     print_rule.Accept();
     return true;
 }
 
-bool Block()
+bool Parser::Block()
 {
     PrintRule print_rule("Block");
     while(Class() || 
           Function() || 
-          (Var() && Acceptor::Expect(TokenType::Semicolon)));
+          (Var() && Exp(TokenType::Semicolon)));
     print_rule.Accept();
     return false;
 }
 
-} // !RecursiveDecentParse
-
 // Visitor Implementation /////////////////////////////////////////////////////
 
-enum VisitResult
-{
-    Continue,
-    Stop
-};
-
+#define BaseVisitDefinition(node_type)          \
+    virtual VisitResult Visit(node_type * node) \
+    {                                           \
+        return Continue;                        \
+    }
 
 class Visitor
 {
 public:
-    virtual VisitResult Visit(AbstractNode*   node) 
-        { return Continue; }
-    virtual VisitResult Visit(ClassNode*      node) 
-        { return this->Visit((AbstractNode*)node); }
-    virtual VisitResult Visit(MemberNode*     node) 
-        { return this->Visit((AbstractNode*)node); }
-    virtual VisitResult Visit(VariableNode*   node) 
-        { return this->Visit((MemberNode*)node); }
-    virtual VisitResult Visit(TypeNode*       node) 
-        { return this->Visit((AbstractNode*)node); }
-    virtual VisitResult Visit(StatementNode*  node) 
-        { return this->Visit((AbstractNode*)node); }
-    virtual VisitResult Visit(ExpressionNode* node) 
-        { return this->Visit((StatementNode*)node); }
-    virtual VisitResult Visit(LiteralNode*    node) 
-        { return this->Visit((ExpressionNode*)node); }
-    virtual VisitResult Visit(BinaryOperator* node) 
-        { return this->Visit((ExpressionNode*)node); }
-    virtual VisitResult Visit(MemberAccess*   node) 
-        { return this->Visit((ExpressionNode*)node); }
-    virtual VisitResult Visit(NamedReference* node) 
-        { return this->Visit((ExpressionNode*)node); }
-    virtual VisitResult Visit(FunctionNode*   node) 
-        { return this->Visit((MemberNode*)node); }
-    virtual VisitResult Visit(ParameterNode*  node) 
-        { return this->Visit((AbstractNode*)node); }
+    enum VisitResult
+    {
+        Continue,
+        Stop
+    };
+public:
+    BaseVisitDefinition(AbstractNode)
+    BaseVisitDefinition(BlockNode)
+    BaseVisitDefinition(ClassNode)
+    BaseVisitDefinition(StatementNode)
+    BaseVisitDefinition(VariableNode)
+    BaseVisitDefinition(ScopeNode)
+    BaseVisitDefinition(ParameterNode)
+    BaseVisitDefinition(FunctionNode)
+    BaseVisitDefinition(TypeNode)
+    BaseVisitDefinition(PointerTypeNode)
+    BaseVisitDefinition(ReferenceTypeNode)
+    BaseVisitDefinition(NamedTypeNode)
+    BaseVisitDefinition(FunctionTypeNode)
+    BaseVisitDefinition(LabelNode)
+    BaseVisitDefinition(GotoNode)
+    BaseVisitDefinition(ReturnNode)
+    BaseVisitDefinition(BreakNode)
+    BaseVisitDefinition(ContinueNode)
+    BaseVisitDefinition(ExpressionNode)
+    BaseVisitDefinition(IfNode)
+    BaseVisitDefinition(WhileNode)
+    BaseVisitDefinition(ForNode)
+    BaseVisitDefinition(LiteralNode)
+    BaseVisitDefinition(NameReferenceNode)
+    BaseVisitDefinition(BinaryOperatorNode)
+    BaseVisitDefinition(UnaryOperatorNode)
+    BaseVisitDefinition(PostExpressionNode)
+    BaseVisitDefinition(MemberAccessNode)
+    BaseVisitDefinition(CallNode)
+    BaseVisitDefinition(CastNode)
+    BaseVisitDefinition(IndexNode)
 };
+
+#define NodePrinterVisitDefinition(node_type, token_name)              \
+    Visitor::VisitResult NodePrinterVisitor::Visit(node_type * node)   \
+    {                                                                  \
+        NodePrinter printer;                                           \
+        printer << #node_type << "(" << node->token_name.mText << ")"; \
+        return Continue;                                               \
+    }
+
+#define NodePrinterVisitDefinitionTypeOnly(node_type)                \
+    Visitor::VisitResult NodePrinterVisitor::Visit(node_type * node) \
+    {                                                                \
+        NodePrinter printer;                                         \
+        printer << #node_type;                                       \
+        return Continue;                                             \
+    }
+
+#define NodePrinterVisitDefinitionContinue(node_type)                \
+    Visitor::VisitResult NodePrinterVisitor::Visit(node_type * node) \
+    {                                                                \
+        return Continue;                                             \
+    }
+
+#define NodePrinterVisitDeclarationOverride(node_type) \
+    VisitResult Visit(node_type * node) override;
+
+class NodePrinterVisitor : public Visitor
+{
+public:
+    NodePrinterVisitDeclarationOverride(AbstractNode)
+    NodePrinterVisitDeclarationOverride(BlockNode)
+    NodePrinterVisitDeclarationOverride(ClassNode)
+    NodePrinterVisitDeclarationOverride(StatementNode)
+    NodePrinterVisitDeclarationOverride(VariableNode)
+    NodePrinterVisitDeclarationOverride(ScopeNode)
+    NodePrinterVisitDeclarationOverride(ParameterNode)
+    NodePrinterVisitDeclarationOverride(FunctionNode)
+    NodePrinterVisitDeclarationOverride(TypeNode)
+    NodePrinterVisitDeclarationOverride(PointerTypeNode)
+    NodePrinterVisitDeclarationOverride(ReferenceTypeNode)
+    NodePrinterVisitDeclarationOverride(NamedTypeNode)
+    NodePrinterVisitDeclarationOverride(FunctionTypeNode)
+    NodePrinterVisitDeclarationOverride(LabelNode)
+    NodePrinterVisitDeclarationOverride(GotoNode)
+    NodePrinterVisitDeclarationOverride(ReturnNode)
+    NodePrinterVisitDeclarationOverride(BreakNode)
+    NodePrinterVisitDeclarationOverride(ContinueNode)
+    NodePrinterVisitDeclarationOverride(ExpressionNode)
+    NodePrinterVisitDeclarationOverride(IfNode)
+    NodePrinterVisitDeclarationOverride(WhileNode)
+    NodePrinterVisitDeclarationOverride(ForNode)
+    NodePrinterVisitDeclarationOverride(LiteralNode)
+    NodePrinterVisitDeclarationOverride(NameReferenceNode)
+    NodePrinterVisitDeclarationOverride(BinaryOperatorNode)
+    NodePrinterVisitDeclarationOverride(UnaryOperatorNode)
+    NodePrinterVisitDeclarationOverride(PostExpressionNode)
+    NodePrinterVisitDeclarationOverride(MemberAccessNode)
+    NodePrinterVisitDeclarationOverride(CallNode)
+    NodePrinterVisitDeclarationOverride(CastNode)
+    NodePrinterVisitDeclarationOverride(IndexNode)
+};
+
+NodePrinterVisitDefinitionContinue(AbstractNode)
+NodePrinterVisitDefinitionContinue(BlockNode)
+NodePrinterVisitDefinition(ClassNode, mName)
+NodePrinterVisitDefinitionContinue(StatementNode)
+NodePrinterVisitDefinition(VariableNode, mName)
+NodePrinterVisitDefinitionContinue(ScopeNode)
+NodePrinterVisitDefinition(ParameterNode, mName)
+NodePrinterVisitDefinition(FunctionNode, mName)
+NodePrinterVisitDefinitionContinue(TypeNode)
+NodePrinterVisitDefinitionTypeOnly(PointerTypeNode)
+NodePrinterVisitDefinitionTypeOnly(ReferenceTypeNode)
+NodePrinterVisitDefinition(NamedTypeNode, mName)
+NodePrinterVisitDefinitionTypeOnly(FunctionTypeNode)
+NodePrinterVisitDefinition(LabelNode, mName)
+NodePrinterVisitDefinition(GotoNode, mName)
+NodePrinterVisitDefinitionTypeOnly(ReturnNode)
+NodePrinterVisitDefinitionTypeOnly(BreakNode)
+NodePrinterVisitDefinitionTypeOnly(ContinueNode)
+NodePrinterVisitDefinitionContinue(ExpressionNode)
+NodePrinterVisitDefinitionTypeOnly(IfNode)
+NodePrinterVisitDefinitionTypeOnly(WhileNode)
+NodePrinterVisitDefinitionTypeOnly(ForNode)
+NodePrinterVisitDefinition(LiteralNode, mToken)
+NodePrinterVisitDefinition(NameReferenceNode, mName)
+NodePrinterVisitDefinition(BinaryOperatorNode, mOperator)
+NodePrinterVisitDefinition(UnaryOperatorNode, mOperator)
+NodePrinterVisitDefinitionContinue(PostExpressionNode)
+NodePrinterVisitDefinition(MemberAccessNode, mName)
+NodePrinterVisitDefinitionTypeOnly(CallNode)
+NodePrinterVisitDefinitionTypeOnly(CastNode)
+NodePrinterVisitDefinitionTypeOnly(IndexNode)
 
 // Node Walk Implementations //////////////////////////////////////////////////
 
@@ -796,6 +906,7 @@ void BreakNode::Walk(Visitor* visitor, bool visit)
 void ContinueNode::Walk(Visitor* visitor, bool visit)
 {
 }
+
 void ExpressionNode::Walk(Visitor* visitor, bool visit)
 {
 }
@@ -810,8 +921,7 @@ void ForNode::Walk(Visitor* visitor, bool visit)
 }
 void LiteralNode::Walk(Visitor* visitor, bool visit)
 {
-    NodePrinter printer;
-    printer << "LiteralNode(" << mToken.mText << ")";
+    if(visit && visitor->Visit(this) == Visitor::Stop) return;
 
 }
 void NameReferenceNode::Walk(Visitor* visitor, bool visit)
@@ -843,14 +953,19 @@ void IndexNode::Walk(Visitor* visitor, bool visit)
 
 std::unique_ptr<ExpressionNode> ParseExpression(std::vector<Token>& tokens)
 {
+    Parser::Initialize(tokens);
     std::unique_ptr<ExpressionNode> expression_node;
-    expression_node = RecursiveDecentParse::Literal();
+    expression_node = Parser::Expression();
     return expression_node;
 }
 
 void PrintTree(AbstractNode* node)
 {
-    
+    NodePrinterVisitor visitor;
+    // The appropriate Walk function will be called depedning on node's type.
+    // Once we are in the Walk function for the correct node type, we can call
+    // Visit within that function and the correct visit function will be used.
+    node->Walk(&visitor);
 }
 
 std::unique_ptr<BlockNode> ParseBlock(std::vector<Token>& tokens)
