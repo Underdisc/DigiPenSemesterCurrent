@@ -16,6 +16,7 @@ public:
     static bool AllTokensCovered();
     static bool Accept(TokenType::Enum next_token);
     static bool Expect(TokenType::Enum next_token);
+    static bool Expect(AbstractNode * node);
     static bool Expect(bool check);
     static Token PreviousToken();
     static unsigned _index;
@@ -44,7 +45,7 @@ public:
     static std::unique_ptr<ExpressionNode> GroupedExpression();
     static std::unique_ptr<LiteralNode> Literal();
     static std::unique_ptr<NameReferenceNode> NameReference();
-    static bool Value();
+    static std::unique_ptr<ExpressionNode> Value();
     static std::unique_ptr<ExpressionNode> Expression();
     static bool Expression1();
     static bool Expression2();
@@ -105,6 +106,16 @@ bool Parser::Expect(TokenType::Enum accepted_token)
     throw ParsingException();
 }
 
+bool Parser::Expect(AbstractNode * node)
+{
+    if (node)
+    {
+        return true;
+    }
+    return false;
+}
+
+
 bool Parser::Expect(bool check)
 {
     if (check)
@@ -123,13 +134,12 @@ Token Parser::PreviousToken()
 #define Acc(TokenType) Accept(TokenType)
 #define Exp(TokenType) Expect(TokenType)
 
-
 // Recursive Decent Parser Function Declarations /////////////////////////////
 
 #define ReturnNullNode(node_type)                       \
-    std::unique_ptr<node_type> new_node(new node_type); \
-    return std::move(new_node);                         \
-
+    std::unique_ptr<node_type> new_node(nullptr);       \
+    return std::move(new_node);                  
+    
 // Recursive Decent Parser Function Definitions ///////////////////////////////
 
 bool Parser::Index()
@@ -139,7 +149,7 @@ bool Parser::Index()
     {
         return false;
     }
-    Exp(Expression());
+    Exp(Expression().get());
     Exp(TokenType::CloseBracket);
     print_rule.Accept();
     return true;
@@ -169,7 +179,7 @@ bool Parser::Call()
     {
         while (Acc(TokenType::Comma))
         {
-            Exp(Expression());
+            Exp(Expression().get());
         }
     }
 
@@ -335,22 +345,24 @@ std::unique_ptr<ExpressionNode> Parser::Expression()
        Acc(TokenType::AssignmentDivide) ||
        Acc(TokenType::AssignmentModulo))
     {
-        Exp(Expression());
+        Exp(Expression().get());
     }
 
     print_rule.Accept();
     return true;
 }
 
-bool Parser::Value()
+std::unique_ptr<ExpressionNode> Parser::Value()
 {
     PrintRule print_rule("Value");
-    bool result = Literal() || NameReference() || GroupedExpression();
-    if (result)
+    std::unique_ptr<ExpressionNode> node(Literal().get() || 
+                                         NameReference().get() || 
+                                         GroupedExpression().get());
+    if (node)
     {
         print_rule.Accept();
     }
-    return result;
+    return std::move(node);
 }
 
 std::unique_ptr<NameReferenceNode> Parser::NameReference()
@@ -384,9 +396,7 @@ std::unique_ptr<LiteralNode> Parser::Literal()
         new_node->mToken = Parser::PreviousToken();
         return std::move(new_node);
     }
-
-    std::unique_ptr<LiteralNode> new_node(nullptr);
-    return std::move(new_node);
+    ReturnNullNode(LiteralNode);
 }
 
 std::unique_ptr<ExpressionNode> Parser::GroupedExpression()
@@ -396,10 +406,10 @@ std::unique_ptr<ExpressionNode> Parser::GroupedExpression()
     {
         ReturnNullNode(ExpressionNode);
     }
-    Exp(Expression());
+    std::unique_ptr<ExpressionNode> node = Expression();
+    Exp(node.get());
     Exp(TokenType::CloseParentheses);
     print_rule.Accept();
-    return true;
 }
 
 bool Parser::For()
@@ -429,7 +439,7 @@ bool Parser::While()
     {
         return false;
     }
-    Exp(GroupedExpression());
+    Exp(GroupedExpression().get());
     Exp(Scope());
     print_rule.Accept();
     return true;
@@ -455,7 +465,7 @@ bool Parser::If()
     {
         return false;
     }
-    Exp(GroupedExpression());
+    Exp(GroupedExpression().get());
     Exp(Scope());
     Else();
 
@@ -664,7 +674,7 @@ bool Parser::Var()
 
     if (Acc(TokenType::Assignment))
     {
-        Exp(Expression());
+        Exp(Expression().get());
     }
 
     print_rule.Accept();
