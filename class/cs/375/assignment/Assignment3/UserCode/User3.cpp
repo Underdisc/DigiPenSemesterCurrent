@@ -6,6 +6,7 @@
 #include "../Drivers/Driver3.hpp"
 
 #include <iostream>
+#include <stack>
 
 // Parser ///////////////////////////////////////////////////////////////////
 
@@ -18,7 +19,7 @@ public:
     static bool Expect(TokenType::Enum next_token);
     static bool Expect(AbstractNode * node);
     static bool Expect(bool check);
-    static Token PreviousToken();
+    static Token PreviousToken(unsigned delta = 1);
     static unsigned _index;
     static std::vector<Token> * _token_stream;
 
@@ -27,10 +28,10 @@ public:
     static bool Var();
     static bool Function();
     static bool Parameter();
-    static bool SpecifiedType();
-    static bool Type();
-    static bool NamedType();
-    static bool FunctionType();
+    static std::unique_ptr<TypeNode> SpecifiedType();
+    static std::unique_ptr<TypeNode> Type();
+    static std::unique_ptr<TypeNode> NamedType();
+    static std::unique_ptr<TypeNode> FunctionType();
     static bool Scope();
     static bool Statement();
     static bool DelimitedStatement();
@@ -47,17 +48,17 @@ public:
     static std::unique_ptr<NameReferenceNode> NameReference();
     static std::unique_ptr<ExpressionNode> Value();
     static std::unique_ptr<ExpressionNode> Expression();
-    static bool Expression1();
-    static bool Expression2();
-    static bool Expression3();
-    static bool Expression4();
-    static bool Expression5();
-    static bool Expression6();
-    static bool Expression7();
-    static bool MemberAccess();
-    static bool Call();
-    static bool Cast();
-    static bool Index();
+    static std::unique_ptr<ExpressionNode> Expression1();
+    static std::unique_ptr<ExpressionNode> Expression2();
+    static std::unique_ptr<ExpressionNode> Expression3();
+    static std::unique_ptr<ExpressionNode> Expression4();
+    static std::unique_ptr<ExpressionNode> Expression5();
+    static std::unique_ptr<ExpressionNode> Expression6();
+    static std::unique_ptr<ExpressionNode> Expression7();
+    static std::unique_ptr<MemberAccessNode> MemberAccess();
+    static std::unique_ptr<CallNode> Call();
+    static std::unique_ptr<CastNode> Cast();
+    static std::unique_ptr<IndexNode> Index();
     
 };
 
@@ -112,7 +113,7 @@ bool Parser::Expect(AbstractNode * node)
     {
         return true;
     }
-    return false;
+    throw ParsingException();
 }
 
 
@@ -125,9 +126,9 @@ bool Parser::Expect(bool check)
     throw ParsingException();
 }
 
-Token Parser::PreviousToken()
+Token Parser::PreviousToken(unsigned delta)
 {
-    unsigned previous_index = _index - 1;
+    unsigned previous_index = _index - delta;
     return (*_token_stream)[previous_index];
 }
 
@@ -142,146 +143,209 @@ Token Parser::PreviousToken()
     
 // Recursive Decent Parser Function Definitions ///////////////////////////////
 
-bool Parser::Index()
+std::unique_ptr<IndexNode> Parser::Index()
 {
     PrintRule print_rule("Index");
     if(!Acc(TokenType::OpenBracket))
     {
-        return false;
+        ReturnNullNode(IndexNode);
     }
-    Exp(Expression().get());
+    std::unique_ptr<IndexNode> final_node(new IndexNode);
+    final_node->mIndex = Expression();
+    Exp(final_node->mIndex.get());
     Exp(TokenType::CloseBracket);
     print_rule.Accept();
-    return true;
+    return std::move(final_node);
 }
 
-bool Parser::Cast()
+std::unique_ptr<CastNode> Parser::Cast()
 {
     PrintRule print_rule("Cast");
     if (!Acc(TokenType::As))
     {
-        return false;
+        ReturnNullNode(CastNode);
     }
-    Exp(Type());
+
+    std::unique_ptr<CastNode> final_node(new CastNode);
+    final_node->mType = Type();
+    Exp(final_node->mType.get());
     print_rule.Accept();
-    return true;
+    return std::move(final_node);
 }
 
-bool Parser::Call()
+std::unique_ptr<CallNode> Parser::Call()
 {
     PrintRule print_rule("Call");
     if (!Acc(TokenType::OpenParentheses))
     {
-        return false;
+        ReturnNullNode(CallNode);
     }
 
-    if (Expression())
+    std::unique_ptr<CallNode> new_node(new CallNode);
+    std::unique_ptr<ExpressionNode> node;
+    node = Expression();
+    if (node)
     {
+        new_node->mArguments.push_back(std::move(node));
         while (Acc(TokenType::Comma))
         {
-            Exp(Expression().get());
+            node = Expression();
+            Exp(node.get());
+            new_node->mArguments.push_back(std::move(node));
         }
     }
 
     Exp(TokenType::CloseParentheses);
     print_rule.Accept();
-    return true;
+    return std::move(new_node);
 
 }
 
-bool Parser::MemberAccess()
+std::unique_ptr<MemberAccessNode> Parser::MemberAccess()
 {
     PrintRule print_rule("MemberAccess");
     if (!(Acc(TokenType::Dot) ||
           Acc(TokenType::Arrow)))
     {
-        return false;
+        ReturnNullNode(MemberAccessNode);
     }
 
     Exp(TokenType::Identifier);
     print_rule.Accept();
-    return true;
-
+    
+    std::unique_ptr<MemberAccessNode> new_node(new MemberAccessNode);
+    new_node->mOperator = PreviousToken(2);
+    new_node->mName = PreviousToken();
+    return std::move(new_node);
 }
 
-bool Parser::Expression7()
+std::unique_ptr<ExpressionNode> Parser::Expression7()
 {
     PrintRule print_rule("Expression7");
-    if (!Value())
+
+    std::unique_ptr<ExpressionNode> final_node;
+    final_node = Value();
+    if (!final_node.get())
     {
-        return false;
+        ReturnNullNode(PostExpressionNode);
     }
 
-    while(MemberAccess() || Call() || Cast() || Index());
+    std::unique_ptr<PostExpressionNode> post;
+    while ((post = MemberAccess()) != nullptr ||
+           (post = Call()) != nullptr ||
+           (post = Cast()) != nullptr ||
+           (post = Index()) != nullptr)
+    {
+        post->mLeft = std::move(final_node);
+        final_node = std::move(post);
+    }
     
     print_rule.Accept();
-    return true;
+    return std::move(final_node);
 
 }
 
-bool Parser::Expression6()
+std::unique_ptr<ExpressionNode> Parser::Expression6()
 {
     PrintRule print_rule("Expression6");
     
-    while(Acc(TokenType::Asterisk) ||
-          Acc(TokenType::Ampersand) ||
-          Acc(TokenType::Plus) || 
-          Acc(TokenType::Minus) || 
-          Acc(TokenType::LogicalNot) || 
-          Acc(TokenType::Increment) || 
-          Acc(TokenType::Decrement));
+    std::stack<Token> unary_stack;
+    while (Acc(TokenType::Asterisk) ||
+           Acc(TokenType::Ampersand) ||
+           Acc(TokenType::Plus) ||
+           Acc(TokenType::Minus) ||
+           Acc(TokenType::LogicalNot) ||
+           Acc(TokenType::Increment) ||
+           Acc(TokenType::Decrement))
+    {
+       unary_stack.push(PreviousToken());
+    }
 
-    bool result = Expression7();
-    if (result)
+    std::unique_ptr<ExpressionNode> right;
+    right = Expression7();
+    if (right)
     {
         print_rule.Accept();
     }
-    return result;
+
+    while (!unary_stack.empty())
+    {
+        std::unique_ptr<UnaryOperatorNode> unary(new UnaryOperatorNode);
+        unary->mOperator = unary_stack.top();
+        unary->mRight = std::move(right);
+        right = std::move(unary);
+        unary_stack.pop();
+    }
+
+    return std::move(right);
 }
 
-bool Parser::Expression5()
+std::unique_ptr<ExpressionNode> Parser::Expression5()
 {
     PrintRule print_rule("Expression5");
-    if (!Expression6())
+
+    std::unique_ptr<ExpressionNode> left;
+    left = Expression6();
+    if (!left)
     {
-        return false;
+        ReturnNullNode(ExpressionNode);
     }
 
     while (Acc(TokenType::Asterisk) ||
            Acc(TokenType::Divide) || 
            Acc(TokenType::Modulo))
     {
-        Exp(Expression6());
+        std::unique_ptr<BinaryOperatorNode> binary(new BinaryOperatorNode);
+        binary->mOperator = PreviousToken();
+        std::unique_ptr<ExpressionNode> right;
+        right = Expression6();
+        Exp(right.get());
+        binary->mLeft = std::move(left);
+        binary->mRight = std::move(right);
+        left = std::move(binary);
     }
 
     print_rule.Accept();
-    return true;
+    return std::move(left);
 }
 
-bool Parser::Expression4()
+std::unique_ptr<ExpressionNode> Parser::Expression4()
 {
     PrintRule print_rule("Expression4");
-    if (!Expression5())
+
+    std::unique_ptr<ExpressionNode> left;
+    left = Expression5();
+    if (!left)
     {
-        return false;
+        ReturnNullNode(ExpressionNode);
     }
 
     while (Acc(TokenType::Plus) ||
            Acc(TokenType::Minus))
     {
-        Exp(Expression5());
+        std::unique_ptr<BinaryOperatorNode> binary(new BinaryOperatorNode);
+        binary->mOperator = PreviousToken();
+        std::unique_ptr<ExpressionNode> right;
+        right = Expression5();
+        Exp(right.get());
+        binary->mLeft = std::move(left);
+        binary->mRight = std::move(right);
+        left = std::move(binary);
     }
 
     print_rule.Accept();
-    return true;
+    return std::move(left);
 }
 
-bool Parser::Expression3()
+std::unique_ptr<ExpressionNode> Parser::Expression3()
 {
     PrintRule print_rule("Expression3");
-    if (!Expression4())
+
+    std::unique_ptr<ExpressionNode> left;
+    left = Expression4();
+    if (!left.get())
     {
-        return false;
+        ReturnNullNode(ExpressionNode);
     }
 
     while (Acc(TokenType::LessThan) ||
@@ -291,51 +355,82 @@ bool Parser::Expression3()
            Acc(TokenType::Equality) ||
            Acc(TokenType::Inequality))
     {
-        Exp(Expression4());
+        std::unique_ptr<BinaryOperatorNode> binary(new BinaryOperatorNode);
+        binary->mOperator = PreviousToken();
+        std::unique_ptr<ExpressionNode> right;
+        right = Expression4();
+        Exp(right.get());
+        binary->mLeft = std::move(left);
+        binary->mRight = std::move(right);
+        left = std::move(binary);
     }
 
     print_rule.Accept();
-    return true;
+    return std::move(left);
 }
 
-bool Parser::Expression2()
+std::unique_ptr<ExpressionNode> Parser::Expression2()
 {
     PrintRule print_rule("Expression2");
-    if (!Expression3())
+
+    std::unique_ptr<ExpressionNode> left;
+    left = Expression3();
+    if (!left.get())
     {
-        return false;
+        ReturnNullNode(ExpressionNode);
     }
     while (Acc(TokenType::LogicalAnd))
     {
-        Exp(Expression3());
+        std::unique_ptr<BinaryOperatorNode> binary(new BinaryOperatorNode);
+        binary->mOperator = PreviousToken();
+        std::unique_ptr<ExpressionNode> right;
+        right = Expression3();
+        Exp(right.get());
+        binary->mLeft = std::move(left);
+        binary->mRight = std::move(right);
+        left = std::move(binary);
     }
 
     print_rule.Accept();
-    return true;
+    return std::move(left);
 }
 
-bool Parser::Expression1()
+std::unique_ptr<ExpressionNode> Parser::Expression1()
 {
     PrintRule print_rule("Expression1");
-    if (!Expression2())
+
+    std::unique_ptr<ExpressionNode> left;
+    left = Expression2();
+    if (!left)
     {
-        return false;
+        ReturnNullNode(ExpressionNode);
     }
+
     while (Acc(TokenType::LogicalOr))
     {
-        Exp(Expression2());
+        std::unique_ptr<BinaryOperatorNode> binary(new BinaryOperatorNode);
+        binary->mOperator = PreviousToken();
+        std::unique_ptr<ExpressionNode> right;
+        right = Expression2();
+        Exp(right.get());
+        binary->mLeft = std::move(left);
+        binary->mRight = std::move(right);
+        left = std::move(binary);
     }
 
     print_rule.Accept();
-    return true;
+    return std::move(left);
 }
 
 std::unique_ptr<ExpressionNode> Parser::Expression()
 {
     PrintRule print_rule("Expression");
-    if (!Expression1())
+
+    std::unique_ptr<ExpressionNode> left;
+    left = Expression1();
+    if (!left)
     {
-        return false;
+        ReturnNullNode(ExpressionNode);
     }
 
     if(Acc(TokenType::Assignment) ||
@@ -345,23 +440,32 @@ std::unique_ptr<ExpressionNode> Parser::Expression()
        Acc(TokenType::AssignmentDivide) ||
        Acc(TokenType::AssignmentModulo))
     {
-        Exp(Expression().get());
+        std::unique_ptr<BinaryOperatorNode> binary(new BinaryOperatorNode);
+        binary->mOperator = PreviousToken();
+        std::unique_ptr<ExpressionNode> right;
+        right = Expression();
+        Exp(right.get());
+        binary->mLeft = std::move(left);
+        binary->mRight = std::move(right);
+        left = std::move(binary);
     }
 
     print_rule.Accept();
-    return true;
+    return std::move(left);
 }
 
 std::unique_ptr<ExpressionNode> Parser::Value()
 {
     PrintRule print_rule("Value");
-    std::unique_ptr<ExpressionNode> node(Literal().get() || 
-                                         NameReference().get() || 
-                                         GroupedExpression().get());
-    if (node)
+    std::unique_ptr<ExpressionNode> node;
+    (node = Literal()) != nullptr || 
+    (node = NameReference()) != nullptr || 
+    (node = GroupedExpression()) != nullptr;
+    if (!node)
     {
-        print_rule.Accept();
+        ReturnNullNode(ExpressionNode);
     }
+    print_rule.Accept();
     return std::move(node);
 }
 
@@ -410,6 +514,7 @@ std::unique_ptr<ExpressionNode> Parser::GroupedExpression()
     Exp(node.get());
     Exp(TokenType::CloseParentheses);
     print_rule.Accept();
+    return std::move(node);
 }
 
 bool Parser::For()
@@ -563,63 +668,100 @@ bool Parser::Scope()
     return true;
 }
 
-bool Parser::FunctionType()
+std::unique_ptr<TypeNode> Parser::FunctionType()
 {
     PrintRule print_rule("FunctionType");
     if (!Acc(TokenType::Function))
     {
-        return false;
+        ReturnNullNode(TypeNode);
     }
 
+    std::unique_ptr<FunctionTypeNode> function_type(new FunctionTypeNode);
+    std::unique_ptr<TypeNode> final_node = std::move(function_type);
+
     Exp(TokenType::Asterisk);
-    Acc(TokenType::Ampersand);
+    if (Acc(TokenType::Ampersand))
+    {
+        std::unique_ptr<ReferenceTypeNode> ref_type(new ReferenceTypeNode);
+        ref_type->mReferenceTo = std::move(function_type);
+        final_node = std::move(ref_type);
+    }
 
     Exp(TokenType::OpenParentheses);
-    Exp(Type());
-
-    while(Acc(TokenType::Comma) && Exp(Type()));
+ 
+    std::unique_ptr<TypeNode> type = Type();
+    Exp(type.get());
+    function_type->mParameters.push_back(std::move(type));
+    while (Acc(TokenType::Comma))
+    {
+        type = Type();
+        Exp(type.get());
+        function_type->mParameters.push_back(std::move(type));
+    }
     Exp(TokenType::CloseParentheses);
-    SpecifiedType();
+    function_type->mReturn = SpecifiedType();
     print_rule.Accept();
 
-    return true;
+    return std::move(final_node);
 }
 
-bool Parser::NamedType()
+std::unique_ptr<TypeNode> Parser::NamedType()
 {
     PrintRule print_rule("NamedType");
     if (!Acc(TokenType::Identifier))
     {
-        return false;
+        ReturnNullNode(NamedTypeNode);
     }
-    while(Acc(TokenType::Asterisk));
-    Acc(TokenType::Ampersand);
+
+    std::unique_ptr<NamedTypeNode> named_type(new NamedTypeNode);
+    named_type->mName = PreviousToken();
+    std::unique_ptr<TypeNode> final_node = std::move(named_type);
+
+    while (Acc(TokenType::Asterisk))
+    {
+        std::unique_ptr<PointerTypeNode> pointer_type(new PointerTypeNode);
+        pointer_type->mPointerTo = std::move(final_node);
+        final_node = std::move(pointer_type);
+    }
+
+    if(Acc(TokenType::Ampersand))
+    {
+        std::unique_ptr<ReferenceTypeNode> ref_type(new ReferenceTypeNode);
+        ref_type->mReferenceTo = std::move(final_node);
+        final_node = std::move(ref_type);
+    }
+
     print_rule.Accept();
-    return true;
+    return std::move(final_node);
 }
 
-bool Parser::Type()
+std::unique_ptr<TypeNode> Parser::Type()
 {
     PrintRule print_rule("Type");
-    bool result = NamedType() || FunctionType();
-    
-    if (result)
+    std::unique_ptr<TypeNode> final_node(new TypeNode);
+    (final_node = NamedType()) != nullptr ||
+    (final_node = FunctionType()) != nullptr;
+
+    if (final_node)
     {
         print_rule.Accept();
     }
-    return result;
+    return final_node;
 }
 
-bool Parser::SpecifiedType()
+std::unique_ptr<TypeNode> Parser::SpecifiedType()
 {
     PrintRule print_rule("SpecifiedType");
     if (!Acc(TokenType::Colon))
     {
-        return false;
+        ReturnNullNode(TypeNode);
     }
-    Exp(Type());
+
+    std::unique_ptr<TypeNode> final_node;
+    final_node = Type();
+    Exp(final_node.get());
     print_rule.Accept();
-    return true;
+    return std::move(final_node);
 }
 
 bool Parser::Parameter()
@@ -629,7 +771,7 @@ bool Parser::Parameter()
     {
         return false;
     }
-    Exp(SpecifiedType());
+    /*Exp(SpecifiedType());*/
     print_rule.Accept();
     return true;
 }
@@ -669,8 +811,8 @@ bool Parser::Var()
       return false;
     }
 
-    Exp(TokenType::Identifier);
-    Exp(SpecifiedType());
+    /*Exp(TokenType::Identifier);
+    Exp(SpecifiedType());*/
 
     if (Acc(TokenType::Assignment))
     {
@@ -770,28 +912,6 @@ public:
     BaseVisitDefinition(IndexNode)
 };
 
-#define NodePrinterVisitDefinition(node_type, token_name)              \
-    Visitor::VisitResult NodePrinterVisitor::Visit(node_type * node)   \
-    {                                                                  \
-        NodePrinter printer;                                           \
-        printer << #node_type << "(" << node->token_name.mText << ")"; \
-        return Continue;                                               \
-    }
-
-#define NodePrinterVisitDefinitionTypeOnly(node_type)                \
-    Visitor::VisitResult NodePrinterVisitor::Visit(node_type * node) \
-    {                                                                \
-        NodePrinter printer;                                         \
-        printer << #node_type;                                       \
-        return Continue;                                             \
-    }
-
-#define NodePrinterVisitDefinitionContinue(node_type)                \
-    Visitor::VisitResult NodePrinterVisitor::Visit(node_type * node) \
-    {                                                                \
-        return Continue;                                             \
-    }
-
 #define NodePrinterVisitDeclarationOverride(node_type) \
     VisitResult Visit(node_type * node) override;
 
@@ -799,164 +919,468 @@ class NodePrinterVisitor : public Visitor
 {
 public:
     NodePrinterVisitDeclarationOverride(AbstractNode)
-    NodePrinterVisitDeclarationOverride(BlockNode)
-    NodePrinterVisitDeclarationOverride(ClassNode)
-    NodePrinterVisitDeclarationOverride(StatementNode)
-    NodePrinterVisitDeclarationOverride(VariableNode)
-    NodePrinterVisitDeclarationOverride(ScopeNode)
-    NodePrinterVisitDeclarationOverride(ParameterNode)
-    NodePrinterVisitDeclarationOverride(FunctionNode)
-    NodePrinterVisitDeclarationOverride(TypeNode)
-    NodePrinterVisitDeclarationOverride(PointerTypeNode)
-    NodePrinterVisitDeclarationOverride(ReferenceTypeNode)
-    NodePrinterVisitDeclarationOverride(NamedTypeNode)
-    NodePrinterVisitDeclarationOverride(FunctionTypeNode)
-    NodePrinterVisitDeclarationOverride(LabelNode)
-    NodePrinterVisitDeclarationOverride(GotoNode)
-    NodePrinterVisitDeclarationOverride(ReturnNode)
-    NodePrinterVisitDeclarationOverride(BreakNode)
-    NodePrinterVisitDeclarationOverride(ContinueNode)
-    NodePrinterVisitDeclarationOverride(ExpressionNode)
-    NodePrinterVisitDeclarationOverride(IfNode)
-    NodePrinterVisitDeclarationOverride(WhileNode)
-    NodePrinterVisitDeclarationOverride(ForNode)
-    NodePrinterVisitDeclarationOverride(LiteralNode)
-    NodePrinterVisitDeclarationOverride(NameReferenceNode)
-    NodePrinterVisitDeclarationOverride(BinaryOperatorNode)
-    NodePrinterVisitDeclarationOverride(UnaryOperatorNode)
-    NodePrinterVisitDeclarationOverride(PostExpressionNode)
-    NodePrinterVisitDeclarationOverride(MemberAccessNode)
-    NodePrinterVisitDeclarationOverride(CallNode)
-    NodePrinterVisitDeclarationOverride(CastNode)
-    NodePrinterVisitDeclarationOverride(IndexNode)
+        NodePrinterVisitDeclarationOverride(BlockNode)
+        NodePrinterVisitDeclarationOverride(ClassNode)
+        NodePrinterVisitDeclarationOverride(StatementNode)
+        NodePrinterVisitDeclarationOverride(VariableNode)
+        NodePrinterVisitDeclarationOverride(ScopeNode)
+        NodePrinterVisitDeclarationOverride(ParameterNode)
+        NodePrinterVisitDeclarationOverride(FunctionNode)
+        NodePrinterVisitDeclarationOverride(TypeNode)
+        NodePrinterVisitDeclarationOverride(PointerTypeNode)
+        NodePrinterVisitDeclarationOverride(ReferenceTypeNode)
+        NodePrinterVisitDeclarationOverride(NamedTypeNode)
+        NodePrinterVisitDeclarationOverride(FunctionTypeNode)
+        NodePrinterVisitDeclarationOverride(LabelNode)
+        NodePrinterVisitDeclarationOverride(GotoNode)
+        NodePrinterVisitDeclarationOverride(ReturnNode)
+        NodePrinterVisitDeclarationOverride(BreakNode)
+        NodePrinterVisitDeclarationOverride(ContinueNode)
+        NodePrinterVisitDeclarationOverride(ExpressionNode)
+        NodePrinterVisitDeclarationOverride(IfNode)
+        NodePrinterVisitDeclarationOverride(WhileNode)
+        NodePrinterVisitDeclarationOverride(ForNode)
+        NodePrinterVisitDeclarationOverride(LiteralNode)
+        NodePrinterVisitDeclarationOverride(NameReferenceNode)
+        NodePrinterVisitDeclarationOverride(BinaryOperatorNode)
+        NodePrinterVisitDeclarationOverride(UnaryOperatorNode)
+        NodePrinterVisitDeclarationOverride(PostExpressionNode)
+        NodePrinterVisitDeclarationOverride(MemberAccessNode)
+        NodePrinterVisitDeclarationOverride(CallNode)
+        NodePrinterVisitDeclarationOverride(CastNode)
+        NodePrinterVisitDeclarationOverride(IndexNode)
 };
 
-NodePrinterVisitDefinitionContinue(AbstractNode)
-NodePrinterVisitDefinitionContinue(BlockNode)
-NodePrinterVisitDefinition(ClassNode, mName)
-NodePrinterVisitDefinitionContinue(StatementNode)
-NodePrinterVisitDefinition(VariableNode, mName)
-NodePrinterVisitDefinitionContinue(ScopeNode)
-NodePrinterVisitDefinition(ParameterNode, mName)
-NodePrinterVisitDefinition(FunctionNode, mName)
-NodePrinterVisitDefinitionContinue(TypeNode)
-NodePrinterVisitDefinitionTypeOnly(PointerTypeNode)
-NodePrinterVisitDefinitionTypeOnly(ReferenceTypeNode)
-NodePrinterVisitDefinition(NamedTypeNode, mName)
-NodePrinterVisitDefinitionTypeOnly(FunctionTypeNode)
-NodePrinterVisitDefinition(LabelNode, mName)
-NodePrinterVisitDefinition(GotoNode, mName)
-NodePrinterVisitDefinitionTypeOnly(ReturnNode)
-NodePrinterVisitDefinitionTypeOnly(BreakNode)
-NodePrinterVisitDefinitionTypeOnly(ContinueNode)
-NodePrinterVisitDefinitionContinue(ExpressionNode)
-NodePrinterVisitDefinitionTypeOnly(IfNode)
-NodePrinterVisitDefinitionTypeOnly(WhileNode)
-NodePrinterVisitDefinitionTypeOnly(ForNode)
-NodePrinterVisitDefinition(LiteralNode, mToken)
-NodePrinterVisitDefinition(NameReferenceNode, mName)
-NodePrinterVisitDefinition(BinaryOperatorNode, mOperator)
-NodePrinterVisitDefinition(UnaryOperatorNode, mOperator)
-NodePrinterVisitDefinitionContinue(PostExpressionNode)
-NodePrinterVisitDefinition(MemberAccessNode, mName)
-NodePrinterVisitDefinitionTypeOnly(CallNode)
-NodePrinterVisitDefinitionTypeOnly(CastNode)
-NodePrinterVisitDefinitionTypeOnly(IndexNode)
+#define NodePrinterVisitorHeader(node_type) \
+    Visitor::VisitResult NodePrinterVisitor::Visit(node_type * node)
+
+#define PrintNode(node_type)   \
+    NodePrinter printer;       \
+    printer << #node_type
+
+
+NodePrinterVisitorHeader(AbstractNode)
+{
+    PrintNode(AbstractNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(BlockNode)
+{
+    PrintNode(BlockNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(ClassNode)
+{
+    PrintNode(ClassNode) << "(" << node->mName << ")";
+    node->Walk(this, false);
+    return Stop;
+}
+NodePrinterVisitorHeader(StatementNode)
+{
+    PrintNode(StatementNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(TypeNode)
+{
+    PrintNode(TypeNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(PointerTypeNode)
+{
+    PrintNode(PointerTypeNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(ReferenceTypeNode)
+{
+    PrintNode(ReferenceTypeNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(NamedTypeNode)
+{
+    PrintNode(NamedTypeNode) << "(" << node->mName << ")";
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(FunctionTypeNode)
+{
+    PrintNode(FunctionTypeNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(VariableNode)
+{
+    PrintNode(VariableNode) << "(" << node->mName << ")";
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(ParameterNode)
+{
+    PrintNode(ParameterNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(ScopeNode)
+{
+    PrintNode(ScopeNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(FunctionNode)
+{
+    PrintNode(FunctionNode) << "(" << node->mName << ")";
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(LabelNode)
+{
+    PrintNode(LabelNode) << "(" << node->mName << ")";
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(GotoNode)
+{
+    PrintNode(GotoNode) << "(" << node->mName << ")";
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(ReturnNode)
+{
+    PrintNode(ReturnNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(BreakNode)
+{
+    PrintNode(BreakNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(ContinueNode)
+{
+    PrintNode(StopNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(ExpressionNode)
+{
+    PrintNode(ExpressionNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(IfNode)
+{
+    PrintNode(BreakNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(WhileNode)
+{
+    PrintNode(WhileNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(ForNode)
+{
+    PrintNode(ForNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(LiteralNode)
+{
+    PrintNode(LiteralNode) << "(" << node->mToken << ")";
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(NameReferenceNode)
+{
+    PrintNode(NameReferenceNode) << "(" << node->mName << ")";
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(BinaryOperatorNode)
+{
+    PrintNode(BinaryOperatorNode) << "(" << node->mOperator << ")";
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(UnaryOperatorNode)
+{
+    PrintNode(UnaryOperatorNode) << "(" << node->mOperator << ")";
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(PostExpressionNode)
+{
+    node->mLeft->Walk(this);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(MemberAccessNode)
+{
+    PrintNode(MemberAccessNode) << "(" << node->mOperator
+                                << ", " << node->mName << ")";
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(CallNode)
+{
+    PrintNode(CallNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(CastNode)
+{
+    PrintNode(CastNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
+NodePrinterVisitorHeader(IndexNode)
+{
+    PrintNode(IndexNode);
+    node->Walk(this, false);
+    return Stop;
+}
+
 
 // Node Walk Implementations //////////////////////////////////////////////////
 
+#define VisitNode                                       \
+    if (visit && visitor->Visit(this) == Visitor::Stop) \
+    {                                                   \
+        return;                                         \
+    }
+
+#define WalkMember(member_name)            \
+    this->member_name->Walk(visitor) \
+
+#define WalkExisting(member_name)         \
+    if (this->member_name)                \
+    {                                     \
+        this->member_name->Walk(visitor); \
+    }
+
+#define WalkLoop(member_name)                              \
+    for(unsigned i = 0; i < this->member_name.size(); ++i) \
+    {                                                      \
+        this->member_name[i]->Walk(visitor);               \
+    }
+
+
 void BlockNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    AbstractNode::Walk(visitor, false);
+    WalkLoop(mGlobals);
 }
 void ClassNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    AbstractNode::Walk(visitor, false);
+    WalkLoop(mMembers);
 }
 void StatementNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    AbstractNode::Walk(visitor, false);
 }
 void TypeNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    AbstractNode::Walk(visitor, false);
 }
 void PointerTypeNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    TypeNode::Walk(visitor, false);
+    WalkMember(mPointerTo);
 }
 void ReferenceTypeNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    TypeNode::Walk(visitor, false);
+    WalkMember(mReferenceTo);
 }
 void NamedTypeNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    TypeNode::Walk(visitor, false);
 }
 void FunctionTypeNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    TypeNode::Walk(visitor, false);
+    WalkLoop(mParameters);
+    WalkMember(mReturn);
 }
 void VariableNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    StatementNode::Walk(visitor, false);
+    WalkMember(mType);
+    WalkExisting(mInitialValue);
 }
 void ParameterNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    VariableNode::Walk(visitor, false);
 }
 void ScopeNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    StatementNode::Walk(visitor, false);
+    WalkLoop(mStatements);
 }
 void FunctionNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    AbstractNode::Walk(visitor, false);
+    WalkLoop(mParameters);
+    WalkExisting(mReturnType);
+    WalkMember(mScope);
 }
 void LabelNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    StatementNode::Walk(visitor, false);
 }
 void GotoNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    StatementNode::Walk(visitor, false);
 }
 void ReturnNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    StatementNode::Walk(visitor, false);
+    WalkExisting(mReturnValue);
 }
 void BreakNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    StatementNode::Walk(visitor, false);
 }
 void ContinueNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    StatementNode::Walk(visitor, false);
 }
-
 void ExpressionNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    StatementNode::Walk(visitor, false);
 }
 void IfNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    StatementNode::Walk(visitor, false);
+    WalkExisting(mCondition);
+    WalkMember(mScope);
+    WalkExisting(mElse);
+
 }
 void WhileNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    StatementNode::Walk(visitor, false);
+    WalkMember(mCondition);
+    WalkMember(mScope);
 }
 void ForNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    StatementNode::Walk(visitor, false);
+    WalkExisting(mInitialVariable);
+    WalkExisting(mInitialExpression);
+    WalkExisting(mCondition);
+    WalkExisting(mIterator);
+    WalkMember(mScope);
 }
 void LiteralNode::Walk(Visitor* visitor, bool visit)
 {
-    if(visit && visitor->Visit(this) == Visitor::Stop) return;
-
+    VisitNode;
+    ExpressionNode::Walk(visitor, false);
 }
 void NameReferenceNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    ExpressionNode::Walk(visitor, false);
 }
 void BinaryOperatorNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    ExpressionNode::Walk(visitor, false);
+    WalkMember(mLeft);
+    WalkMember(mRight);
 }
 void UnaryOperatorNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    ExpressionNode::Walk(visitor, false);
+    WalkMember(mRight);
 }
 void PostExpressionNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    ExpressionNode::Walk(visitor, false);
+    WalkMember(mLeft);
 }
 void MemberAccessNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    PostExpressionNode::Walk(visitor, false);
 }
 void CallNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    PostExpressionNode::Walk(visitor, false);
+    WalkLoop(mArguments);
 }
 void CastNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    PostExpressionNode::Walk(visitor, false);
+    WalkMember(mType);
 }
 void IndexNode::Walk(Visitor* visitor, bool visit)
 {
+    VisitNode;
+    PostExpressionNode::Walk(visitor, false);
+    WalkMember(mIndex);
 }
 
 // Assignment Functions ///////////////////////////////////////////////////////

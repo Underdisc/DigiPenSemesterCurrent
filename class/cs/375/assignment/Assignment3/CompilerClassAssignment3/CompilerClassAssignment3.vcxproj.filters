@@ -57,5 +57,8 @@
     <None Include="..\Drivers\TokenSymbols.inl">
       <Filter>Driver</Filter>
     </None>
+    <None Include="..\Reference\correct_out">
+      <Filter>Driver</Filter>
+    </None>
   </ItemGroup>
 </Project>

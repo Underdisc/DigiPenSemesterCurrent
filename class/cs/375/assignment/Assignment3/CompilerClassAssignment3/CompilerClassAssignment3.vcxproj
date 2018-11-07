@@ -88,6 +88,7 @@
     <None Include="..\Drivers\TokenKeywords.inl" />
     <None Include="..\Drivers\Tokens.inl" />
     <None Include="..\Drivers\TokenSymbols.inl" />
+    <None Include="..\Reference\correct_out" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
