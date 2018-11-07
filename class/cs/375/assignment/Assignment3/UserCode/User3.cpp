@@ -23,25 +23,25 @@ public:
     static unsigned _index;
     static std::vector<Token> * _token_stream;
 
-    static bool Block();
-    static bool Class();
-    static bool Var();
-    static bool Function();
-    static bool Parameter();
+    static std::unique_ptr<BlockNode> Block();
+    static std::unique_ptr<ClassNode>  Class();
+    static std::unique_ptr<VariableNode> Var();
+    static std::unique_ptr<FunctionNode> Function();
+    static std::unique_ptr<ParameterNode> Parameter();
     static std::unique_ptr<TypeNode> SpecifiedType();
     static std::unique_ptr<TypeNode> Type();
     static std::unique_ptr<TypeNode> NamedType();
     static std::unique_ptr<TypeNode> FunctionType();
-    static bool Scope();
+    static std::unique_ptr<ScopeNode> Scope();
     static bool Statement();
     static bool DelimitedStatement();
     static bool FreeStatement();
     static bool Label();
     static bool Goto();
     static bool Return();
-    static bool If();
-    static bool Else();
-    static bool While();
+    static std::unique_ptr<IfNode> If();
+    static std::unique_ptr<> Else();
+    static std::unique_ptr<IfNode> While();
     static bool For();
     static std::unique_ptr<ExpressionNode> GroupedExpression();
     static std::unique_ptr<LiteralNode> Literal();
@@ -563,7 +563,7 @@ bool Parser::Else()
     return true;
 }
 
-bool Parser::If()
+std::unique_ptr<IfNode> Parser::If()
 {
     PrintRule print_rule("If");
     if (!Acc(TokenType::If))
@@ -655,17 +655,24 @@ bool Parser::Statement()
     return result;
 }
 
-bool Parser::Scope()
+std::unique_ptr<ScopeNode> Parser::Scope()
 {
     PrintRule print_rule("Scope");
     if (!Acc(TokenType::OpenCurley))
     {
-        return false;
+        ReturnNullNode(ScopeNode);
     }
-    while(Statement());
+    std::unique_ptr<ScopeNode> scope(new ScopeNode);
+    std::unique_ptr<StatementNode> statement;
+    statement = Statement();
+    while (statement)
+    {
+        scope->mStatements.push_back(std::move(statement));
+        statement = Statement();
+    }
     Exp(TokenType::CloseCurley);
     print_rule.Accept();
-    return true;
+    return std::move(scope);
 }
 
 std::unique_ptr<TypeNode> Parser::FunctionType()
@@ -764,66 +771,78 @@ std::unique_ptr<TypeNode> Parser::SpecifiedType()
     return std::move(final_node);
 }
 
-bool Parser::Parameter()
+std::unique_ptr<ParameterNode> Parser::Parameter()
 {
     PrintRule print_rule("Parameter");
+
     if (!Acc(TokenType::Identifier))
     {
-        return false;
+        ReturnNullNode(ParameterNode)
     }
-    /*Exp(SpecifiedType());*/
+    std::unique_ptr<ParameterNode> parameter(new ParameterNode);
+    parameter->mName =PreviousToken();
+    parameter->mType = SpecifiedType();
+    Exp(parameter->mType.get());
     print_rule.Accept();
-    return true;
+    return std::move(parameter);
 }
 
-bool Parser::Function()
+std::unique_ptr<FunctionNode> Parser::Function()
 {
     PrintRule print_rule("Function");
     if (!Acc(TokenType::Function))
     {
-        return false;
+        ReturnNullNode(FunctionNode);
     }
-
     Exp(TokenType::Identifier);
+    std::unique_ptr<FunctionNode> function(new FunctionNode);
+    function->mName = PreviousToken();
     Exp(TokenType::OpenParentheses);
 
-    if (Parameter())
+    function->mParameters.push_back(Parameter());
+    if (function->mParameters.back())
     {
         while(Acc(TokenType::Comma))
         {
-            Exp(Parameter());
+        function->mParameters.push_back(Parameter());
+        Exp(function->mParameters.back().get());
         }
     }
 
     Exp(TokenType::CloseParentheses);
-    SpecifiedType();
+    function->mReturnType = SpecifiedType();
+    function->mScope = Scope();
     Exp(Scope());
     
     print_rule.Accept();
     return true;
 }
 
-bool Parser::Var()
+std::unique_ptr<VariableNode> Parser::Var()
 {
     PrintRule print_rule("Var");
     if (!Acc(TokenType::Var))
     {
-      return false;
+      ReturnNullNode(VariableNode);
     }
 
-    /*Exp(TokenType::Identifier);
-    Exp(SpecifiedType());*/
+    Exp(TokenType::Identifier);
+    std::unique_ptr<VariableNode> variable(new VariableNode);
+    variable->mName = PreviousToken();
+    variable->mType = SpecifiedType();
+    Exp(variable->mType.get());
 
     if (Acc(TokenType::Assignment))
     {
-        Exp(Expression().get());
+        variable->mInitialValue = Expression();
+        Exp(variable->mInitialValue.get());
     }
 
     print_rule.Accept();
-    return true;
+    return std::move(variable);
 }
 
-bool Parser::Class()
+std::unique_ptr<ClassNode> Parser::Class()
 {
     PrintRule print_rule("Class");
     if(!Acc(TokenType::Class))
@@ -852,7 +871,7 @@ bool Parser::Class()
     return true;
 }
 
-bool Parser::Block()
+std::unique_ptr<BlockNode> Parser::Block()
 {
     PrintRule print_rule("Block");
     while(Class() || 
@@ -1390,7 +1409,7 @@ std::unique_ptr<ExpressionNode> ParseExpression(std::vector<Token>& tokens)
     Parser::Initialize(tokens);
     std::unique_ptr<ExpressionNode> expression_node;
     expression_node = Parser::Expression();
-    return expression_node;
+    return std::move(expression_node);
 }
 
 void PrintTree(AbstractNode* node)
@@ -1404,6 +1423,8 @@ void PrintTree(AbstractNode* node)
 
 std::unique_ptr<BlockNode> ParseBlock(std::vector<Token>& tokens)
 {
+    Parser::Initialize(tokens);
     std::unique_ptr<BlockNode> block_node;
+    block_node = Parser::Block();
     return block_node;
 }
