@@ -71,7 +71,6 @@
     <ClCompile Include="..\Drivers\Driver3.cpp" />
     <ClCompile Include="..\Drivers\DriverShared.cpp" />
     <ClCompile Include="..\UserCode\User1.cpp" />
-    <ClCompile Include="..\UserCode\User2.cpp" />
     <ClCompile Include="..\UserCode\User3.cpp" />
   </ItemGroup>
   <ItemGroup>
