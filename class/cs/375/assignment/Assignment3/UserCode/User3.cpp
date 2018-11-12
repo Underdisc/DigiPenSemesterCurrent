@@ -2,10 +2,10 @@
  * Author: Connor Deakin
  * Copyright 2015, DigiPen Institute of Technology
 \******************************************************************/
+
 #include "../Drivers/AstNodes.hpp"
 #include "../Drivers/Driver3.hpp"
 
-#include <iostream>
 #include <stack>
 
 // Parser ///////////////////////////////////////////////////////////////////
@@ -33,16 +33,18 @@ public:
     static std::unique_ptr<TypeNode> NamedType();
     static std::unique_ptr<TypeNode> FunctionType();
     static std::unique_ptr<ScopeNode> Scope();
-    static bool Statement();
-    static bool DelimitedStatement();
-    static bool FreeStatement();
-    static bool Label();
-    static bool Goto();
-    static bool Return();
+    static std::unique_ptr<StatementNode> Statement();
+    static std::unique_ptr<StatementNode> DelimitedStatement();
+    static std::unique_ptr<StatementNode> FreeStatement();
+    static std::unique_ptr<LabelNode> Label();
+    static std::unique_ptr<GotoNode> Goto();
+    static std::unique_ptr<ReturnNode> Return();
+    static std::unique_ptr<BreakNode> Break();
+    static std::unique_ptr<ContinueNode> Continue();
     static std::unique_ptr<IfNode> If();
-    static std::unique_ptr<> Else();
-    static std::unique_ptr<IfNode> While();
-    static bool For();
+    static std::unique_ptr<IfNode> Else();
+    static std::unique_ptr<WhileNode> While();
+    static std::unique_ptr<ForNode> For();
     static std::unique_ptr<ExpressionNode> GroupedExpression();
     static std::unique_ptr<LiteralNode> Literal();
     static std::unique_ptr<NameReferenceNode> NameReference();
@@ -517,50 +519,66 @@ std::unique_ptr<ExpressionNode> Parser::GroupedExpression()
     return std::move(node);
 }
 
-bool Parser::For()
+std::unique_ptr<ForNode> Parser::For()
 {
     PrintRule print_rule("For");
     if (!Acc(TokenType::For))
     {
-        return false;
+        ReturnNullNode(ForNode);
     }
     Exp(TokenType::OpenParentheses);
-    Var() || Expression();
+    std::unique_ptr<ForNode> for_node(new ForNode);
+    for_node->mInitialVariable = Var();
+    for_node->mInitialExpression = Expression();
     Exp(TokenType::Semicolon);
-    Expression();
+    for_node->mCondition = Expression();
     Exp(TokenType::Semicolon);
-    Expression();
+    for_node->mIterator = Expression();
     Exp(TokenType::CloseParentheses);
-    Exp(Scope());
+    for_node->mScope = Scope();
+    Exp(for_node->mScope.get());
 
     print_rule.Accept();
-    return true;
+    return std::move(for_node);
 }
 
-bool Parser::While()
+std::unique_ptr<WhileNode> Parser::While()
 {
     PrintRule print_rule("While");
     if (!Acc(TokenType::While))
     {
-        return false;
+        ReturnNullNode(WhileNode);
     }
-    Exp(GroupedExpression().get());
-    Exp(Scope());
+    std::unique_ptr<WhileNode> while_node(new WhileNode);
+    while_node->mCondition = GroupedExpression();
+    Exp(while_node->mCondition.get());
+    while_node->mScope = Scope();
+    Exp(while_node->mScope.get());
     print_rule.Accept();
-    return true;
+    return std::move(while_node);
 
 }
 
-bool Parser::Else()
+std::unique_ptr<IfNode> Parser::Else()
 {
     PrintRule print_rule("Else");
     if (!Acc(TokenType::Else))
     {
-        return false;
+        ReturnNullNode(IfNode);
     }
-    Exp(If() || Scope());
+
+    std::unique_ptr<IfNode> if_node;
+    std::unique_ptr<ScopeNode> scope_node;
+    Exp((if_node = If()) != nullptr || (scope_node = Scope()) != nullptr);
+    if (scope_node)
+    {
+        if_node = std::make_unique<IfNode>();
+        if_node->mCondition = nullptr;
+        if_node->mElse = nullptr;
+        if_node->mScope = std::move(scope_node);
+    }
     print_rule.Accept();
-    return true;
+    return std::move(if_node);
 }
 
 std::unique_ptr<IfNode> Parser::If()
@@ -568,91 +586,126 @@ std::unique_ptr<IfNode> Parser::If()
     PrintRule print_rule("If");
     if (!Acc(TokenType::If))
     {
-        return false;
+        ReturnNullNode(IfNode);
     }
-    Exp(GroupedExpression().get());
-    Exp(Scope());
-    Else();
+    std::unique_ptr<IfNode> if_node(new IfNode);
+    if_node->mCondition = GroupedExpression();
+    Exp(if_node->mCondition.get());
+    if_node->mScope = Scope();
+    Exp(if_node->mScope.get());
+    if_node->mElse = Else();
 
     print_rule.Accept();
-    return true;
+    return std::move(if_node);
 }
 
-bool Parser::Return()
+std::unique_ptr<ContinueNode> Parser::Continue()
+{
+    if(!Acc(TokenType::Continue))
+    {
+        ReturnNullNode(ContinueNode)
+    }
+    std::unique_ptr<ContinueNode> continue_node(new ContinueNode);
+    return std::move(continue_node);
+}
+
+std::unique_ptr<BreakNode> Parser::Break()
+{
+    if (!Acc(TokenType::Break))
+    {
+        ReturnNullNode(BreakNode);
+    }
+    std::unique_ptr<BreakNode> break_node(new BreakNode);
+    return std::move(break_node);
+}
+
+std::unique_ptr<ReturnNode> Parser::Return()
 {
     PrintRule print_rule("Return");
-    if (Acc(TokenType::Return))
+    if (!Acc(TokenType::Return))
     {
-        Expression();
-        print_rule.Accept();
-        return true;
+        ReturnNullNode(ReturnNode);
     }
-    return false;
+    std::unique_ptr<ReturnNode> return_node(new ReturnNode);
+    return_node->mReturnValue = Expression();
+    print_rule.Accept();
+    return std::move(return_node);
 }
 
-bool Parser::Goto()
+std::unique_ptr<GotoNode> Parser::Goto()
 {
     PrintRule print_rule("Goto");
-    bool result = Acc(TokenType::Goto) &&
-        Exp(TokenType::Identifier);
-    if (result)
+
+    if (!Acc(TokenType::Goto))
     {
-        print_rule.Accept();
+        ReturnNullNode(GotoNode);
     }
-    return result;
+    Exp(TokenType::Identifier);
+    std::unique_ptr<GotoNode> goto_node(new GotoNode);
+    goto_node->mName = PreviousToken();
+    print_rule.Accept();
+    return std::move(goto_node);
 }
 
-bool Parser::Label()
+std::unique_ptr<LabelNode> Parser::Label()
 {
     PrintRule print_rule("Label");
-    bool result = Acc(TokenType::Label) && 
-                  Exp(TokenType::Identifier);
-    if (result)
+    if (!Acc(TokenType::Label))
     {
-        print_rule.Accept();
+        ReturnNullNode(LabelNode);
     }
-    return result;
+    Exp(TokenType::Identifier);
+    std::unique_ptr<LabelNode> label(new LabelNode);
+    label->mName = PreviousToken();
+    print_rule.Accept();
+    return std::move(label);
 }
 
-bool Parser::FreeStatement()
+std::unique_ptr<StatementNode> Parser::FreeStatement()
 {
     PrintRule print_rule("FreeStatement");
-    bool result = If() || While() || For();
-    if (result)
+    std::unique_ptr<StatementNode> statement;
+    (statement = If()) != nullptr || 
+    (statement = While()) != nullptr || 
+    (statement = For()) != nullptr;
+    if (statement)
     {
         print_rule.Accept();
     }
-    return result;
+    return std::move(statement);
 }
 
-bool Parser::DelimitedStatement()
+std::unique_ptr<StatementNode> Parser::DelimitedStatement()
 {
     PrintRule print_rule("DelimitedStatement");
-    bool result = Label() || 
-                  Goto() || 
-                  Return() || 
-                  Acc(TokenType::Break) ||
-                  Acc(TokenType::Continue) ||
-                  Var() ||
-                  Expression();
-    if (result)
+    std::unique_ptr<StatementNode> statement;
+    (statement = Label()) != nullptr || 
+    (statement = Goto()) != nullptr ||
+    (statement = Return()) != nullptr ||
+    (statement = Break()) != nullptr ||
+    (statement = Continue()) != nullptr ||
+    (statement = Var()) != nullptr ||
+    (statement = Expression()) != nullptr;
+    if (statement)
     {
         print_rule.Accept();
     }
-    return result;
+    return std::move(statement);
         
 }
 
-bool Parser::Statement()
+std::unique_ptr<StatementNode> Parser::Statement()
 {
     PrintRule print_rule("Statement");
-    bool result =  FreeStatement() || (DelimitedStatement() && 
-                                       Exp(TokenType::Semicolon));
-    if(result)
+    std::unique_ptr<StatementNode> statement;
+    (statement = FreeStatement()) != nullptr || 
+    (statement = DelimitedStatement()) != nullptr && Exp(TokenType::Semicolon); 
+    if(!statement)
     {
-        print_rule.Accept();
+        ReturnNullNode(StatementNode);
     }
-    return result;
+    print_rule.Accept();
+    return std::move(statement);
 }
 
 std::unique_ptr<ScopeNode> Parser::Scope()
@@ -664,11 +717,14 @@ std::unique_ptr<ScopeNode> Parser::Scope()
     }
     std::unique_ptr<ScopeNode> scope(new ScopeNode);
     std::unique_ptr<StatementNode> statement;
-    statement = Statement();
-    while (statement)
+    while (true)
     {
-        scope->mStatements.push_back(std::move(statement));
         statement = Statement();
+        if (!statement)
+        {
+            break;
+        }
+        scope->mStatements.push_back(std::move(statement));
     }
     Exp(TokenType::CloseCurley);
     print_rule.Accept();
@@ -684,29 +740,34 @@ std::unique_ptr<TypeNode> Parser::FunctionType()
     }
 
     std::unique_ptr<FunctionTypeNode> function_type(new FunctionTypeNode);
+    FunctionTypeNode * og_node = function_type.get();
     std::unique_ptr<TypeNode> final_node = std::move(function_type);
 
     Exp(TokenType::Asterisk);
+    std::unique_ptr<PointerTypeNode> pointer_type(new PointerTypeNode);
+    pointer_type->mPointerTo = std::move(final_node);
+    final_node = std::move(pointer_type);
     if (Acc(TokenType::Ampersand))
     {
         std::unique_ptr<ReferenceTypeNode> ref_type(new ReferenceTypeNode);
-        ref_type->mReferenceTo = std::move(function_type);
+        ref_type->mReferenceTo = std::move(final_node);
         final_node = std::move(ref_type);
     }
 
     Exp(TokenType::OpenParentheses);
  
-    std::unique_ptr<TypeNode> type = Type();
+    std::unique_ptr<TypeNode> type;
+    type = Type();
     Exp(type.get());
-    function_type->mParameters.push_back(std::move(type));
+    og_node->mParameters.push_back(std::move(type));
     while (Acc(TokenType::Comma))
     {
         type = Type();
         Exp(type.get());
-        function_type->mParameters.push_back(std::move(type));
+        og_node->mParameters.push_back(std::move(type));
     }
     Exp(TokenType::CloseParentheses);
-    function_type->mReturn = SpecifiedType();
+    og_node->mReturn = SpecifiedType();
     print_rule.Accept();
 
     return std::move(final_node);
@@ -753,7 +814,7 @@ std::unique_ptr<TypeNode> Parser::Type()
     {
         print_rule.Accept();
     }
-    return final_node;
+    return std::move(final_node);
 }
 
 std::unique_ptr<TypeNode> Parser::SpecifiedType()
@@ -799,23 +860,26 @@ std::unique_ptr<FunctionNode> Parser::Function()
     function->mName = PreviousToken();
     Exp(TokenType::OpenParentheses);
 
-    function->mParameters.push_back(Parameter());
-    if (function->mParameters.back())
+    std::unique_ptr<ParameterNode> parameter;
+    parameter = Parameter();
+    if (parameter)
     {
+        function->mParameters.push_back(std::move(parameter));
         while(Acc(TokenType::Comma))
         {
-        function->mParameters.push_back(Parameter());
-        Exp(function->mParameters.back().get());
+            parameter = Parameter();
+            Exp(parameter.get());
+            function->mParameters.push_back(std::move(parameter));
         }
     }
 
     Exp(TokenType::CloseParentheses);
     function->mReturnType = SpecifiedType();
     function->mScope = Scope();
-    Exp(Scope());
+    Exp(function->mScope.get());
     
     print_rule.Accept();
-    return true;
+    return std::move(function);
 }
 
 std::unique_ptr<VariableNode> Parser::Var()
@@ -823,7 +887,7 @@ std::unique_ptr<VariableNode> Parser::Var()
     PrintRule print_rule("Var");
     if (!Acc(TokenType::Var))
     {
-      ReturnNullNode(VariableNode);
+        ReturnNullNode(VariableNode);
     }
 
     Exp(TokenType::Identifier);
@@ -847,38 +911,59 @@ std::unique_ptr<ClassNode> Parser::Class()
     PrintRule print_rule("Class");
     if(!Acc(TokenType::Class))
     {
-        return false;
+        ReturnNullNode(ClassNode);
     }
-
     Exp(TokenType::Identifier);
+    std::unique_ptr<ClassNode> class_node(new ClassNode);
+    class_node->mName = PreviousToken();
     Exp(TokenType::OpenCurley);
 
     while(true)
     {
-        if(Var())
+        std::unique_ptr<VariableNode> variable;
+        variable = Var();
+        if(variable)
         {
             Exp(TokenType::Semicolon);
+            class_node->mMembers.push_back(std::move(variable));
+            continue;
         }
-        else if(!Function())
+        std::unique_ptr<FunctionNode> function;
+        function = Function();
+        if(function)
         {
-            break;
+            class_node->mMembers.push_back(std::move(function));
+            continue;
         }
+        break;
     }
 
     Exp(TokenType::CloseCurley);
 
     print_rule.Accept();
-    return true;
+    return std::move(class_node);
 }
 
 std::unique_ptr<BlockNode> Parser::Block()
 {
     PrintRule print_rule("Block");
-    while(Class() || 
-          Function() || 
-          (Var() && Exp(TokenType::Semicolon)));
+    std::unique_ptr<BlockNode> block(new BlockNode);
+    while (true)
+    {
+        std::unique_ptr<AbstractNode> abstract_node;
+        (abstract_node = Class()) != nullptr ||
+        (abstract_node = Function()) != nullptr ||
+        (abstract_node = Var()) != nullptr && Exp(TokenType::Semicolon);
+        if (abstract_node)
+        {
+            block->mGlobals.push_back(std::move(abstract_node));
+            continue;
+        }
+        break;
+    }
+
     print_rule.Accept();
-    return false;
+    return std::move(block);
 }
 
 // Visitor Implementation /////////////////////////////////////////////////////
@@ -1049,7 +1134,7 @@ NodePrinterVisitorHeader(VariableNode)
 
 NodePrinterVisitorHeader(ParameterNode)
 {
-    PrintNode(ParameterNode);
+    PrintNode(ParameterNode) << "(" << node->mName << ")";
     node->Walk(this, false);
     return Stop;
 }
@@ -1098,7 +1183,7 @@ NodePrinterVisitorHeader(BreakNode)
 
 NodePrinterVisitorHeader(ContinueNode)
 {
-    PrintNode(StopNode);
+    PrintNode(ContinueNode);
     node->Walk(this, false);
     return Stop;
 }
@@ -1112,7 +1197,7 @@ NodePrinterVisitorHeader(ExpressionNode)
 
 NodePrinterVisitorHeader(IfNode)
 {
-    PrintNode(BreakNode);
+    PrintNode(IfNode);
     node->Walk(this, false);
     return Stop;
 }
@@ -1346,8 +1431,8 @@ void ForNode::Walk(Visitor* visitor, bool visit)
     WalkExisting(mInitialVariable);
     WalkExisting(mInitialExpression);
     WalkExisting(mCondition);
-    WalkExisting(mIterator);
     WalkMember(mScope);
+    WalkExisting(mIterator);
 }
 void LiteralNode::Walk(Visitor* visitor, bool visit)
 {
@@ -1404,6 +1489,34 @@ void IndexNode::Walk(Visitor* visitor, bool visit)
 
 // Assignment Functions ///////////////////////////////////////////////////////
 
+void RemoveWhitespaceAndComments(std::vector<Token>& tokens)
+{
+    // Create new vector for all non whitespace and non comment tokens.
+    std::vector<Token> stripped;
+    stripped.reserve(tokens.size());
+
+    // Add acceptable tokens to the stripped vector.
+    for (const Token & token : tokens)
+    {
+        if (token.mTokenType != TokenType::Whitespace &&
+            token.mTokenType != TokenType::SingleLineComment &&
+            token.mTokenType != TokenType::MultiLineComment)
+        {
+            stripped.push_back(token);
+        }
+    }
+
+    stripped.shrink_to_fit();
+    tokens = stripped;
+}
+
+void Recognize(std::vector<Token>& tokens)
+{
+    Parser::Initialize(tokens);
+    Parser::Block();
+    Parser::Expect(Parser::AllTokensCovered());
+}
+
 std::unique_ptr<ExpressionNode> ParseExpression(std::vector<Token>& tokens)
 {
     Parser::Initialize(tokens);
@@ -1426,5 +1539,5 @@ std::unique_ptr<BlockNode> ParseBlock(std::vector<Token>& tokens)
     Parser::Initialize(tokens);
     std::unique_ptr<BlockNode> block_node;
     block_node = Parser::Block();
-    return block_node;
+    return std::move(block_node);
 }
