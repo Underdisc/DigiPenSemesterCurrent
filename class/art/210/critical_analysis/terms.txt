@@ -1,0 +1,52 @@
+Visual elements
+Line - Path of a moving point.
+Vertical Lines - Assertive.
+Horizontal Lines - Calm.
+Diagonal Lines - Dramatic and imply action.
+Implied Lines - Directional cues that create an implict line.
+Shape - 2D form that occupies and area.
+Mass - 3D form that occupies space.
+Geometric Form - Mathematically defined.
+Organic Form - Irregular and more natural.
+Figure - The shape where visual focused is placed.
+Ground - The background shape or shapes.
+Implied Shapes - They are a thing.
+Actual Light - Real light.
+Illusionistic Light - The impression of existing light.
+Warm Colors - On the red orange side.
+Cool Colors - On the blue green side.
+Tint - Adding white to a color.
+Shade - Adding black to a color.
+Hue - Color quality.
+Value - How dark the color is.
+Saturation - How tinted the color is.
+Monochromatic - Variations of the same hue.
+Complementary - Hues directly opposite on the color wheel.
+Analogous - Adjacent hues on the color wheel.
+Triadic - 3 equidistant hues on the color wheel.
+Actual texture - The tactile experience.
+Implied textue - The illusion of texture.
+Pattern - Repeated motif or design.
+Space - Defines the space the visual elements exist in.
+2D Space - Picture plane is where the actual image is.
+Implied Space - Overlapping and position.
+Illusionistic - Use of perspective.
+Motion and Time - The movement of objects throughot the piece.
+
+
+Principles of Design
+Composition - Organization of all visual elements.
+Unity - Things belonging together.
+Visual Unity - Similar visual elements.
+Conceptual Unity - Grouping of ideas.
+Variety - Differences that provide.
+Visual Weight - apparent heaviness or lightness of forms in the composition.
+Symmetrical Balance - Things are the same on both sides.
+Approximate Symmetry - Things are similar on both sides, but there are differences.
+Emphasis - Putting emphasis on an area so viewers look at it.
+Focal Point - The center of the piece.
+Subordination - Less visualy interesting.
+Scale - Size in relation to normal size.
+Proportion - Size relationships between parts.
+Rythm - Repetition of visual elements.
+
