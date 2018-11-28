@@ -55,35 +55,34 @@ def g(y_l, x_l_v, w_v):
     return g_v
 
 y_l = [-1, -1 ,1, -1, -1, 1, 1, 1, -1, 1, 1, -1, -1, 1, -1, -1, 1, -1, 1, -1]
-x_l_v = [Vector([1, 32, 3]),
-         Vector([1, 45, 2]),
-         Vector([1, 60, 2]),
-         Vector([1, 53, 1]),
-         Vector([1, 25, 4]),
-         Vector([1, 68, 1]),
-         Vector([1, 82, 2]),
-         Vector([1, 38, 5]),
-         Vector([1, 67, 2]),
-         Vector([1, 92, 2]),
-         Vector([1, 72, 3]),
-         Vector([1, 21, 5]),
-         Vector([1, 26, 3]),
-         Vector([1, 40, 4]),
-         Vector([1, 33, 3]),
-         Vector([1, 45, 1]),
-         Vector([1, 61, 2]),
-         Vector([1, 16, 3]),
-         Vector([1, 18, 4]),
-         Vector([1, 22, 6])]
+x_l_v = [Vector([1, 3.2, 3]),
+         Vector([1, 4.5, 2]),
+         Vector([1, 6.0, 2]),
+         Vector([1, 5.3, 1]),
+         Vector([1, 2.5, 4]),
+         Vector([1, 6.8, 1]),
+         Vector([1, 8.2, 2]),
+         Vector([1, 3.8, 5]),
+         Vector([1, 6.7, 2]),
+         Vector([1, 9.2, 2]),
+         Vector([1, 7.2, 3]),
+         Vector([1, 2.1, 5]),
+         Vector([1, 2.6, 3]),
+         Vector([1, 4.0, 4]),
+         Vector([1, 3.3, 3]),
+         Vector([1, 4.5, 1]),
+         Vector([1, 6.1, 2]),
+         Vector([1, 1.6, 3]),
+         Vector([1, 1.8, 4]),
+         Vector([1, 2.2, 6])]
 w_v = Vector([0, 0, 0])
 g_v = Vector([0, 0, 0])
 
-n = 0.004 
+n = 0.1 
 for iteration in range(1, 50000):
     g_v = g(y_l, x_l_v, w_v)
-    print(g_v.values)
     w_v = w_v - g_v * n
-
+print(w_v.values)
 
 
 
