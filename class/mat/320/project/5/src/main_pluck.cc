@@ -1,29 +1,24 @@
 /*****************************************************************************/
 /*!
-\file main_lowpass.cc
+\file main_pluck.cc
 \author Connor Deakin
 \par E-mail: connortdeakin\@digipen.edu
-\par Project: 4
+\par Project: 5
 \par Course: MAT 320
-\date 2018/11/26
+\date 2018/12/5
 \brief
-    Contains a lowpass filter implementation. This will take an input wave file
-    and output a wave file that has had n lowpass filters applied to it.
+    Contains an implementation of the plucked string filter that will produce
+    a wave file that plays the major scale.
 
 Usage:
-./lowpass.exe a n filename
-a - The lowpass filter factor.
-n - The number of times the lowpass filter will be applied.
-filename - The wave file containing the audio data that the lowpass filter will
-    be applied to.
+./pluck.exe f
+f - The root frequency that the major scale will be played from.
 */
 /*****************************************************************************/
 
 #include <iostream>
-#include <cstdlib>
 #include <math.h>
 #include <queue>
-#include <vector>
 
 #include "AudioData.h"
 
@@ -32,6 +27,7 @@ filename - The wave file containing the audio data that the lowpass filter will
 float Random()
 {
     float random = (float)rand() / (float)RAND_MAX;
+    random = (random * 2.0f) - 1.0f;
     return random;
 }
 
@@ -56,16 +52,18 @@ public:
                        float R);
     float Apply(float sample);
 private:
-    // The constants used by the filter.
-    unsigned _L;
+    // Comb filter values. x -> g
+    unsigned _L_delay;
     float _RL;
-    float _a;
-
-    // Storage of previous values that are used by the filter.
-    float _x1;
-    float _x2;
     std::queue<float> _yL;
-    float _yL1;
+
+    // Low pass filter values. g -> h
+    float _g1;
+
+    // All pass filter values. h -> y
+    float _a;
+    float _h1;
+    float _y1;
 };
 
 PluckedStringFilter::PluckedStringFilter(float frequency, 
@@ -80,111 +78,102 @@ void PluckedStringFilter::SetProperties(float frequency,
                                         float R)
 {
     // Find the filter constants
-    float w = (TAU * frequency) / sample_rate;
     float delay = sample_rate / frequency;
-    _L = (unsigned)(delay - 0.5f);
-    _RL = powf(R, (float)_L);
-    float delta = delay - (_L + 0.5f);
-    float wo2 = w / 2.0f;
-    float a_num = sin(wo2 * (1.0 - delta));
-    float a_den = sin(wo2 * (1.0 - delta));
+    _L_delay = (unsigned)(delay - 0.5f);
+    _RL = powf(R, (float)_L_delay);
+    float delta = delay - (_L_delay + 0.5f);
+    float w0 = (TAU * frequency) / sample_rate;
+    float a_num = sin((w0 / 2.0f) * (1.0 - delta));
+    float a_den = sin((w0 / 2.0f) * (1.0 + delta));
     _a = a_num / a_den;
 
-    // Set the first sample value for the low pass filter.
-    _x1 = 0.0f;
-    _x2 = 0.0f;
-    for(unsigned i = 0; i < _L; ++i)
+    // Set the stored sample values to zero.
+    while(!_yL.empty())
+    {
+        _yL.pop();
+    }
+    for(unsigned i = 0; i < _L_delay; ++i)
     {
         _yL.push(0.0f);
     }
-    _yL1 = 0.0f;
+    _g1 = 0.0f;
+    _h1 = 0.0f;
 }
 
 float PluckedStringFilter::Apply(float x0)
 {
-    // Find the samples new value.
-    float y1 = _yL.back();
+    // Apply the comb filter.
     float yL = _yL.front();
-    float ns = (x0 * _a / 2.0f) + (_x1 * (1.0f + _a) / 2.0f) + (_x2 / 2.0f) - 
-               (y1 * _a) + (yL * _RL) + (_yL1 * _a * _RL);
+    float g0 = x0 + _RL * yL;
+
+    // Apply the low pass filter.
+    float h0 = g0 / 2.0f + _g1 / 2.0f;
+    
+    // Apply the all pass filter.
+    float y1 = _yL.back();
+    float y0 = _a * h0 + _h1 - _a * y1;
+
 
     // Set up the filter for the next sample.
-    _x1 = x0;
-    _x2 = _x1;
     _yL.pop();
-    _yL.push(ns);
-    _yL1 = yL;
+    _yL.push(y0);
+    _g1 = g0;
+    _h1 = h0;
 
-    return ns;
-}
-
-// PianoRoll //////////////////////////////////////////////////////////////////
-class PianoRoll
-{
-public: 
-    PianoRoll(float root, unsigned sample_rate);
-    void SetFreqency(unsigned semitones);
-    float GetSample();
-
-private:
-    float _root;
-    float _currentFrequency;
-    double _currentTime;
-    double _sampleDelta;
-};
-
-PianoRoll::PianoRoll(float root, unsigned sample_rate)
-{
-    _root = root;
-    _currentFrequency = root;
-    _currentTime = 0.0;
-    _sampleDelta = 1.0 / (double)sample_rate;
-}
-
-void PianoRoll::SetFreqency(unsigned semitones)
-{
-    float exponent = (float)semitones / 12.0f;
-    _currentFrequency = _root * powf(2.0f, exponent);
-}
-
-float PianoRoll::GetSample()
-{
-    float sample = sin((double)_currentFrequency * _currentTime * TAU);
-    _currentTime += _sampleDelta;
-    return sample;
+    return y0;
 }
 
 int main(int argc, char * argv[])
-{
+{ 
+    if(argc != 2)
+    {
+        std::cout << "Incorrect number of arguments." << std::endl
+                  << "./pluck f" << std::endl;
+        return 0;
+    }
+
+    // Create filter
+    float root = (float)atof(argv[1]);
     unsigned sample_rate = 44100;
-    unsigned frames = sample_rate * 2;
-    PianoRoll piano_roll(440.0f, sample_rate);
+    float R = 0.99985f;
+    PluckedStringFilter filter(root, sample_rate, R);
+
+    // Create the audio data that will be written to.
+    unsigned frames = sample_rate * 8;
     AudioData audio_data(frames, sample_rate);
 
-    PopulateWithNoise(audio_data, 0, 44100);
-    
-    /*unsigned semitone = 0;
+    // Create ascending major scale
+    unsigned semitone = 0;
     unsigned note_switch = frames / 8;
     for(unsigned cframe = 0; cframe < frames; ++cframe)
     {
-        audio_data.sample(cframe) = piano_roll.GetSample();
+        audio_data.sample(cframe) = filter.Apply(audio_data.sample(cframe));
         if(cframe % note_switch == 0)
         {
+            // Populate the buffer with noise when we switch notes and go to
+            // the next note in the scale.
+            PopulateWithNoise(audio_data, cframe, 100);
             if(cframe == 0)
             {
                 continue;
             }
+            // Half steps occur after the 3rd and 7th.
             else if(semitone == 4 || semitone == 11)
             {
                 semitone += 1;
             }
+            // Otherwise, whole steps are performed.
             else
             {
                 semitone += 2;
             }
-            piano_roll.SetFreqency(semitone);
+            // Update the output frequency of the filter.
+            float exponent = (float)semitone / 12.0f;
+            float frequency = root * powf(2.0f, exponent);
+            filter.SetProperties(frequency, sample_rate, R);
         }
-    }*/
+    }
 
-    waveWrite("test.wav", audio_data);
+    // Write the audio data to file.
+    waveWrite("pluck.wav", audio_data);
 }
